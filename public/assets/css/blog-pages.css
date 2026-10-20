@@ -1721,10 +1721,20 @@
   object-fit: cover;
 }
 
-/* —— Blog detail layout templates (shell keeps 3-column reference layout) —— */
-.blog-details-page.bd-tpl-minimal .article-content {
+/* —— Blog detail layout templates —— */
+.blog-details-page.bd-tpl-minimal .main-layout {
+  grid-template-columns: 1fr;
   max-width: 46rem;
   margin-inline: auto;
+}
+
+.blog-details-page.bd-tpl-minimal .sidebar-left,
+.blog-details-page.bd-tpl-minimal .sidebar-right {
+  display: none;
+}
+
+.blog-details-page.bd-tpl-minimal .article-content {
+  max-width: none;
 }
 
 .blog-details-page.bd-tpl-longform .main-layout {

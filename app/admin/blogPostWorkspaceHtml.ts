@@ -39,7 +39,14 @@ export const BLOG_POST_WORKSPACE_HTML = `
           <label class="pa-form-label" for="blogWsContent">Content <span class="pa-form-required">*</span></label>
         </div>
         <div class="pa-blog-ws-preview-pane" id="paBlogWsPreviewPane" hidden>
-          <div class="pa-blog-ws-preview-inner pa-rte-body" id="paBlogWsPreviewContent"></div>
+          <p class="pa-blog-ws-preview-layout-label">Detail layout: <strong id="paBlogWsPreviewLayoutLabel">Auto</strong></p>
+          <div class="pa-blog-ws-detail-preview-shell blog-details-page" id="paBlogWsDetailPreviewShell">
+            <div class="pa-blog-ws-detail-preview-layout">
+              <span class="pa-blog-ws-detail-preview-side pa-blog-ws-detail-preview-side--left"></span>
+              <div class="pa-blog-ws-preview-inner pa-rte-body" id="paBlogWsPreviewContent"></div>
+              <span class="pa-blog-ws-detail-preview-side pa-blog-ws-detail-preview-side--right"></span>
+            </div>
+          </div>
         </div>
         <div class="pa-blog-ws-editor-pane" id="paBlogWsEditorPane">
           <div class="pa-rte pa-blog-ws-rte" id="blogWsRteWrap">
@@ -116,6 +123,28 @@ export const BLOG_POST_WORKSPACE_HTML = `
           <div class="pa-blog-ws-publish-actions">
             <button type="button" class="pa-btn pa-btn-primary pa-blog-ws-publish-now" id="paBlogWsPublishNowBtn">Publish now</button>
             <button type="button" class="pa-btn pa-btn-cancel" id="paBlogWsSaveDraftBtn">Save draft</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="pa-blog-ws-panel is-collapsed" data-ws-panel data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
+        <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="true">
+          <span class="pa-blog-ws-panel-head-left"><i class="ri-layout-masonry-line"></i> Detail page layout</span>
+          <i class="ri-arrow-down-s-line pa-blog-ws-panel-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="pa-blog-ws-panel-body pa-collapse-panel" data-pa-collapse-panel>
+          <p class="pa-blog-ws-engagement-hint">How this post appears on your portfolio blog detail page.</p>
+          <div class="pa-blog-tpl-grid" id="paBlogWsTemplateGrid" role="radiogroup" aria-label="Blog detail template"></div>
+          <div class="pa-blog-tpl-preview-wrap">
+            <span class="pa-form-label">Layout preview</span>
+            <div class="pa-blog-tpl-preview" id="paBlogWsTemplatePreview" data-tpl="auto" aria-hidden="true">
+              <div class="pa-blog-tpl-preview__hero"></div>
+              <div class="pa-blog-tpl-preview__body">
+                <span class="pa-blog-tpl-preview__col pa-blog-tpl-preview__col--left"></span>
+                <span class="pa-blog-tpl-preview__col pa-blog-tpl-preview__col--main"></span>
+                <span class="pa-blog-tpl-preview__col pa-blog-tpl-preview__col--right"></span>
+              </div>
+            </div>
           </div>
         </div>
       </section>

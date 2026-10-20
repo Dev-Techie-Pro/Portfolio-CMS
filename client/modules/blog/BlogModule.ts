@@ -316,6 +316,7 @@ export class BlogModule extends CrudCardModule {
       commentsEnabled: record.commentsEnabled !== false,
       likesEnabled: record.likesEnabled !== false,
       commentsAutoApprove: !!record.commentsAutoApprove,
+      detailTemplate: record.detailTemplate || 'auto',
       createdAt: new Date().toISOString(),
     };
   }
@@ -527,6 +528,7 @@ export class BlogModule extends CrudCardModule {
       commentsEnabled: $field('blogWsCommentsEnabled')?.value !== '0',
       likesEnabled: $field('blogWsLikesEnabled')?.value !== '0',
       commentsAutoApprove: $field('blogWsCommentsAutoApprove')?.value === '1',
+      detailTemplate: this.workspace.getDetailTemplate(),
       createdAt: new Date().toISOString(),
     };
   }
@@ -551,5 +553,6 @@ export class BlogModule extends CrudCardModule {
     record.commentsEnabled = $field('blogWsCommentsEnabled')?.value !== '0';
     record.likesEnabled = $field('blogWsLikesEnabled')?.value !== '0';
     record.commentsAutoApprove = $field('blogWsCommentsAutoApprove')?.value === '1';
+    record.detailTemplate = this.workspace.getDetailTemplate();
   }
 }

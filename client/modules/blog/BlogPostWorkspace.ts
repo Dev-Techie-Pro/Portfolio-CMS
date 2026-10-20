@@ -8,6 +8,10 @@ import { bindCommaSeparatedChipInput } from '../../utils/chipInput.js';
 import { requestDelete } from '../shell/confirm.js';
 import type { BlogModule } from './BlogModule.js';
 import { canManageContent } from '../../core/cms-access.js';
+import {
+  BLOG_DETAIL_TEMPLATE_META,
+  extractBlogAdminFields,
+} from '../../utils/blogContentPayload.js';
 
 type WsEditorMode = 'edit' | 'preview';
 type WsOpenMode = 'add' | 'edit' | 'preview';
@@ -23,6 +27,7 @@ export class BlogPostWorkspace {
   private closeTimer: ReturnType<typeof setTimeout> | null = null;
   private engagementPostId: string | number | null = null;
   private tagInputBinding: ReturnType<typeof bindCommaSeparatedChipInput> | null = null;
+  private detailTemplate: string = 'auto';
 
   constructor(blog: BlogModule) {
     this.blog = blog;
@@ -79,6 +84,80 @@ export class BlogPostWorkspace {
       const body = $id('blogWsContent');
       if (body) setRteHtml(body, ($id('blogWsContentHtml') as HTMLTextAreaElement).value);
     });
+
+    this.renderTemplateGrid();
+    this.syncTemplatePreview();
+  }
+
+  getDetailTemplate() {
+    return this.detailTemplate || 'auto';
+  }
+
+  private renderTemplateGrid() {
+    const grid = $id('paBlogWsTemplateGrid');
+    if (!grid || grid.dataset.wired === '1') return;
+    grid.dataset.wired = '1';
+    grid.innerHTML = BLOG_DETAIL_TEMPLATE_META.map(
+      (opt) => `
+      <label class="pa-blog-tpl-option">
+        <input type="radio" name="blogWsDetailTemplate" value="${escapeHtml(opt.id)}" />
+        <span class="pa-blog-tpl-option__inner">
+          <span class="pa-blog-tpl-option__label">${escapeHtml(opt.label)}</span>
+          <span class="pa-blog-tpl-option__desc">${escapeHtml(opt.description)}</span>
+        </span>
+      </label>`,
+    ).join('');
+
+    grid.querySelectorAll('input[type="radio"]').forEach((input) => {
+      this.blog.on(input, 'change', () => {
+        const el = input as HTMLInputElement;
+        if (!el.checked) return;
+        this.detailTemplate = el.value;
+        this.syncTemplatePreview();
+        if (this.wsEditorMode === 'preview') this.setEditorMode('preview');
+      });
+    });
+  }
+
+  private setDetailTemplateChoice(value: string) {
+    this.detailTemplate = value || 'auto';
+    const grid = $id('paBlogWsTemplateGrid');
+    const input = grid?.querySelector(
+      `input[type="radio"][value="${CSS.escape(this.detailTemplate)}"]`,
+    ) as HTMLInputElement | null;
+    if (input) input.checked = true;
+    this.syncTemplatePreview();
+  }
+
+  private resolvePreviewLayoutClass(): string {
+    if (this.detailTemplate !== 'auto') {
+      return `bd-tpl-${this.detailTemplate}`;
+    }
+    return 'bd-tpl-standard';
+  }
+
+  private syncTemplatePreview() {
+    const preview = $id('paBlogWsTemplatePreview');
+    const meta = BLOG_DETAIL_TEMPLATE_META.find((m) => m.id === this.detailTemplate);
+    const layoutLabel = $id('paBlogWsPreviewLayoutLabel');
+    if (layoutLabel) {
+      layoutLabel.textContent = meta?.label || 'Auto';
+    }
+    const tplKey =
+      this.detailTemplate === 'auto' ? 'auto' : this.detailTemplate;
+    if (preview) preview.setAttribute('data-tpl', tplKey);
+
+    const shell = $id('paBlogWsDetailPreviewShell');
+    if (shell) {
+      shell.classList.remove(
+        'bd-tpl-standard',
+        'bd-tpl-minimal',
+        'bd-tpl-case-study',
+        'bd-tpl-longform',
+      );
+      const cls = this.resolvePreviewLayoutClass();
+      if (cls) shell.classList.add(cls);
+    }
   }
 
   openAdd() {
@@ -239,6 +318,7 @@ export class BlogPostWorkspace {
     this.updateTitleCount();
     this.updateExcerptCount();
     this.updateMetaCounts();
+    this.setDetailTemplateChoice('auto');
     this.clearFieldErrors();
   }
 
@@ -249,8 +329,19 @@ export class BlogPostWorkspace {
     ($id('blogWsCategory') as HTMLSelectElement).value = String(p.category || '');
     syncPaSelect($id('blogWsCategory'));
     ($id('blogWsExcerpt') as HTMLTextAreaElement).value = String(p.excerpt || '');
-    setRteHtml($id('blogWsContent')!, String(p.content || ''));
-    ($id('blogWsContentHtml') as HTMLTextAreaElement).value = String(p.content || '');
+    const contentRaw = String(p.content || '');
+    const extracted = extractBlogAdminFields(contentRaw);
+    const html =
+      contentRaw.startsWith('{') || contentRaw.startsWith('[')
+        ? extracted.html
+        : contentRaw;
+    const tpl =
+      typeof p.detailTemplate === 'string' && p.detailTemplate
+        ? p.detailTemplate
+        : extracted.detailTemplate;
+    setRteHtml($id('blogWsContent')!, html);
+    ($id('blogWsContentHtml') as HTMLTextAreaElement).value = html;
+    this.setDetailTemplateChoice(tpl);
     populateChips($id('blogWsTagChips'), Array.isArray(p.tags) ? p.tags : []);
     ($id('blogWsImageAlt') as HTMLInputElement).value = String(p.imageAlt || '');
     ($id('blogWsStatus') as HTMLSelectElement).value = String(p.status || 'Draft');
@@ -292,6 +383,7 @@ export class BlogPostWorkspace {
       const html = getRteHtml(body);
       const preview = $id('paBlogWsPreviewContent');
       if (preview) preview.innerHTML = html;
+      this.syncTemplatePreview();
       return;
     }
 

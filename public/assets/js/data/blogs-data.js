@@ -73,7 +73,10 @@ function _inferDetailTemplate(content) {
 function _applyDetailTemplate(post) {
   const root = document.querySelector(".blog-details-page");
   if (!root) return;
-  const tpl = post.detailTemplate || _inferDetailTemplate(post.content);
+  const tpl =
+    post.detailTemplate && post.detailTemplate !== "auto"
+      ? post.detailTemplate
+      : _inferDetailTemplate(post.content);
   const classes = [
     "bd-tpl-standard",
     "bd-tpl-minimal",

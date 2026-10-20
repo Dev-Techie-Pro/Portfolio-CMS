@@ -3,6 +3,7 @@ import { createHash, randomUUID } from 'crypto';
 import { cache } from 'react';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { isUuid } from '@/lib/validation/uuid';
+import { extractBlogAdminFields, serializeBlogContentForStorage } from '@/lib/blog/admin-content';
 import { sanitizeCmsHtml } from '@/lib/validation/sanitize-html';
 import { SITE_ID, legacyUuid } from './constants';
 import {
@@ -1145,12 +1146,14 @@ export async function saveTestimonials(records, { reconcileMedia = true } = {}) 
 }
 
 function blogFromDb(row, tags = []) {
+  const { html, detailTemplate } = extractBlogAdminFields(row.content);
   return {
     id: row.legacy_id,
     title: row.title,
     slug: row.slug,
     excerpt: row.excerpt,
-    content: sanitizeCmsHtml(row.content),
+    content: sanitizeCmsHtml(html),
+    detailTemplate,
     category: row.category_key,
     tags: mapBlogTagRows(tags),
     status: row.status,
@@ -1263,10 +1266,13 @@ async function saveBlogPostsLegacy(records) {
 }
 
 function sanitizeBlogPostRecords(records) {
-  return (records || []).map((p) => ({
-    ...p,
-    content: sanitizeCmsHtml(p.content),
-  }));
+  return (records || []).map((p) => {
+    const html = sanitizeCmsHtml(p.content);
+    return {
+      ...p,
+      content: serializeBlogContentForStorage(html, p.detailTemplate),
+    };
+  });
 }
 
 export async function saveBlogPosts(records, { reconcileMedia = true } = {}) {

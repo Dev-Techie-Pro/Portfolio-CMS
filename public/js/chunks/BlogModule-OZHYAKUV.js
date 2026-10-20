@@ -248,6 +248,71 @@ function renderPaBlogCard(p, opts = {}) {
   </div>`;
 }
 
+// client/utils/blogContentPayload.ts
+var BLOG_DETAIL_TEMPLATE_META = [
+  { id: "auto", label: "Auto", description: "Detect from sections and blocks (default)." },
+  { id: "standard", label: "Standard", description: "Full layout \u2014 TOC left, article center, sidebar right." },
+  { id: "minimal", label: "Minimal", description: "Centered article only \u2014 no sidebars." },
+  { id: "case-study", label: "Case study", description: "Stronger hero and emphasis on stats and grids." },
+  { id: "longform", label: "Longform", description: "TOC on the left \u2014 no right sidebar." }
+];
+var TEMPLATE_IDS = /* @__PURE__ */ new Set(["standard", "minimal", "case-study", "longform"]);
+function parseContentField(raw) {
+  if (!raw || !String(raw).trim()) return { content: [], detailTemplate: void 0 };
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return { content: parsed };
+    if (parsed && typeof parsed === "object") {
+      const blocks = parsed.content ?? parsed.sections ?? parsed.blocks;
+      return {
+        content: Array.isArray(blocks) ? blocks : [],
+        detailTemplate: typeof parsed.detailTemplate === "string" ? parsed.detailTemplate : void 0
+      };
+    }
+  } catch {
+  }
+  const text = String(raw).trim();
+  return {
+    content: [
+      {
+        type: "section",
+        id: "content",
+        title: "Article",
+        figureFirst: false,
+        blocks: [{ type: "p", text }]
+      }
+    ]
+  };
+}
+function extractHtmlFromBlocks(blocks) {
+  const parts = [];
+  for (const block of blocks || []) {
+    if (!block) continue;
+    if (block.type === "section" && Array.isArray(block.blocks)) {
+      for (const inner of block.blocks) {
+        if (inner?.type === "p" && inner.text) parts.push(inner.text);
+      }
+    } else if (block.type === "p" && block.text) {
+      parts.push(block.text);
+    }
+  }
+  return parts.join("");
+}
+function extractBlogAdminFields(raw) {
+  const trimmed = String(raw ?? "").trim();
+  if (!trimmed) return { html: "", detailTemplate: "auto" };
+  const parsed = parseContentField(trimmed);
+  const html = extractHtmlFromBlocks(parsed.content);
+  if (parsed.detailTemplate && TEMPLATE_IDS.has(parsed.detailTemplate)) {
+    return { html, detailTemplate: parsed.detailTemplate };
+  }
+  if (html) return { html, detailTemplate: "auto" };
+  if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) {
+    return { html: trimmed, detailTemplate: "auto" };
+  }
+  return { html, detailTemplate: "auto" };
+}
+
 // client/modules/blog/BlogPostWorkspace.ts
 var BlogPostWorkspace = class {
   constructor(blog) {
@@ -260,6 +325,7 @@ var BlogPostWorkspace = class {
     this.closeTimer = null;
     this.engagementPostId = null;
     this.tagInputBinding = null;
+    this.detailTemplate = "auto";
     this.blog = blog;
   }
   bind() {
@@ -316,6 +382,71 @@ var BlogPostWorkspace = class {
       const body = $id("blogWsContent");
       if (body) setRteHtml(body, $id("blogWsContentHtml").value);
     });
+    this.renderTemplateGrid();
+    this.syncTemplatePreview();
+  }
+  getDetailTemplate() {
+    return this.detailTemplate || "auto";
+  }
+  renderTemplateGrid() {
+    const grid = $id("paBlogWsTemplateGrid");
+    if (!grid || grid.dataset.wired === "1") return;
+    grid.dataset.wired = "1";
+    grid.innerHTML = BLOG_DETAIL_TEMPLATE_META.map(
+      (opt) => `
+      <label class="pa-blog-tpl-option">
+        <input type="radio" name="blogWsDetailTemplate" value="${escapeHtml(opt.id)}" />
+        <span class="pa-blog-tpl-option__inner">
+          <span class="pa-blog-tpl-option__label">${escapeHtml(opt.label)}</span>
+          <span class="pa-blog-tpl-option__desc">${escapeHtml(opt.description)}</span>
+        </span>
+      </label>`
+    ).join("");
+    grid.querySelectorAll('input[type="radio"]').forEach((input) => {
+      this.blog.on(input, "change", () => {
+        const el = input;
+        if (!el.checked) return;
+        this.detailTemplate = el.value;
+        this.syncTemplatePreview();
+        if (this.wsEditorMode === "preview") this.setEditorMode("preview");
+      });
+    });
+  }
+  setDetailTemplateChoice(value) {
+    this.detailTemplate = value || "auto";
+    const grid = $id("paBlogWsTemplateGrid");
+    const input = grid?.querySelector(
+      `input[type="radio"][value="${CSS.escape(this.detailTemplate)}"]`
+    );
+    if (input) input.checked = true;
+    this.syncTemplatePreview();
+  }
+  resolvePreviewLayoutClass() {
+    if (this.detailTemplate !== "auto") {
+      return `bd-tpl-${this.detailTemplate}`;
+    }
+    return "bd-tpl-standard";
+  }
+  syncTemplatePreview() {
+    const preview = $id("paBlogWsTemplatePreview");
+    const meta = BLOG_DETAIL_TEMPLATE_META.find((m) => m.id === this.detailTemplate);
+    const layoutLabel = $id("paBlogWsPreviewLayoutLabel");
+    if (layoutLabel) {
+      layoutLabel.textContent = meta?.label || "Auto";
+    }
+    const tplKey = this.detailTemplate === "auto" ? "auto" : this.detailTemplate;
+    if (preview) preview.setAttribute("data-tpl", tplKey);
+    const shell = $id("paBlogWsDetailPreviewShell");
+    if (shell) {
+      shell.classList.remove(
+        "bd-tpl-standard",
+        "bd-tpl-minimal",
+        "bd-tpl-case-study",
+        "bd-tpl-longform"
+      );
+      const cls = this.resolvePreviewLayoutClass();
+      if (cls) shell.classList.add(cls);
+    }
   }
   openAdd() {
     if (!canManageContent()) return;
@@ -466,6 +597,7 @@ var BlogPostWorkspace = class {
     this.updateTitleCount();
     this.updateExcerptCount();
     this.updateMetaCounts();
+    this.setDetailTemplateChoice("auto");
     this.clearFieldErrors();
   }
   populateForm(p) {
@@ -475,8 +607,13 @@ var BlogPostWorkspace = class {
     $id("blogWsCategory").value = String(p.category || "");
     syncPaSelect($id("blogWsCategory"));
     $id("blogWsExcerpt").value = String(p.excerpt || "");
-    setRteHtml($id("blogWsContent"), String(p.content || ""));
-    $id("blogWsContentHtml").value = String(p.content || "");
+    const contentRaw = String(p.content || "");
+    const extracted = extractBlogAdminFields(contentRaw);
+    const html = contentRaw.startsWith("{") || contentRaw.startsWith("[") ? extracted.html : contentRaw;
+    const tpl = typeof p.detailTemplate === "string" && p.detailTemplate ? p.detailTemplate : extracted.detailTemplate;
+    setRteHtml($id("blogWsContent"), html);
+    $id("blogWsContentHtml").value = html;
+    this.setDetailTemplateChoice(tpl);
     populateChips($id("blogWsTagChips"), Array.isArray(p.tags) ? p.tags : []);
     $id("blogWsImageAlt").value = String(p.imageAlt || "");
     $id("blogWsStatus").value = String(p.status || "Draft");
@@ -514,6 +651,7 @@ var BlogPostWorkspace = class {
       const html = getRteHtml(body);
       const preview = $id("paBlogWsPreviewContent");
       if (preview) preview.innerHTML = html;
+      this.syncTemplatePreview();
       return;
     }
     if (previewPane) previewPane.hidden = true;
@@ -1091,6 +1229,7 @@ var BlogModule = class extends CrudCardModule {
       commentsEnabled: record.commentsEnabled !== false,
       likesEnabled: record.likesEnabled !== false,
       commentsAutoApprove: !!record.commentsAutoApprove,
+      detailTemplate: record.detailTemplate || "auto",
       createdAt: (/* @__PURE__ */ new Date()).toISOString()
     };
   }
@@ -1305,6 +1444,7 @@ var BlogModule = class extends CrudCardModule {
       commentsEnabled: $field("blogWsCommentsEnabled")?.value !== "0",
       likesEnabled: $field("blogWsLikesEnabled")?.value !== "0",
       commentsAutoApprove: $field("blogWsCommentsAutoApprove")?.value === "1",
+      detailTemplate: this.workspace.getDetailTemplate(),
       createdAt: (/* @__PURE__ */ new Date()).toISOString()
     };
   }
@@ -1328,9 +1468,10 @@ var BlogModule = class extends CrudCardModule {
     record.commentsEnabled = $field("blogWsCommentsEnabled")?.value !== "0";
     record.likesEnabled = $field("blogWsLikesEnabled")?.value !== "0";
     record.commentsAutoApprove = $field("blogWsCommentsAutoApprove")?.value === "1";
+    record.detailTemplate = this.workspace.getDetailTemplate();
   }
 };
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-BDPZUTBT.js.map
+//# sourceMappingURL=BlogModule-OZHYAKUV.js.map

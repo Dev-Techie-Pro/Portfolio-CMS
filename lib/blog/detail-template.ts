@@ -11,6 +11,10 @@ const VALID: ReadonlySet<string> = new Set([
   "longform",
 ]);
 
+export function isBlogDetailTemplate(value: string): value is BlogDetailTemplate {
+  return VALID.has(value);
+}
+
 function walkBlocks(
   content: Record<string, unknown>[],
   visit: (block: Record<string, unknown>) => void,
