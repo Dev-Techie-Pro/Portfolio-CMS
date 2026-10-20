@@ -42,6 +42,7 @@ import { initPasswordToggles } from './utils/password-toggle.js';
 
 import { applyCapabilityGatedElements, getAccessCapabilities } from './core/access.js';
 import { focusMainContent } from './utils/focusMain.js';
+import { syncPublicPortfolioLinks } from './utils/publicPortfolioLink.js';
 import {
   clearLegacyPersistedViewOverrides,
   syncModuleViewModeFromSettings,
@@ -305,6 +306,8 @@ function initAppChrome() {
 
     syncSidebarActiveNav();
 
+    syncPublicPortfolioLinks();
+
     return;
 
   }
@@ -314,6 +317,8 @@ function initAppChrome() {
   initSettingsNav();
 
   initSidebarNav();
+
+  syncPublicPortfolioLinks();
 
   initSidebarGroupNav();
 

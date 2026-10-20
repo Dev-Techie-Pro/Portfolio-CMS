@@ -82,19 +82,43 @@ function escapeHtmlAttr(value: string): string {
   return value.replace(/"/g, '&quot;');
 }
 
+function replaceAnchorHref(html: string, matchAnchor: RegExp, href: string): string {
+  const safeHref = escapeHtmlAttr(href);
+  return html.replace(matchAnchor, (tag) => {
+    if (/\bhref=/i.test(tag)) {
+      return tag.replace(/\bhref=["'][^"']*["']/i, `href="${safeHref}"`);
+    }
+    return tag.replace(/^<a\b/i, `<a href="${safeHref}"`);
+  });
+}
+
 /** Header button + any legacy placeholders baked at build time. */
 function applyPublicPortfolioLinks(html: string, portfolioUrl: string): string {
   const safeHref = escapeHtmlAttr(portfolioUrl);
   let next = html.replaceAll('__PORTFOLIO_PUBLIC_URL__', safeHref);
-  next = next.replace(
-    /(<a\b[^>]*\bid=["']paViewPublicPortfolioBtn["'][^>]*\bhref=["'])[^"']*(["'])/i,
-    `$1${safeHref}$2`,
+  next = replaceAnchorHref(
+    next,
+    /<a\b[^>]*\bid=["']paViewPublicPortfolioBtn["'][^>]*>/gi,
+    portfolioUrl,
   );
-  next = next.replace(
-    /(<a\b[^>]*\bdata-nav=["']View Public Portfolio["'][^>]*\bhref=["'])[^"']*(["'])/i,
-    `$1${safeHref}$2`,
+  next = replaceAnchorHref(
+    next,
+    /<a\b[^>]*\bdata-nav=["']View Public Portfolio["'][^>]*>/gi,
+    portfolioUrl,
+  );
+  next = replaceAnchorHref(
+    next,
+    /<a\b[^>]*\bclass=["'][^"']*\bpa-view-public-portfolio\b[^"']*["'][^>]*>/gi,
+    portfolioUrl,
   );
   return next;
+}
+
+function injectPublicPortfolioMeta(html: string, portfolioUrl: string): string {
+  const safe = escapeHtmlAttr(portfolioUrl);
+  const tag = `<meta name="pa-public-portfolio-href" content="${safe}" />`;
+  if (html.includes('name="pa-public-portfolio-href"')) return html;
+  return tag + html;
 }
 
 /**
@@ -107,7 +131,8 @@ export function personalizePageHtml(
   publicPortfolioUrl?: string | null,
 ): string {
   const portfolioUrl = resolvePublicPortfolioUrl(publicPortfolioUrl);
-  let next = applyPublicPortfolioLinks(html, portfolioUrl);
+  let next = injectPublicPortfolioMeta(html, portfolioUrl);
+  next = applyPublicPortfolioLinks(next, portfolioUrl);
   next = replaceSidebar(next, buildSidebarInnerHtml(capabilities, portfolioUrl));
 
   if (!capabilities.isAdmin) {

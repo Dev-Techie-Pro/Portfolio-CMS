@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/utils/publicPortfolioLink.ts"],
+  "sourcesContent": ["// @ts-nocheck\r\n/** Keep \u201CView Public Portfolio\u201D on the current site origin (or external portfolio when configured). */\r\nexport function syncPublicPortfolioLinks() {\r\n  const meta = document.querySelector('meta[name=\"pa-public-portfolio-href\"]');\r\n  const configured = meta?.getAttribute('content')?.trim();\r\n  const href =\r\n    configured && configured !== '/'\r\n      ? configured\r\n      : '/';\r\n\r\n  const selectors = [\r\n    '#paViewPublicPortfolioBtn',\r\n    'a.pa-view-public-portfolio',\r\n    'a[data-nav=\"View Public Portfolio\"]',\r\n  ].join(',');\r\n\r\n  document.querySelectorAll(selectors).forEach((el) => {\r\n    if (el instanceof HTMLAnchorElement) {\r\n      el.href = href;\r\n    }\r\n  });\r\n}\r\n"],
+  "mappings": "AAEO,SAAS,2BAA2B;AACzC,QAAM,OAAO,SAAS,cAAc,uCAAuC;AAC3E,QAAM,aAAa,MAAM,aAAa,SAAS,GAAG,KAAK;AACvD,QAAM,OACJ,cAAc,eAAe,MACzB,aACA;AAEN,QAAM,YAAY;AAAA,IAChB;AAAA,IACA;AAAA,IACA;AAAA,EACF,EAAE,KAAK,GAAG;AAEV,WAAS,iBAAiB,SAAS,EAAE,QAAQ,CAAC,OAAO;AACnD,QAAI,cAAc,mBAAmB;AACnC,SAAG,OAAO;AAAA,IACZ;AAAA,EACF,CAAC;AACH;",
+  "names": []
+}

@@ -38,11 +38,16 @@ function readOriginFromHeaders(headerStore: Headers): string | null {
   const origin = headerStore.get('origin')?.trim()?.replace(/\/$/, '');
   if (origin) return origin;
 
-  const host = headerStore.get('x-forwarded-host') || headerStore.get('host');
+  const host =
+    headerStore.get('x-forwarded-host')
+    || headerStore.get('x-vercel-forwarded-host')
+    || headerStore.get('host');
   if (!host) return null;
 
-  const proto = headerStore.get('x-forwarded-proto')?.split(',')[0]?.trim() || 'https';
-  return `${proto}://${host}`.replace(/\/$/, '');
+  const proto =
+    headerStore.get('x-forwarded-proto')?.split(',')[0]?.trim()
+    || (host.includes('localhost') || host.startsWith('127.0.0.1') ? 'http' : 'https');
+  return `${proto}://${host.split(',')[0].trim()}`.replace(/\/$/, '');
 }
 
 /** Current request origin (ignores NEXT_PUBLIC_SITE_URL). */
@@ -50,24 +55,40 @@ export function getRequestPublicOrigin(request: Request): string {
   return readOriginFromHeaders(request.headers) ?? getSiteUrlFromEnv();
 }
 
-/** Admin sidebar “View Public Portfolio” — follows the current host unless the portfolio lives on another origin. */
-export function getAdminViewPortfolioUrlFromHeaders(headerStore: Headers): string {
+/**
+ * Admin “View Public Portfolio” href.
+ * Unified deploy: `/` (browser resolves to current host — localhost, Vercel, custom domain).
+ * Split deploy: full URL when portfolio env origin differs from this request.
+ */
+export function getAdminViewPortfolioHref(headerStore: Headers): string {
   const requestOrigin = readOriginFromHeaders(headerStore);
   const explicit = getExplicitPortfolioPublicUrl();
 
-  if (explicit && requestOrigin) {
-    try {
-      const explicitHost = new URL(explicit).host;
-      const requestHost = new URL(requestOrigin).host;
-      if (explicitHost !== requestHost) return explicit;
-    } catch {
-      return explicit;
+  if (explicit) {
+    if (requestOrigin) {
+      try {
+        const explicitHost = new URL(explicit).host;
+        const requestHost = new URL(requestOrigin).host;
+        if (explicitHost !== requestHost) return explicit.replace(/\/$/, '');
+      } catch {
+        return explicit.replace(/\/$/, '');
+      }
+    } else {
+      return explicit.replace(/\/$/, '');
     }
-  } else if (explicit && !requestOrigin) {
-    return explicit;
   }
 
-  return requestOrigin ?? getSiteUrlFromEnv();
+  return '/';
+}
+
+/** @deprecated Use getAdminViewPortfolioHref */
+export function getAdminViewPortfolioUrlFromHeaders(headerStore: Headers): string {
+  const href = getAdminViewPortfolioHref(headerStore);
+  if (href === '/') {
+    const origin = readOriginFromHeaders(headerStore);
+    return origin ?? getSiteUrlFromEnv();
+  }
+  return href;
 }
 
 /** Base URL for portfolio-facing links (sitemap/RSS). */
@@ -79,7 +100,9 @@ export function getPortfolioPublicBaseUrl() {
 
 /** Normalize optional runtime / request-derived portfolio URL for admin shell links. */
 export function resolvePublicPortfolioUrl(url?: string | null): string {
-  const trimmed = url?.trim()?.replace(/\/$/, '');
+  const raw = url?.trim();
+  if (raw === '/') return '/';
+  const trimmed = raw?.replace(/\/$/, '');
   if (trimmed) return trimmed;
-  return getPortfolioPublicBaseUrl();
+  return '/';
 }
