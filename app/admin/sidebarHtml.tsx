@@ -142,8 +142,10 @@ function railBtn(section, icon, label) {
   return `<button type="button" class="pa-rail-btn" data-rail-target="${section}" aria-label="${label}"><i class="${icon}"></i></button>`;
 }
 
-export function buildSidebarInnerHtml(capabilities: AccessCapabilities) {
-  const publicPortfolioUrl = getPortfolioPublicBaseUrl();
+export function buildSidebarInnerHtml(
+  capabilities: AccessCapabilities,
+  publicPortfolioUrl = getPortfolioPublicBaseUrl(),
+) {
   return `<aside class="pa-sidebar" id="paSidebar">
       <div class="pa-sidebar-rail" aria-label="Primary navigation">
         <a href="/admin/settings/profile" class="pa-rail-avatar" id="paRailAvatar" aria-label="Profile">

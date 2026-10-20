@@ -23,13 +23,56 @@ export function getSiteUrlFromEnv() {
   return process.env.NEXT_PUBLIC_SITE_URL?.trim()?.replace(/\/$/, '') || 'http://localhost:3000';
 }
 
-/** Base URL for portfolio-facing links (sitemap/RSS). */
-export function getPortfolioPublicBaseUrl() {
+/** When the public portfolio is on a different origin than this admin app (split deploy / CORS). */
+export function getExplicitPortfolioPublicUrl(): string | null {
   const fromList = process.env.PORTFOLIO_PUBLIC_ORIGINS?.split(',')
     .map((s) => s.trim().replace(/\/$/, ''))
     .filter(Boolean);
   if (fromList?.[0]) return fromList[0];
   const single = process.env.NEXT_PUBLIC_PORTFOLIO_URL?.trim()?.replace(/\/$/, '');
   if (single) return single;
+  return null;
+}
+
+function readOriginFromHeaders(headerStore: Headers): string | null {
+  const origin = headerStore.get('origin')?.trim()?.replace(/\/$/, '');
+  if (origin) return origin;
+
+  const host = headerStore.get('x-forwarded-host') || headerStore.get('host');
+  if (!host) return null;
+
+  const proto = headerStore.get('x-forwarded-proto')?.split(',')[0]?.trim() || 'https';
+  return `${proto}://${host}`.replace(/\/$/, '');
+}
+
+/** Current request origin (ignores NEXT_PUBLIC_SITE_URL). */
+export function getRequestPublicOrigin(request: Request): string {
+  return readOriginFromHeaders(request.headers) ?? getSiteUrlFromEnv();
+}
+
+/** Admin sidebar “View Public Portfolio” — follows the current host unless the portfolio lives on another origin. */
+export function getAdminViewPortfolioUrlFromHeaders(headerStore: Headers): string {
+  const requestOrigin = readOriginFromHeaders(headerStore);
+  const explicit = getExplicitPortfolioPublicUrl();
+
+  if (explicit && requestOrigin) {
+    try {
+      const explicitHost = new URL(explicit).host;
+      const requestHost = new URL(requestOrigin).host;
+      if (explicitHost !== requestHost) return explicit;
+    } catch {
+      return explicit;
+    }
+  } else if (explicit && !requestOrigin) {
+    return explicit;
+  }
+
+  return requestOrigin ?? getSiteUrlFromEnv();
+}
+
+/** Base URL for portfolio-facing links (sitemap/RSS). */
+export function getPortfolioPublicBaseUrl() {
+  const explicit = getExplicitPortfolioPublicUrl();
+  if (explicit) return explicit;
   return getSiteUrlFromEnv();
 }

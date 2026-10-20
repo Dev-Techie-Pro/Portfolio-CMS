@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import LegacyBody from '@/components/LegacyBody';
 import { requireStaffPageContext } from '@/lib/auth/require-staff-page';
 import { personalizePageHtml } from '@/lib/shell/html-access';
+import { getAdminViewPortfolioUrlFromHeaders } from '@/lib/site-url';
 import { ADD_USER_PANEL_HTML } from '@/app/admin/addUserPanelHtml';
 import { CUSTOM_PANEL_HTML } from '@/app/admin/customPanelHtml';
 import { INVITE_USER_PANEL_HTML } from '@/app/admin/inviteUserPanelHtml';
@@ -71,7 +73,8 @@ export default async function StaffLegacyBody({
     combined += STAFF_INVITE_LINK_MODAL_HTML;
   }
 
-  const personalized = personalizePageHtml(combined, capabilities);
+  const publicPortfolioUrl = getAdminViewPortfolioUrlFromHeaders(headers());
+  const personalized = personalizePageHtml(combined, capabilities, publicPortfolioUrl);
 
   return (
     <LegacyBody

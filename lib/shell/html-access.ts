@@ -81,8 +81,12 @@ function replaceSidebar(html: string, sidebarHtml: string): string {
  * Strip or inject shell fragments based on server-derived capabilities.
  * Authorization remains on API routes; this keeps privileged controls out of the initial HTML.
  */
-export function personalizePageHtml(html: string, capabilities: AccessCapabilities): string {
-  let next = replaceSidebar(html, buildSidebarInnerHtml(capabilities));
+export function personalizePageHtml(
+  html: string,
+  capabilities: AccessCapabilities,
+  publicPortfolioUrl?: string,
+): string {
+  let next = replaceSidebar(html, buildSidebarInnerHtml(capabilities, publicPortfolioUrl));
 
   if (!capabilities.isAdmin) {
     next = removeAnchorsWithClass(next, 'pa-admin-only-item');
