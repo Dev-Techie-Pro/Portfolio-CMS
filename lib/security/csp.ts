@@ -46,10 +46,18 @@ export function buildContentSecurityPolicy(
   }
   const scriptSrc = scriptParts.join(' ');
 
+  const styleSrc = [
+    "'self'",
+    "'unsafe-inline'",
+    'https://fonts.googleapis.com',
+    'https://cdn.jsdelivr.net',
+    'https://unpkg.com',
+  ].join(' ');
+
   return [
     "default-src 'self'",
     `script-src ${scriptSrc}`,
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    `style-src ${styleSrc}`,
     "font-src 'self' https://fonts.gstatic.com data:",
     `img-src 'self' data: blob: ${supabase.join(' ')}`.trim(),
     `connect-src ${connectSrc}`,

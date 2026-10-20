@@ -76,3 +76,10 @@ export function getPortfolioPublicBaseUrl() {
   if (explicit) return explicit;
   return getSiteUrlFromEnv();
 }
+
+/** Normalize optional runtime / request-derived portfolio URL for admin shell links. */
+export function resolvePublicPortfolioUrl(url?: string | null): string {
+  const trimmed = url?.trim()?.replace(/\/$/, '');
+  if (trimmed) return trimmed;
+  return getPortfolioPublicBaseUrl();
+}

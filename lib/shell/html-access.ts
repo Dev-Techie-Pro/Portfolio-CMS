@@ -2,6 +2,7 @@
 import type { AccessCapabilities } from '@/lib/auth/capabilities';
 import { CMS_WRITE_CONTROL_IDS, CMS_VIEWER_STRIP_PANEL_IDS } from '@/lib/auth/cms-write-controls';
 import { buildSidebarInnerHtml } from '@/app/admin/sidebarHtml';
+import { resolvePublicPortfolioUrl } from '@/lib/site-url';
 
 /** Remove one element (supports nested tags) by id attribute. */
 function removeElementById(html: string, id: string): string {
@@ -77,6 +78,25 @@ function replaceSidebar(html: string, sidebarHtml: string): string {
   return `${html.slice(0, start)}${sidebarHtml.trim()}${html.slice(end + '</aside>'.length)}`;
 }
 
+function escapeHtmlAttr(value: string): string {
+  return value.replace(/"/g, '&quot;');
+}
+
+/** Header button + any legacy placeholders baked at build time. */
+function applyPublicPortfolioLinks(html: string, portfolioUrl: string): string {
+  const safeHref = escapeHtmlAttr(portfolioUrl);
+  let next = html.replaceAll('__PORTFOLIO_PUBLIC_URL__', safeHref);
+  next = next.replace(
+    /(<a\b[^>]*\bid=["']paViewPublicPortfolioBtn["'][^>]*\bhref=["'])[^"']*(["'])/i,
+    `$1${safeHref}$2`,
+  );
+  next = next.replace(
+    /(<a\b[^>]*\bdata-nav=["']View Public Portfolio["'][^>]*\bhref=["'])[^"']*(["'])/i,
+    `$1${safeHref}$2`,
+  );
+  return next;
+}
+
 /**
  * Strip or inject shell fragments based on server-derived capabilities.
  * Authorization remains on API routes; this keeps privileged controls out of the initial HTML.
@@ -84,9 +104,11 @@ function replaceSidebar(html: string, sidebarHtml: string): string {
 export function personalizePageHtml(
   html: string,
   capabilities: AccessCapabilities,
-  publicPortfolioUrl?: string,
+  publicPortfolioUrl?: string | null,
 ): string {
-  let next = replaceSidebar(html, buildSidebarInnerHtml(capabilities, publicPortfolioUrl));
+  const portfolioUrl = resolvePublicPortfolioUrl(publicPortfolioUrl);
+  let next = applyPublicPortfolioLinks(html, portfolioUrl);
+  next = replaceSidebar(next, buildSidebarInnerHtml(capabilities, portfolioUrl));
 
   if (!capabilities.isAdmin) {
     next = removeAnchorsWithClass(next, 'pa-admin-only-item');

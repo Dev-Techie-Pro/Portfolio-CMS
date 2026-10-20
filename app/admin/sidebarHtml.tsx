@@ -4,7 +4,7 @@ import {
   deriveAccessCapabilities,
   type AccessCapabilities,
 } from '@/lib/auth/capabilities';
-import { getPortfolioPublicBaseUrl } from '@/lib/site-url';
+import { getPortfolioPublicBaseUrl, resolvePublicPortfolioUrl } from '@/lib/site-url';
 
 const LOGO_SVG = `<svg class="pa-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" shape-rendering="crispEdges">
         <rect class="pa-logo-svg-bg" width="96" height="96"/>
@@ -112,7 +112,7 @@ function navMainSubItem(href, nav, icon, label, capabilities: AccessCapabilities
 }
 
 function navPublicPortfolioItem(publicUrl: string) {
-  const href = publicUrl.replace(/"/g, '&quot;');
+  const href = resolvePublicPortfolioUrl(publicUrl).replace(/"/g, '&quot;');
   return `<a class="pa-nav-subitem pa-nav-external" href="${href}" target="_blank" rel="noopener noreferrer" data-nav="View Public Portfolio"><i class="ri-external-link-line"></i> View Public Portfolio</a>`;
 }
 
@@ -144,8 +144,9 @@ function railBtn(section, icon, label) {
 
 export function buildSidebarInnerHtml(
   capabilities: AccessCapabilities,
-  publicPortfolioUrl = getPortfolioPublicBaseUrl(),
+  publicPortfolioUrl?: string | null,
 ) {
+  const portfolioUrl = resolvePublicPortfolioUrl(publicPortfolioUrl);
   return `<aside class="pa-sidebar" id="paSidebar">
       <div class="pa-sidebar-rail" aria-label="Primary navigation">
         <a href="/admin/settings/profile" class="pa-rail-avatar" id="paRailAvatar" aria-label="Profile">
@@ -184,7 +185,7 @@ export function buildSidebarInnerHtml(
           icon: 'ri-dashboard-line',
           label: 'Dashboard',
         }, [
-          navPublicPortfolioItem(publicPortfolioUrl),
+          navPublicPortfolioItem(portfolioUrl),
           navSubItem('/admin/recent-activities', 'Recent Activities', 'ri-history-line', 'Recent Activities', '', capabilities),
           navSubItem('/admin/contact-messages', 'Contact Messages', 'ri-mail-line', 'Contact Messages', '', capabilities),
           navSubItem('/admin/access-requests', 'Access Requests', 'ri-shield-user-line', 'Access Requests', 'pa-admin-only-item', capabilities),
