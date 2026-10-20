@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/utils/staffRoles.ts"],
+  "sourcesContent": ["// @ts-nocheck\r\nexport const STAFF_ROLE_OPTIONS = [\r\n  { value: 'super_admin', label: 'Super Admin' },\r\n  { value: 'admin', label: 'Admin' },\r\n  { value: 'editor', label: 'Editor' },\r\n  { value: 'viewer', label: 'Viewer' },\r\n];\r\n\r\nexport function formatStaffRoleLabel(role) {\r\n  const match = STAFF_ROLE_OPTIONS.find((opt) => opt.value === role);\r\n  if (match) return match.label;\r\n  return String(role || 'Staff').replace(/_/g, ' ');\r\n}\r\n\r\nexport function populateStaffRoleSelect(selectEl, { selected = 'editor' } = {}) {\r\n  if (!selectEl) return;\r\n  selectEl.innerHTML = STAFF_ROLE_OPTIONS.map((opt) => (\r\n    `<option value=\"${opt.value}\">${opt.label}</option>`\r\n  )).join('');\r\n  selectEl.value = STAFF_ROLE_OPTIONS.some((opt) => opt.value === selected) ? selected : 'editor';\r\n}\r\n"],
+  "mappings": "AACO,MAAM,qBAAqB;AAAA,EAChC,EAAE,OAAO,eAAe,OAAO,cAAc;AAAA,EAC7C,EAAE,OAAO,SAAS,OAAO,QAAQ;AAAA,EACjC,EAAE,OAAO,UAAU,OAAO,SAAS;AAAA,EACnC,EAAE,OAAO,UAAU,OAAO,SAAS;AACrC;AAEO,SAAS,qBAAqB,MAAM;AACzC,QAAM,QAAQ,mBAAmB,KAAK,CAAC,QAAQ,IAAI,UAAU,IAAI;AACjE,MAAI,MAAO,QAAO,MAAM;AACxB,SAAO,OAAO,QAAQ,OAAO,EAAE,QAAQ,MAAM,GAAG;AAClD;AAEO,SAAS,wBAAwB,UAAU,EAAE,WAAW,SAAS,IAAI,CAAC,GAAG;AAC9E,MAAI,CAAC,SAAU;AACf,WAAS,YAAY,mBAAmB,IAAI,CAAC,QAC3C,kBAAkB,IAAI,KAAK,KAAK,IAAI,KAAK,WAC1C,EAAE,KAAK,EAAE;AACV,WAAS,QAAQ,mBAAmB,KAAK,CAAC,QAAQ,IAAI,UAAU,QAAQ,IAAI,WAAW;AACzF;",
+  "names": []
+}

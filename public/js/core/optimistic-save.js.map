@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/core/optimistic-save.ts"],
+  "sourcesContent": ["/**\r\n * Apply optimistic local state, persist via API, rollback on failure.\r\n */\r\nexport async function optimisticSave<T>({\r\n  apply,\r\n  rollback,\r\n  persist,\r\n}: {\r\n  apply: () => void;\r\n  rollback: () => void;\r\n  persist: () => Promise<void>;\r\n}): Promise<void> {\r\n  apply();\r\n  try {\r\n    await persist();\r\n  } catch (err) {\r\n    rollback();\r\n    throw err;\r\n  }\r\n}\r\n"],
+  "mappings": "AAGA,eAAsB,eAAkB;AAAA,EACtC;AAAA,EACA;AAAA,EACA;AACF,GAIkB;AAChB,QAAM;AACN,MAAI;AACF,UAAM,QAAQ;AAAA,EAChB,SAAS,KAAK;AACZ,aAAS;AACT,UAAM;AAAA,EACR;AACF;",
+  "names": []
+}

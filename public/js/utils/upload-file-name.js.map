@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/utils/upload-file-name.ts"],
+  "sourcesContent": ["// @ts-nocheck\r\nexport type {\r\n  UploadPage,\r\n  UploadPurpose,\r\n  BuildUploadFileNameOptions,\r\n} from '../../lib/cms/upload-file-name.js';\r\nexport {\r\n  buildUploadFileName,\r\n  extensionForUploadMime,\r\n  isUploadPage,\r\n  isUploadPurpose,\r\n} from '../../lib/cms/upload-file-name.js';\r\n"],
+  "mappings": "AAMA;AAAA,EACE;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,OACK;",
+  "names": []
+}

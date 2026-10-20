@@ -1,0 +1,3 @@
+-- Engagement tables are defined in your main admin / portfolio database migration
+-- (blog_post_comments, blog_post_likes, blog_posts engagement columns).
+-- Do not run a duplicate schema here — the Next.js API uses blog_post_id + slug on blog_posts.

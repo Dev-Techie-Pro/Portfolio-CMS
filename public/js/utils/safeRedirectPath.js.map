@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/utils/safeRedirectPath.ts"],
+  "sourcesContent": ["/** Mirror of lib/auth/safe-redirect-path.ts for browser post-login redirects. */\r\nexport function sanitizeRedirectPath(raw: string | null | undefined, fallback = '/'): string {\r\n  if (raw == null || raw === '') return fallback;\r\n  const path = String(raw).trim();\r\n  if (!path.startsWith('/') || path.startsWith('//')) return fallback;\r\n  if (/^[a-zA-Z][a-zA-Z\\d+\\-.]*:/.test(path)) return fallback;\r\n  if (path.includes('\\\\')) return fallback;\r\n  if (path.includes('\\0')) return fallback;\r\n  return path;\r\n}\r\n"],
+  "mappings": "AACO,SAAS,qBAAqB,KAAgC,WAAW,KAAa;AAC3F,MAAI,OAAO,QAAQ,QAAQ,GAAI,QAAO;AACtC,QAAM,OAAO,OAAO,GAAG,EAAE,KAAK;AAC9B,MAAI,CAAC,KAAK,WAAW,GAAG,KAAK,KAAK,WAAW,IAAI,EAAG,QAAO;AAC3D,MAAI,4BAA4B,KAAK,IAAI,EAAG,QAAO;AACnD,MAAI,KAAK,SAAS,IAAI,EAAG,QAAO;AAChC,MAAI,KAAK,SAAS,IAAI,EAAG,QAAO;AAChC,SAAO;AACT;",
+  "names": []
+}

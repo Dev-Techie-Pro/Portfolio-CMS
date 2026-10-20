@@ -1,0 +1,832 @@
+"use strict";
+
+((window.Portfolio = window.Portfolio || {}),
+  (window.Portfolio.BLOGS = {}),
+  (window.Portfolio.BLOG_ORDER = []),
+  (window.Portfolio.BLOG_GALLERY_ORDER = []));
+
+function _resolveBlogIcon(key) {
+  if (!key) return "siGrid";
+  if (key.startsWith("si")) return key;
+  return "siGrid";
+}
+
+function _iconHtml(registryName, extraClass) {
+  const cls = extraClass ? `icon ${extraClass}` : "icon";
+  return `<span class="${cls}" data-icon="${registryName}" aria-hidden="true"></span>`;
+}
+
+function _hydrateBlogIcons(root) {
+  window.Portfolio?.ICONS?.hydrateAll?.(root || document);
+}
+
+function _categorySlug(category, categoryKey) {
+  if (categoryKey) {
+    return String(categoryKey).toLowerCase();
+  }
+  return (
+    window.Portfolio?.UTILS?.blogCategoryToSlug?.(category) ||
+    String(category || "")
+      .toLowerCase()
+      .replace(/\//g, "-")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+  );
+}
+
+function _findBlogId(slug) {
+  if (!slug) return null;
+  const blogs = window.Portfolio.BLOGS || {};
+  if (blogs[slug]) return slug;
+  const lower = String(slug).toLowerCase();
+  for (const id of Object.keys(blogs)) {
+    if (id.toLowerCase() === lower) return id;
+  }
+  return null;
+}
+
+function _inferDetailTemplate(content) {
+  const sections = (content || []).filter((b) => b && b.type === "section");
+  const richTypes = new Set([
+    "compare-grid",
+    "feature-grid",
+    "benefits-row",
+    "examples-row",
+  ]);
+  let hasRich = false;
+  const walk = (blocks) => {
+    (blocks || []).forEach((block) => {
+      if (!block) return;
+      if (richTypes.has(block.type)) hasRich = true;
+      if (Array.isArray(block.blocks)) walk(block.blocks);
+    });
+  };
+  walk(content);
+  if ((content || []).some((b) => b && b.type === "stat-box") || hasRich) {
+    return "case-study";
+  }
+  if (sections.length <= 1) return "minimal";
+  if (sections.length >= 4) return "longform";
+  return "standard";
+}
+
+function _applyDetailTemplate(post) {
+  const root = document.querySelector(".blog-details-page");
+  if (!root) return;
+  const tpl = post.detailTemplate || _inferDetailTemplate(post.content);
+  const classes = [
+    "bd-tpl-standard",
+    "bd-tpl-minimal",
+    "bd-tpl-case-study",
+    "bd-tpl-longform",
+  ];
+  root.classList.remove(...classes);
+  root.classList.add(`bd-tpl-${tpl}`);
+  root.setAttribute("data-bd-template", tpl);
+}
+
+function _blogUrl(id) {
+  const resolvedId = _findBlogId(id) || id;
+  const post = window.Portfolio.BLOGS?.[resolvedId];
+  if (!post) return "/blogs";
+  const category = _categorySlug(post.category, post.categoryKey);
+  return `/blogs/${encodeURIComponent(category)}/${encodeURIComponent(resolvedId)}`;
+}
+
+function _resolveBlogId() {
+  const slugFromPath = window.Portfolio.UTILS?.getBlogSlugFromPath?.();
+  if (slugFromPath) {
+    const fromCatalog = _findBlogId(slugFromPath);
+    if (fromCatalog) return fromCatalog;
+    if (Object.keys(window.Portfolio.BLOGS || {}).length === 0) {
+      return slugFromPath;
+    }
+  }
+  const fromQuery = new URLSearchParams(window.location.search).get("id");
+  if (fromQuery) {
+    const fromCatalog = _findBlogId(fromQuery);
+    if (fromCatalog) return fromCatalog;
+    if (Object.keys(window.Portfolio.BLOGS || {}).length === 0) {
+      return fromQuery;
+    }
+  }
+  return null;
+}
+
+function _categoryLabel(category) {
+  if (category === "Frontend") return "frontend";
+  return category;
+}
+
+function _thumbUrl(url) {
+  return url;
+}
+
+function _searchBlob(post) {
+  const parts = [post.title, post.excerpt, post.category, ...(post.tags || [])];
+  (post.content || []).forEach((block) => {
+    if (block.type === "section") {
+      parts.push(block.title);
+      (block.blocks || []).forEach((b) => {
+        if (b.text) parts.push(b.text);
+        if (b.items) parts.push(b.items.join(" "));
+        if (b.columns)
+          b.columns.forEach((c) => parts.push(c.title, ...(c.items || [])));
+      });
+    } else if (block.text) {
+      parts.push(block.text);
+    }
+  });
+  return parts.join(" ").toLowerCase();
+}
+
+function _renderCheckList(items) {
+  return `<ul class="check-list">${items
+    .map(
+      (item) =>
+        `<li>${_iconHtml("siCheckmark")}${item}</li>`,
+    )
+    .join("")}</ul>`;
+}
+
+function _renderCompareGrid(columns) {
+  return `<div class="compare-grid">${columns
+    .map(
+      (col) => `
+    <div class="compare-card">
+      <h3>${col.title}</h3>
+      ${_renderCheckList(col.items)}
+    </div>`,
+    )
+    .join("")}</div>`;
+}
+
+function _renderFeatureGrid(items) {
+  return `<div class="feature-grid">${items
+    .map(
+      (item) => `
+    <div class="feature-card">
+      <div class="feature-icon">${_iconHtml(_resolveBlogIcon(item.icon))}</div>
+      <h4>${item.title}</h4>
+      <p>${item.text}</p>
+    </div>`,
+    )
+    .join("")}</div>`;
+}
+
+function _renderBenefitsRow(items) {
+  return `<div class="benefits-row">${items
+    .map(
+      (item) => `
+    <div class="benefit-item">
+      <div class="benefit-icon">${_iconHtml(_resolveBlogIcon(item.icon))}</div>
+      <h4>${item.title}</h4>
+      <p>${item.text}</p>
+    </div>`,
+    )
+    .join("")}</div>`;
+}
+
+function _renderBulletList(items) {
+  return `<ul class="bullet-list">${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+}
+
+function _renderExamplesRow(items) {
+  return `<div class="examples-row">${items
+    .map(
+      (item) => `
+    <div class="example-card">
+      <div class="feature-icon">${_iconHtml(_resolveBlogIcon(item.icon))}</div>
+      <h4>${item.title}</h4>
+      <p>${item.text}</p>
+    </div>`,
+    )
+    .join("")}</div>`;
+}
+
+function _renderBlock(block, post) {
+  switch (block.type) {
+    case "p":
+      return `<p>${block.text}</p>`;
+    case "compare-grid":
+      return _renderCompareGrid(block.columns);
+    case "feature-grid":
+      return _renderFeatureGrid(block.items);
+    case "benefits-row":
+      return _renderBenefitsRow(block.items);
+    case "bullet-list":
+      return _renderBulletList(block.items);
+    case "examples-row":
+      return _renderExamplesRow(block.items);
+    case "quote-box":
+      return `<div class="quote-box">${_iconHtml(_resolveBlogIcon(block.icon))}<p>${block.text}</p></div>`;
+    default:
+      return "";
+  }
+}
+
+function _renderStatBox(block) {
+  return `
+    <div class="stat-box">
+      <div class="stat-icon">${_iconHtml(_resolveBlogIcon(block.icon))}</div>
+      <div>
+        <div class="stat-value">${block.value}</div>
+        <p class="stat-text">${block.text}</p>
+      </div>
+    </div>`;
+}
+
+function _renderArticleBody(content, post) {
+  let html = "";
+  (content || []).forEach((block) => {
+    if (block.type === "section") {
+      const figure = block.figureFirst
+        ? `<figure class="article-figure"><img src="${post.image}" alt="${post.imageAlt}" width="900" height="400" loading="eager" /></figure>`
+        : "";
+      const inner = (block.blocks || [])
+        .map((b) => _renderBlock(b, post))
+        .join("");
+      html += `
+        <section id="${block.id}">
+          ${figure}
+          <h2>${block.title}</h2>
+          ${inner}
+        </section>`;
+    } else if (block.type === "stat-box") {
+      html += _renderStatBox(block);
+    }
+  });
+
+  html += `
+    <div class="author-footer">
+      <div class="nav-logo" aria-label="Author">
+        <div class="logo-box u-flex-center" aria-hidden="true">SI</div>
+        <div class="logo-text">
+          <span class="logo-name">${post.author}</span>
+          <span class="logo-role">Full Stack Web Developer</span>
+        </div>
+      </div>
+      <div class="share-row">
+        <span class="share-label">Share this article</span>
+        <a href="#" class="share-btn" aria-label="Share on Twitter" data-share="twitter">
+          ${_iconHtml("siXcom")}
+        </a>
+        <a href="#" class="share-btn" aria-label="Share on LinkedIn" data-share="linkedin">
+          ${_iconHtml("siLinkedin")}
+        </a>
+        <a href="#" class="share-btn" aria-label="Share on Facebook" data-share="facebook">
+          ${_iconHtml("siFacebook")}
+        </a>
+        <a href="#" class="share-btn" aria-label="Copy link" data-share="copy">
+          ${_iconHtml("siLink")}
+        </a>
+      </div>
+    </div>`;
+
+  return html;
+}
+
+function _getTocSections(content) {
+  return (content || []).filter((block) => block.type === "section");
+}
+
+function _renderToc(content) {
+  const sections = _getTocSections(content);
+  return sections
+    .map(
+      (section, index) =>
+        `<a href="#${section.id}"><span class="toc-num">${String(index + 1).padStart(2, "0")}</span> ${section.title}</a>`,
+    )
+    .join("");
+}
+
+function _renderPreFooterFeatures(features) {
+  return (features || [])
+    .map(
+      (f) => `
+    <div class="pre-footer-feature">
+      <div class="benefit-icon">${_iconHtml(_resolveBlogIcon(f.icon))}</div>
+      <h4>${f.title}</h4>
+      <p>${f.text}</p>
+    </div>`,
+    )
+    .join("");
+}
+
+function _renderGalleryCard(post) {
+  const slug = _categorySlug(post.category, post.categoryKey);
+  const searchData = _searchBlob(post);
+  return `
+    <article
+      class="pg-card reveal"
+      data-category="${slug}"
+      data-id="${post.id}"
+      data-title="${post.title.toLowerCase()}"
+      data-date="${post.date}"
+      data-search="${searchData.replace(/"/g, "&quot;")}"
+      tabindex="0"
+      aria-label="${post.title}"
+    >
+      <div class="pg-thumb">
+        <div class="pg-thumb-grid" aria-hidden="true"></div>
+        <img
+          src="${post.image}"
+          sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 400px"
+          alt="${post.imageAlt}"
+          class="pg-thumb-screenshot"
+          loading="lazy"
+        />
+        <div class="pg-overlay" aria-hidden="true">
+          <div class="pg-overlay-icon">
+            ${_iconHtml("siExternalLink")}
+          </div>
+        </div>
+      </div>
+      <div class="pg-body">
+        <h3 class="pg-name">${post.title}</h3>
+        <p class="pg-category">${_categoryLabel(post.category)}</p>
+        <p class="pg-desc">${post.excerpt}</p>
+        <a href="${_blogUrl(post.id)}" class="pg-link">
+          Read article ${_iconHtml("siArrowRight")}
+        </a>
+      </div>
+    </article>`;
+}
+
+function _renderRecentItem(post) {
+  return `
+    <a
+      href="${_blogUrl(post.id)}"
+      class="blog-recent-item"
+      role="listitem"
+      data-category="${_categorySlug(post.category, post.categoryKey)}"
+      data-id="${post.id}"
+      data-title="${post.title.toLowerCase()}"
+      data-date="${post.date}"
+      data-search="${_searchBlob(post).replace(/"/g, "&quot;")}"
+    >
+      <div class="blog-recent-thumb">
+        <img src="${_thumbUrl(post.image)}" alt="${post.imageAlt}" class="blog-recent-img" loading="lazy" />
+      </div>
+      <div class="bd-related-body">
+        <div class="bd-related-header">
+          <h3 class="blog-recent-title">${post.title}</h3>
+          <span class="blog-post-category">${post.category}</span>
+          <p class="blog-recent-excerpt">${post.excerpt}</p>
+        </div>
+        <div class="bd-related-footer">
+          <div class="blog-recent-meta">
+            <time datetime="${post.date}">${post.dateLabel}</time>
+            <span>${post.readTime}</span>
+          </div>
+          <span class="blog-feat-read">Read More ${_iconHtml("siArrowRight")}</span>
+        </div>
+      </div>
+    </a>`;
+}
+
+function _renderTopicCard(category, count, slugOverride) {
+  const slug = slugOverride || _categorySlug(category);
+  const abbrMap = {
+    backend: "BA",
+    frontend: "FR",
+    wordpress: "WO",
+    "ui-ux": "UX",
+    "designs-system": "DS",
+    architecture: "AR",
+  };
+  const abbr = abbrMap[slug] || category.slice(0, 2).toUpperCase();
+  return `
+    <button type="button" class="blog-topic-card" data-category="${slug}">
+      <span class="blog-topic-icon" aria-hidden="true">${abbr}</span>
+      <span class="blog-topic-name">${category}</span>
+      <span class="blog-topic-count">${count} Article${count === 1 ? "" : "s"}</span>
+    </button>`;
+}
+
+function _renderTopRead(post) {
+  return `
+    <li>
+      <a href="${_blogUrl(post.id)}">
+        <div>
+          <p class="blog-top-read-title">${post.title}</p>
+          <span class="blog-top-read-meta">${post.readTime}</span>
+        </div>
+      </a>
+    </li>`;
+}
+
+function _renderHomeBlogCard(post) {
+  return `
+    <article
+      class="blog-card reveal"
+      role="listitem"
+      tabindex="0"
+      aria-label="${post.title}"
+    >
+      <div class="blog-card-thumb">
+        <img
+          src="${post.image}"
+          alt="${post.imageAlt}"
+          class="blog-card-img"
+          loading="lazy"
+        />
+        <span class="blog-card-category">${post.category}</span>
+      </div>
+      <div class="blog-card-body">
+        <time class="blog-card-siCalendar" datetime="${post.date}">${post.dateLabel}</time>
+        <h3 class="blog-card-title">${post.title}</h3>
+        <p class="blog-card-excerpt">${post.excerpt}</p>
+        <a href="${_blogUrl(post.id)}" class="blog-card-read" aria-label="Read more: ${post.title}">
+          Read More
+          ${_iconHtml("siArrowRight")}
+        </a>
+      </div>
+    </article>`;
+}
+
+function _renderRelatedCard(post) {
+  return `
+    <a href="${_blogUrl(post.id)}" class="bd-related-item">
+      <div class="bd-related-thumb">
+        <img src="${post.image}" alt="${post.imageAlt}" loading="lazy" />
+      </div>
+      <div class="bd-related-body">
+        <span class="blog-post-category">${post.category}</span>
+        <p class="bd-related-title">${post.title}</p>
+        <span class="bd-related-meta">${post.dateLabel} · ${post.readTime}</span>
+      </div>
+    </a>`;
+}
+
+function _collectTagCounts(posts) {
+  const counts = {};
+  posts.forEach((post) => {
+    (post.tags || []).forEach((tag) => {
+      counts[tag] = (counts[tag] || 0) + 1;
+    });
+  });
+  return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+}
+
+function _getPosts() {
+  return window.Portfolio.BLOG_ORDER.map(
+    (id) => window.Portfolio.BLOGS[id],
+  ).filter(Boolean);
+}
+
+function _getGalleryPosts() {
+  return window.Portfolio.BLOG_GALLERY_ORDER.map(
+    (id) => window.Portfolio.BLOGS[id],
+  ).filter(Boolean);
+}
+
+function _refreshSkeleton(root) {
+  const scope =
+    root && typeof root.querySelectorAll === "function" ? root : document;
+  window.Portfolio?.SKELETON?.refresh?.(scope);
+  document.dispatchEvent(new CustomEvent("si:contentUpdated"));
+}
+
+((window.Portfolio.BLOG_LIST = (function () {
+  function init() {
+    if (window.Portfolio.UTILS.getActivePage() !== "blogs") return;
+
+    const run = () => {
+    const posts = _getPosts();
+    const gallery = document.getElementById("blogsGrid");
+    const recent = document.getElementById("blogRecentList");
+    const topics = document.getElementById("blogTopicsGrid");
+    const topReads = document.getElementById("blogTopReads");
+
+    if (gallery && posts.length) {
+      gallery.innerHTML = _getGalleryPosts()
+        .map((post) => _renderGalleryCard(post))
+        .join("");
+    }
+
+    if (recent) {
+      recent.innerHTML = posts.map(_renderRecentItem).join("");
+    }
+
+    if (topics) {
+      const categoryCounts = {};
+      posts.forEach((post) => {
+        const slug = _categorySlug(post.category, post.categoryKey);
+        categoryCounts[slug] = (categoryCounts[slug] || 0) + 1;
+      });
+      const topicConfig = Object.entries(categoryCounts)
+        .map(([slug, count]) => {
+          const sample = posts.find(
+            (p) => _categorySlug(p.category, p.categoryKey) === slug,
+          );
+          return {
+            slug,
+            name: sample ? sample.category : slug,
+            count,
+          };
+        })
+        .sort((a, b) => b.count - a.count);
+      topics.innerHTML = topicConfig
+        .map((topic) => _renderTopicCard(topic.name, topic.count, topic.slug))
+        .join("");
+    }
+
+    if (topReads) {
+      topReads.innerHTML = posts
+        .slice(0, 3)
+        .map((post) => _renderTopRead(post))
+        .join("");
+    }
+
+    if (window.Portfolio.ANIMATIONS?.initScrollReveal) {
+      window.Portfolio.ANIMATIONS.initScrollReveal();
+    }
+
+    if (window.Portfolio.BLOG_PAGE?.init) {
+      window.Portfolio.BLOG_PAGE.init();
+    }
+
+    _hydrateBlogIcons(document.querySelector(".blog-page") || document);
+    _refreshSkeleton(document.querySelector(".blog-page") || document);
+    };
+
+    window.Portfolio.ensureBlogCatalog().then(run).catch(() => {
+      const gallery = document.getElementById("blogsGrid");
+      if (gallery) {
+        gallery.innerHTML =
+          '<p class="blog-load-error">Could not load blogs. Please try again later.</p>';
+      }
+    });
+  }
+
+  return { init };
+})()),
+  (window.Portfolio.BLOG_DETAILS = (function () {
+    let detailInitKey = "";
+
+    function init() {
+      if (window.Portfolio.UTILS.getActivePage() !== "blog-details") return;
+
+      const initKey =
+        window.location.pathname.replace(/\/+$/, "") +
+        window.location.search;
+      if (detailInitKey === initKey) return;
+      detailInitKey = initKey;
+
+      const runDetail = () => {
+      const id = _resolveBlogId();
+      const post = id ? window.Portfolio.BLOGS[id] : null;
+
+      const hasBody =
+        post &&
+        Array.isArray(post.content) &&
+        post.content.length > 0;
+
+      if (!post || !hasBody) {
+        console.warn("[blogs-data.js] Unknown blog id:", id, "— redirecting.");
+        window.location.href = "/blogs";
+        return;
+      }
+
+      _applyDetailTemplate(post);
+
+      const canonicalTarget = _blogUrl(id);
+      const normalizedPath = window.location.pathname.replace(/\/+$/, "");
+      const currentPath = normalizedPath + window.location.search;
+      if (currentPath !== canonicalTarget) {
+        window.history.replaceState(null, "", canonicalTarget);
+      }
+
+      document.title = `${post.title} — M Sohaib Ishaque`;
+      const meta = document.querySelector('meta[name="description"]');
+      if (meta) meta.setAttribute("content", post.excerpt);
+
+      const setText = (elId, text) => {
+        const el = document.getElementById(elId);
+        if (el) el.textContent = text;
+      };
+
+      setText("bdBreadcrumbCategory", post.category);
+      setText("bdBreadcrumbTitle", post.title);
+      setText("bdCategory", post.category);
+      setText("bdTitle", post.title);
+      setText("bdExcerpt", post.excerpt);
+      setText("bdAuthor", post.author);
+      setText("bdReadTime", post.readTime);
+
+      const dateEl = document.getElementById("bdsiCalendar");
+      if (dateEl) {
+        dateEl.textContent = post.dateLabel;
+        dateEl.setAttribute("datetime", post.date);
+      }
+
+      const hero = document.getElementById("bdHero");
+      if (hero) {
+        hero.style.setProperty("--bd-hero-image", `url("${post.image}")`);
+      }
+
+      const heroTags = document.getElementById("bdHeroTags");
+      if (heroTags) {
+        heroTags.innerHTML = (post.tags || [])
+          .slice(0, 3)
+          .map((tag) => `<span class="meta-tag">${tag}</span>`)
+          .join("");
+      }
+
+      const toc = document.getElementById("tocNav");
+      if (toc) {
+        toc.innerHTML = _renderToc(post.content);
+      }
+
+      if (post.sidebarCta) {
+        setText("bdSidebarCtaTitle", post.sidebarCta.title);
+        setText("bdSidebarCtaText", post.sidebarCta.text);
+        const ctaLink = document.getElementById("bdSidebarCtaLink");
+        if (ctaLink) {
+          ctaLink.textContent = post.sidebarCta.linkText;
+          ctaLink.href = post.sidebarCta.href || "/contact";
+        }
+      }
+
+      const body = document.getElementById("bdArticleBody");
+      if (body) {
+        body.innerHTML = _renderArticleBody(post.content, post);
+      }
+
+      const engagement = document.getElementById("bdEngagement");
+      if (engagement) {
+        engagement.setAttribute("data-post-id", post.id);
+      }
+
+      if (post.preFooter) {
+        setText("bdPreFooterTitle", post.preFooter.title);
+        setText("bdPreFooterText", post.preFooter.text);
+        const features = document.getElementById("bdPreFooterFeatures");
+        if (features) {
+          features.innerHTML = _renderPreFooterFeatures(
+            post.preFooter.features,
+          );
+        }
+        const preFooterCta = document.getElementById("bdPreFooterCta");
+        if (preFooterCta) {
+          preFooterCta.textContent = post.preFooter.ctaText;
+          preFooterCta.href = post.preFooter.ctaHref || "/contact";
+        }
+      }
+
+      const related = document.getElementById("bdRelated");
+      if (related) {
+        const others = window.Portfolio.BLOG_ORDER.filter(
+          (blogId) => blogId !== id,
+        )
+          .slice(0, 3)
+          .map((blogId) => window.Portfolio.BLOGS[blogId]);
+        related.innerHTML = others.map(_renderRelatedCard).join("");
+      }
+
+      const tagsEl = document.getElementById("bdTags");
+      if (tagsEl) {
+        const allTags = _collectTagCounts(_getPosts());
+        tagsEl.innerHTML = allTags
+          .slice(0, 8)
+          .map(
+            ([tag, count]) =>
+              `<span class="bd-tag">${tag} <span class="bd-tag-count">${count}</span></span>`,
+          )
+          .join("");
+      }
+
+      const nav = document.getElementById("bdPostNav");
+      if (nav) {
+        const prev = post.prevBlog
+          ? (() => {
+              const p = window.Portfolio.BLOGS[post.prevBlog.id];
+              return `
+            <a href="${_blogUrl(post.prevBlog.id)}" class="bd-post-nav-card">
+              <div class="bd-post-nav-arrow" aria-hidden="true">${_iconHtml("siAngleLeft")}</div>
+              <div class="bd-post-nav-thumb"><img src="${_thumbUrl(p.image)}" alt="" loading="lazy" /></div>
+              <div>
+                <span class="bd-post-nav-label">Previous Article</span>
+                <span class="bd-post-nav-title">${post.prevBlog.title}</span>
+              </div>
+            </a>`;
+            })()
+          : "<div></div>";
+        const next = post.nextBlog
+          ? (() => {
+              const n = window.Portfolio.BLOGS[post.nextBlog.id];
+              return `
+            <a href="${_blogUrl(post.nextBlog.id)}" class="bd-post-nav-card bd-post-nav-card--next">
+              <div class="bd-post-nav-arrow" aria-hidden="true">${_iconHtml("siAngleRight")}</div>
+              <div class="bd-post-nav-thumb"><img src="${_thumbUrl(n.image)}" alt="" loading="lazy" /></div>
+              <div>
+                <span class="bd-post-nav-label">Next Article</span>
+                <span class="bd-post-nav-title">${post.nextBlog.title}</span>
+              </div>
+            </a>`;
+            })()
+          : "<div></div>";
+        nav.innerHTML = prev + next;
+      }
+
+      if (window.Portfolio.ANIMATIONS?.initScrollReveal) {
+        window.Portfolio.ANIMATIONS.initScrollReveal();
+      }
+      if (window.Portfolio.BLOG_PAGE?.initDetail) {
+        window.Portfolio.BLOG_PAGE.initDetail(post);
+      }
+
+      _hydrateBlogIcons(
+        document.querySelector(".blog-details-page") || document,
+      );
+      _refreshSkeleton(
+        document.querySelector(".blog-details-page") || document,
+      );
+      };
+
+      const id = _resolveBlogId();
+      window.Portfolio.ensureBlogCatalog()
+        .then(() =>
+          id && window.Portfolio.ensureBlogPost
+            ? window.Portfolio.ensureBlogPost(id)
+            : null,
+        )
+        .then(runDetail)
+        .catch(() => {
+        window.location.href = "/blogs";
+      });
+    }
+
+    return {
+      init,
+      reset: function () {
+        detailInitKey = "";
+      },
+    };
+  })()),
+  (window.Portfolio.BLOG_LINKS = (function () {
+    function buildTitleMap() {
+      const titleMap = {};
+      Object.values(window.Portfolio.BLOGS || {}).forEach((post) => {
+        titleMap[post.title.trim().toLowerCase()] = post.id;
+      });
+      return titleMap;
+    }
+
+    function wireCard(card, titleMap) {
+      const titleEl = card.querySelector(".blog-card-title");
+      const linkEl = card.querySelector(".blog-card-read");
+      if (!titleEl || !linkEl) return;
+      const slug = titleMap[titleEl.textContent.trim().toLowerCase()];
+      if (slug) linkEl.href = _blogUrl(slug);
+    }
+
+    function bindCards(section, titleMap) {
+      const { $$: queryAll } = window.Portfolio.UTILS;
+      queryAll(".blog-card", section).forEach((card) => {
+        wireCard(card, titleMap);
+        const readLink = card.querySelector(".blog-card-read");
+        card.addEventListener("click", (event) => {
+          if (event.target.closest(".blog-card-read")) return;
+          if (readLink) readLink.click();
+        });
+        card.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            if (readLink) readLink.click();
+          }
+        });
+      });
+    }
+
+    function renderHomeSection(section) {
+      const grid = document.getElementById("homeBlogsGrid");
+      if (!grid) return;
+
+      const posts = _getPosts().slice(0, 4);
+      grid.innerHTML = posts.map(_renderHomeBlogCard).join("");
+
+      if (window.Portfolio.ANIMATIONS?.initScrollReveal) {
+        window.Portfolio.ANIMATIONS.initScrollReveal();
+      }
+
+      _hydrateBlogIcons(section);
+      bindCards(section, buildTitleMap());
+    }
+
+    return {
+      init: function () {
+        const page = window.Portfolio.UTILS.getActivePage();
+        const start = () => {
+          if (page === "home") {
+            const section = document.getElementById("blogs");
+            if (section) renderHomeSection(section);
+            const viewAll = section && section.querySelector(".blogs-footer a");
+            if (viewAll) viewAll.href = "/blogs";
+          }
+        };
+        window.Portfolio.ensureBlogCatalog().then(start).catch(() => {});
+      },
+    };
+  })()));

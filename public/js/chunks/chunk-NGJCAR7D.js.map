@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/utils/timing.ts"],
+  "sourcesContent": ["// @ts-nocheck\r\nexport function debounce(fn, wait) {\r\n  let t;\r\n  return function debounced(...args) {\r\n    clearTimeout(t);\r\n    t = setTimeout(() => fn.apply(this, args), wait);\r\n  };\r\n}\r\n\r\nexport function throttle(fn, wait) {\r\n  let last = 0;\r\n  let pendingArgs = null;\r\n  let timer = null;\r\n  return function throttled(...args) {\r\n    const now = Date.now();\r\n    const remaining = wait - (now - last);\r\n    pendingArgs = args;\r\n    if (remaining <= 0) {\r\n      last = now;\r\n      fn.apply(this, pendingArgs);\r\n      pendingArgs = null;\r\n    } else if (!timer) {\r\n      timer = setTimeout(() => {\r\n        last = Date.now();\r\n        timer = null;\r\n        if (pendingArgs) fn.apply(this, pendingArgs);\r\n        pendingArgs = null;\r\n      }, remaining);\r\n    }\r\n  };\r\n}\r\n\r\nexport function rafScheduler(fn) {\r\n  let scheduled = false;\r\n  return function schedule(...args) {\r\n    if (scheduled) return;\r\n    scheduled = true;\r\n    requestAnimationFrame(() => {\r\n      scheduled = false;\r\n      fn.apply(this, args);\r\n    });\r\n  };\r\n}\r\n"],
+  "mappings": ";AACO,SAAS,SAAS,IAAI,MAAM;AACjC,MAAI;AACJ,SAAO,SAAS,aAAa,MAAM;AACjC,iBAAa,CAAC;AACd,QAAI,WAAW,MAAM,GAAG,MAAM,MAAM,IAAI,GAAG,IAAI;AAAA,EACjD;AACF;",
+  "names": []
+}

@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.env
+.env.local
+.env*.local
+*.log
+.DS_Store
+portfolio-temp/
+admin-temp/
+tsconfig.tsbuildinfo
+.vercel
+supabase/.temp/

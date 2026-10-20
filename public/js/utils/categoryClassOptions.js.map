@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/utils/categoryClassOptions.ts"],
+  "sourcesContent": ["// @ts-nocheck\r\n/** Built-in category keys that map to accent tokens in globals.css via [data-cat-key]. */\r\nexport {\r\n  BUILTIN_CATEGORY_KEYS,\r\n  CATEGORY_KEY_ACCENT_HEX,\r\n  CATEGORY_THEME,\r\n  categoryKeyFromAccentHex,\r\n  normalizeCategoryKey,\r\n} from '../theme/category-colors.js';\r\n"],
+  "mappings": "AAEA;AAAA,EACE;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,EACA;AAAA,OACK;",
+  "names": []
+}

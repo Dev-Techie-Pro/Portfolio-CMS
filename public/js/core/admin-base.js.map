@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/core/admin-base.ts"],
+  "sourcesContent": ["// @ts-nocheck\r\nexport const ADMIN_BASE = '/admin';\r\n\r\n/** @param {string} path */\r\nexport function adminPath(path) {\r\n  const normalized = path.startsWith('/') ? path : `/${path}`;\r\n  if (normalized === ADMIN_BASE || normalized.startsWith(`${ADMIN_BASE}/`)) {\r\n    return normalized;\r\n  }\r\n  if (normalized === '/') return ADMIN_BASE;\r\n  return `${ADMIN_BASE}${normalized}`;\r\n}\r\n"],
+  "mappings": "AACO,MAAM,aAAa;AAGnB,SAAS,UAAU,MAAM;AAC9B,QAAM,aAAa,KAAK,WAAW,GAAG,IAAI,OAAO,IAAI,IAAI;AACzD,MAAI,eAAe,cAAc,WAAW,WAAW,GAAG,UAAU,GAAG,GAAG;AACxE,WAAO;AAAA,EACT;AACA,MAAI,eAAe,IAAK,QAAO;AAC/B,SAAO,GAAG,UAAU,GAAG,UAAU;AACnC;",
+  "names": []
+}

@@ -1,0 +1,48 @@
+{
+  "name": "portfolio-cms",
+  "version": "2.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "npm run build:client && next dev",
+    "dev:clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && next dev",
+    "build:client": "node client/build-client.mjs",
+    "build": "npm run build:client && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "verify:client-drift": "node scripts/check-client-bundle-drift.mjs",
+    "typecheck": "tsc --noEmit",
+    "typecheck:client": "tsc -p client/tsconfig.json --noEmit",
+    "test:ci": "node scripts/test-api-guards.mjs && node scripts/test-prefetch-sync.mjs && node scripts/test-preview-token.mjs && node scripts/test-public-api-hardening.mjs",
+    "load:public": "k6 run scripts/load/k6-public.mjs",
+    "seed:blogs": "npx tsx scripts/seed-blogs.ts",
+    "import:projects": "node scripts/import-projects-from-static.mjs",
+    "db:push": "supabase db push",
+    "db:status": "supabase migration list",
+    "db:types": "supabase gen types typescript --linked > lib/supabase/database.types.ts"
+  },
+  "dependencies": {
+    "@sentry/nextjs": "^11.8.0",
+    "@supabase/ssr": "^0.12.6",
+    "@supabase/supabase-js": "^2.116.0",
+    "apexcharts": "^3.49.0",
+    "motion": "^12.43.0",
+    "next": "^15.1.0",
+    "nodemailer": "^10.0.10",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remixicon": "^4.6.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/nodemailer": "^8.0.2",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.8.3"
+  }
+}

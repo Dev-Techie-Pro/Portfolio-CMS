@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/utils/focusMain.ts"],
+  "sourcesContent": ["/** Move keyboard focus to main content after client-side page boot (a11y). */\r\nexport function focusMainContent() {\r\n  if (typeof document === 'undefined') return;\r\n  const main =\r\n    document.getElementById('pa-main-content')\r\n    || document.querySelector<HTMLElement>('main')\r\n    || document.querySelector<HTMLElement>('.pa-main');\r\n  if (main) {\r\n    if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');\r\n    main.focus({ preventScroll: true });\r\n  }\r\n}\r\n"],
+  "mappings": "AACO,SAAS,mBAAmB;AACjC,MAAI,OAAO,aAAa,YAAa;AACrC,QAAM,OACJ,SAAS,eAAe,iBAAiB,KACtC,SAAS,cAA2B,MAAM,KAC1C,SAAS,cAA2B,UAAU;AACnD,MAAI,MAAM;AACR,QAAI,CAAC,KAAK,aAAa,UAAU,EAAG,MAAK,aAAa,YAAY,IAAI;AACtE,SAAK,MAAM,EAAE,eAAe,KAAK,CAAC;AAAA,EACpC;AACF;",
+  "names": []
+}
