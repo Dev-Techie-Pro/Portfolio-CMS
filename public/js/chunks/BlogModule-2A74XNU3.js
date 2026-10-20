@@ -67,6 +67,177 @@ import {
   escapeHtml
 } from "./chunk-6EQO5UZQ.js";
 
+// client/utils/blogContentPayload.ts
+var BLOG_DETAIL_TEMPLATE_META = [
+  { id: "auto", label: "Auto", description: "Detect from sections and blocks (default)." },
+  { id: "standard", label: "Standard", description: "Full layout \u2014 TOC left, article center, sidebar right." },
+  { id: "minimal", label: "Minimal", description: "Centered article only \u2014 no sidebars." },
+  { id: "case-study", label: "Case study", description: "Stronger hero and emphasis on stats and grids." },
+  { id: "longform", label: "Longform", description: "TOC on the left \u2014 no right sidebar." }
+];
+var TEMPLATE_IDS = /* @__PURE__ */ new Set(["standard", "minimal", "case-study", "longform"]);
+function parseContentField(raw) {
+  if (!raw || !String(raw).trim()) return { content: [], detailTemplate: void 0 };
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return { content: parsed };
+    if (parsed && typeof parsed === "object") {
+      const blocks = parsed.content ?? parsed.sections ?? parsed.blocks;
+      return {
+        content: Array.isArray(blocks) ? blocks : [],
+        detailTemplate: typeof parsed.detailTemplate === "string" ? parsed.detailTemplate : void 0
+      };
+    }
+  } catch {
+  }
+  const text = String(raw).trim();
+  return {
+    content: [
+      {
+        type: "section",
+        id: "content",
+        title: "Article",
+        figureFirst: false,
+        blocks: [{ type: "p", text }]
+      }
+    ]
+  };
+}
+function extractHtmlFromBlocks(blocks) {
+  const parts = [];
+  for (const block of blocks || []) {
+    if (!block) continue;
+    if (block.type === "section" && Array.isArray(block.blocks)) {
+      for (const inner of block.blocks) {
+        if (inner?.type === "p" && inner.text) parts.push(inner.text);
+      }
+    } else if (block.type === "p" && block.text) {
+      parts.push(block.text);
+    }
+  }
+  return parts.join("");
+}
+function extractBlogAdminFields(raw) {
+  const trimmed = String(raw ?? "").trim();
+  if (!trimmed) return { html: "", detailTemplate: "auto" };
+  const parsed = parseContentField(trimmed);
+  const html = extractHtmlFromBlocks(parsed.content);
+  if (parsed.detailTemplate && TEMPLATE_IDS.has(parsed.detailTemplate)) {
+    return { html, detailTemplate: parsed.detailTemplate };
+  }
+  if (html) return { html, detailTemplate: "auto" };
+  if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) {
+    return { html: trimmed, detailTemplate: "auto" };
+  }
+  return { html, detailTemplate: "auto" };
+}
+function serializeBlogContentForStorage(html, detailTemplate) {
+  const choice = String(detailTemplate || "auto").trim();
+  const payload = {
+    content: [
+      {
+        type: "section",
+        id: "content",
+        title: "Article",
+        figureFirst: false,
+        blocks: [{ type: "p", text: html }]
+      }
+    ]
+  };
+  if (choice !== "auto" && TEMPLATE_IDS.has(choice)) {
+    payload.detailTemplate = choice;
+  }
+  return JSON.stringify(payload);
+}
+function walkBlogBlocks(blocks, visit) {
+  for (const block of blocks || []) {
+    if (!block) continue;
+    visit(block);
+    if (Array.isArray(block.blocks)) walkBlogBlocks(block.blocks, visit);
+  }
+}
+function normalizeBlogContentJsonEditor(raw, detailTemplate) {
+  const parsed = parseContentField(raw);
+  const choice = String(detailTemplate || "auto").trim();
+  const payload = { content: parsed.content || [] };
+  const tpl = parsed.detailTemplate && TEMPLATE_IDS.has(parsed.detailTemplate) ? parsed.detailTemplate : choice !== "auto" && TEMPLATE_IDS.has(choice) ? choice : void 0;
+  if (tpl) payload.detailTemplate = tpl;
+  return JSON.stringify(payload);
+}
+function prettyPrintBlogJson(raw) {
+  try {
+    return JSON.stringify(JSON.parse(String(raw)), null, 2);
+  } catch {
+    return String(raw ?? "");
+  }
+}
+function blogContentJsonHasText(raw) {
+  const parsed = parseContentField(raw);
+  const parts = [];
+  walkBlogBlocks(parsed.content, (b) => {
+    if (typeof b.text === "string") parts.push(b.text.replace(/<[^>]+>/g, " "));
+    if (typeof b.value === "string") parts.push(b.value);
+    if (Array.isArray(b.items)) {
+      for (const item of b.items) {
+        if (typeof item === "string") parts.push(item);
+        else if (item && typeof item === "object") {
+          if (item.text) parts.push(String(item.text));
+          if (item.title) parts.push(String(item.title));
+        }
+      }
+    }
+    if (Array.isArray(b.columns)) {
+      for (const col of b.columns) {
+        if (col?.title) parts.push(String(col.title));
+        if (Array.isArray(col?.items)) parts.push(col.items.join(" "));
+      }
+    }
+  });
+  return parts.join(" ").replace(/\s+/g, " ").trim().length > 0;
+}
+function prepareBlogContentForStorageClient(raw, detailTemplate) {
+  const trimmed = String(raw ?? "").trim();
+  if (!trimmed) return serializeBlogContentForStorage("", detailTemplate);
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    try {
+      const parsed = parseContentField(trimmed);
+      if (parsed.content?.length) {
+        return normalizeBlogContentJsonEditor(trimmed, detailTemplate);
+      }
+    } catch {
+    }
+  }
+  return serializeBlogContentForStorage(trimmed, detailTemplate);
+}
+function renderBlogContentPreviewHtml(raw) {
+  const parsed = parseContentField(raw);
+  const chunks = [];
+  for (const block of parsed.content || []) {
+    if (!block) continue;
+    if (block.type === "section") {
+      chunks.push(`<section><h2>${block.title || "Section"}</h2>`);
+      for (const inner of block.blocks || []) {
+        if (inner?.type === "p" && inner.text) chunks.push(inner.text.startsWith("<") ? inner.text : `<p>${inner.text}</p>`);
+        else if (inner?.type === "bullet-list" && inner.items) {
+          chunks.push(`<ul>${inner.items.map((i) => `<li>${i}</li>`).join("")}</ul>`);
+        } else if (inner?.type === "quote-box" && inner.text) {
+          chunks.push(`<blockquote>${inner.text}</blockquote>`);
+        } else if (inner?.type) {
+          chunks.push(`<p class="pa-blog-json-preview-placeholder">[${inner.type} block]</p>`);
+        }
+      }
+      chunks.push("</section>");
+    } else if (block.type === "stat-box") {
+      chunks.push(
+        `<div class="pa-blog-json-preview-stat"><strong>${block.value || ""}</strong> ${block.text || ""}</div>`
+      );
+    } else {
+      chunks.push(`<p class="pa-blog-json-preview-placeholder">[${block.type} block]</p>`);
+    }
+  }
+  return chunks.join("\n");
+}
+
 // client/utils/blogRte.ts
 function escapeAttr(value) {
   return String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
@@ -85,14 +256,51 @@ function syncVisualFromCode(body, codeEl) {
   if (!codeEl || !body) return;
   setRteHtml(body, codeEl.value);
 }
-function setRteEditorMode(wrap, body, codeEl, mode) {
-  const visualBtn = wrap.querySelector('[data-rte-mode="visual"]');
-  const codeBtn = wrap.querySelector('[data-rte-mode="code"]');
-  visualBtn?.classList.toggle("active", mode === "visual");
-  codeBtn?.classList.toggle("active", mode === "code");
-  visualBtn?.setAttribute("aria-pressed", mode === "visual" ? "true" : "false");
-  codeBtn?.setAttribute("aria-pressed", mode === "code" ? "true" : "false");
+function getJsonPane(wrap) {
+  return wrap.querySelector(".pa-rte-json-pane");
+}
+function getJsonTextarea(wrap, jsonId) {
+  if (jsonId) return document.getElementById(jsonId);
+  return wrap.querySelector(".pa-rte-json-editor");
+}
+function getBlogRteActiveMode(wrapId) {
+  const wrap = document.getElementById(wrapId);
+  if (!wrap) return "visual";
+  if (wrap.classList.contains("pa-rte--json-mode")) return "json";
+  if (wrap.classList.contains("pa-rte--code-mode")) return "code";
+  return "visual";
+}
+function setRteEditorMode(wrap, body, codeEl, mode, jsonId, jsonSeedFromHtml) {
+  wrap.querySelectorAll(".pa-rte-mode-btn").forEach((btn) => {
+    const m = btn.getAttribute("data-rte-mode");
+    const active = m === mode;
+    btn.classList.toggle("active", active);
+    btn.setAttribute("aria-selected", active ? "true" : "false");
+    btn.setAttribute("aria-pressed", active ? "true" : "false");
+  });
   const toolbar = wrap.querySelector(".pa-rte-toolbar");
+  const jsonPane = getJsonPane(wrap);
+  const jsonEl = getJsonTextarea(wrap, jsonId);
+  wrap.classList.remove("pa-rte--code-mode", "pa-rte--json-mode");
+  if (mode === "json") {
+    syncCodeFromVisual(body, codeEl);
+    if (jsonEl && !jsonEl.value.trim() && jsonSeedFromHtml) {
+      jsonEl.value = prettyPrintBlogJson(jsonSeedFromHtml());
+    }
+    body.hidden = true;
+    if (codeEl) {
+      codeEl.hidden = true;
+      codeEl.classList.remove("is-active");
+    }
+    if (jsonPane) jsonPane.hidden = false;
+    if (jsonEl) jsonEl.hidden = false;
+    toolbar?.setAttribute("hidden", "");
+    wrap.classList.add("pa-rte--json-mode");
+    jsonEl?.focus();
+    return;
+  }
+  if (jsonPane) jsonPane.hidden = true;
+  if (jsonEl) jsonEl.hidden = true;
   if (mode === "code") {
     syncCodeFromVisual(body, codeEl);
     body.hidden = true;
@@ -102,17 +310,17 @@ function setRteEditorMode(wrap, body, codeEl, mode) {
     }
     toolbar?.setAttribute("hidden", "");
     wrap.classList.add("pa-rte--code-mode");
-  } else {
-    syncVisualFromCode(body, codeEl);
-    if (codeEl) {
-      codeEl.hidden = true;
-      codeEl.classList.remove("is-active");
-    }
-    body.hidden = false;
-    toolbar?.removeAttribute("hidden");
-    wrap.classList.remove("pa-rte--code-mode");
-    body.focus();
+    codeEl?.focus();
+    return;
   }
+  syncVisualFromCode(body, codeEl);
+  if (codeEl) {
+    codeEl.hidden = true;
+    codeEl.classList.remove("is-active");
+  }
+  body.hidden = false;
+  toolbar?.removeAttribute("hidden");
+  body.focus();
 }
 function handleBlogPaste(e, body) {
   const html = e.clipboardData?.getData("text/html")?.trim();
@@ -203,8 +411,8 @@ function setupBlogPostRte(wrapId, bodyId, codeId, options = {}) {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       const mode = btn.getAttribute("data-rte-mode");
-      if (mode === "visual" || mode === "code") {
-        setRteEditorMode(wrap, body, codeEl, mode);
+      if (mode === "visual" || mode === "code" || mode === "json") {
+        setRteEditorMode(wrap, body, codeEl, mode, options.jsonId, options.jsonSeed);
       }
     });
   });
@@ -241,6 +449,15 @@ function getBlogRteHtml(bodyId, codeId, wrapId) {
   }
   return getRteHtml(body);
 }
+function getBlogJsonEditorValue(jsonId) {
+  const el = document.getElementById(jsonId);
+  return el?.value?.trim() ?? "";
+}
+function setBlogJsonEditorValue(jsonId, raw) {
+  const el = document.getElementById(jsonId);
+  if (!el) return;
+  el.value = raw ? prettyPrintBlogJson(raw) : "";
+}
 function setBlogRteHtml(bodyId, codeId, wrapId, html) {
   const body = document.getElementById(bodyId);
   const codeEl = document.getElementById(codeId);
@@ -250,6 +467,10 @@ function setBlogRteHtml(bodyId, codeId, wrapId, html) {
   if (wrap && wrap.classList.contains("pa-rte--code-mode") && body && codeEl) {
     syncVisualFromCode(body, codeEl);
   }
+}
+function blogJsonSeedFromVisual(bodyId, codeId, wrapId, detailTemplate) {
+  const html = getBlogRteHtml(bodyId, codeId, wrapId);
+  return serializeBlogContentForStorage(html, detailTemplate);
 }
 
 // client/utils/paBlogCard.ts
@@ -434,70 +655,232 @@ function renderPaBlogCard(p, opts = {}) {
   </div>`;
 }
 
-// client/utils/blogContentPayload.ts
-var BLOG_DETAIL_TEMPLATE_META = [
-  { id: "auto", label: "Auto", description: "Detect from sections and blocks (default)." },
-  { id: "standard", label: "Standard", description: "Full layout \u2014 TOC left, article center, sidebar right." },
-  { id: "minimal", label: "Minimal", description: "Centered article only \u2014 no sidebars." },
-  { id: "case-study", label: "Case study", description: "Stronger hero and emphasis on stats and grids." },
-  { id: "longform", label: "Longform", description: "TOC on the left \u2014 no right sidebar." }
+// client/data/blogArticleTemplates.ts
+var BLOG_ARTICLE_TEMPLATES = [
+  {
+    id: "simple-html",
+    label: "Simple article (HTML paragraphs)",
+    description: "One section \u2014 paste rich HTML inside paragraph text fields.",
+    detailTemplate: "minimal",
+    payload: {
+      detailTemplate: "minimal",
+      content: [
+        {
+          type: "section",
+          id: "content",
+          title: "Article",
+          figureFirst: false,
+          blocks: [
+            {
+              type: "p",
+              text: '<p>Write your introduction here. You can use <strong>bold</strong>, <em>italic</em>, and <a href="/contact">links</a>.</p>'
+            },
+            {
+              type: "p",
+              text: "<p>Add another paragraph with your main points.</p>"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    id: "standard-sections",
+    label: "Standard (multi-section)",
+    description: "Table of contents + sidebar layout \u2014 several titled sections.",
+    detailTemplate: "standard",
+    payload: {
+      detailTemplate: "standard",
+      content: [
+        {
+          type: "section",
+          id: "intro",
+          title: "Introduction",
+          figureFirst: true,
+          blocks: [
+            {
+              type: "p",
+              text: "Open with context: who this is for and what they will learn."
+            },
+            {
+              type: "p",
+              text: "Keep paragraphs short and scannable for the detail page template."
+            }
+          ]
+        },
+        {
+          type: "section",
+          id: "main-idea",
+          title: "Main idea",
+          blocks: [
+            {
+              type: "p",
+              text: "Explain the core concept in plain language."
+            },
+            {
+              type: "bullet-list",
+              items: ["First takeaway", "Second takeaway", "Third takeaway"]
+            }
+          ]
+        },
+        {
+          type: "section",
+          id: "next-steps",
+          title: "Next steps",
+          blocks: [
+            {
+              type: "p",
+              text: "Close with a clear call to action or summary."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    id: "case-study",
+    label: "Case study",
+    description: "Stat highlight, compare grid, and structured sections.",
+    detailTemplate: "case-study",
+    payload: {
+      detailTemplate: "case-study",
+      content: [
+        {
+          type: "section",
+          id: "overview",
+          title: "Project overview",
+          figureFirst: true,
+          blocks: [
+            {
+              type: "p",
+              text: "Describe the client, problem, and your role."
+            }
+          ]
+        },
+        {
+          type: "stat-box",
+          icon: "siTrending",
+          value: "40%",
+          text: "Example metric \u2014 replace with a real result from the project."
+        },
+        {
+          type: "section",
+          id: "approach",
+          title: "Approach",
+          blocks: [
+            {
+              type: "p",
+              text: "How you structured the solution."
+            },
+            {
+              type: "compare-grid",
+              columns: [
+                {
+                  title: "Before",
+                  items: ["Pain point one", "Pain point two", "Pain point three"]
+                },
+                {
+                  title: "After",
+                  items: ["Improvement one", "Improvement two", "Improvement three"]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    id: "feature-grid",
+    label: "Feature grid article",
+    description: "Section with icon feature cards (great for tool roundups).",
+    detailTemplate: "standard",
+    payload: {
+      content: [
+        {
+          type: "section",
+          id: "intro",
+          title: "Why this matters",
+          figureFirst: false,
+          blocks: [
+            {
+              type: "p",
+              text: "Brief intro before the feature grid."
+            },
+            {
+              type: "feature-grid",
+              items: [
+                { icon: "siSpark", title: "Feature one", text: "Short description." },
+                { icon: "siGrid", title: "Feature two", text: "Short description." },
+                { icon: "siLock", title: "Feature three", text: "Short description." },
+                { icon: "siEdit", title: "Feature four", text: "Short description." }
+              ]
+            }
+          ]
+        },
+        {
+          type: "section",
+          id: "conclusion",
+          title: "Conclusion",
+          blocks: [
+            {
+              type: "quote-box",
+              icon: "siQuote",
+              text: "Optional pull quote \u2014 swap the icon id to match your icon set."
+            },
+            {
+              type: "p",
+              text: "Wrap up and link to related work or contact."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    id: "longform",
+    label: "Longform",
+    description: "TOC on the left \u2014 multiple deep sections, no right sidebar.",
+    detailTemplate: "longform",
+    payload: {
+      detailTemplate: "longform",
+      content: [
+        {
+          type: "section",
+          id: "chapter-1",
+          title: "Chapter 1",
+          figureFirst: false,
+          blocks: [
+            { type: "p", text: "Longform opening \u2014 set expectations for length and depth." }
+          ]
+        },
+        {
+          type: "section",
+          id: "chapter-2",
+          title: "Chapter 2",
+          blocks: [
+            { type: "p", text: "Develop the narrative with examples." },
+            {
+              type: "benefits-row",
+              items: [
+                { icon: "siCheck", title: "Benefit A", text: "One line detail." },
+                { icon: "siCheck", title: "Benefit B", text: "One line detail." }
+              ]
+            }
+          ]
+        },
+        {
+          type: "section",
+          id: "chapter-3",
+          title: "Chapter 3",
+          blocks: [
+            { type: "p", text: "Final chapter and summary." }
+          ]
+        }
+      ]
+    }
+  }
 ];
-var TEMPLATE_IDS = /* @__PURE__ */ new Set(["standard", "minimal", "case-study", "longform"]);
-function parseContentField(raw) {
-  if (!raw || !String(raw).trim()) return { content: [], detailTemplate: void 0 };
-  try {
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return { content: parsed };
-    if (parsed && typeof parsed === "object") {
-      const blocks = parsed.content ?? parsed.sections ?? parsed.blocks;
-      return {
-        content: Array.isArray(blocks) ? blocks : [],
-        detailTemplate: typeof parsed.detailTemplate === "string" ? parsed.detailTemplate : void 0
-      };
-    }
-  } catch {
-  }
-  const text = String(raw).trim();
-  return {
-    content: [
-      {
-        type: "section",
-        id: "content",
-        title: "Article",
-        figureFirst: false,
-        blocks: [{ type: "p", text }]
-      }
-    ]
-  };
-}
-function extractHtmlFromBlocks(blocks) {
-  const parts = [];
-  for (const block of blocks || []) {
-    if (!block) continue;
-    if (block.type === "section" && Array.isArray(block.blocks)) {
-      for (const inner of block.blocks) {
-        if (inner?.type === "p" && inner.text) parts.push(inner.text);
-      }
-    } else if (block.type === "p" && block.text) {
-      parts.push(block.text);
-    }
-  }
-  return parts.join("");
-}
-function extractBlogAdminFields(raw) {
-  const trimmed = String(raw ?? "").trim();
-  if (!trimmed) return { html: "", detailTemplate: "auto" };
-  const parsed = parseContentField(trimmed);
-  const html = extractHtmlFromBlocks(parsed.content);
-  if (parsed.detailTemplate && TEMPLATE_IDS.has(parsed.detailTemplate)) {
-    return { html, detailTemplate: parsed.detailTemplate };
-  }
-  if (html) return { html, detailTemplate: "auto" };
-  if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) {
-    return { html: trimmed, detailTemplate: "auto" };
-  }
-  return { html, detailTemplate: "auto" };
-}
 
 // client/modules/blog/BlogPostWorkspace.ts
 var BlogPostWorkspace = class {
@@ -520,7 +903,28 @@ var BlogPostWorkspace = class {
     if (!root) return;
     this.wired = true;
     setupBlogPostRte("blogWsRteWrap", "blogWsContent", "blogWsContentHtml", {
+      jsonId: "blogWsContentJson",
+      jsonSeed: () => blogJsonSeedFromVisual(
+        "blogWsContent",
+        "blogWsContentHtml",
+        "blogWsRteWrap",
+        this.getDetailTemplate()
+      ),
       onInsertImage: () => this.blog.insertEditorImage()
+    });
+    this.renderJsonTemplateList();
+    this.blog.on($id("blogWsJsonFormatBtn"), "click", () => {
+      const el = $id("blogWsContentJson");
+      if (!el) return;
+      el.value = prettyPrintBlogJson(el.value);
+    });
+    this.blog.on($id("blogWsJsonToVisualBtn"), "click", () => {
+      const extracted = extractBlogAdminFields(getBlogJsonEditorValue("blogWsContentJson"));
+      setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", extracted.html);
+      if (extracted.detailTemplate && extracted.detailTemplate !== "auto") {
+        this.setDetailTemplateChoice(extracted.detailTemplate);
+      }
+      this.blog.toast("Paragraph HTML copied to Visual editor", "success", 2200);
     });
     this.blog.setupImageDropzone("blogWs");
     this.blog.setupMediaPicker("blogWs");
@@ -568,6 +972,31 @@ var BlogPostWorkspace = class {
     });
     this.renderTemplateGrid();
     this.syncTemplatePreview();
+  }
+  renderJsonTemplateList() {
+    const list = $id("blogWsJsonTemplateList");
+    if (!list || list.dataset.wired === "1") return;
+    list.dataset.wired = "1";
+    list.innerHTML = BLOG_ARTICLE_TEMPLATES.map(
+      (tpl) => `
+        <button type="button" class="pa-blog-json-tpl-btn" data-json-tpl="${escapeHtml(tpl.id)}" title="${escapeHtml(tpl.description)}">
+          ${escapeHtml(tpl.label)}
+        </button>`
+    ).join("");
+    list.querySelectorAll("[data-json-tpl]").forEach((btn) => {
+      this.blog.on(btn, "click", () => {
+        const id = btn.getAttribute("data-json-tpl");
+        const tpl = BLOG_ARTICLE_TEMPLATES.find((t) => t.id === id);
+        if (!tpl) return;
+        const jsonEl = $id("blogWsContentJson");
+        if (!jsonEl) return;
+        const hasContent = jsonEl.value.trim().length > 0;
+        if (hasContent && !window.confirm("Replace current JSON with this template?")) return;
+        jsonEl.value = JSON.stringify(tpl.payload, null, 2);
+        if (tpl.detailTemplate) this.setDetailTemplateChoice(tpl.detailTemplate);
+        this.blog.toast(`Loaded template: ${tpl.label}`, "success", 2200);
+      });
+    });
   }
   getDetailTemplate() {
     return this.detailTemplate || "auto";
@@ -763,6 +1192,7 @@ var BlogPostWorkspace = class {
       if (el) el.value = "";
     });
     setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", "");
+    setBlogJsonEditorValue("blogWsContentJson", "");
     $id("blogWsTagChips").innerHTML = "";
     $id("blogWsTagInput").value = "";
     $id("blogWsStatus").value = "Draft";
@@ -795,6 +1225,21 @@ var BlogPostWorkspace = class {
     const html = contentRaw.startsWith("{") || contentRaw.startsWith("[") ? extracted.html : contentRaw;
     const tpl = typeof p.detailTemplate === "string" && p.detailTemplate ? p.detailTemplate : extracted.detailTemplate;
     setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", html);
+    const jsonSource = contentRaw.startsWith("{") || contentRaw.startsWith("[") ? contentRaw : prettyPrintBlogJson(
+      JSON.stringify({
+        content: [
+          {
+            type: "section",
+            id: "content",
+            title: "Article",
+            figureFirst: false,
+            blocks: [{ type: "p", text: html || contentRaw }]
+          }
+        ],
+        ...tpl && tpl !== "auto" ? { detailTemplate: tpl } : {}
+      })
+    );
+    setBlogJsonEditorValue("blogWsContentJson", jsonSource);
     this.setDetailTemplateChoice(tpl);
     populateChips($id("blogWsTagChips"), Array.isArray(p.tags) ? p.tags : []);
     $id("blogWsImageAlt").value = String(p.imageAlt || "");
@@ -826,13 +1271,18 @@ var BlogPostWorkspace = class {
     });
     const editorPane = $id("paBlogWsEditorPane");
     const previewPane = $id("paBlogWsPreviewPane");
-    const body = $id("blogWsContent");
     if (mode === "preview") {
       if (editorPane) editorPane.hidden = true;
       if (previewPane) previewPane.hidden = false;
-      const html = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
+      const rteMode = getBlogRteActiveMode("blogWsRteWrap");
+      let previewHtml = "";
+      if (rteMode === "json") {
+        previewHtml = renderBlogContentPreviewHtml(getBlogJsonEditorValue("blogWsContentJson"));
+      } else {
+        previewHtml = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
+      }
       const preview = $id("paBlogWsPreviewContent");
-      if (preview) preview.innerHTML = html;
+      if (preview) preview.innerHTML = previewHtml;
       this.syncTemplatePreview();
       return;
     }
@@ -1607,11 +2057,33 @@ var BlogModule = class extends CrudCardModule {
     this._toggleErr(`${p}Excerpt`, !excerpt);
     if (!excerpt) valid = false;
     const contentEl = $id(`${p}Content`);
-    const content = p === "blogWs" ? getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap") : getRteHtml(contentEl);
-    const contentPlain = content.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
-    $id(`${p}ContentError`)?.classList.toggle("visible", !contentPlain);
-    $id(`${p}RteWrap`)?.classList.toggle("error", !contentPlain);
-    if (!contentPlain) valid = false;
+    let content = "";
+    let contentOk = false;
+    if (p === "blogWs") {
+      const rteMode = getBlogRteActiveMode("blogWsRteWrap");
+      const detailTpl = this.workspace.getDetailTemplate();
+      if (rteMode === "json") {
+        const jsonRaw = getBlogJsonEditorValue("blogWsContentJson");
+        try {
+          JSON.parse(jsonRaw);
+          contentOk = blogContentJsonHasText(jsonRaw);
+          content = prepareBlogContentForStorageClient(jsonRaw, detailTpl);
+        } catch {
+          contentOk = false;
+          content = jsonRaw;
+        }
+      } else {
+        const html = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
+        content = prepareBlogContentForStorageClient(html, detailTpl);
+        contentOk = html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().length > 0;
+      }
+    } else {
+      content = getRteHtml(contentEl);
+      contentOk = content.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().length > 0;
+    }
+    $id(`${p}ContentError`)?.classList.toggle("visible", !contentOk);
+    $id(`${p}RteWrap`)?.classList.toggle("error", !contentOk);
+    if (!contentOk) valid = false;
     const tags = getChipValues($id(`${p}TagChips`));
     return { valid, title, slug, category, excerpt, content, tags };
   }
@@ -1670,4 +2142,4 @@ var BlogModule = class extends CrudCardModule {
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-4UMDGXHE.js.map
+//# sourceMappingURL=BlogModule-2A74XNU3.js.map

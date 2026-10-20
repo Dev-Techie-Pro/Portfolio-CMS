@@ -1,4 +1,5 @@
-import { parseBlogContentField } from "@/lib/blog/content";
+import { parseBlogContentField, type ParsedBlogContent } from "@/lib/blog/content";
+import { sanitizeCmsHtml } from "@/lib/validation/sanitize-html";
 import type { BlogDetailTemplate } from "@/lib/blog/detail-template";
 import { isBlogDetailTemplate } from "@/lib/blog/detail-template";
 
@@ -82,6 +83,88 @@ export function extractBlogAdminFields(raw: string | null | undefined): {
   }
 
   return { html, detailTemplate: "auto" };
+}
+
+function walkBlogBlocks(
+  blocks: Record<string, unknown>[],
+  visit: (block: Record<string, unknown>) => void,
+) {
+  for (const block of blocks || []) {
+    if (!block || typeof block !== "object") continue;
+    visit(block);
+    if (Array.isArray(block.blocks)) {
+      walkBlogBlocks(block.blocks as Record<string, unknown>[], visit);
+    }
+  }
+}
+
+function sanitizeBlogContentPayload(
+  parsed: ParsedBlogContent,
+  detailTemplate: BlogDetailTemplateChoice | string | undefined,
+): Record<string, unknown> {
+  const choice = String(detailTemplate || "auto").trim() as BlogDetailTemplateChoice;
+  const payload: Record<string, unknown> = {
+    content: parsed.content,
+  };
+
+  const tpl =
+    parsed.detailTemplate && isBlogDetailTemplate(parsed.detailTemplate)
+      ? parsed.detailTemplate
+      : choice !== "auto" && isBlogDetailTemplate(choice)
+        ? choice
+        : undefined;
+  if (tpl) payload.detailTemplate = tpl;
+
+  walkBlogBlocks(parsed.content as Record<string, unknown>[], (block) => {
+    if (typeof block.text === "string") {
+      block.text = sanitizeCmsHtml(block.text);
+    }
+    if (typeof block.value === "string") {
+      block.value = sanitizeCmsHtml(block.value);
+    }
+  });
+
+  return payload;
+}
+
+/** True when stored value is JSON with a non-empty content array (not plain HTML). */
+export function isBlogContentJson(raw: string | null | undefined): boolean {
+  const trimmed = String(raw ?? "").trim();
+  if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) return false;
+  try {
+    const parsed = parseBlogContentField(trimmed);
+    return Array.isArray(parsed.content) && parsed.content.length > 0;
+  } catch {
+    return false;
+  }
+}
+
+export function prepareBlogContentForStorage(
+  raw: string,
+  detailTemplate: BlogDetailTemplateChoice | string | undefined,
+): string {
+  const trimmed = String(raw ?? "").trim();
+  if (!trimmed) {
+    return serializeBlogContentForStorage("", detailTemplate);
+  }
+
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    try {
+      const parsed = parseBlogContentField(trimmed);
+      if (parsed.content?.length) {
+        return JSON.stringify(
+          sanitizeBlogContentPayload(parsed, detailTemplate),
+        );
+      }
+    } catch {
+      /* fall through */
+    }
+  }
+
+  return serializeBlogContentForStorage(
+    sanitizeCmsHtml(trimmed),
+    detailTemplate,
+  );
 }
 
 export function serializeBlogContentForStorage(

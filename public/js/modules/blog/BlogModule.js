@@ -7,7 +7,16 @@ import { isValidSlug } from "../../utils/strings.js";
 import { handleFileValidation } from "../../utils/files.js";
 import { uploadCmsFileWithPreview } from "../../utils/media-upload.js";
 import { getRteHtml } from "../../utils/rte.js";
-import { getBlogRteHtml, insertBlogImageHtml } from "../../utils/blogRte.js";
+import {
+  getBlogRteActiveMode,
+  getBlogJsonEditorValue,
+  getBlogRteHtml,
+  insertBlogImageHtml
+} from "../../utils/blogRte.js";
+import {
+  blogContentJsonHasText,
+  prepareBlogContentForStorageClient
+} from "../../utils/blogContentPayload.js";
 import { getChipValues } from "../../utils/chips.js";
 import { renderPaBlogCard, renderPaBlogListRow } from "../../utils/paBlogCard.js";
 import { BlogPostWorkspace } from "./BlogPostWorkspace.js";
@@ -488,11 +497,33 @@ class BlogModule extends CrudCardModule {
     this._toggleErr(`${p}Excerpt`, !excerpt);
     if (!excerpt) valid = false;
     const contentEl = $id(`${p}Content`);
-    const content = p === "blogWs" ? getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap") : getRteHtml(contentEl);
-    const contentPlain = content.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
-    $id(`${p}ContentError`)?.classList.toggle("visible", !contentPlain);
-    $id(`${p}RteWrap`)?.classList.toggle("error", !contentPlain);
-    if (!contentPlain) valid = false;
+    let content = "";
+    let contentOk = false;
+    if (p === "blogWs") {
+      const rteMode = getBlogRteActiveMode("blogWsRteWrap");
+      const detailTpl = this.workspace.getDetailTemplate();
+      if (rteMode === "json") {
+        const jsonRaw = getBlogJsonEditorValue("blogWsContentJson");
+        try {
+          JSON.parse(jsonRaw);
+          contentOk = blogContentJsonHasText(jsonRaw);
+          content = prepareBlogContentForStorageClient(jsonRaw, detailTpl);
+        } catch {
+          contentOk = false;
+          content = jsonRaw;
+        }
+      } else {
+        const html = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
+        content = prepareBlogContentForStorageClient(html, detailTpl);
+        contentOk = html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().length > 0;
+      }
+    } else {
+      content = getRteHtml(contentEl);
+      contentOk = content.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().length > 0;
+    }
+    $id(`${p}ContentError`)?.classList.toggle("visible", !contentOk);
+    $id(`${p}RteWrap`)?.classList.toggle("error", !contentOk);
+    if (!contentOk) valid = false;
     const tags = getChipValues($id(`${p}TagChips`));
     return { valid, title, slug, category, excerpt, content, tags };
   }

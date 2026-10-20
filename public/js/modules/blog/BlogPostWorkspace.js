@@ -4,15 +4,22 @@ import { slugify } from "../../utils/strings.js";
 import {
   setupBlogPostRte,
   getBlogRteHtml,
-  setBlogRteHtml
+  setBlogRteHtml,
+  getBlogRteActiveMode,
+  getBlogJsonEditorValue,
+  setBlogJsonEditorValue,
+  blogJsonSeedFromVisual
 } from "../../utils/blogRte.js";
+import { BLOG_ARTICLE_TEMPLATES } from "../../data/blogArticleTemplates.js";
 import { populateChips } from "../../utils/chips.js";
 import { bindCommaSeparatedChipInput } from "../../utils/chipInput.js";
 import { requestDelete } from "../shell/confirm.js";
 import { canManageContent } from "../../core/cms-access.js";
 import {
   BLOG_DETAIL_TEMPLATE_META,
-  extractBlogAdminFields
+  extractBlogAdminFields,
+  prettyPrintBlogJson,
+  renderBlogContentPreviewHtml
 } from "../../utils/blogContentPayload.js";
 class BlogPostWorkspace {
   constructor(blog) {
@@ -34,7 +41,28 @@ class BlogPostWorkspace {
     if (!root) return;
     this.wired = true;
     setupBlogPostRte("blogWsRteWrap", "blogWsContent", "blogWsContentHtml", {
+      jsonId: "blogWsContentJson",
+      jsonSeed: () => blogJsonSeedFromVisual(
+        "blogWsContent",
+        "blogWsContentHtml",
+        "blogWsRteWrap",
+        this.getDetailTemplate()
+      ),
       onInsertImage: () => this.blog.insertEditorImage()
+    });
+    this.renderJsonTemplateList();
+    this.blog.on($id("blogWsJsonFormatBtn"), "click", () => {
+      const el = $id("blogWsContentJson");
+      if (!el) return;
+      el.value = prettyPrintBlogJson(el.value);
+    });
+    this.blog.on($id("blogWsJsonToVisualBtn"), "click", () => {
+      const extracted = extractBlogAdminFields(getBlogJsonEditorValue("blogWsContentJson"));
+      setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", extracted.html);
+      if (extracted.detailTemplate && extracted.detailTemplate !== "auto") {
+        this.setDetailTemplateChoice(extracted.detailTemplate);
+      }
+      this.blog.toast("Paragraph HTML copied to Visual editor", "success", 2200);
     });
     this.blog.setupImageDropzone("blogWs");
     this.blog.setupMediaPicker("blogWs");
@@ -82,6 +110,31 @@ class BlogPostWorkspace {
     });
     this.renderTemplateGrid();
     this.syncTemplatePreview();
+  }
+  renderJsonTemplateList() {
+    const list = $id("blogWsJsonTemplateList");
+    if (!list || list.dataset.wired === "1") return;
+    list.dataset.wired = "1";
+    list.innerHTML = BLOG_ARTICLE_TEMPLATES.map(
+      (tpl) => `
+        <button type="button" class="pa-blog-json-tpl-btn" data-json-tpl="${escapeHtml(tpl.id)}" title="${escapeHtml(tpl.description)}">
+          ${escapeHtml(tpl.label)}
+        </button>`
+    ).join("");
+    list.querySelectorAll("[data-json-tpl]").forEach((btn) => {
+      this.blog.on(btn, "click", () => {
+        const id = btn.getAttribute("data-json-tpl");
+        const tpl = BLOG_ARTICLE_TEMPLATES.find((t) => t.id === id);
+        if (!tpl) return;
+        const jsonEl = $id("blogWsContentJson");
+        if (!jsonEl) return;
+        const hasContent = jsonEl.value.trim().length > 0;
+        if (hasContent && !window.confirm("Replace current JSON with this template?")) return;
+        jsonEl.value = JSON.stringify(tpl.payload, null, 2);
+        if (tpl.detailTemplate) this.setDetailTemplateChoice(tpl.detailTemplate);
+        this.blog.toast(`Loaded template: ${tpl.label}`, "success", 2200);
+      });
+    });
   }
   getDetailTemplate() {
     return this.detailTemplate || "auto";
@@ -277,6 +330,7 @@ class BlogPostWorkspace {
       if (el) el.value = "";
     });
     setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", "");
+    setBlogJsonEditorValue("blogWsContentJson", "");
     $id("blogWsTagChips").innerHTML = "";
     $id("blogWsTagInput").value = "";
     $id("blogWsStatus").value = "Draft";
@@ -309,6 +363,21 @@ class BlogPostWorkspace {
     const html = contentRaw.startsWith("{") || contentRaw.startsWith("[") ? extracted.html : contentRaw;
     const tpl = typeof p.detailTemplate === "string" && p.detailTemplate ? p.detailTemplate : extracted.detailTemplate;
     setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", html);
+    const jsonSource = contentRaw.startsWith("{") || contentRaw.startsWith("[") ? contentRaw : prettyPrintBlogJson(
+      JSON.stringify({
+        content: [
+          {
+            type: "section",
+            id: "content",
+            title: "Article",
+            figureFirst: false,
+            blocks: [{ type: "p", text: html || contentRaw }]
+          }
+        ],
+        ...tpl && tpl !== "auto" ? { detailTemplate: tpl } : {}
+      })
+    );
+    setBlogJsonEditorValue("blogWsContentJson", jsonSource);
     this.setDetailTemplateChoice(tpl);
     populateChips($id("blogWsTagChips"), Array.isArray(p.tags) ? p.tags : []);
     $id("blogWsImageAlt").value = String(p.imageAlt || "");
@@ -340,13 +409,18 @@ class BlogPostWorkspace {
     });
     const editorPane = $id("paBlogWsEditorPane");
     const previewPane = $id("paBlogWsPreviewPane");
-    const body = $id("blogWsContent");
     if (mode === "preview") {
       if (editorPane) editorPane.hidden = true;
       if (previewPane) previewPane.hidden = false;
-      const html = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
+      const rteMode = getBlogRteActiveMode("blogWsRteWrap");
+      let previewHtml = "";
+      if (rteMode === "json") {
+        previewHtml = renderBlogContentPreviewHtml(getBlogJsonEditorValue("blogWsContentJson"));
+      } else {
+        previewHtml = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
+      }
       const preview = $id("paBlogWsPreviewContent");
-      if (preview) preview.innerHTML = html;
+      if (preview) preview.innerHTML = previewHtml;
       this.syncTemplatePreview();
       return;
     }
