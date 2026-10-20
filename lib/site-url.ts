@@ -38,16 +38,25 @@ function readOriginFromHeaders(headerStore: Headers): string | null {
   const origin = headerStore.get('origin')?.trim()?.replace(/\/$/, '');
   if (origin) return origin;
 
-  const host =
+  const hostHeader =
     headerStore.get('x-forwarded-host')
     || headerStore.get('x-vercel-forwarded-host')
     || headerStore.get('host');
+  if (!hostHeader) return null;
+
+  const host = hostHeader.split(',')[0]?.trim();
   if (!host) return null;
+
+  const hostname = host.split(':')[0].toLowerCase();
+  const isLocal =
+    hostname === 'localhost'
+    || hostname === '127.0.0.1'
+    || hostname.endsWith('.localhost');
 
   const proto =
     headerStore.get('x-forwarded-proto')?.split(',')[0]?.trim()
-    || (host.includes('localhost') || host.startsWith('127.0.0.1') ? 'http' : 'https');
-  return `${proto}://${host.split(',')[0].trim()}`.replace(/\/$/, '');
+    || (isLocal ? 'http' : 'https');
+  return `${proto}://${host}`.replace(/\/$/, '');
 }
 
 /** Current request origin (ignores NEXT_PUBLIC_SITE_URL). */
