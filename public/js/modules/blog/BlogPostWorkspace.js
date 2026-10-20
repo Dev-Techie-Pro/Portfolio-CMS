@@ -1,7 +1,11 @@
 import { $id, $all, escapeHtml } from "../../utils/dom.js";
 import { syncPaSelect } from "../../utils/paSelect.js";
 import { slugify } from "../../utils/strings.js";
-import { setupRte, getRteHtml, setRteHtml } from "../../utils/rte.js";
+import {
+  setupBlogPostRte,
+  getBlogRteHtml,
+  setBlogRteHtml
+} from "../../utils/blogRte.js";
 import { populateChips } from "../../utils/chips.js";
 import { bindCommaSeparatedChipInput } from "../../utils/chipInput.js";
 import { requestDelete } from "../shell/confirm.js";
@@ -29,7 +33,9 @@ class BlogPostWorkspace {
     const root = $id("paBlogWorkspace");
     if (!root) return;
     this.wired = true;
-    setupRte("blogWsRteWrap", "blogWsContent");
+    setupBlogPostRte("blogWsRteWrap", "blogWsContent", "blogWsContentHtml", {
+      onInsertImage: () => this.blog.insertEditorImage()
+    });
     this.blog.setupImageDropzone("blogWs");
     this.blog.setupMediaPicker("blogWs");
     this.blog.on($id("paBlogWsBackBtn"), "click", () => this.close());
@@ -73,10 +79,6 @@ class BlogPostWorkspace {
     );
     this.blog.on($id("blogWsTagAddBtn"), "click", () => {
       this.tagInputBinding?.commit();
-    });
-    this.blog.on($id("blogWsContentHtml"), "input", () => {
-      const body = $id("blogWsContent");
-      if (body) setRteHtml(body, $id("blogWsContentHtml").value);
     });
     this.renderTemplateGrid();
     this.syncTemplatePreview();
@@ -274,8 +276,7 @@ class BlogPostWorkspace {
       const el = $id(id);
       if (el) el.value = "";
     });
-    $id("blogWsContent").innerHTML = "";
-    $id("blogWsContentHtml").value = "";
+    setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", "");
     $id("blogWsTagChips").innerHTML = "";
     $id("blogWsTagInput").value = "";
     $id("blogWsStatus").value = "Draft";
@@ -307,8 +308,7 @@ class BlogPostWorkspace {
     const extracted = extractBlogAdminFields(contentRaw);
     const html = contentRaw.startsWith("{") || contentRaw.startsWith("[") ? extracted.html : contentRaw;
     const tpl = typeof p.detailTemplate === "string" && p.detailTemplate ? p.detailTemplate : extracted.detailTemplate;
-    setRteHtml($id("blogWsContent"), html);
-    $id("blogWsContentHtml").value = html;
+    setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", html);
     this.setDetailTemplateChoice(tpl);
     populateChips($id("blogWsTagChips"), Array.isArray(p.tags) ? p.tags : []);
     $id("blogWsImageAlt").value = String(p.imageAlt || "");
@@ -344,7 +344,7 @@ class BlogPostWorkspace {
     if (mode === "preview") {
       if (editorPane) editorPane.hidden = true;
       if (previewPane) previewPane.hidden = false;
-      const html = getRteHtml(body);
+      const html = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
       const preview = $id("paBlogWsPreviewContent");
       if (preview) preview.innerHTML = html;
       this.syncTemplatePreview();

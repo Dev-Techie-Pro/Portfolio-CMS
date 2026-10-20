@@ -2531,9 +2531,9 @@ var getPrefetchKeysForPage = PREFETCH_CONFIG.getKeysForPage || ((p) => PREFETCH_
 async function loadPageModuleClass(page) {
   switch (page) {
     case "dashboard":
-      return (await import("./chunks/DashboardModule-LSMRZ33C.js")).DashboardModule;
+      return (await import("./chunks/DashboardModule-6WYT3L4S.js")).DashboardModule;
     case "projects":
-      return (await import("./chunks/ProjectsModule-VN7VLEJH.js")).ProjectsModule;
+      return (await import("./chunks/ProjectsModule-ZGMBWSKU.js")).ProjectsModule;
     case "categories":
       return (await import("./chunks/CategoriesModule-XEQSQPHQ.js")).CategoriesModule;
     case "project-tags":
@@ -2556,7 +2556,7 @@ async function loadPageModuleClass(page) {
     case "testimonials":
       return (await import("./chunks/TestimonialsModule-ZLD7FJK7.js")).TestimonialsModule;
     case "blogposts":
-      return (await import("./chunks/BlogModule-OZHYAKUV.js")).BlogModule;
+      return (await import("./chunks/BlogModule-4UMDGXHE.js")).BlogModule;
     case "experience":
       return (await import("./chunks/ExperienceModule-C7CLW55A.js")).ExperienceModule;
     case "faqs":
@@ -2603,7 +2603,7 @@ function bindGlobalPanelChrome() {
 var quickAddModule = null;
 async function bindQuickAddButton(pageModule) {
   if (quickAddModule) return;
-  const { QuickAddModule } = await import("./chunks/QuickAddModule-QGDMZLXL.js");
+  const { QuickAddModule } = await import("./chunks/QuickAddModule-TNSZ3UYX.js");
   quickAddModule = new QuickAddModule(pageModule);
   quickAddModule.bindEvents();
 }

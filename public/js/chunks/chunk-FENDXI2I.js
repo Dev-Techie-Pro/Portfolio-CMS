@@ -14,7 +14,7 @@ import {
   setRteHtml,
   setupRte,
   splitChipInputItems
-} from "./chunk-UU2ZI7YQ.js";
+} from "./chunk-6JM3672T.js";
 import {
   open
 } from "./chunk-5EJYKPJX.js";
@@ -2007,4 +2007,4 @@ export {
   PROJ_WS_PREFIX,
   ProjectsModule
 };
-//# sourceMappingURL=chunk-HNB4KIKH.js.map
+//# sourceMappingURL=chunk-FENDXI2I.js.map

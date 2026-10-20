@@ -7,6 +7,7 @@ import { isValidSlug } from "../../utils/strings.js";
 import { handleFileValidation } from "../../utils/files.js";
 import { uploadCmsFileWithPreview } from "../../utils/media-upload.js";
 import { getRteHtml } from "../../utils/rte.js";
+import { getBlogRteHtml, insertBlogImageHtml } from "../../utils/blogRte.js";
 import { getChipValues } from "../../utils/chips.js";
 import { renderPaBlogCard, renderPaBlogListRow } from "../../utils/paBlogCard.js";
 import { BlogPostWorkspace } from "./BlogPostWorkspace.js";
@@ -317,6 +318,20 @@ class BlogModule extends CrudCardModule {
     await this.saveRecords(this.store.get("records"));
     await storage.get("pa_media_library", []).catch(() => []);
   }
+  insertEditorImage() {
+    const body = $id("blogWsContent");
+    if (!body) return;
+    openMediaPicker({
+      mode: "attachment",
+      folder: "blog",
+      mediaFilter: "images",
+      returnFocus: body,
+      onSelect: (item) => {
+        insertBlogImageHtml(body, item.url, item.alt || item.name || "");
+        this.toast("Image inserted into article", "success", 2e3);
+      }
+    });
+  }
   setupMediaPicker(prefix) {
     const btn = $id(`${prefix}FeaturedPickBtn`);
     if (!btn) return;
@@ -473,8 +488,8 @@ class BlogModule extends CrudCardModule {
     this._toggleErr(`${p}Excerpt`, !excerpt);
     if (!excerpt) valid = false;
     const contentEl = $id(`${p}Content`);
-    const contentPlain = contentEl?.textContent?.trim() ?? "";
-    const content = getRteHtml(contentEl);
+    const content = p === "blogWs" ? getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap") : getRteHtml(contentEl);
+    const contentPlain = content.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
     $id(`${p}ContentError`)?.classList.toggle("visible", !contentPlain);
     $id(`${p}RteWrap`)?.classList.toggle("error", !contentPlain);
     if (!contentPlain) valid = false;

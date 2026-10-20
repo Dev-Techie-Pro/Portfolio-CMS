@@ -3,7 +3,7 @@ import {
   bindTechnologySuggest,
   pickSceneForCategory,
   resolveProjectStackFromChips
-} from "./chunk-HNB4KIKH.js";
+} from "./chunk-FENDXI2I.js";
 import {
   addProjectCategoryChip,
   bindCommaSeparatedChipInput,
@@ -12,7 +12,7 @@ import {
   getRteHtml,
   hasProjectStackChips,
   setupRte
-} from "./chunk-UU2ZI7YQ.js";
+} from "./chunk-6JM3672T.js";
 import "./chunk-5EJYKPJX.js";
 import "./chunk-KOY635TD.js";
 import {
@@ -937,4 +937,4 @@ var QuickAddModule = class extends Module {
 export {
   QuickAddModule
 };
-//# sourceMappingURL=QuickAddModule-QGDMZLXL.js.map
+//# sourceMappingURL=QuickAddModule-TNSZ3UYX.js.map

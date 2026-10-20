@@ -3,9 +3,10 @@ import {
   getChipValues,
   getRteHtml,
   populateChips,
+  promptUrl,
   setRteHtml,
-  setupRte
-} from "./chunk-UU2ZI7YQ.js";
+  updateRteButtonStates
+} from "./chunk-6JM3672T.js";
 import {
   open
 } from "./chunk-5EJYKPJX.js";
@@ -65,6 +66,191 @@ import {
   $select,
   escapeHtml
 } from "./chunk-6EQO5UZQ.js";
+
+// client/utils/blogRte.ts
+function escapeAttr(value) {
+  return String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+}
+function insertBlogImageHtml(body, url, alt = "") {
+  if (!body || !url) return;
+  body.focus();
+  const html = `<figure class="pa-rte-figure"><img src="${escapeAttr(url)}" alt="${escapeAttr(alt)}" loading="lazy" /></figure><p><br></p>`;
+  document.execCommand("insertHTML", false, html);
+}
+function syncCodeFromVisual(body, codeEl) {
+  if (!codeEl || !body) return;
+  codeEl.value = getRteHtml(body);
+}
+function syncVisualFromCode(body, codeEl) {
+  if (!codeEl || !body) return;
+  setRteHtml(body, codeEl.value);
+}
+function setRteEditorMode(wrap, body, codeEl, mode) {
+  const visualBtn = wrap.querySelector('[data-rte-mode="visual"]');
+  const codeBtn = wrap.querySelector('[data-rte-mode="code"]');
+  visualBtn?.classList.toggle("active", mode === "visual");
+  codeBtn?.classList.toggle("active", mode === "code");
+  visualBtn?.setAttribute("aria-pressed", mode === "visual" ? "true" : "false");
+  codeBtn?.setAttribute("aria-pressed", mode === "code" ? "true" : "false");
+  const toolbar = wrap.querySelector(".pa-rte-toolbar");
+  if (mode === "code") {
+    syncCodeFromVisual(body, codeEl);
+    body.hidden = true;
+    if (codeEl) {
+      codeEl.hidden = false;
+      codeEl.classList.add("is-active");
+    }
+    toolbar?.setAttribute("hidden", "");
+    wrap.classList.add("pa-rte--code-mode");
+  } else {
+    syncVisualFromCode(body, codeEl);
+    if (codeEl) {
+      codeEl.hidden = true;
+      codeEl.classList.remove("is-active");
+    }
+    body.hidden = false;
+    toolbar?.removeAttribute("hidden");
+    wrap.classList.remove("pa-rte--code-mode");
+    body.focus();
+  }
+}
+function handleBlogPaste(e, body) {
+  const html = e.clipboardData?.getData("text/html")?.trim();
+  const text = e.clipboardData?.getData("text/plain")?.trim();
+  e.preventDefault();
+  body.focus();
+  if (html) {
+    document.execCommand("insertHTML", false, html);
+  } else if (text) {
+    document.execCommand("insertText", false, text);
+  }
+}
+function runRteCommand(body, wrap, btn) {
+  body.focus();
+  const cmd = btn.dataset.cmd;
+  if (!cmd) return;
+  if (cmd === "createLink") {
+    const sel = window.getSelection();
+    const range = sel?.rangeCount ? sel.getRangeAt(0) : null;
+    let existing = "";
+    if (range) {
+      let node = range.commonAncestorContainer;
+      if (node?.nodeType === 3) node = node.parentElement;
+      const anchor = node?.closest?.("a");
+      if (anchor && body.contains(anchor)) {
+        existing = anchor.getAttribute("href") || "";
+      }
+    }
+    void promptUrl({
+      defaultValue: existing,
+      title: existing ? "Edit link" : "Insert link",
+      confirmLabel: existing ? "Save link" : "Insert link"
+    }).then((url) => {
+      if (url === null) return;
+      if (!url) {
+        document.execCommand("unlink", false, null);
+      } else if (range && !range.collapsed) {
+        document.execCommand("createLink", false, url);
+      } else {
+        document.execCommand(
+          "insertHTML",
+          false,
+          `<a href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer">${escapeAttr(url)}</a>`
+        );
+      }
+      updateRteButtonStates(wrap);
+    });
+    return;
+  }
+  if (cmd === "formatBlock") {
+    const tag = btn.dataset.value || "p";
+    document.execCommand("formatBlock", false, tag);
+  } else {
+    document.execCommand(cmd, false, null);
+  }
+  updateRteButtonStates(wrap);
+}
+function ensureRteFullscreenButton(wrap, body) {
+  const toolbar = wrap.querySelector(".pa-rte-toolbar");
+  if (!toolbar || toolbar.querySelector(".pa-rte-fullscreen-wrap")) return;
+  const group = document.createElement("div");
+  group.className = "pa-rte-fullscreen-wrap";
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "pa-rte-btn pa-rte-fullscreen-btn";
+  btn.title = "Full screen";
+  btn.setAttribute("aria-label", "Full screen");
+  btn.innerHTML = '<i class="ri-fullscreen-line"></i>';
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    const active = !wrap.classList.contains("pa-rte--fullscreen");
+    wrap.classList.toggle("pa-rte--fullscreen", active);
+    document.body.classList.toggle("pa-rte-fullscreen-active", active);
+    btn.innerHTML = active ? '<i class="ri-fullscreen-exit-line"></i>' : '<i class="ri-fullscreen-line"></i>';
+    if (active) body.focus();
+  });
+  group.appendChild(btn);
+  toolbar.appendChild(group);
+}
+function setupBlogPostRte(wrapId, bodyId, codeId, options = {}) {
+  const wrap = document.getElementById(wrapId);
+  const body = document.getElementById(bodyId);
+  const codeEl = document.getElementById(codeId);
+  if (!wrap || !body) return;
+  wrap.classList.add("pa-rte--blog-pro");
+  ensureRteFullscreenButton(wrap, body);
+  wrap.querySelectorAll(".pa-rte-mode-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const mode = btn.getAttribute("data-rte-mode");
+      if (mode === "visual" || mode === "code") {
+        setRteEditorMode(wrap, body, codeEl, mode);
+      }
+    });
+  });
+  wrap.querySelectorAll(".pa-rte-btn[data-cmd]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      runRteCommand(body, wrap, btn);
+    });
+  });
+  const imageBtn = wrap.querySelector('[data-rte-action="insertImage"]');
+  if (imageBtn && options.onInsertImage) {
+    imageBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      options.onInsertImage?.();
+    });
+  }
+  body.addEventListener("keyup", () => updateRteButtonStates(wrap));
+  body.addEventListener("mouseup", () => updateRteButtonStates(wrap));
+  body.addEventListener("input", () => syncCodeFromVisual(body, codeEl));
+  body.addEventListener("paste", (e) => handleBlogPaste(e, body));
+  if (codeEl) {
+    codeEl.addEventListener("input", () => {
+      if (!wrap.classList.contains("pa-rte--code-mode")) return;
+    });
+  }
+  setRteEditorMode(wrap, body, codeEl, "visual");
+}
+function getBlogRteHtml(bodyId, codeId, wrapId) {
+  const wrap = document.getElementById(wrapId);
+  const body = document.getElementById(bodyId);
+  const codeEl = document.getElementById(codeId);
+  if (wrap?.classList.contains("pa-rte--code-mode") && codeEl) {
+    return codeEl.value.trim();
+  }
+  return getRteHtml(body);
+}
+function setBlogRteHtml(bodyId, codeId, wrapId, html) {
+  const body = document.getElementById(bodyId);
+  const codeEl = document.getElementById(codeId);
+  const wrap = document.getElementById(wrapId);
+  setRteHtml(body, html);
+  if (codeEl) codeEl.value = html || "";
+  if (wrap && wrap.classList.contains("pa-rte--code-mode") && body && codeEl) {
+    syncVisualFromCode(body, codeEl);
+  }
+}
 
 // client/utils/paBlogCard.ts
 function getBlogStatusClass(status) {
@@ -333,7 +519,9 @@ var BlogPostWorkspace = class {
     const root = $id("paBlogWorkspace");
     if (!root) return;
     this.wired = true;
-    setupRte("blogWsRteWrap", "blogWsContent");
+    setupBlogPostRte("blogWsRteWrap", "blogWsContent", "blogWsContentHtml", {
+      onInsertImage: () => this.blog.insertEditorImage()
+    });
     this.blog.setupImageDropzone("blogWs");
     this.blog.setupMediaPicker("blogWs");
     this.blog.on($id("paBlogWsBackBtn"), "click", () => this.close());
@@ -377,10 +565,6 @@ var BlogPostWorkspace = class {
     );
     this.blog.on($id("blogWsTagAddBtn"), "click", () => {
       this.tagInputBinding?.commit();
-    });
-    this.blog.on($id("blogWsContentHtml"), "input", () => {
-      const body = $id("blogWsContent");
-      if (body) setRteHtml(body, $id("blogWsContentHtml").value);
     });
     this.renderTemplateGrid();
     this.syncTemplatePreview();
@@ -578,8 +762,7 @@ var BlogPostWorkspace = class {
       const el = $id(id);
       if (el) el.value = "";
     });
-    $id("blogWsContent").innerHTML = "";
-    $id("blogWsContentHtml").value = "";
+    setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", "");
     $id("blogWsTagChips").innerHTML = "";
     $id("blogWsTagInput").value = "";
     $id("blogWsStatus").value = "Draft";
@@ -611,8 +794,7 @@ var BlogPostWorkspace = class {
     const extracted = extractBlogAdminFields(contentRaw);
     const html = contentRaw.startsWith("{") || contentRaw.startsWith("[") ? extracted.html : contentRaw;
     const tpl = typeof p.detailTemplate === "string" && p.detailTemplate ? p.detailTemplate : extracted.detailTemplate;
-    setRteHtml($id("blogWsContent"), html);
-    $id("blogWsContentHtml").value = html;
+    setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", html);
     this.setDetailTemplateChoice(tpl);
     populateChips($id("blogWsTagChips"), Array.isArray(p.tags) ? p.tags : []);
     $id("blogWsImageAlt").value = String(p.imageAlt || "");
@@ -648,7 +830,7 @@ var BlogPostWorkspace = class {
     if (mode === "preview") {
       if (editorPane) editorPane.hidden = true;
       if (previewPane) previewPane.hidden = false;
-      const html = getRteHtml(body);
+      const html = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
       const preview = $id("paBlogWsPreviewContent");
       if (preview) preview.innerHTML = html;
       this.syncTemplatePreview();
@@ -1255,6 +1437,20 @@ var BlogModule = class extends CrudCardModule {
     await this.saveRecords(this.store.get("records"));
     await storage.get("pa_media_library", []).catch(() => []);
   }
+  insertEditorImage() {
+    const body = $id("blogWsContent");
+    if (!body) return;
+    open({
+      mode: "attachment",
+      folder: "blog",
+      mediaFilter: "images",
+      returnFocus: body,
+      onSelect: (item) => {
+        insertBlogImageHtml(body, item.url, item.alt || item.name || "");
+        this.toast("Image inserted into article", "success", 2e3);
+      }
+    });
+  }
   setupMediaPicker(prefix) {
     const btn = $id(`${prefix}FeaturedPickBtn`);
     if (!btn) return;
@@ -1411,8 +1607,8 @@ var BlogModule = class extends CrudCardModule {
     this._toggleErr(`${p}Excerpt`, !excerpt);
     if (!excerpt) valid = false;
     const contentEl = $id(`${p}Content`);
-    const contentPlain = contentEl?.textContent?.trim() ?? "";
-    const content = getRteHtml(contentEl);
+    const content = p === "blogWs" ? getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap") : getRteHtml(contentEl);
+    const contentPlain = content.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
     $id(`${p}ContentError`)?.classList.toggle("visible", !contentPlain);
     $id(`${p}RteWrap`)?.classList.toggle("error", !contentPlain);
     if (!contentPlain) valid = false;
@@ -1474,4 +1670,4 @@ var BlogModule = class extends CrudCardModule {
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-OZHYAKUV.js.map
+//# sourceMappingURL=BlogModule-4UMDGXHE.js.map

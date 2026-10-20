@@ -4,8 +4,8 @@ import {
   ProjectsModule,
   SEED_PROJECTS,
   pickSceneForCategory
-} from "./chunk-HNB4KIKH.js";
-import "./chunk-UU2ZI7YQ.js";
+} from "./chunk-FENDXI2I.js";
+import "./chunk-6JM3672T.js";
 import "./chunk-5EJYKPJX.js";
 import "./chunk-KOY635TD.js";
 import "./chunk-TY4KE2MW.js";
@@ -28,4 +28,4 @@ export {
   SEED_PROJECTS,
   pickSceneForCategory
 };
-//# sourceMappingURL=ProjectsModule-VN7VLEJH.js.map
+//# sourceMappingURL=ProjectsModule-ZGMBWSKU.js.map

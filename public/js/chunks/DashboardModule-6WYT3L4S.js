@@ -1,7 +1,7 @@
 import {
   CATEGORY_META_PROJECTS
-} from "./chunk-HNB4KIKH.js";
-import "./chunk-UU2ZI7YQ.js";
+} from "./chunk-FENDXI2I.js";
+import "./chunk-6JM3672T.js";
 import "./chunk-5EJYKPJX.js";
 import "./chunk-KOY635TD.js";
 import {
@@ -1139,4 +1139,4 @@ var DashboardModule = class extends Module {
 export {
   DashboardModule
 };
-//# sourceMappingURL=DashboardModule-LSMRZ33C.js.map
+//# sourceMappingURL=DashboardModule-6WYT3L4S.js.map

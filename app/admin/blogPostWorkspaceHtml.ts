@@ -49,12 +49,25 @@ export const BLOG_POST_WORKSPACE_HTML = `
           </div>
         </div>
         <div class="pa-blog-ws-editor-pane" id="paBlogWsEditorPane">
-          <div class="pa-rte pa-blog-ws-rte" id="blogWsRteWrap">
-            <div class="pa-rte-toolbar">
+          <div class="pa-rte pa-blog-ws-rte pa-rte--blog-pro" id="blogWsRteWrap">
+            <div class="pa-rte-mode-bar" role="tablist" aria-label="Editor mode">
+              <button type="button" class="pa-rte-mode-btn active" data-rte-mode="visual" role="tab" aria-selected="true">Visual</button>
+              <button type="button" class="pa-rte-mode-btn" data-rte-mode="code" role="tab" aria-selected="false">Code</button>
+            </div>
+            <div class="pa-rte-toolbar pa-rte-toolbar--blog">
+              <button class="pa-rte-btn" type="button" data-cmd="undo" title="Undo (Ctrl+Z)"><i class="ri-arrow-go-back-line"></i></button>
+              <button class="pa-rte-btn" type="button" data-cmd="redo" title="Redo (Ctrl+Y)"><i class="ri-arrow-go-forward-line"></i></button>
+              <span class="pa-rte-divider"></span>
+              <button class="pa-rte-btn pa-rte-btn--text" type="button" data-cmd="formatBlock" data-value="p" title="Paragraph">P</button>
+              <button class="pa-rte-btn pa-rte-btn--text" type="button" data-cmd="formatBlock" data-value="h2" title="Heading 2">H2</button>
+              <button class="pa-rte-btn pa-rte-btn--text" type="button" data-cmd="formatBlock" data-value="h3" title="Heading 3">H3</button>
+              <button class="pa-rte-btn pa-rte-btn--text" type="button" data-cmd="formatBlock" data-value="h4" title="Heading 4">H4</button>
+              <span class="pa-rte-divider"></span>
               <button class="pa-rte-btn" type="button" data-cmd="bold" title="Bold"><b>B</b></button>
               <button class="pa-rte-btn" type="button" data-cmd="italic" title="Italic"><i class="italic">I</i></button>
               <button class="pa-rte-btn" type="button" data-cmd="underline" title="Underline"><u>U</u></button>
               <button class="pa-rte-btn" type="button" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+              <button class="pa-rte-btn" type="button" data-cmd="removeFormat" title="Clear formatting"><i class="ri-format-clear"></i></button>
               <span class="pa-rte-divider"></span>
               <button class="pa-rte-btn" type="button" data-cmd="justifyLeft" title="Align left"><i class="ri-align-left"></i></button>
               <button class="pa-rte-btn" type="button" data-cmd="justifyCenter" title="Align center"><i class="ri-align-center"></i></button>
@@ -62,13 +75,20 @@ export const BLOG_POST_WORKSPACE_HTML = `
               <span class="pa-rte-divider"></span>
               <button class="pa-rte-btn" type="button" data-cmd="insertUnorderedList" title="Bullet list"><i class="ri-list-unordered"></i></button>
               <button class="pa-rte-btn" type="button" data-cmd="insertOrderedList" title="Numbered list"><i class="ri-list-ordered"></i></button>
+              <button class="pa-rte-btn" type="button" data-cmd="indent" title="Increase indent"><i class="ri-indent-increase"></i></button>
+              <button class="pa-rte-btn" type="button" data-cmd="outdent" title="Decrease indent"><i class="ri-indent-decrease"></i></button>
               <span class="pa-rte-divider"></span>
-              <button class="pa-rte-btn" type="button" data-cmd="createLink" title="Link"><i class="ri-link"></i></button>
+              <button class="pa-rte-btn" type="button" data-cmd="createLink" title="Insert / edit link"><i class="ri-link"></i></button>
+              <button class="pa-rte-btn" type="button" data-rte-action="insertImage" title="Insert image"><i class="ri-image-add-line"></i></button>
               <button class="pa-rte-btn" type="button" data-cmd="formatBlock" data-value="blockquote" title="Quote"><i class="ri-double-quotes-l"></i></button>
+              <button class="pa-rte-btn" type="button" data-cmd="formatBlock" data-value="pre" title="Code block"><i class="ri-code-line"></i></button>
+              <button class="pa-rte-btn" type="button" data-cmd="insertHorizontalRule" title="Horizontal line"><i class="ri-separator"></i></button>
             </div>
-            <div class="pa-rte-body" contenteditable="true" id="blogWsContent" data-placeholder="Write the full article content…"></div>
+            <div class="pa-rte-editor-surface">
+              <div class="pa-rte-body pa-rte-body--blog" contenteditable="true" id="blogWsContent" data-placeholder="Start writing your article — paste from Word or Google Docs with formatting preserved…"></div>
+              <textarea class="pa-rte-code-pane pa-blog-ws-html-source" id="blogWsContentHtml" hidden spellcheck="false" aria-label="HTML source"></textarea>
+            </div>
           </div>
-          <textarea class="pa-form-textarea pa-blog-ws-html-source" id="blogWsContentHtml" hidden spellcheck="false" aria-label="HTML source"></textarea>
         </div>
         <div class="pa-form-error-msg" id="blogWsContentError"><i class="ri-error-warning-line"></i> Full content is required</div>
       </div>
