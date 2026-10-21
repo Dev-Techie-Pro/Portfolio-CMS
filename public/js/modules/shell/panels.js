@@ -1,6 +1,7 @@
 import { $id } from "../../utils/dom.js";
 import { bindFocusTrap } from "../../utils/focus-trap.js";
 import { canManageContent } from "../../core/cms-access.js";
+import { animateOverlayPanel } from "../../../lib/motion/overlay.js";
 let disposeFocusTrap = null;
 const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 const VIEWER_PANEL_IDS = /* @__PURE__ */ new Set(["paCustomPanel"]);
@@ -23,9 +24,11 @@ function closePanels() {
 function openPanel(panelId, hidePanelIds = []) {
   if (!canManageContent() && !VIEWER_PANEL_IDS.has(panelId)) return;
   hidePanelIds.forEach((id) => $id(id)?.classList.remove("visible"));
-  $id("paPanelOverlay")?.classList.add("visible");
+  const overlay = $id("paPanelOverlay");
+  overlay?.classList.add("visible");
   const panel = $id(panelId);
   panel?.classList.add("visible");
+  if (panel) animateOverlayPanel(panel);
   disposeFocusTrap?.();
   disposeFocusTrap = bindFocusTrap(panel);
   const firstFocus = panel?.querySelector(FOCUSABLE_SELECTOR);

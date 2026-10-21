@@ -37,6 +37,10 @@ import { bootstrapAppearanceFromCache } from './utils/appearanceCache.js';
 import { initAllPaSelects } from './utils/paSelect.js';
 
 import { initCollapseMotion } from './utils/collapse-motion.js';
+import { markAppReady, resetAppReady } from './utils/app-ready.js';
+import { killPageMotion, runPageEnter } from './utils/page-motion.js';
+import { initSegmentPills } from './utils/segment-pills.js';
+import { initMotionChrome } from './utils/motion-chrome.js';
 
 import { initPasswordToggles } from './utils/password-toggle.js';
 
@@ -364,6 +368,11 @@ async function bootAuthPage(ModuleClass: PageModuleClass, page: string) {
 
 
 
+  runPageEnter(page);
+  initSegmentPills();
+  initMotionChrome();
+  markAppReady();
+
   activePageModule = pageModule;
 
   window.__paDebug = { pageModule, page };
@@ -425,6 +434,11 @@ async function bootAppPage(ModuleClass: PageModuleClass, page: string) {
   if (page === 'dashboard') void bindQuickAddButton(pageModule);
 
   initAppChrome();
+
+  runPageEnter(page);
+  initSegmentPills();
+  initMotionChrome();
+  markAppReady();
 
   activePageModule = pageModule;
 
@@ -490,6 +504,9 @@ async function runBoot() {
 
 
 export function teardownPortfolioApp() {
+
+  killPageMotion();
+  resetAppReady();
 
   if (activePageModule?.destroy) {
 

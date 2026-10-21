@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { PAGE_BODY_CLASS, type PortfolioRoute } from "@/lib/portfolio/script-config";
 import { PortfolioScripts, waitForPortfolioScripts } from "./PortfolioScripts";
 import { initPortfolioPage, resetPortfolioForNavigation } from "@/lib/portfolio/init-portfolio";
+import { PublicPageMotion } from "./PublicPageMotion";
 
 type PortfolioPageProps = {
   route: PortfolioRoute;
@@ -49,7 +50,7 @@ export function PortfolioPage({ route, children }: PortfolioPageProps) {
 
   return (
     <>
-      {children}
+      <PublicPageMotion routeKey={`${pathname}:${route}`}>{children}</PublicPageMotion>
       <PortfolioScripts route={route} />
     </>
   );

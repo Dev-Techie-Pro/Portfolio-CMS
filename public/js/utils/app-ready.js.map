@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/utils/app-ready.ts"],
+  "sourcesContent": ["export function markAppReady() {\r\n  if (typeof document === 'undefined') return;\r\n  document.documentElement.classList.add('is-ready');\r\n}\r\n\r\nexport function resetAppReady() {\r\n  if (typeof document === 'undefined') return;\r\n  document.documentElement.classList.remove('is-ready');\r\n}\r\n"],
+  "mappings": "AAAO,SAAS,eAAe;AAC7B,MAAI,OAAO,aAAa,YAAa;AACrC,WAAS,gBAAgB,UAAU,IAAI,UAAU;AACnD;AAEO,SAAS,gBAAgB;AAC9B,MAAI,OAAO,aAAa,YAAa;AACrC,WAAS,gBAAgB,UAAU,OAAO,UAAU;AACtD;",
+  "names": []
+}

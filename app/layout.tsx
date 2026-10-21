@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { WebVitalsReporter } from "@/components/WebVitalsReporter";
+import { AppReady } from "@/components/motion/AppReady";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sohaibishaque.vercel.app"),
@@ -20,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="js">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -39,6 +40,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <AppReady />
         <WebVitalsReporter />
         {children}
       </body>

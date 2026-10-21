@@ -1,8 +1,7 @@
-import { animate, stagger } from "motion";
-function prefersReducedMotion() {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
+import gsap from "gsap";
+import { fadeUp } from "../../lib/motion/presets.js";
+import { prefersReducedMotion } from "../../lib/motion/duration.js";
+import { prefersReducedMotion as prefersReducedMotion2 } from "../../lib/motion/duration.js";
 function staggerReveal(root, childSelector, options) {
   if (!root) return;
   const startDelay = options?.startDelay ?? 0.04;
@@ -19,30 +18,28 @@ function staggerReveal(root, childSelector, options) {
     root.classList.add("is-motion-ready");
     return;
   }
-  targets.forEach((el) => {
-    el.style.opacity = "0";
-    el.style.transform = "translateY(10px)";
+  const tl = fadeUp(targets, {
+    y: 10,
+    scale: 1,
+    stagger: staggerBy,
+    delay: startDelay,
+    duration
   });
-  void animate(
-    targets,
-    { opacity: [0, 1], transform: ["translateY(10px)", "translateY(0)"] },
-    {
-      delay: stagger(staggerBy, { start: startDelay }),
-      duration,
-      easing: [0.22, 1, 0.36, 1]
-    }
-  ).finished.then(() => {
-    targets.forEach((el) => {
-      el.style.opacity = "";
-      el.style.transform = "";
-    });
+  tl.eventCallback("onComplete", () => {
     root.classList.add("is-motion-ready");
-  }).catch(() => {
+  });
+  tl.eventCallback("onInterrupt", () => {
     root.classList.add("is-motion-ready");
   });
 }
+function revealNewNodes(nodes) {
+  const list = gsap.utils.toArray(nodes);
+  if (!list.length) return;
+  fadeUp(list, { y: 8, stagger: 0.04, duration: 0.45 });
+}
 export {
-  prefersReducedMotion,
+  prefersReducedMotion2 as prefersReducedMotion,
+  revealNewNodes,
   staggerReveal
 };
 //# sourceMappingURL=motion.js.map

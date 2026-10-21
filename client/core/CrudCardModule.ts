@@ -21,6 +21,7 @@ import {
   hydratePageViewMode,
   setPageViewOverride,
 } from '../utils/listGridView.js';
+import { patchListMotion } from '../utils/page-motion.js';
 
 /**
  * CrudCardModule — generic engine behind every "grid of cards with
@@ -476,6 +477,13 @@ export class CrudCardModule extends Module {
     this.renderPagination(all.length, totalPages, page);
     this.attachCardListeners();
     this.bulkSelect?.onRender();
+    if (grid && pageItems.length > 0) {
+      if (this._listMotionPrimed) {
+        patchListMotion(grid);
+      } else {
+        this._listMotionPrimed = true;
+      }
+    }
     this.onAfterRender();
     this.setViewModeFromStore();
   }

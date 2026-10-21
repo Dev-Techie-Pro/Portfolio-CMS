@@ -1,10 +1,9 @@
 // @ts-nocheck
-import { animate, stagger } from 'motion';
+import gsap from 'gsap';
+import { fadeUp } from '../../lib/motion/presets.js';
+import { prefersReducedMotion } from '../../lib/motion/duration.js';
 
-export function prefersReducedMotion(): boolean {
-  if (typeof window === 'undefined' || !window.matchMedia) return false;
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
+export { prefersReducedMotion } from '../../lib/motion/duration.js';
 
 /**
  * Stagger-reveal direct children or a selector under `root`.
@@ -37,26 +36,25 @@ export function staggerReveal(
     return;
   }
 
-  targets.forEach((el) => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(10px)';
+  const tl = fadeUp(targets, {
+    y: 10,
+    scale: 1,
+    stagger: staggerBy,
+    delay: startDelay,
+    duration,
   });
 
-  void animate(
-    targets,
-    { opacity: [0, 1], transform: ['translateY(10px)', 'translateY(0)'] },
-    {
-      delay: stagger(staggerBy, { start: startDelay }),
-      duration,
-      easing: [0.22, 1, 0.36, 1],
-    },
-  ).finished.then(() => {
-    targets.forEach((el) => {
-      el.style.opacity = '';
-      el.style.transform = '';
-    });
-    root.classList.add('is-motion-ready');
-  }).catch(() => {
+  tl.eventCallback('onComplete', () => {
     root.classList.add('is-motion-ready');
   });
+  tl.eventCallback('onInterrupt', () => {
+    root.classList.add('is-motion-ready');
+  });
+}
+
+/** Quick patch animation for newly inserted rows/cards (no full page enter). */
+export function revealNewNodes(nodes: HTMLElement | HTMLElement[]) {
+  const list = gsap.utils.toArray(nodes) as HTMLElement[];
+  if (!list.length) return;
+  fadeUp(list, { y: 8, stagger: 0.04, duration: 0.45 });
 }

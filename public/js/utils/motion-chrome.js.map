@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../client/utils/motion-chrome.ts"],
+  "sourcesContent": ["// @ts-nocheck\r\nimport { bindMagnetic, animateButtonPress } from '../../lib/motion/micro.js';\r\n\r\nconst MAGNETIC_BOUND = 'data-pa-magnetic-bound';\r\nconst PRESS_BOUND = 'data-pa-press-bound';\r\n\r\nexport function initMotionChrome(root: ParentNode = document) {\r\n  root.querySelectorAll<HTMLElement>('.pa-btn-add, .pa-btn-primary, .magnetic').forEach((el) => {\r\n    if (el.getAttribute(MAGNETIC_BOUND) === '1') return;\r\n    el.setAttribute(MAGNETIC_BOUND, '1');\r\n    el.classList.add('magnetic');\r\n    bindMagnetic(el, 0.18);\r\n  });\r\n\r\n  root.querySelectorAll<HTMLElement>('.pa-btn, .pa-view-btn, .nav-cta, .pa-dash-cta-btn').forEach((el) => {\r\n    if (el.getAttribute(PRESS_BOUND) === '1') return;\r\n    el.setAttribute(PRESS_BOUND, '1');\r\n    el.addEventListener('click', () => animateButtonPress(el));\r\n  });\r\n}\r\n"],
+  "mappings": "AACA,SAAS,cAAc,0BAA0B;AAEjD,MAAM,iBAAiB;AACvB,MAAM,cAAc;AAEb,SAAS,iBAAiB,OAAmB,UAAU;AAC5D,OAAK,iBAA8B,yCAAyC,EAAE,QAAQ,CAAC,OAAO;AAC5F,QAAI,GAAG,aAAa,cAAc,MAAM,IAAK;AAC7C,OAAG,aAAa,gBAAgB,GAAG;AACnC,OAAG,UAAU,IAAI,UAAU;AAC3B,iBAAa,IAAI,IAAI;AAAA,EACvB,CAAC;AAED,OAAK,iBAA8B,mDAAmD,EAAE,QAAQ,CAAC,OAAO;AACtG,QAAI,GAAG,aAAa,WAAW,MAAM,IAAK;AAC1C,OAAG,aAAa,aAAa,GAAG;AAChC,OAAG,iBAAiB,SAAS,MAAM,mBAAmB,EAAE,CAAC;AAAA,EAC3D,CAAC;AACH;",
+  "names": []
+}
