@@ -1,13 +1,11 @@
 // @ts-nocheck
 import { promptUrl } from './url-prompt.js';
 import { getRteHtml, setRteHtml, updateRteButtonStates } from './rte.js';
-import {
-  prettyPrintBlogJson,
-  serializeBlogContentForStorage,
-} from './blogContentPayload.js';
 
 type BlogRteOptions = {
   onInsertImage?: () => void;
+  previewPaneId?: string;
+  onRefreshPreview?: () => void;
 };
 
 function escapeAttr(value: string) {
@@ -34,23 +32,34 @@ function syncVisualFromCode(body: HTMLElement, codeEl: HTMLTextAreaElement | nul
   setRteHtml(body, codeEl.value);
 }
 
-export type BlogRteEditorMode = 'visual' | 'code' | 'json';
+export type BlogRteEditorMode = 'editor' | 'code' | 'preview';
 
-function getJsonPane(wrap: HTMLElement) {
-  return wrap.querySelector('.pa-rte-json-pane') as HTMLElement | null;
-}
-
-function getJsonTextarea(wrap: HTMLElement, jsonId?: string) {
-  if (jsonId) return document.getElementById(jsonId) as HTMLTextAreaElement | null;
-  return wrap.querySelector('.pa-rte-json-editor') as HTMLTextAreaElement | null;
+function getPreviewPane(wrap: HTMLElement, previewPaneId?: string) {
+  if (previewPaneId) return document.getElementById(previewPaneId);
+  return wrap.querySelector('.pa-rte-preview-pane') as HTMLElement | null;
 }
 
 export function getBlogRteActiveMode(wrapId: string): BlogRteEditorMode {
   const wrap = document.getElementById(wrapId);
-  if (!wrap) return 'visual';
-  if (wrap.classList.contains('pa-rte--json-mode')) return 'json';
+  if (!wrap) return 'editor';
+  if (wrap.classList.contains('pa-rte--preview-mode')) return 'preview';
   if (wrap.classList.contains('pa-rte--code-mode')) return 'code';
-  return 'visual';
+  return 'editor';
+}
+
+function refreshPreviewPane(
+  wrap: HTMLElement,
+  body: HTMLElement,
+  codeEl: HTMLTextAreaElement | null,
+  previewPaneId?: string,
+  onRefreshPreview?: () => void,
+) {
+  syncCodeFromVisual(body, codeEl);
+  const previewEl = getPreviewPane(wrap, previewPaneId);
+  if (previewEl) {
+    previewEl.innerHTML = getBlogRteHtml(body.id, codeEl?.id || '', wrap.id);
+  }
+  onRefreshPreview?.();
 }
 
 function setRteEditorMode(
@@ -58,8 +67,7 @@ function setRteEditorMode(
   body: HTMLElement,
   codeEl: HTMLTextAreaElement | null,
   mode: BlogRteEditorMode,
-  jsonId?: string,
-  jsonSeedFromHtml?: () => string,
+  options: BlogRteOptions = {},
 ) {
   wrap.querySelectorAll('.pa-rte-mode-btn').forEach((btn) => {
     const m = btn.getAttribute('data-rte-mode');
@@ -70,31 +78,27 @@ function setRteEditorMode(
   });
 
   const toolbar = wrap.querySelector('.pa-rte-toolbar');
-  const jsonPane = getJsonPane(wrap);
-  const jsonEl = getJsonTextarea(wrap, jsonId);
+  const previewEl = getPreviewPane(wrap, options.previewPaneId);
 
-  wrap.classList.remove('pa-rte--code-mode', 'pa-rte--json-mode');
+  wrap.classList.remove('pa-rte--code-mode', 'pa-rte--preview-mode');
 
-  if (mode === 'json') {
+  if (mode === 'preview') {
     syncCodeFromVisual(body, codeEl);
-    if (jsonEl && !jsonEl.value.trim() && jsonSeedFromHtml) {
-      jsonEl.value = prettyPrintBlogJson(jsonSeedFromHtml());
-    }
     body.hidden = true;
     if (codeEl) {
       codeEl.hidden = true;
       codeEl.classList.remove('is-active');
     }
-    if (jsonPane) jsonPane.hidden = false;
-    if (jsonEl) jsonEl.hidden = false;
+    if (previewEl) {
+      previewEl.hidden = false;
+      refreshPreviewPane(wrap, body, codeEl, options.previewPaneId, options.onRefreshPreview);
+    }
     toolbar?.setAttribute('hidden', '');
-    wrap.classList.add('pa-rte--json-mode');
-    jsonEl?.focus();
+    wrap.classList.add('pa-rte--preview-mode');
     return;
   }
 
-  if (jsonPane) jsonPane.hidden = true;
-  if (jsonEl) jsonEl.hidden = true;
+  if (previewEl) previewEl.hidden = true;
 
   if (mode === 'code') {
     syncCodeFromVisual(body, codeEl);
@@ -210,13 +214,13 @@ function ensureRteFullscreenButton(wrap: HTMLElement, body: HTMLElement) {
 }
 
 /**
- * WordPress-style rich editor for blog posts (visual + HTML code, expanded toolbar).
+ * WordPress-style rich editor for blog posts (editor + HTML code + preview).
  */
 export function setupBlogPostRte(
   wrapId: string,
   bodyId: string,
   codeId: string,
-  options: BlogRteOptions & { jsonId?: string; jsonSeed?: () => string } = {},
+  options: BlogRteOptions = {},
 ) {
   const wrap = document.getElementById(wrapId);
   const body = document.getElementById(bodyId) as HTMLElement | null;
@@ -230,8 +234,8 @@ export function setupBlogPostRte(
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const mode = btn.getAttribute('data-rte-mode');
-      if (mode === 'visual' || mode === 'code' || mode === 'json') {
-        setRteEditorMode(wrap, body, codeEl, mode, options.jsonId, options.jsonSeed);
+      if (mode === 'editor' || mode === 'code' || mode === 'preview') {
+        setRteEditorMode(wrap, body, codeEl, mode, options);
       }
     });
   });
@@ -262,7 +266,7 @@ export function setupBlogPostRte(
     });
   }
 
-  setRteEditorMode(wrap, body, codeEl, 'visual');
+  setRteEditorMode(wrap, body, codeEl, 'editor', options);
 }
 
 export function getBlogRteHtml(bodyId: string, codeId: string, wrapId: string) {
@@ -275,15 +279,12 @@ export function getBlogRteHtml(bodyId: string, codeId: string, wrapId: string) {
   return getRteHtml(body);
 }
 
-export function getBlogJsonEditorValue(jsonId: string) {
-  const el = document.getElementById(jsonId) as HTMLTextAreaElement | null;
-  return el?.value?.trim() ?? '';
-}
-
-export function setBlogJsonEditorValue(jsonId: string, raw: string) {
-  const el = document.getElementById(jsonId) as HTMLTextAreaElement | null;
-  if (!el) return;
-  el.value = raw ? prettyPrintBlogJson(raw) : '';
+export function refreshBlogRtePreview(wrapId: string, bodyId: string, codeId: string, previewPaneId: string) {
+  const wrap = document.getElementById(wrapId);
+  const body = document.getElementById(bodyId);
+  const codeEl = document.getElementById(codeId) as HTMLTextAreaElement | null;
+  if (!wrap || !body) return;
+  refreshPreviewPane(wrap, body, codeEl, previewPaneId);
 }
 
 export function setBlogRteHtml(
@@ -300,14 +301,4 @@ export function setBlogRteHtml(
   if (wrap && wrap.classList.contains('pa-rte--code-mode') && body && codeEl) {
     syncVisualFromCode(body, codeEl);
   }
-}
-
-export function blogJsonSeedFromVisual(
-  bodyId: string,
-  codeId: string,
-  wrapId: string,
-  detailTemplate: string,
-) {
-  const html = getBlogRteHtml(bodyId, codeId, wrapId);
-  return serializeBlogContentForStorage(html, detailTemplate);
 }

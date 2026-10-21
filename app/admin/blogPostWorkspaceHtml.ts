@@ -51,9 +51,9 @@ export const BLOG_POST_WORKSPACE_HTML = `
         <div class="pa-blog-ws-editor-pane" id="paBlogWsEditorPane">
           <div class="pa-rte pa-blog-ws-rte pa-rte--blog-pro" id="blogWsRteWrap">
             <div class="pa-rte-mode-bar" role="tablist" aria-label="Editor mode">
-              <button type="button" class="pa-rte-mode-btn active" data-rte-mode="visual" role="tab" aria-selected="true">Visual</button>
+              <button type="button" class="pa-rte-mode-btn active" data-rte-mode="editor" role="tab" aria-selected="true">Editor</button>
               <button type="button" class="pa-rte-mode-btn" data-rte-mode="code" role="tab" aria-selected="false">Code</button>
-              <button type="button" class="pa-rte-mode-btn" data-rte-mode="json" role="tab" aria-selected="false">JSON templates</button>
+              <button type="button" class="pa-rte-mode-btn" data-rte-mode="preview" role="tab" aria-selected="false">Preview</button>
             </div>
             <div class="pa-rte-toolbar pa-rte-toolbar--blog">
               <button class="pa-rte-btn" type="button" data-cmd="undo" title="Undo (Ctrl+Z)"><i class="ri-arrow-go-back-line"></i></button>
@@ -88,18 +88,7 @@ export const BLOG_POST_WORKSPACE_HTML = `
             <div class="pa-rte-editor-surface">
               <div class="pa-rte-body pa-rte-body--blog" contenteditable="true" id="blogWsContent" data-placeholder="Start writing your article — paste from Word or Google Docs with formatting preserved…"></div>
               <textarea class="pa-rte-code-pane pa-blog-ws-html-source" id="blogWsContentHtml" hidden spellcheck="false" aria-label="HTML source"></textarea>
-              <div class="pa-rte-json-pane" id="blogWsContentJsonPane" hidden>
-                <div class="pa-blog-json-tpl-bar">
-                  <span class="pa-blog-json-tpl-label">Starter templates</span>
-                  <div class="pa-blog-json-tpl-list" id="blogWsJsonTemplateList" role="list"></div>
-                </div>
-                <div class="pa-blog-json-actions">
-                  <button type="button" class="pa-btn pa-btn-sm pa-btn-cancel" id="blogWsJsonFormatBtn"><i class="ri-braces-line"></i> Format JSON</button>
-                  <button type="button" class="pa-btn pa-btn-sm pa-btn-cancel" id="blogWsJsonToVisualBtn" title="Copy paragraph HTML into Visual editor"><i class="ri-file-transfer-line"></i> Copy paragraphs to Visual</button>
-                </div>
-                <textarea class="pa-rte-json-editor" id="blogWsContentJson" spellcheck="false" aria-label="Blog article JSON"></textarea>
-                <p class="pa-blog-json-hint">Full article structure for the live blog (sections, stat-box, grids). Pick a template, edit JSON, then save. Layout blocks match the public detail page.</p>
-              </div>
+              <div class="pa-rte-preview-pane pa-blog-ws-preview-inner pa-rte-body pa-rte-body--blog" id="blogWsRtePreview" hidden aria-label="Article preview"></div>
             </div>
           </div>
         </div>

@@ -14651,8 +14651,14 @@ body.pa-media-modal-open {
 .pa-rte--code-mode .pa-rte-editor-surface {
   border-top: 1px solid var(--pa-border);
 }
-.pa-rte--json-mode .pa-rte-editor-surface {
+.pa-rte--preview-mode .pa-rte-editor-surface {
   border-top: 1px solid var(--pa-border);
+}
+.pa-rte-preview-pane {
+  flex: 1;
+  min-height: 360px;
+  overflow: auto;
+  padding: 20px 24px;
 }
 .pa-rte-json-pane {
   flex: 1;

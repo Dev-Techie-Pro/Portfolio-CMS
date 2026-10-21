@@ -9,16 +9,8 @@ import { isValidSlug } from '../../utils/strings.js';
 import { handleFileValidation } from '../../utils/files.js';
 import { uploadCmsFileWithPreview } from '../../utils/media-upload.js';
 import { getRteHtml } from '../../utils/rte.js';
-import {
-  getBlogRteActiveMode,
-  getBlogJsonEditorValue,
-  getBlogRteHtml,
-  insertBlogImageHtml,
-} from '../../utils/blogRte.js';
-import {
-  blogContentJsonHasText,
-  prepareBlogContentForStorageClient,
-} from '../../utils/blogContentPayload.js';
+import { getBlogRteHtml, insertBlogImageHtml } from '../../utils/blogRte.js';
+import { prepareBlogContentForStorageClient } from '../../utils/blogContentPayload.js';
 import { getChipValues } from '../../utils/chips.js';
 import { renderPaBlogCard, renderPaBlogListRow } from '../../utils/paBlogCard.js';
 import { BlogPostWorkspace } from './BlogPostWorkspace.js';
@@ -524,23 +516,10 @@ export class BlogModule extends CrudCardModule {
     let content = '';
     let contentOk = false;
     if (p === 'blogWs') {
-      const rteMode = getBlogRteActiveMode('blogWsRteWrap');
       const detailTpl = this.workspace.getDetailTemplate();
-      if (rteMode === 'json') {
-        const jsonRaw = getBlogJsonEditorValue('blogWsContentJson');
-        try {
-          JSON.parse(jsonRaw);
-          contentOk = blogContentJsonHasText(jsonRaw);
-          content = prepareBlogContentForStorageClient(jsonRaw, detailTpl);
-        } catch {
-          contentOk = false;
-          content = jsonRaw;
-        }
-      } else {
-        const html = getBlogRteHtml('blogWsContent', 'blogWsContentHtml', 'blogWsRteWrap');
-        content = prepareBlogContentForStorageClient(html, detailTpl);
-        contentOk = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().length > 0;
-      }
+      const html = getBlogRteHtml('blogWsContent', 'blogWsContentHtml', 'blogWsRteWrap');
+      content = prepareBlogContentForStorageClient(html, detailTpl);
+      contentOk = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().length > 0;
     } else {
       content = getRteHtml(contentEl);
       contentOk = content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().length > 0;

@@ -1,9 +1,5 @@
 import { promptUrl } from "./url-prompt.js";
 import { getRteHtml, setRteHtml, updateRteButtonStates } from "./rte.js";
-import {
-  prettyPrintBlogJson,
-  serializeBlogContentForStorage
-} from "./blogContentPayload.js";
 function escapeAttr(value) {
   return String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 }
@@ -21,21 +17,26 @@ function syncVisualFromCode(body, codeEl) {
   if (!codeEl || !body) return;
   setRteHtml(body, codeEl.value);
 }
-function getJsonPane(wrap) {
-  return wrap.querySelector(".pa-rte-json-pane");
-}
-function getJsonTextarea(wrap, jsonId) {
-  if (jsonId) return document.getElementById(jsonId);
-  return wrap.querySelector(".pa-rte-json-editor");
+function getPreviewPane(wrap, previewPaneId) {
+  if (previewPaneId) return document.getElementById(previewPaneId);
+  return wrap.querySelector(".pa-rte-preview-pane");
 }
 function getBlogRteActiveMode(wrapId) {
   const wrap = document.getElementById(wrapId);
-  if (!wrap) return "visual";
-  if (wrap.classList.contains("pa-rte--json-mode")) return "json";
+  if (!wrap) return "editor";
+  if (wrap.classList.contains("pa-rte--preview-mode")) return "preview";
   if (wrap.classList.contains("pa-rte--code-mode")) return "code";
-  return "visual";
+  return "editor";
 }
-function setRteEditorMode(wrap, body, codeEl, mode, jsonId, jsonSeedFromHtml) {
+function refreshPreviewPane(wrap, body, codeEl, previewPaneId, onRefreshPreview) {
+  syncCodeFromVisual(body, codeEl);
+  const previewEl = getPreviewPane(wrap, previewPaneId);
+  if (previewEl) {
+    previewEl.innerHTML = getBlogRteHtml(body.id, codeEl?.id || "", wrap.id);
+  }
+  onRefreshPreview?.();
+}
+function setRteEditorMode(wrap, body, codeEl, mode, options = {}) {
   wrap.querySelectorAll(".pa-rte-mode-btn").forEach((btn) => {
     const m = btn.getAttribute("data-rte-mode");
     const active = m === mode;
@@ -44,28 +45,24 @@ function setRteEditorMode(wrap, body, codeEl, mode, jsonId, jsonSeedFromHtml) {
     btn.setAttribute("aria-pressed", active ? "true" : "false");
   });
   const toolbar = wrap.querySelector(".pa-rte-toolbar");
-  const jsonPane = getJsonPane(wrap);
-  const jsonEl = getJsonTextarea(wrap, jsonId);
-  wrap.classList.remove("pa-rte--code-mode", "pa-rte--json-mode");
-  if (mode === "json") {
+  const previewEl = getPreviewPane(wrap, options.previewPaneId);
+  wrap.classList.remove("pa-rte--code-mode", "pa-rte--preview-mode");
+  if (mode === "preview") {
     syncCodeFromVisual(body, codeEl);
-    if (jsonEl && !jsonEl.value.trim() && jsonSeedFromHtml) {
-      jsonEl.value = prettyPrintBlogJson(jsonSeedFromHtml());
-    }
     body.hidden = true;
     if (codeEl) {
       codeEl.hidden = true;
       codeEl.classList.remove("is-active");
     }
-    if (jsonPane) jsonPane.hidden = false;
-    if (jsonEl) jsonEl.hidden = false;
+    if (previewEl) {
+      previewEl.hidden = false;
+      refreshPreviewPane(wrap, body, codeEl, options.previewPaneId, options.onRefreshPreview);
+    }
     toolbar?.setAttribute("hidden", "");
-    wrap.classList.add("pa-rte--json-mode");
-    jsonEl?.focus();
+    wrap.classList.add("pa-rte--preview-mode");
     return;
   }
-  if (jsonPane) jsonPane.hidden = true;
-  if (jsonEl) jsonEl.hidden = true;
+  if (previewEl) previewEl.hidden = true;
   if (mode === "code") {
     syncCodeFromVisual(body, codeEl);
     body.hidden = true;
@@ -176,8 +173,8 @@ function setupBlogPostRte(wrapId, bodyId, codeId, options = {}) {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       const mode = btn.getAttribute("data-rte-mode");
-      if (mode === "visual" || mode === "code" || mode === "json") {
-        setRteEditorMode(wrap, body, codeEl, mode, options.jsonId, options.jsonSeed);
+      if (mode === "editor" || mode === "code" || mode === "preview") {
+        setRteEditorMode(wrap, body, codeEl, mode, options);
       }
     });
   });
@@ -203,7 +200,7 @@ function setupBlogPostRte(wrapId, bodyId, codeId, options = {}) {
       if (!wrap.classList.contains("pa-rte--code-mode")) return;
     });
   }
-  setRteEditorMode(wrap, body, codeEl, "visual");
+  setRteEditorMode(wrap, body, codeEl, "editor", options);
 }
 function getBlogRteHtml(bodyId, codeId, wrapId) {
   const wrap = document.getElementById(wrapId);
@@ -214,14 +211,12 @@ function getBlogRteHtml(bodyId, codeId, wrapId) {
   }
   return getRteHtml(body);
 }
-function getBlogJsonEditorValue(jsonId) {
-  const el = document.getElementById(jsonId);
-  return el?.value?.trim() ?? "";
-}
-function setBlogJsonEditorValue(jsonId, raw) {
-  const el = document.getElementById(jsonId);
-  if (!el) return;
-  el.value = raw ? prettyPrintBlogJson(raw) : "";
+function refreshBlogRtePreview(wrapId, bodyId, codeId, previewPaneId) {
+  const wrap = document.getElementById(wrapId);
+  const body = document.getElementById(bodyId);
+  const codeEl = document.getElementById(codeId);
+  if (!wrap || !body) return;
+  refreshPreviewPane(wrap, body, codeEl, previewPaneId);
 }
 function setBlogRteHtml(bodyId, codeId, wrapId, html) {
   const body = document.getElementById(bodyId);
@@ -233,17 +228,11 @@ function setBlogRteHtml(bodyId, codeId, wrapId, html) {
     syncVisualFromCode(body, codeEl);
   }
 }
-function blogJsonSeedFromVisual(bodyId, codeId, wrapId, detailTemplate) {
-  const html = getBlogRteHtml(bodyId, codeId, wrapId);
-  return serializeBlogContentForStorage(html, detailTemplate);
-}
 export {
-  blogJsonSeedFromVisual,
-  getBlogJsonEditorValue,
   getBlogRteActiveMode,
   getBlogRteHtml,
   insertBlogImageHtml,
-  setBlogJsonEditorValue,
+  refreshBlogRtePreview,
   setBlogRteHtml,
   setupBlogPostRte
 };
