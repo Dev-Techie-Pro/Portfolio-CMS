@@ -14613,15 +14613,7 @@ body.pa-media-modal-open {
 .pa-rte-body--blog h2 { font-size: 1.5rem; }
 .pa-rte-body--blog h3 { font-size: 1.25rem; }
 .pa-rte-body--blog h4 { font-size: 1.1rem; }
-.pa-rte-body--blog pre {
-  background: var(--pa-bg-card);
-  border: 1px solid var(--pa-border);
-  padding: 12px 14px;
-  overflow-x: auto;
-  font-family: var(--pa-font-mono, ui-monospace, monospace);
-  font-size: 13px;
-  margin: 1em 0;
-}
+/* Code / list prose: shared rules in public/assets/css/blog-pages.css (.pa-rte-body--blog) */
 .pa-rte-body--blog .pa-rte-figure,
 .pa-rte-body--blog figure {
   margin: 1.25em 0;
@@ -14692,6 +14684,16 @@ body.pa-media-modal-open {
 }
 .pa-blog-ws-rte-preview-article {
   min-height: 200px;
+}
+.pa-blog-ws-rte-preview-shell.bd-tpl-longform .main-layout,
+.pa-blog-ws-rte-preview-shell.bd-tpl-case-study .main-layout {
+  grid-template-columns: 120px 1fr;
+}
+.pa-blog-ws-rte-preview-shell.bd-tpl-longform .sidebar-right,
+.pa-blog-ws-rte-preview-shell.bd-tpl-case-study .sidebar-right,
+.pa-blog-ws-rte-preview-shell.bd-tpl-minimal .sidebar-left,
+.pa-blog-ws-rte-preview-shell.bd-tpl-minimal .sidebar-right {
+  display: none;
 }
 .pa-blog-ws-preview-sidebar-note,
 .pa-blog-ws-preview-toc-empty {
