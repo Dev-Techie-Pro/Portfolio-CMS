@@ -73,6 +73,7 @@ function requestDelete(id, type, name, extraInfo = "") {
   pendingLogoutConfirm = null;
   restoreConfirmDefaults();
   pendingBulkConfirm = null;
+  pendingBulkCancel = null;
   pendingId = id;
   pendingType = type;
   let text = `This will permanently remove <strong>${name}</strong>.`;
@@ -116,6 +117,8 @@ function closeConfirm() {
     pendingBulkConfirm = null;
     pendingBulkCancel = null;
     restoreConfirmDefaults();
+  } else if (pendingBulkCancel) {
+    pendingBulkCancel = null;
   }
   if (pendingLogoutConfirm) {
     pendingLogoutConfirm = null;
@@ -127,6 +130,7 @@ function requestLogout(onConfirm) {
   pendingId = null;
   pendingType = null;
   pendingBulkConfirm = null;
+  pendingBulkCancel = null;
   restoreConfirmDefaults();
   applyConfirmDialog({
     title: "Logout?",

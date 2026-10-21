@@ -49,7 +49,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <span id="bdBreadcrumbTitle" aria-current="page">Loading…</span>
           </nav>
         </div>
-        <div class="hero-content">
+        <div class="hero-content bd-hero-content">
           <span class="badge" id="bdCategory">Category</span>
           <h1 class="hero-title" id="bdTitle">Loading article…</h1>
           <p class="hero-intro" id="bdExcerpt"></p>
@@ -76,12 +76,30 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
       </div>
     </section>
 
+    <div class="bd-hero-stats-bar" id="bdHeroStatsBar" hidden>
+      <div class="container">
+        <div class="bd-hero-stats" id="bdHeroStats" aria-label="Article highlights"></div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="main-layout">
         <aside class="sidebar-left" aria-label="Table of contents">
           <div class="bd-sidebar-card card-tbl-content">
             <h2 class="card-title">Table of Contents</h2>
             <nav class="toc-list" id="tocNav" aria-label="Table of contents"></nav>
+          </div>
+          <div class="bd-sidebar-card bd-toc-meta" id="bdTocMeta" hidden>
+            <p class="bd-toc-meta-row"><span class="icon" data-icon="siClock"></span> <span id="bdTocReadTime">—</span></p>
+            <p class="bd-toc-meta-row"><span class="icon" data-icon="siCalendar"></span> Updated <span id="bdTocUpdated">—</span></p>
+          </div>
+          <div class="bd-sidebar-card bd-quick-links" id="bdQuickLinksCard" hidden>
+            <h2 class="card-title">Quick Links</h2>
+            <ul class="bd-quick-links-list">
+              <li><a href="https://angular.dev" target="_blank" rel="noopener noreferrer">Angular Official Docs <span class="icon" data-icon="siArrowRight"></span></a></li>
+              <li><a href="https://angular.dev/cli" target="_blank" rel="noopener noreferrer">Angular CLI <span class="icon" data-icon="siArrowRight"></span></a></li>
+              <li><a href="https://rxjs.dev" target="_blank" rel="noopener noreferrer">RxJS Documentation <span class="icon" data-icon="siArrowRight"></span></a></li>
+            </ul>
           </div>
           <div class="bd-sidebar-card cta-card" id="bdSidebarCta">
             <h2 class="card-title" id="bdSidebarCtaTitle">Need help with your project?</h2>
@@ -212,6 +230,13 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
       </div>
     </div>
 
+    <section class="bd-related-below reveal" id="bdRelatedBelow" hidden aria-labelledby="bdRelatedBelowHeading">
+      <div class="container">
+        <h2 class="bd-related-below-title" id="bdRelatedBelowHeading">Related Articles</h2>
+        <div class="bd-related-grid" id="bdRelatedBelowGrid"></div>
+      </div>
+    </section>
+
     <section class="pre-footer" id="bdPreFooter">
       <div class="container">
         <div class="pre-footer-inner">
@@ -223,7 +248,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
       </div>
     </section>
 
-    <section>
+    <section id="bdInlineCtaSection" hidden>
       <div class="container">
         <div class="bd-inline-cta reveal">
           <div class="bd-inline-cta-icon" aria-hidden="true">

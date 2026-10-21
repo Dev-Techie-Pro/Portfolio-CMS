@@ -14669,10 +14669,26 @@ body.pa-media-modal-open {
   padding: 12px 14px 18px;
   border: 1px solid var(--pa-border);
   border-radius: var(--pa-radius-md);
-  background: #0c0c0c;
+  background: var(--pa-bg-input);
 }
 .pa-blog-ws-rte-preview-shell .main-layout {
   margin-top: 0;
+  grid-template-columns: 120px 1fr 120px;
+  gap: var(--pa-gap-sm);
+}
+.pa-blog-ws-rte-preview-shell .main-layout .toc-list a{
+  font-size: var(--pa-fs-sm);
+    padding: 5px 8px;
+}
+.pa-blog-ws-rte-preview-shell .main-layout .card-tbl-content .card-title{
+  padding: 5px 8px;
+}
+.pa-blog-ws-rte-preview-shell .main-layout .card-tbl-content .stat-box{
+  padding: 12px;
+  margin: 0;
+}
+.pa-blog-ws-rte-preview-shell .main-layout .card-tbl-content .stat-box .feature-grid{
+  margin: 0;
 }
 .pa-blog-ws-rte-preview-article {
   min-height: 200px;

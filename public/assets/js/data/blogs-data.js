@@ -70,13 +70,117 @@ function _inferDetailTemplate(content) {
   return "standard";
 }
 
-function _applyDetailTemplate(post) {
+function _resolveDetailTemplate(post) {
+  return post.detailTemplate && post.detailTemplate !== "auto"
+    ? post.detailTemplate
+    : _inferDetailTemplate(post.content);
+}
+
+function _setHeroTitle(title, tpl) {
+  const el = document.getElementById("bdTitle");
+  if (!el || !title) return;
+  const accentTemplates = new Set(["standard", "minimal", "longform", "case-study"]);
+  if (!accentTemplates.has(tpl)) {
+    el.textContent = title;
+    return;
+  }
+  const words = String(title).trim().split(/\s+/);
+  if (words.length < 3) {
+    el.textContent = title;
+    return;
+  }
+  const accentLen = Math.min(3, Math.max(2, Math.ceil(words.length / 4)));
+  const main = words.slice(0, -accentLen).join(" ");
+  const accent = words.slice(-accentLen).join(" ");
+  el.innerHTML = `${main} <span class="hero-title-accent">${accent}</span>`;
+}
+
+function _toggleHidden(id, hidden) {
+  const el = document.getElementById(id);
+  if (el) el.hidden = hidden;
+}
+
+function _extractHeroStats(content) {
+  const stats = [];
+  (content || []).forEach((block) => {
+    if (block.type === "stat-box" && stats.length < 4) {
+      stats.push({
+        value: block.value,
+        label: block.text,
+        icon: block.icon || "siFlash",
+      });
+    }
+  });
+  return stats;
+}
+
+function _renderHeroStatItem(item) {
+  return `
+    <div class="bd-hero-stat">
+      <span class="bd-hero-stat-icon" aria-hidden="true">${_iconHtml(_resolveBlogIcon(item.icon))}</span>
+      <span class="bd-hero-stat-value">${item.value}</span>
+      <span class="bd-hero-stat-label">${item.label}</span>
+    </div>`;
+}
+
+function _defaultHeroStats(post) {
+  return [
+    { value: "5", label: "Key sections", icon: "siGrid" },
+    { value: post.readTime || "8 min", label: "Estimated read", icon: "siClock" },
+    { value: "100%", label: "Production ready", icon: "siShield" },
+    { value: "99.9%", label: "Reliability target", icon: "siTrending" },
+  ];
+}
+
+function _configureDetailLayout(post, tpl, blogId) {
+  const showTocMeta = tpl === "longform" || tpl === "case-study";
+  const showQuickLinks = tpl === "standard";
+  const showSidebarCta = tpl === "standard";
+  const showHeroStats = tpl === "longform" || tpl === "case-study";
+  const showRelatedBelow = tpl === "minimal";
+  const showPreFooter = tpl !== "minimal";
+  const showInlineCta = tpl === "minimal";
+
+  _toggleHidden("bdTocMeta", !showTocMeta);
+  _toggleHidden("bdQuickLinksCard", !showQuickLinks);
+  _toggleHidden("bdSidebarCta", !showSidebarCta);
+  _toggleHidden("bdHeroStatsBar", !showHeroStats);
+  _toggleHidden("bdRelatedBelow", !showRelatedBelow);
+  _toggleHidden("bdPreFooter", !showPreFooter);
+  _toggleHidden("bdInlineCtaSection", !showInlineCta);
+
+  if (showTocMeta) {
+    const read = document.getElementById("bdTocReadTime");
+    if (read) read.textContent = post.readTime || "—";
+    const updated = document.getElementById("bdTocUpdated");
+    if (updated) updated.textContent = post.dateLabel || "—";
+  }
+
+  if (showHeroStats) {
+    const bar = document.getElementById("bdHeroStats");
+    if (bar) {
+      const fromContent = _extractHeroStats(post.content);
+      const items = fromContent.length >= 2 ? fromContent : _defaultHeroStats(post);
+      bar.innerHTML = items.map(_renderHeroStatItem).join("");
+    }
+  }
+
+  if (showRelatedBelow) {
+    const grid = document.getElementById("bdRelatedBelowGrid");
+    if (grid) {
+      const id = blogId || post.id;
+      const others = window.Portfolio.BLOG_ORDER.filter((blogId) => blogId !== id)
+        .slice(0, 3)
+        .map((blogId) => window.Portfolio.BLOGS[blogId]);
+      grid.innerHTML = others.map(_renderRelatedGridCard).join("");
+    }
+  }
+}
+
+function _applyDetailTemplate(post, blogId) {
   const root = document.querySelector(".blog-details-page");
   if (!root) return;
-  const tpl =
-    post.detailTemplate && post.detailTemplate !== "auto"
-      ? post.detailTemplate
-      : _inferDetailTemplate(post.content);
+  const tpl = _resolveDetailTemplate(post);
   const classes = [
     "bd-tpl-standard",
     "bd-tpl-minimal",
@@ -86,6 +190,7 @@ function _applyDetailTemplate(post) {
   root.classList.remove(...classes);
   root.classList.add(`bd-tpl-${tpl}`);
   root.setAttribute("data-bd-template", tpl);
+  _configureDetailLayout(post, tpl, blogId || post.id);
 }
 
 function _blogUrl(id) {
@@ -210,6 +315,9 @@ function _renderExamplesRow(items) {
 function _renderBlock(block, post) {
   switch (block.type) {
     case "p":
+      if (block.text && /<[a-z][\s\S]*>/i.test(block.text)) {
+        return block.text;
+      }
       return `<p>${block.text}</p>`;
     case "compare-grid":
       return _renderCompareGrid(block.columns);
@@ -240,19 +348,29 @@ function _renderStatBox(block) {
 }
 
 function _renderArticleBody(content, post) {
+  const tpl = _resolveDetailTemplate(post);
+  const numberedSections = tpl === "longform" || tpl === "case-study";
+  let sectionIndex = 0;
   let html = "";
   (content || []).forEach((block) => {
     if (block.type === "section") {
+      sectionIndex += 1;
       const figure = block.figureFirst
         ? `<figure class="article-figure"><img src="${post.image}" alt="${post.imageAlt}" width="900" height="400" loading="eager" /></figure>`
         : "";
       const inner = (block.blocks || [])
         .map((b) => _renderBlock(b, post))
         .join("");
+      const sectionNum = numberedSections
+        ? String(sectionIndex).padStart(2, "0")
+        : "";
+      const h2NumAttr = sectionNum
+        ? ` data-section-num="${sectionNum}"`
+        : "";
       html += `
         <section id="${block.id}">
           ${figure}
-          <h2>${block.title}</h2>
+          <h2${h2NumAttr}>${block.title}</h2>
           ${inner}
         </section>`;
     } else if (block.type === "stat-box") {
@@ -448,6 +566,19 @@ function _renderHomeBlogCard(post) {
     </article>`;
 }
 
+function _renderRelatedGridCard(post) {
+  return `
+    <a href="${_blogUrl(post.id)}" class="bd-related-grid-card">
+      <div class="bd-related-grid-thumb">
+        <img src="${post.image}" alt="${post.imageAlt}" loading="lazy" />
+      </div>
+      <span class="blog-post-category">${post.category}</span>
+      <h3 class="bd-related-grid-title">${post.title}</h3>
+      <span class="bd-related-grid-meta">${post.dateLabel}</span>
+      <span class="bd-related-grid-arrow" aria-hidden="true">${_iconHtml("siArrowRight")}</span>
+    </a>`;
+}
+
 function _renderRelatedCard(post) {
   return `
     <a href="${_blogUrl(post.id)}" class="bd-related-item">
@@ -592,7 +723,8 @@ function _refreshSkeleton(root) {
         return;
       }
 
-      _applyDetailTemplate(post);
+      const tpl = _resolveDetailTemplate(post);
+      _applyDetailTemplate(post, id);
 
       const canonicalTarget = _blogUrl(id);
       const normalizedPath = window.location.pathname.replace(/\/+$/, "");
@@ -613,7 +745,7 @@ function _refreshSkeleton(root) {
       setText("bdBreadcrumbCategory", post.category);
       setText("bdBreadcrumbTitle", post.title);
       setText("bdCategory", post.category);
-      setText("bdTitle", post.title);
+      _setHeroTitle(post.title, tpl);
       setText("bdExcerpt", post.excerpt);
       setText("bdAuthor", post.author);
       setText("bdReadTime", post.readTime);

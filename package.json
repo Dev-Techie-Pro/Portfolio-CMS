@@ -18,6 +18,7 @@
     "test:ci": "node scripts/test-api-guards.mjs && node scripts/test-prefetch-sync.mjs && node scripts/test-preview-token.mjs && node scripts/test-public-api-hardening.mjs",
     "load:public": "k6 run scripts/load/k6-public.mjs",
     "seed:blogs": "npx tsx scripts/seed-blogs.ts",
+    "generate:blog-detail-templates": "node --experimental-strip-types scripts/generate-blog-detail-templates.mjs",
     "import:projects": "node scripts/import-projects-from-static.mjs",
     "db:push": "supabase db push",
     "db:status": "supabase migration list",

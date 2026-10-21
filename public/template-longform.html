@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Longform blog detail template — reference</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/blog-pages.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" />
+</head>
+<body class="blog-details-page">
+
+<div class="blog-details-page bd-tpl-longform" style="--bd-hero-image: url('https://res.cloudinary.com/w3xvfqgt/image/upload/v1787743478/angular-performance-tips-production.png')">
+  <section class="blog-details-hero">
+    <div class="container">
+      <nav class="bd-breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span>
+        <a href="/blogs">Blogs</a><span aria-hidden="true">/</span>
+        <span aria-current="page">Article preview</span>
+      </nav>
+      <div class="hero-content bd-hero-content">
+        <span class="badge">Case study</span>
+        <h1 class="hero-title">Building a Scalable REST API with <span class="hero-title-accent">.NET Core</span></h1>
+        <p class="hero-intro">Deep-dive layout with TOC meta, hero stats, and numbered sections — no right sidebar.</p>
+        <div class="hero-meta">
+          <div class="nav-logo" aria-label="Author">
+            <div class="logo-box u-flex-center" aria-hidden="true">SI</div>
+            <div class="logo-text">
+              <span class="logo-name">M. Sohaib Ishaque</span>
+              <span class="logo-role">Full Stack Web Developer</span>
+            </div>
+          </div>
+          <div class="meta-divider" aria-hidden="true"></div>
+          <div class="meta-item"><i class="ri-calendar-line" aria-hidden="true"></i><time>Dec 8, 2023</time></div>
+          <div class="meta-item"><i class="ri-time-line" aria-hidden="true"></i><span>7 min read</span></div>
+          <div class="meta-tags">
+            <span class="meta-tag">Angular</span>
+            <span class="meta-tag">Performance</span>
+            <span class="meta-tag">TypeScript</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="bd-hero-stats-bar">
+    <div class="container">
+      <div class="bd-hero-stats">
+        <div class="bd-hero-stat"><span class="bd-hero-stat-icon"><i class="ri-grid-line"></i></span><span class="bd-hero-stat-value">5</span><span class="bd-hero-stat-label">API Endpoints</span></div>
+        <div class="bd-hero-stat"><span class="bd-hero-stat-icon"><i class="ri-timer-line"></i></span><span class="bd-hero-stat-value">~200ms</span><span class="bd-hero-stat-label">Avg. response time</span></div>
+        <div class="bd-hero-stat"><span class="bd-hero-stat-icon"><i class="ri-shield-check-line"></i></span><span class="bd-hero-stat-value">100%</span><span class="bd-hero-stat-label">Authentication</span></div>
+        <div class="bd-hero-stat"><span class="bd-hero-stat-icon"><i class="ri-pulse-line"></i></span><span class="bd-hero-stat-value">99.9%</span><span class="bd-hero-stat-label">Uptime ready</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="main-layout">
+      <aside class="sidebar-left">
+        <div class="bd-sidebar-card card-tbl-content">
+          <h2 class="card-title">Table of Contents</h2>
+          <nav class="toc-list">
+            <a href="#introduction" class="active"><span class="toc-num">01</span> Introduction</a>
+            <a href="#project-overview"><span class="toc-num">02</span> Project overview</a>
+            <a href="#problem"><span class="toc-num">03</span> Problem &amp; challenges</a>
+            <a href="#solution"><span class="toc-num">04</span> Solution approach</a>
+          </nav>
+        </div>
+        <div class="bd-sidebar-card bd-toc-meta">
+          <p class="bd-toc-meta-row"><i class="ri-time-line"></i> <span>8 min read</span></p>
+          <p class="bd-toc-meta-row"><i class="ri-calendar-line"></i> Updated <span>May 12, 2025</span></p>
+        </div>
+      </aside>
+      <div class="article-main">
+<article class="article-content">
+  <section id="introduction">
+    <h2 data-section-num="01">Introduction</h2>
+    <p>Longform guides use a sticky table of contents and a wide article column — no right sidebar.</p>
+  </section>
+  <section id="project-overview">
+    <h2 data-section-num="02">Project overview</h2>
+    <p>Describe scope, stack, and constraints for a scalable backend or deep technical narrative.</p>
+  </section>
+  <section id="problem">
+    <h2 data-section-num="03">Problem &amp; challenges</h2>
+    <div class="benefits-row">
+      <div class="benefit-item"><div class="benefit-icon"><i class="ri-shield-line"></i></div><h4>Security</h4><p>Auth and validation.</p></div>
+      <div class="benefit-item"><div class="benefit-icon"><i class="ri-speed-up-line"></i></div><h4>Performance</h4><p>Latency and throughput.</p></div>
+      <div class="benefit-item"><div class="benefit-icon"><i class="ri-expand-diagonal-line"></i></div><h4>Scale</h4><p>Horizontal growth.</p></div>
+      <div class="benefit-item"><div class="benefit-icon"><i class="ri-tools-line"></i></div><h4>Maintainability</h4><p>Clean architecture.</p></div>
+    </div>
+  </section>
+  <section id="solution">
+    <h2 data-section-num="04">Solution approach</h2>
+    <p>Walk through architecture decisions step by step with diagrams and code samples.</p>
+  </section>
+</article></div>
+    </div>
+  </div>
+</div>
+</body></html>
