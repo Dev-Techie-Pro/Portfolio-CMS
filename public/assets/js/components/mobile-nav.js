@@ -153,25 +153,47 @@ export class MobileNav {
   }
 
   static resolveActiveWhere(locationLike = window.location) {
-    const stem = this.parseFileStem(locationLike);
-    const routes = window.Portfolio?.CONSTANTS?.PAGE_ROUTES;
-    let route = stem;
+    const utils = window.Portfolio?.UTILS;
+    let route;
 
-    if (routes && typeof routes === "object") {
-      if (Object.prototype.hasOwnProperty.call(routes, stem)) {
-        route = routes[stem];
-      } else if (
-        stem === "index" &&
-        Object.prototype.hasOwnProperty.call(routes, "")
-      ) {
-        route = routes[""];
+    if (utils?.resolveNavRouteFromLocation) {
+      route = utils.resolveNavRouteFromLocation(locationLike);
+      if (typeof utils.normalizeNavRoute === "function") {
+        route = utils.normalizeNavRoute(route);
+      }
+    } else {
+      const stem = this.parseFileStem(locationLike);
+      const routes = window.Portfolio?.CONSTANTS?.PAGE_ROUTES;
+      route = stem;
+
+      if (routes && typeof routes === "object") {
+        if (Object.prototype.hasOwnProperty.call(routes, stem)) {
+          route = routes[stem];
+        } else if (
+          stem === "index" &&
+          Object.prototype.hasOwnProperty.call(routes, "")
+        ) {
+          route = routes[""];
+        }
+      }
+
+      if (!route || route === "index") route = "home";
+      if (typeof utils?.normalizeNavRoute === "function") {
+        route = utils.normalizeNavRoute(route);
       }
     }
 
-    if (!route || route === "index") route = "home";
-
     const mapped = this.ROUTE_TO_WHERE[route];
-    return mapped || route;
+    if (mapped) return mapped;
+
+    if (utils?.getBlogSlugFromPath?.(locationLike)) {
+      return this.ROUTE_TO_WHERE.blogs || "home";
+    }
+    if (utils?.getProjectSlugFromPath?.(locationLike)) {
+      return this.ROUTE_TO_WHERE["project-details"] || "projects";
+    }
+
+    return route;
   }
 
   static parseFileStem(locationLike = window.location) {

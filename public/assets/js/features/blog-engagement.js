@@ -83,7 +83,7 @@
 
   function renderActions(comment, likesEnabled) {
     const likeBtn = likesEnabled
-      ? `<button type="button" class="bd-comment-like-btn${comment.liked ? " is-liked" : ""}" data-comment-id="${escapeHtml(comment.id)}" aria-pressed="${comment.liked ? "true" : "false"}">
+      ? `<button type="button" class="bd-comment-like-btn${comment.liked ? " is-liked" : ""}" data-comment-id="${escapeHtml(comment.id)}" aria-pressed="${comment.liked ? "true" : "false"}" aria-label="${comment.liked ? "Unlike comment" : "Like comment"}">
           <i class="ri-thumb-up-line" aria-hidden="true"></i>
           <span class="bd-comment-like-count">${comment.like_count}</span>
         </button>`
@@ -92,47 +92,73 @@
       <div class="bd-comment-actions">
         ${likeBtn}
         <button type="button" class="bd-comment-reply-btn" data-parent-id="${escapeHtml(comment.id)}" data-preview="${escapeHtml(comment.body.slice(0, 160))}">
-          <i class="ri-reply-line" aria-hidden="true"></i> Reply
+          Reply
         </button>
       </div>`;
   }
 
-  function renderCommentNode(comment, byParent, depth, likesEnabled) {
+  function renderCommentAvatar(comment, isRoot) {
+    const id = escapeHtml(comment.id);
+    const name = escapeHtml(comment.author_name);
+    const avatarClass = isRoot
+      ? "bd-comment-avatar"
+      : "bd-comment-avatar bd-comment-avatar--sm";
+    const label = `Comment by ${name}`;
+    return `
+      <a href="#bd-comment-${id}" class="bd-comment-avatar-link" aria-label="${label}">
+        <span class="${avatarClass}" aria-hidden="true">${escapeHtml(initials(comment.author_name))}</span>
+      </a>`;
+  }
+
+  function renderCommentNode(
+    comment,
+    byParent,
+    depth,
+    likesEnabled,
+    parentAuthor,
+  ) {
     const name = escapeHtml(comment.author_name);
     const body = escapeHtml(comment.body).replace(/\n/g, "<br />");
     const date = formatDate(comment.created_at);
+    const isRoot = depth === 0;
     const children = byParent.get(comment.id) || [];
     const childHtml = children.length
-      ? `<ul class="bd-comment-replies" aria-label="Replies">${children
-          .map((c) => renderCommentNode(c, byParent, depth + 1, likesEnabled))
-          .join("")}</ul>`
+      ? `<div class="bd-comment-replies" role="group" aria-label="Replies">
+          <ul class="bd-comment-replies-inner">${children
+            .map((c) =>
+              renderCommentNode(
+                c,
+                byParent,
+                depth + 1,
+                likesEnabled,
+                comment.author_name,
+              ),
+            )
+            .join("")}</ul>
+        </div>`
       : "";
-
-    if (depth === 0) {
-      return `
-      <li class="bd-comment-item" data-comment-id="${escapeHtml(comment.id)}">
-        <div class="bd-comment-avatar" aria-hidden="true">${escapeHtml(initials(comment.author_name))}</div>
-        <div class="bd-comment-body">
-          <div class="bd-comment-meta">
-            <span class="bd-comment-author">${name}</span>
-            ${date ? `<time class="bd-comment-date" datetime="${escapeHtml(comment.created_at)}">${escapeHtml(date)}</time>` : ""}
-          </div>
-          <p class="bd-comment-text">${body}</p>
-          ${renderActions(comment, likesEnabled)}
-          ${childHtml}
-        </div>
-      </li>`;
-    }
+    const mention =
+      !isRoot && parentAuthor
+        ? `<span class="bd-comment-mention">@${escapeHtml(parentAuthor)}</span> `
+        : "";
+    const itemClass = isRoot
+      ? "bd-comment-thread-item bd-comment-thread-item--root"
+      : "bd-comment-subitem";
+    const leadClass = isRoot
+      ? "bd-comment-lead"
+      : "bd-comment-lead bd-comment-lead--reply";
 
     return `
-      <li class="bd-comment-reply-item" data-comment-id="${escapeHtml(comment.id)}">
-        <span class="bd-comment-reply-marker" aria-hidden="true"></span>
-        <div class="bd-comment-reply-body">
+      <li class="${itemClass}" id="bd-comment-${escapeHtml(comment.id)}" data-comment-id="${escapeHtml(comment.id)}" data-depth="${depth}">
+        <div class="${leadClass}">
+          ${renderCommentAvatar(comment, isRoot)}
+        </div>
+        <div class="bd-comment-content">
           <div class="bd-comment-meta">
             <span class="bd-comment-author">${name}</span>
             ${date ? `<time class="bd-comment-date" datetime="${escapeHtml(comment.created_at)}">${escapeHtml(date)}</time>` : ""}
           </div>
-          <p class="bd-comment-text">${body}</p>
+          <p class="bd-comment-text">${mention}${body}</p>
           ${renderActions(comment, likesEnabled)}
           ${childHtml}
         </div>
@@ -205,7 +231,7 @@
         const { roots, byParent } = buildCommentTree(cachedComments);
         if (listEl) {
           listEl.innerHTML = roots
-            .map((c) => renderCommentNode(c, byParent, 0, likesEnabled))
+            .map((c) => renderCommentNode(c, byParent, 0, likesEnabled, null))
             .join("");
         }
         if (emptyEl) emptyEl.hidden = total > 0;

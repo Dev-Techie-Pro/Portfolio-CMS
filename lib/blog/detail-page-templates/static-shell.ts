@@ -15,7 +15,7 @@ export function blogDetailTemplateHead(title: string): string {
   <title>${title}</title>
   <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="/assets/css/blog-pages.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" />
+  <link rel="stylesheet" href="/vendor/remixicon/remixicon.css" />
 </head>
 <body class="blog-details-page">`;
 }
