@@ -28,12 +28,8 @@ function getBlogRteActiveMode(wrapId) {
   if (wrap.classList.contains("pa-rte--code-mode")) return "code";
   return "editor";
 }
-function refreshPreviewPane(wrap, body, codeEl, previewPaneId, onRefreshPreview) {
+function refreshPreviewPane(body, codeEl, onRefreshPreview) {
   syncCodeFromVisual(body, codeEl);
-  const previewEl = getPreviewPane(wrap, previewPaneId);
-  if (previewEl) {
-    previewEl.innerHTML = getBlogRteHtml(body.id, codeEl?.id || "", wrap.id);
-  }
   onRefreshPreview?.();
 }
 function setRteEditorMode(wrap, body, codeEl, mode, options = {}) {
@@ -56,7 +52,7 @@ function setRteEditorMode(wrap, body, codeEl, mode, options = {}) {
     }
     if (previewEl) {
       previewEl.hidden = false;
-      refreshPreviewPane(wrap, body, codeEl, options.previewPaneId, options.onRefreshPreview);
+      refreshPreviewPane(body, codeEl, options.onRefreshPreview);
     }
     toolbar?.setAttribute("hidden", "");
     wrap.classList.add("pa-rte--preview-mode");
@@ -211,12 +207,11 @@ function getBlogRteHtml(bodyId, codeId, wrapId) {
   }
   return getRteHtml(body);
 }
-function refreshBlogRtePreview(wrapId, bodyId, codeId, previewPaneId) {
-  const wrap = document.getElementById(wrapId);
+function refreshBlogRtePreview(bodyId, codeId, onRefreshPreview) {
   const body = document.getElementById(bodyId);
   const codeEl = document.getElementById(codeId);
-  if (!wrap || !body) return;
-  refreshPreviewPane(wrap, body, codeEl, previewPaneId);
+  if (!body) return;
+  refreshPreviewPane(body, codeEl, onRefreshPreview);
 }
 function setBlogRteHtml(bodyId, codeId, wrapId, html) {
   const body = document.getElementById(bodyId);

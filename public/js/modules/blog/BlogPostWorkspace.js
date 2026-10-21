@@ -4,9 +4,10 @@ import { slugify } from "../../utils/strings.js";
 import {
   setupBlogPostRte,
   getBlogRteHtml,
-  setBlogRteHtml,
-  refreshBlogRtePreview
+  setBlogRteHtml
 } from "../../utils/blogRte.js";
+import { getBlogDetailEditorTemplate } from "../../data/blogDetailEditorTemplates.js";
+import { syncBlogDetailRtePreview } from "../../utils/blogDetailTemplatePreview.js";
 import { populateChips } from "../../utils/chips.js";
 import { bindCommaSeparatedChipInput } from "../../utils/chipInput.js";
 import { requestDelete } from "../shell/confirm.js";
@@ -35,8 +36,9 @@ class BlogPostWorkspace {
     if (!root) return;
     this.wired = true;
     setupBlogPostRte("blogWsRteWrap", "blogWsContent", "blogWsContentHtml", {
-      previewPaneId: "blogWsRtePreview",
-      onInsertImage: () => this.blog.insertEditorImage()
+      previewPaneId: "blogWsRtePreviewWrap",
+      onInsertImage: () => this.blog.insertEditorImage(),
+      onRefreshPreview: () => this.syncRteTemplatePreview()
     });
     this.blog.setupImageDropzone("blogWs");
     this.blog.setupMediaPicker("blogWs");
@@ -108,9 +110,36 @@ class BlogPostWorkspace {
         if (!el.checked) return;
         this.detailTemplate = el.value;
         this.syncTemplatePreview();
+        this.maybeApplyDetailTemplateHtml(el.value);
+        this.syncRteTemplatePreview();
         if (this.wsEditorMode === "preview") this.setEditorMode("preview");
       });
     });
+  }
+  maybeApplyDetailTemplateHtml(templateId) {
+    if (!templateId || templateId === "auto") return;
+    const starter = getBlogDetailEditorTemplate(templateId);
+    if (!starter) return;
+    const html = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
+    const plain = html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+    if (plain && !window.confirm(`Replace the article HTML with the ${starter.label} layout starter?`)) {
+      return;
+    }
+    setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", starter.bodyHtml);
+    this.blog.toast(`${starter.label} template loaded \u2014 edit in Editor or Code`, "success", 2800);
+  }
+  syncRteTemplatePreview() {
+    const meta = BLOG_DETAIL_TEMPLATE_META.find((m) => m.id === this.detailTemplate);
+    const layoutLabel = this.detailTemplate === "auto" ? "Auto" : meta?.label || "Standard";
+    const articleHtml = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
+    syncBlogDetailRtePreview({
+      detailTemplate: this.detailTemplate,
+      articleHtml,
+      layoutLabel
+    });
+    const headerPreview = $id("paBlogWsPreviewContent");
+    if (headerPreview) headerPreview.innerHTML = articleHtml;
+    this.syncTemplatePreview();
   }
   setDetailTemplateChoice(value) {
     this.detailTemplate = value || "auto";
@@ -312,6 +341,7 @@ class BlogPostWorkspace {
     const tpl = typeof p.detailTemplate === "string" && p.detailTemplate ? p.detailTemplate : extracted.detailTemplate;
     setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", html);
     this.setDetailTemplateChoice(tpl);
+    this.syncRteTemplatePreview();
     populateChips($id("blogWsTagChips"), Array.isArray(p.tags) ? p.tags : []);
     $id("blogWsImageAlt").value = String(p.imageAlt || "");
     $id("blogWsStatus").value = String(p.status || "Draft");
@@ -345,10 +375,7 @@ class BlogPostWorkspace {
     if (mode === "preview") {
       if (editorPane) editorPane.hidden = true;
       if (previewPane) previewPane.hidden = false;
-      const previewHtml = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
-      const preview = $id("paBlogWsPreviewContent");
-      if (preview) preview.innerHTML = previewHtml;
-      refreshBlogRtePreview("blogWsRteWrap", "blogWsContent", "blogWsContentHtml", "blogWsRtePreview");
+      this.syncRteTemplatePreview();
       this.syncTemplatePreview();
       return;
     }

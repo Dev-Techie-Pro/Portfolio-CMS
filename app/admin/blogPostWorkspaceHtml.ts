@@ -88,7 +88,28 @@ export const BLOG_POST_WORKSPACE_HTML = `
             <div class="pa-rte-editor-surface">
               <div class="pa-rte-body pa-rte-body--blog" contenteditable="true" id="blogWsContent" data-placeholder="Start writing your article — paste from Word or Google Docs with formatting preserved…"></div>
               <textarea class="pa-rte-code-pane pa-blog-ws-html-source" id="blogWsContentHtml" hidden spellcheck="false" aria-label="HTML source"></textarea>
-              <div class="pa-rte-preview-pane pa-blog-ws-preview-inner pa-rte-body pa-rte-body--blog" id="blogWsRtePreview" hidden aria-label="Article preview"></div>
+              <div class="pa-rte-preview-pane" id="blogWsRtePreviewWrap" hidden>
+                <p class="pa-blog-ws-preview-layout-label">Detail layout: <strong id="blogWsRtePreviewLayoutLabel">Standard</strong></p>
+                <div class="pa-blog-ws-rte-preview-shell blog-details-page bd-tpl-standard" id="blogWsRteDetailPreviewShell">
+                  <div class="main-layout pa-blog-ws-rte-preview-main">
+                    <aside class="sidebar-left pa-blog-ws-rte-preview-aside" aria-label="Table of contents preview">
+                      <div class="bd-sidebar-card card-tbl-content">
+                        <h2 class="card-title">Table of Contents</h2>
+                        <nav class="toc-list" id="blogWsRtePreviewToc" aria-label="Table of contents"></nav>
+                      </div>
+                    </aside>
+                    <div class="article-main">
+                      <article class="article-content pa-blog-ws-rte-preview-article" id="blogWsRtePreview" aria-label="Article preview"></article>
+                    </div>
+                    <aside class="sidebar-right pa-blog-ws-rte-preview-aside" aria-label="Sidebar preview">
+                      <div class="bd-sidebar-card">
+                        <h2 class="card-title">Related &amp; author</h2>
+                        <p class="pa-blog-ws-preview-sidebar-note">Widgets and related posts render on your live portfolio detail page.</p>
+                      </div>
+                    </aside>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

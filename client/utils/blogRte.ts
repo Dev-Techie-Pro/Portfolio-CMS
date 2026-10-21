@@ -4,6 +4,7 @@ import { getRteHtml, setRteHtml, updateRteButtonStates } from './rte.js';
 
 type BlogRteOptions = {
   onInsertImage?: () => void;
+  /** Outer preview wrapper (e.g. layout shell + article column). */
   previewPaneId?: string;
   onRefreshPreview?: () => void;
 };
@@ -48,17 +49,11 @@ export function getBlogRteActiveMode(wrapId: string): BlogRteEditorMode {
 }
 
 function refreshPreviewPane(
-  wrap: HTMLElement,
   body: HTMLElement,
   codeEl: HTMLTextAreaElement | null,
-  previewPaneId?: string,
   onRefreshPreview?: () => void,
 ) {
   syncCodeFromVisual(body, codeEl);
-  const previewEl = getPreviewPane(wrap, previewPaneId);
-  if (previewEl) {
-    previewEl.innerHTML = getBlogRteHtml(body.id, codeEl?.id || '', wrap.id);
-  }
   onRefreshPreview?.();
 }
 
@@ -91,7 +86,7 @@ function setRteEditorMode(
     }
     if (previewEl) {
       previewEl.hidden = false;
-      refreshPreviewPane(wrap, body, codeEl, options.previewPaneId, options.onRefreshPreview);
+      refreshPreviewPane(body, codeEl, options.onRefreshPreview);
     }
     toolbar?.setAttribute('hidden', '');
     wrap.classList.add('pa-rte--preview-mode');
@@ -279,12 +274,15 @@ export function getBlogRteHtml(bodyId: string, codeId: string, wrapId: string) {
   return getRteHtml(body);
 }
 
-export function refreshBlogRtePreview(wrapId: string, bodyId: string, codeId: string, previewPaneId: string) {
-  const wrap = document.getElementById(wrapId);
+export function refreshBlogRtePreview(
+  bodyId: string,
+  codeId: string,
+  onRefreshPreview?: () => void,
+) {
   const body = document.getElementById(bodyId);
   const codeEl = document.getElementById(codeId) as HTMLTextAreaElement | null;
-  if (!wrap || !body) return;
-  refreshPreviewPane(wrap, body, codeEl, previewPaneId);
+  if (!body) return;
+  refreshPreviewPane(body, codeEl, onRefreshPreview);
 }
 
 export function setBlogRteHtml(
