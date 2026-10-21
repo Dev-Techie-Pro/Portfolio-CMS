@@ -356,7 +356,15 @@ var BlogEngagementModule = class extends Module {
         <span>/${escapeHtml(String(c.postSlug || ""))}</span>
         ${legacyId ? `<a class="pa-btn pa-btn-cancel pa-btn-sm" href="/admin/blog-post?open=${encodeURIComponent(legacyId)}">Edit post</a>` : ""}
       </div>
-      <div class="pa-blog-eng-detail-body">${escapeHtml(String(c.body || ""))}</div>`;
+      <div class="pa-blog-eng-detail-body">${escapeHtml(String(c.body || ""))}</div>
+      <div class="pa-blog-eng-reply">
+        <p class="pa-form-label">Reply as site author</p>
+        <p class="pa-blog-eng-reply-hint">Published immediately as an approved comment on the live post.</p>
+        <textarea class="pa-form-textarea" id="paBlogEngReplyBody" rows="4" maxlength="4000" placeholder="Write your public reply\u2026"></textarea>
+        <button type="button" class="pa-btn pa-btn-primary pa-blog-eng-reply-btn" data-detail-action="reply" data-id="${escapeHtml(String(c.id))}">
+          <i class="ri-reply-line"></i> Post reply
+        </button>
+      </div>`;
     footer.innerHTML = `
       <button type="button" class="pa-btn pa-btn-primary" data-detail-action="approve" data-id="${escapeHtml(String(c.id))}"><i class="ri-check-line"></i> Approve</button>
       <button type="button" class="pa-btn pa-btn-cancel" data-detail-action="spam" data-id="${escapeHtml(String(c.id))}">Spam</button>
@@ -370,6 +378,38 @@ var BlogEngagementModule = class extends Module {
         void this.moderateOne(commentId, action);
       });
     });
+    const replyBtn = body.querySelector('[data-detail-action="reply"]');
+    if (replyBtn) {
+      this.on(replyBtn, "click", () => {
+        const commentId = replyBtn.getAttribute("data-id");
+        if (commentId) void this.postStaffReply(commentId);
+      });
+    }
+  }
+  async postStaffReply(parentCommentId) {
+    const field = $id("paBlogEngReplyBody");
+    const message = field?.value?.trim() || "";
+    if (message.length < 3) {
+      this.toast("Reply should be at least 3 characters.", "danger");
+      field?.focus();
+      return;
+    }
+    try {
+      const res = await fetch("/api/blog-engagement/comments/reply", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ parentCommentId, message })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "failed");
+      if (field) field.value = "";
+      this.toast("Reply published on the live post.", "success");
+      await this.fetchStats();
+      await this.fetchComments(true);
+    } catch {
+      this.toast("Could not post reply", "danger");
+    }
   }
   async moderateOne(commentId, action) {
     if (action === "delete") {
@@ -720,4 +760,4 @@ var BlogEngagementModule = class extends Module {
 export {
   BlogEngagementModule
 };
-//# sourceMappingURL=BlogEngagementModule-K5OPUWSG.js.map
+//# sourceMappingURL=BlogEngagementModule-JIPC5UMK.js.map

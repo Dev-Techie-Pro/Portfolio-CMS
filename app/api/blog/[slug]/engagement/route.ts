@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPublicEngagementBySlug } from "@/lib/cms/blog-engagement";
+import { getClientIp } from "@/lib/auth/request-meta";
 import { parseBlogSlug } from "@/lib/blog/slug";
 import { parseVisitorKey } from "@/lib/blog/visitor";
 
@@ -18,7 +19,11 @@ export async function GET(request: NextRequest, context: RouteContext) {
     parseVisitorKey(request.headers.get("x-blog-visitor"));
 
   try {
-    const data = await getPublicEngagementBySlug(slug, visitorKey ?? undefined);
+    const data = await getPublicEngagementBySlug(
+      slug,
+      visitorKey ?? undefined,
+      getClientIp(request),
+    );
     if (!data) {
       return NextResponse.json({ error: "Post not found." }, { status: 404 });
     }
@@ -34,6 +39,8 @@ export async function GET(request: NextRequest, context: RouteContext) {
         body: c.body,
         created_at: c.createdAt,
         parent_id: c.parentCommentId,
+        like_count: c.likeCount ?? 0,
+        liked: c.liked ?? false,
       })),
     });
   } catch (err) {

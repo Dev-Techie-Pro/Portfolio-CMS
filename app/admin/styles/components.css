@@ -15659,4 +15659,24 @@ body.pa-media-modal-open {
   line-height: 1.5;
   font-size: var(--pa-fs-md);
 }
+.pa-blog-eng-reply {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--pa-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pa-blog-eng-reply-hint {
+  margin: 0;
+  font-size: var(--pa-fs-sm);
+  color: var(--pa-text-muted);
+  line-height: 1.45;
+}
+.pa-blog-eng-reply .pa-form-textarea {
+  min-height: 96px;
+}
+.pa-blog-eng-reply-btn {
+  align-self: flex-start;
+}
 

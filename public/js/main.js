@@ -7551,7 +7551,7 @@ async function loadPageModuleClass(page) {
     case "contact-messages":
       return (await import("./chunks/ContactMessagesModule-QV3N7B6O.js")).ContactMessagesModule;
     case "blog-engagement":
-      return (await import("./chunks/BlogEngagementModule-K5OPUWSG.js")).BlogEngagementModule;
+      return (await import("./chunks/BlogEngagementModule-JIPC5UMK.js")).BlogEngagementModule;
     case "access-requests":
       return (await import("./chunks/AccessRequestsModule-U5NRZU7S.js")).AccessRequestsModule;
     case "users":

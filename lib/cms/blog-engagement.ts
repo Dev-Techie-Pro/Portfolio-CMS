@@ -61,9 +61,21 @@ export async function getPublishedPostEngagementMetaBySlug(slug: string) {
   return post;
 }
 
-export async function getPublicEngagementBySlug(slug: string, visitorKey?: string) {
+export async function getPublicEngagementBySlug(
+  slug: string,
+  visitorKey?: string,
+  clientIp?: string | null,
+) {
   const post = await getPublishedPostEngagementMetaBySlug(slug);
   if (!post) return null;
+
+  let resolvedVisitor: string | null = null;
+  if (visitorKey) {
+    const { derivePublicLikeVisitorKey } = await import('@/lib/cms/visitor-identity');
+    resolvedVisitor =
+      derivePublicLikeVisitorKey(visitorKey, clientIp) ??
+      normalizeVisitorKey(visitorKey);
+  }
 
   const sb = admin();
   const [likesRes, commentsRes, likedRes] = await Promise.all([
@@ -80,18 +92,41 @@ export async function getPublicEngagementBySlug(slug: string, visitorKey?: strin
         .order('created_at', { ascending: true })
         .limit(200)
       : Promise.resolve({ data: [] }),
-    post.likes_enabled && visitorKey
+    post.likes_enabled && resolvedVisitor
       ? sb
         .from('blog_post_likes')
         .select('id')
         .eq('blog_post_id', post.id)
-        .eq('visitor_key', visitorKey)
+        .eq('visitor_key', resolvedVisitor)
         .maybeSingle()
       : Promise.resolve({ data: null }),
   ]);
 
   const likeCount = likesRes.count ?? 0;
   const liked = !!likedRes.data;
+
+  const commentRows = commentsRes.data || [];
+  const commentIds = commentRows.map((c) => c.id);
+  const likeCountByComment = new Map<string, number>();
+  const likedCommentIds = new Set<string>();
+
+  if (post.likes_enabled && commentIds.length) {
+    const { data: commentLikes, error: clError } = await sb
+      .from('blog_post_comment_likes')
+      .select('comment_id, visitor_key')
+      .eq('site_id', SITE_ID)
+      .in('comment_id', commentIds);
+    if (clError) throw clError;
+    for (const row of commentLikes || []) {
+      likeCountByComment.set(
+        row.comment_id,
+        (likeCountByComment.get(row.comment_id) || 0) + 1,
+      );
+      if (resolvedVisitor && row.visitor_key === resolvedVisitor) {
+        likedCommentIds.add(row.comment_id);
+      }
+    }
+  }
 
   return {
     postId: post.id,
@@ -101,12 +136,14 @@ export async function getPublicEngagementBySlug(slug: string, visitorKey?: strin
     likesEnabled: !!post.likes_enabled,
     likeCount,
     liked,
-    comments: (commentsRes.data || []).map((c) => ({
+    comments: commentRows.map((c) => ({
       id: c.id,
       authorName: c.author_name,
       body: c.body,
       createdAt: c.created_at,
       parentCommentId: c.parent_comment_id ?? null,
+      likeCount: likeCountByComment.get(c.id) || 0,
+      liked: likedCommentIds.has(c.id),
     })),
   };
 }
@@ -162,13 +199,6 @@ export async function submitPublicComment(
         status: 400,
       };
     }
-    if (parentRow.parent_comment_id) {
-      return {
-        ok: false as const,
-        error: 'Nested replies are limited to one level.',
-        status: 400,
-      };
-    }
   }
 
   const status: BlogCommentStatus = post.comments_auto_approve ? 'approved' : 'pending';
@@ -199,6 +229,123 @@ export async function submitPublicComment(
       parentCommentId: data.parent_comment_id ?? null,
     },
     pending: status === 'pending',
+  };
+}
+
+export async function submitStaffCommentReply(
+  parentCommentId: string,
+  body: string,
+  staff: { displayName: string; email?: string | null },
+) {
+  const trimmed = body?.trim();
+  if (!trimmed || trimmed.length > 4000) {
+    return {
+      ok: false as const,
+      error: 'Reply must be between 1 and 4000 characters.',
+      status: 400,
+    };
+  }
+  const sb = admin();
+  const { data: parentRow, error: parentError } = await sb
+    .from('blog_post_comments')
+    .select('id, blog_post_id, status, deleted_at')
+    .eq('id', parentCommentId)
+    .eq('site_id', SITE_ID)
+    .maybeSingle();
+  if (parentError) throw parentError;
+  if (!parentRow || parentRow.deleted_at) {
+    return { ok: false as const, error: 'Comment not found.', status: 404 };
+  }
+
+  const name = staff.displayName?.trim() || 'Site author';
+  const { data, error } = await sb
+    .from('blog_post_comments')
+    .insert({
+      site_id: SITE_ID,
+      blog_post_id: parentRow.blog_post_id,
+      parent_comment_id: parentCommentId,
+      author_name: name.slice(0, 80),
+      author_email: staff.email?.trim() || null,
+      body: trimmed,
+      status: 'approved',
+    })
+    .select('id, author_name, body, status, created_at, parent_comment_id')
+    .single();
+  if (error) throw error;
+
+  return {
+    ok: true as const,
+    comment: commentFromRow({
+      ...data,
+      legacy_id: null,
+      author_email: staff.email?.trim() || null,
+    }),
+  };
+}
+
+export async function togglePublicCommentLike(
+  slug: string,
+  commentId: string,
+  visitorKey: string,
+  clientIp?: string | null,
+) {
+  const post = await getPublishedPostEngagementMetaBySlug(slug);
+  if (!post || !post.likes_enabled) {
+    return { ok: false as const, error: 'Likes are not available.', status: 404 };
+  }
+  const { derivePublicLikeVisitorKey } = await import('@/lib/cms/visitor-identity');
+  const key =
+    derivePublicLikeVisitorKey(visitorKey, clientIp) ?? normalizeVisitorKey(visitorKey);
+  if (!key) {
+    return { ok: false as const, error: 'Invalid visitor key.', status: 400 };
+  }
+
+  const sb = admin();
+  const { data: comment } = await sb
+    .from('blog_post_comments')
+    .select('id, blog_post_id, status, deleted_at')
+    .eq('id', commentId)
+    .eq('blog_post_id', post.id)
+    .eq('status', 'approved')
+    .is('deleted_at', null)
+    .maybeSingle();
+  if (!comment) {
+    return { ok: false as const, error: 'Comment not found.', status: 404 };
+  }
+
+  const { data: existing } = await sb
+    .from('blog_post_comment_likes')
+    .select('id')
+    .eq('comment_id', commentId)
+    .eq('visitor_key', key)
+    .maybeSingle();
+
+  if (existing?.id) {
+    await sb.from('blog_post_comment_likes').delete().eq('id', existing.id);
+  } else {
+    await sb.from('blog_post_comment_likes').insert({
+      site_id: SITE_ID,
+      comment_id: commentId,
+      visitor_key: key,
+    });
+  }
+
+  const { count } = await sb
+    .from('blog_post_comment_likes')
+    .select('id', { count: 'exact', head: true })
+    .eq('comment_id', commentId);
+
+  const { data: likedRow } = await sb
+    .from('blog_post_comment_likes')
+    .select('id')
+    .eq('comment_id', commentId)
+    .eq('visitor_key', key)
+    .maybeSingle();
+
+  return {
+    ok: true as const,
+    liked: !!likedRow,
+    likeCount: count ?? 0,
   };
 }
 

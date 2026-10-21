@@ -178,6 +178,44 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
         </div>
       </section>
 
+      <div class="bd-reply-modal" id="bdReplyModal" hidden role="dialog" aria-modal="true" aria-labelledby="bdReplyModalTitle">
+        <div class="bd-reply-modal-backdrop" data-bd-reply-close tabindex="-1"></div>
+        <div class="bd-reply-modal-panel" role="document">
+          <header class="bd-reply-modal-head">
+            <div>
+              <p class="section-label">Reply</p>
+              <h2 class="bd-reply-modal-title" id="bdReplyModalTitle">Write a reply</h2>
+            </div>
+            <button type="button" class="bd-reply-modal-close" data-bd-reply-close aria-label="Close reply panel">
+              <i class="ri-close-line" aria-hidden="true"></i>
+            </button>
+          </header>
+          <p class="bd-reply-modal-quote" id="bdReplyModalQuote"></p>
+          <form class="bd-reply-modal-form" id="bdReplyModalForm" novalidate>
+            <input type="hidden" name="parentId" id="bdReplyParentId" value="" />
+            <div class="bd-comment-fields">
+              <div class="bd-comment-field">
+                <label class="bd-comment-label" for="bdReplyName">Name</label>
+                <input type="text" id="bdReplyName" class="bd-comment-input" name="name" autocomplete="name" placeholder="Your name" required maxlength="80" />
+              </div>
+              <div class="bd-comment-field">
+                <label class="bd-comment-label" for="bdReplyEmail">Email <span class="bd-optional">(optional)</span></label>
+                <input type="email" id="bdReplyEmail" class="bd-comment-input" name="email" autocomplete="email" placeholder="you@example.com" maxlength="254" />
+              </div>
+            </div>
+            <div class="bd-comment-field bd-comment-field--full">
+              <label class="bd-comment-label" for="bdReplyMessage">Your reply</label>
+              <textarea id="bdReplyMessage" class="bd-comment-textarea" name="message" rows="4" placeholder="Write your reply…" required maxlength="4000"></textarea>
+            </div>
+            <p class="bd-comment-error" id="bdReplyModalError" role="alert" hidden></p>
+            <div class="bd-reply-modal-actions">
+              <button type="button" class="bd-comment-reply-cancel" data-bd-reply-close>Cancel</button>
+              <button type="submit" class="faq-cta-btn" id="bdReplyModalSubmit">Post reply</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <nav class="bd-post-nav" id="bdPostNav" aria-label="Previous and next articles"></nav>
         </div>
 
