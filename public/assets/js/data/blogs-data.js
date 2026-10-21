@@ -480,6 +480,19 @@ function _renderArticleFooter(post) {
           <span class="logo-role">Full Stack Web Developer</span>
         </div>
       </div>
+      <div class="author-footer-actions">
+        <button
+          type="button"
+          class="bd-like-btn"
+          id="bdLikeBtn"
+          aria-pressed="false"
+          aria-label="Like this article"
+          hidden
+        >
+          <span class="icon" data-icon="siHeart"></span>
+          <span class="bd-like-count" id="bdLikeCount">0</span>
+          <span class="bd-like-label">Like</span>
+        </button>
       <div class="share-row">
         <span class="share-label">Share this article</span>
         <a href="#" class="share-btn" aria-label="Share on Twitter" data-share="twitter">
@@ -494,6 +507,7 @@ function _renderArticleFooter(post) {
         <a href="#" class="share-btn" aria-label="Copy link" data-share="copy">
           ${_iconHtml("siLink")}
         </a>
+      </div>
       </div>
     </div>`;
 }

@@ -73,7 +73,7 @@ export async function getPublicEngagementBySlug(slug: string, visitorKey?: strin
     post.comments_enabled
       ? sb
         .from('blog_post_comments')
-        .select('id, author_name, body, created_at')
+        .select('id, author_name, body, created_at, parent_comment_id')
         .eq('blog_post_id', post.id)
         .eq('status', 'approved')
         .is('deleted_at', null)
@@ -106,13 +106,19 @@ export async function getPublicEngagementBySlug(slug: string, visitorKey?: strin
       authorName: c.author_name,
       body: c.body,
       createdAt: c.created_at,
+      parentCommentId: c.parent_comment_id ?? null,
     })),
   };
 }
 
 export async function submitPublicComment(
   slug: string,
-  input: { authorName: string; authorEmail?: string; body: string },
+  input: {
+    authorName: string;
+    authorEmail?: string;
+    body: string;
+    parentCommentId?: string | null;
+  },
   senderIp?: string | null,
 ) {
   const post = await getPublishedPostEngagementMetaBySlug(slug);
@@ -133,20 +139,52 @@ export async function submitPublicComment(
     return { ok: false as const, error: 'Please enter a valid email address.', status: 400 };
   }
 
-  const status: BlogCommentStatus = post.comments_auto_approve ? 'approved' : 'pending';
+  const parentCommentId = input.parentCommentId?.trim() || null;
   const sb = admin();
+
+  if (parentCommentId) {
+    const { data: parentRow, error: parentError } = await sb
+      .from('blog_post_comments')
+      .select('id, blog_post_id, parent_comment_id, status, deleted_at')
+      .eq('id', parentCommentId)
+      .eq('site_id', SITE_ID)
+      .maybeSingle();
+    if (parentError) throw parentError;
+    if (
+      !parentRow ||
+      parentRow.deleted_at ||
+      parentRow.blog_post_id !== post.id ||
+      parentRow.status !== 'approved'
+    ) {
+      return {
+        ok: false as const,
+        error: 'Could not reply to that comment.',
+        status: 400,
+      };
+    }
+    if (parentRow.parent_comment_id) {
+      return {
+        ok: false as const,
+        error: 'Nested replies are limited to one level.',
+        status: 400,
+      };
+    }
+  }
+
+  const status: BlogCommentStatus = post.comments_auto_approve ? 'approved' : 'pending';
   const { data, error } = await sb
     .from('blog_post_comments')
     .insert({
       site_id: SITE_ID,
       blog_post_id: post.id,
+      parent_comment_id: parentCommentId,
       author_name: authorName,
       author_email: authorEmail,
       body,
       status,
       sender_ip: senderIp || null,
     })
-    .select('id, author_name, body, status, created_at')
+    .select('id, author_name, body, status, created_at, parent_comment_id')
     .single();
   if (error) throw error;
 
@@ -158,6 +196,7 @@ export async function submitPublicComment(
       body: data.body,
       status: data.status,
       createdAt: data.created_at,
+      parentCommentId: data.parent_comment_id ?? null,
     },
     pending: status === 'pending',
   };

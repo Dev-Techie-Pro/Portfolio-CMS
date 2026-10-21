@@ -33,6 +33,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
         author_name: c.authorName,
         body: c.body,
         created_at: c.createdAt,
+        parent_id: c.parentCommentId,
       })),
     });
   } catch (err) {

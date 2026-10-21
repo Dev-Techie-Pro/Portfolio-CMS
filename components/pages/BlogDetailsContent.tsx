@@ -119,20 +119,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
       >
         <div class="bd-engagement-head">
           <div>
-            <p class="section-label">Community</p>
-            <h2 class="bd-engagement-title" id="bdEngagementHeading">Comments &amp; likes</h2>
-            <p class="bd-engagement-sub">Share your thoughts on this article.</p>
+            <p class="section-label">Discussion</p>
+            <h2 class="bd-engagement-title" id="bdEngagementHeading">Join the conversation</h2>
+            <p class="bd-engagement-sub">Share your take, ask a question, or reply to others below.</p>
           </div>
-          <button
-            type="button"
-            class="bd-like-btn"
-            id="bdLikeBtn"
-            aria-pressed="false"
-            aria-label="Like this article"
-          >
-            <span class="icon" data-icon="siHeart"></span>
-            <span class="bd-like-count" id="bdLikeCount">0</span>
-          </button>
         </div>
         <form class="bd-comment-form" id="bdCommentForm" novalidate>
           <div class="bd-comment-fields">

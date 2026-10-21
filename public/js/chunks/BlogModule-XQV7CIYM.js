@@ -811,6 +811,13 @@ function buildTocHtmlFromArticle(articleHtml) {
     });
   }
   if (!sections.length) {
+    doc.querySelectorAll("h2").forEach((h2, index) => {
+      const title = h2.textContent?.trim() || `Section ${index + 1}`;
+      const slug = title.toLowerCase().replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-") || `section-${index + 1}`;
+      sections.push({ id: slug, title });
+    });
+  }
+  if (!sections.length) {
     return '<span class="pa-blog-ws-preview-toc-empty">Add <code>&lt;section id="\u2026"&gt;</code> with <code>&lt;h2&gt;</code> for TOC entries.</span>';
   }
   return sections.map(
@@ -2076,4 +2083,4 @@ var BlogModule = class extends CrudCardModule {
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-6MA5EIYH.js.map
+//# sourceMappingURL=BlogModule-XQV7CIYM.js.map

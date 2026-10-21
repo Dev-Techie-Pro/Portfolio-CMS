@@ -7,6 +7,8 @@ type CommentPayload = {
   name?: unknown;
   email?: unknown;
   message?: unknown;
+  parentId?: unknown;
+  parentCommentId?: unknown;
 };
 
 type RouteContext = { params: Promise<{ slug: string }> };
@@ -32,6 +34,9 @@ export async function POST(request: NextRequest, context: RouteContext) {
   const name = asTrimmed(body.name);
   const email = asTrimmed(body.email);
   const message = asTrimmed(body.message);
+  const parentRaw = body.parentId ?? body.parentCommentId;
+  const parentCommentId =
+    typeof parentRaw === "string" && parentRaw.trim() ? parentRaw.trim() : null;
 
   try {
     const result = await submitPublicComment(
@@ -40,6 +45,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
         authorName: name,
         authorEmail: email || undefined,
         body: message,
+        parentCommentId,
       },
       getClientIp(request),
     );
@@ -61,6 +67,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
             body: result.comment.body,
             created_at: result.comment.createdAt,
             status: result.comment.status,
+            parent_id: result.comment.parentCommentId,
           }
         : null,
     });
