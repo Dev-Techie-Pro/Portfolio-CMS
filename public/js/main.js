@@ -7332,8 +7332,14 @@ function resetAppReady() {
 }
 
 // lib/motion/segment-pill.ts
-function clipInset(top, right, bottom, left) {
-  return `inset(${top}px ${right}px ${bottom}px ${left}px round 999px)`;
+function segmentPillClipRound(track) {
+  const isAdmin = Boolean(
+    track.closest(".pa-shell, .pa-main, .pa-auth-page, .pa-auth-body")
+  );
+  return isAdmin ? "var(--pa-radius)" : "var(--br-none)";
+}
+function clipInset(top, right, bottom, left, round) {
+  return `inset(${top}px ${right}px ${bottom}px ${left}px round ${round})`;
 }
 function moveSegmentPill(pill, track, activeBtn, animate2 = true) {
   const trackW = track.offsetWidth;
@@ -7342,7 +7348,8 @@ function moveSegmentPill(pill, track, activeBtn, animate2 = true) {
   const right = trackW - (activeBtn.offsetLeft + activeBtn.offsetWidth);
   const top = activeBtn.offsetTop;
   const bottom = trackH - (activeBtn.offsetTop + activeBtn.offsetHeight);
-  const clip = (l, r) => clipInset(top, r, bottom, l);
+  const round = segmentPillClipRound(track);
+  const clip = (l, r) => clipInset(top, r, bottom, l, round);
   const pillState = pill;
   const prev = pillState.__lr;
   pillState.__lr = [left, right];

@@ -3,13 +3,22 @@ import { motionDuration, prefersReducedMotion } from './duration';
 
 type LrState = { __lr?: [number, number] };
 
+/** Admin shell uses theme radius; public portfolio uses square corners. */
+export function segmentPillClipRound(track: HTMLElement): string {
+  const isAdmin = Boolean(
+    track.closest('.pa-shell, .pa-main, .pa-auth-page, .pa-auth-body'),
+  );
+  return isAdmin ? 'var(--pa-radius)' : 'var(--br-none)';
+}
+
 function clipInset(
   top: number,
   right: number,
   bottom: number,
   left: number,
+  round: string,
 ) {
-  return `inset(${top}px ${right}px ${bottom}px ${left}px round 999px)`;
+  return `inset(${top}px ${right}px ${bottom}px ${left}px round ${round})`;
 }
 
 export function moveSegmentPill(
@@ -24,7 +33,8 @@ export function moveSegmentPill(
   const right = trackW - (activeBtn.offsetLeft + activeBtn.offsetWidth);
   const top = activeBtn.offsetTop;
   const bottom = trackH - (activeBtn.offsetTop + activeBtn.offsetHeight);
-  const clip = (l: number, r: number) => clipInset(top, r, bottom, l);
+  const round = segmentPillClipRound(track);
+  const clip = (l: number, r: number) => clipInset(top, r, bottom, l, round);
 
   const pillState = pill as HTMLElement & LrState;
   const prev = pillState.__lr;

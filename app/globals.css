@@ -29,6 +29,11 @@ html.js.is-ready .app {
   transform: scaleX(0);
 }
 
+/* Segment pill clip-path uses var(--br-none) on public (see lib/motion/segment-pill.ts) */
+.seg .seg__pill {
+  border-radius: var(--br-none);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
