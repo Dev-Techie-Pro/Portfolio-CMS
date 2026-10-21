@@ -11,7 +11,7 @@ import { getBlogDetailEditorTemplate } from '../../data/blogDetailEditorTemplate
 import { syncBlogDetailRtePreview } from '../../utils/blogDetailTemplatePreview.js';
 import { getChipValues, populateChips } from '../../utils/chips.js';
 import { bindCommaSeparatedChipInput } from '../../utils/chipInput.js';
-import { requestDelete } from '../shell/confirm.js';
+import { requestConfirm, requestDelete } from '../shell/confirm.js';
 import type { BlogModule } from './BlogModule.js';
 import { canManageContent } from '../../core/cms-access.js';
 import {
@@ -117,26 +117,56 @@ export class BlogPostWorkspace {
       this.blog.on(input, 'change', () => {
         const el = input as HTMLInputElement;
         if (!el.checked) return;
-        this.detailTemplate = el.value;
-        this.syncTemplatePreview();
-        this.maybeApplyDetailTemplateHtml(el.value);
-        this.syncRteTemplatePreview();
-        if (this.wsEditorMode === 'preview') this.setEditorMode('preview');
+        const previous = this.detailTemplate;
+        this.maybeApplyDetailTemplateHtml(el.value, previous);
       });
     });
   }
 
-  private maybeApplyDetailTemplateHtml(templateId: string) {
-    if (!templateId || templateId === 'auto') return;
-    const starter = getBlogDetailEditorTemplate(templateId);
-    if (!starter) return;
-    const html = getBlogRteHtml('blogWsContent', 'blogWsContentHtml', 'blogWsRteWrap');
-    const plain = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-    if (plain && !window.confirm(`Replace the article HTML with the ${starter.label} layout starter?`)) {
+  private maybeApplyDetailTemplateHtml(templateId: string, previousTemplateId: string) {
+    const commitLayout = (applyStarter: boolean, starterHtml?: string) => {
+      this.detailTemplate = templateId;
+      if (applyStarter && starterHtml) {
+        setBlogRteHtml('blogWsContent', 'blogWsContentHtml', 'blogWsRteWrap', starterHtml);
+      }
+      this.syncTemplatePreview();
+      this.syncRteTemplatePreview();
+      if (applyStarter && starterHtml) {
+        const label = getBlogDetailEditorTemplate(templateId)?.label || 'Template';
+        this.blog.toast(`${label} template loaded — edit in Editor or Code`, 'success', 2800);
+      }
+      if (this.wsEditorMode === 'preview') this.setEditorMode('preview');
+    };
+
+    if (!templateId || templateId === 'auto') {
+      commitLayout(false);
       return;
     }
-    setBlogRteHtml('blogWsContent', 'blogWsContentHtml', 'blogWsRteWrap', starter.bodyHtml);
-    this.blog.toast(`${starter.label} template loaded — edit in Editor or Code`, 'success', 2800);
+
+    const starter = getBlogDetailEditorTemplate(templateId);
+    if (!starter) {
+      commitLayout(false);
+      return;
+    }
+
+    const html = getBlogRteHtml('blogWsContent', 'blogWsContentHtml', 'blogWsRteWrap');
+    const plain = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+
+    if (!plain) {
+      commitLayout(true, starter.bodyHtml);
+      return;
+    }
+
+    requestConfirm({
+      title: 'Replace article HTML?',
+      message: `Load the <strong>${escapeHtml(starter.label)}</strong> layout starter? Your current article content will be replaced.`,
+      confirmLabel: 'Use template',
+      iconClass: 'ri-layout-masonry-line',
+      danger: false,
+      iconTone: 'warning',
+      onConfirm: () => commitLayout(true, starter.bodyHtml),
+      onCancel: () => this.setDetailTemplateChoice(previousTemplateId),
+    });
   }
 
   syncRteTemplatePreview() {

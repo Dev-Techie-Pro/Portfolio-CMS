@@ -4,6 +4,7 @@ import { closePanels } from "./panels.js";
 let pendingId = null;
 let pendingType = null;
 let pendingBulkConfirm = null;
+let pendingBulkCancel = null;
 let pendingLogoutConfirm = null;
 let confirmDefaultsBackup = null;
 let dialogBound = false;
@@ -85,6 +86,7 @@ function requestBulkAction({
   title,
   message,
   onConfirm,
+  onCancel,
   confirmLabel = "Delete",
   iconClass = "ri-delete-bin-line",
   danger = true,
@@ -95,6 +97,7 @@ function requestBulkAction({
   pendingId = null;
   pendingType = null;
   pendingBulkConfirm = onConfirm;
+  pendingBulkCancel = onCancel || null;
   applyConfirmDialog({ title, message, confirmLabel, iconClass, danger, iconTone });
   $id("paConfirmOverlay")?.classList.add("visible");
 }
@@ -109,7 +112,9 @@ function closeConfirm() {
   pendingId = null;
   pendingType = null;
   if (pendingBulkConfirm) {
+    pendingBulkCancel?.();
     pendingBulkConfirm = null;
+    pendingBulkCancel = null;
     restoreConfirmDefaults();
   }
   if (pendingLogoutConfirm) {
@@ -153,6 +158,7 @@ async function performDelete() {
   if (pendingBulkConfirm) {
     const cb = pendingBulkConfirm;
     pendingBulkConfirm = null;
+    pendingBulkCancel = null;
     $id("paConfirmOverlay")?.classList.remove("visible");
     restoreConfirmDefaults();
     await Promise.resolve(cb());

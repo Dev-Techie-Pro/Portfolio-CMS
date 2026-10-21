@@ -15024,7 +15024,7 @@ body.pa-media-modal-open {
   height: 40px;
 }
 .pa-blog-ws-preview-layout-label {
-  margin: 0 0 10px;
+  margin: 10px 25px 10px;
   font-size: var(--pa-fs-sm);
   color: var(--pa-text-muted);
 }

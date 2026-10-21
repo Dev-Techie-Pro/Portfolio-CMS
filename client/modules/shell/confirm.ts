@@ -7,6 +7,7 @@ let pendingId = null;
 let pendingType = null;
 
 let pendingBulkConfirm = null;
+let pendingBulkCancel = null;
 let pendingLogoutConfirm = null;
 let confirmDefaultsBackup = null;
 let dialogBound = false;
@@ -110,11 +111,13 @@ export function requestDelete(id, type, name, extraInfo = '') {
  * @param {boolean} [opts.danger=true] When true, styles the confirm button as destructive.
  * @param {'danger'|'warning'} [opts.iconTone='danger'] Icon accent color.
  * @param {() => void|Promise<void>} opts.onConfirm Called once the user confirms.
+ * @param {() => void} [opts.onCancel] Called when the user dismisses without confirming.
  */
 export function requestBulkAction({
   title,
   message,
   onConfirm,
+  onCancel,
   confirmLabel = 'Delete',
   iconClass = 'ri-delete-bin-line',
   danger = true,
@@ -125,6 +128,7 @@ export function requestBulkAction({
   pendingId = null;
   pendingType = null;
   pendingBulkConfirm = onConfirm;
+  pendingBulkCancel = onCancel || null;
   applyConfirmDialog({ title, message, confirmLabel, iconClass, danger, iconTone });
   $id('paConfirmOverlay')?.classList.add('visible');
 }
@@ -143,7 +147,9 @@ export function closeConfirm() {
   pendingId = null;
   pendingType = null;
   if (pendingBulkConfirm) {
+    pendingBulkCancel?.();
     pendingBulkConfirm = null;
+    pendingBulkCancel = null;
     restoreConfirmDefaults();
   }
   if (pendingLogoutConfirm) {
@@ -192,6 +198,7 @@ async function performDelete() {
   if (pendingBulkConfirm) {
     const cb = pendingBulkConfirm;
     pendingBulkConfirm = null;
+    pendingBulkCancel = null;
     $id('paConfirmOverlay')?.classList.remove('visible');
     restoreConfirmDefaults();
     await Promise.resolve(cb());
