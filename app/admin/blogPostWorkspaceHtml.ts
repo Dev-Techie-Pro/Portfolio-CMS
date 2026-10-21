@@ -33,6 +33,29 @@ export const BLOG_POST_WORKSPACE_HTML = `
         </div>
         <div class="pa-form-error-msg" id="blogWsTitleError"><i class="ri-error-warning-line"></i> Post title is required</div>
       </div>
+      
+      <section class="pa-blog-ws-panel is-collapsed" data-ws-panel data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
+        <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="true">
+          <span class="pa-blog-ws-panel-head-left"><i class="ri-text-snippet"></i> Excerpt &amp; tags</span>
+          <i class="ri-arrow-down-s-line pa-blog-ws-panel-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="pa-blog-ws-panel-body pa-collapse-panel" data-pa-collapse-panel>
+          <div class="pa-form-group">
+            <label class="pa-form-label" for="blogWsExcerpt">Excerpt <span class="pa-form-required">*</span></label>
+            <textarea class="pa-form-textarea" id="blogWsExcerpt" maxlength="160" rows="3" placeholder="Short summary for cards and previews"></textarea>
+            <div class="pa-char-count"><span id="blogWsExcerptCount">0</span>/160</div>
+            <div class="pa-form-error-msg" id="blogWsExcerptError"><i class="ri-error-warning-line"></i> Excerpt is required</div>
+          </div>
+          <div class="pa-form-group">
+            <label class="pa-form-label" for="blogWsTagInput">Tags</label>
+            <div class="pa-tech-input-wrap">
+              <input class="pa-tech-input" type="text" placeholder="Add tags (comma-separated)…" id="blogWsTagInput" />
+              <button class="pa-tech-add-btn" type="button" id="blogWsTagAddBtn">+ Add</button>
+            </div>
+            <div class="pa-tech-chips" id="blogWsTagChips"></div>
+          </div>
+        </div>
+      </section>
 
       <div class="pa-form-group pa-blog-ws-field pa-blog-ws-content-field">
         <div class="pa-blog-ws-content-label-row">
@@ -254,28 +277,6 @@ export const BLOG_POST_WORKSPACE_HTML = `
         </div>
       </section>
 
-      <section class="pa-blog-ws-panel is-collapsed" data-ws-panel data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
-        <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="true">
-          <span class="pa-blog-ws-panel-head-left"><i class="ri-text-snippet"></i> Excerpt &amp; tags</span>
-          <i class="ri-arrow-down-s-line pa-blog-ws-panel-chevron" aria-hidden="true"></i>
-        </button>
-        <div class="pa-blog-ws-panel-body pa-collapse-panel" data-pa-collapse-panel>
-          <div class="pa-form-group">
-            <label class="pa-form-label" for="blogWsExcerpt">Excerpt <span class="pa-form-required">*</span></label>
-            <textarea class="pa-form-textarea" id="blogWsExcerpt" maxlength="160" rows="3" placeholder="Short summary for cards and previews"></textarea>
-            <div class="pa-char-count"><span id="blogWsExcerptCount">0</span>/160</div>
-            <div class="pa-form-error-msg" id="blogWsExcerptError"><i class="ri-error-warning-line"></i> Excerpt is required</div>
-          </div>
-          <div class="pa-form-group">
-            <label class="pa-form-label" for="blogWsTagInput">Tags</label>
-            <div class="pa-tech-input-wrap">
-              <input class="pa-tech-input" type="text" placeholder="Add tags (comma-separated)…" id="blogWsTagInput" />
-              <button class="pa-tech-add-btn" type="button" id="blogWsTagAddBtn">+ Add</button>
-            </div>
-            <div class="pa-tech-chips" id="blogWsTagChips"></div>
-          </div>
-        </div>
-      </section>
 
       <section class="pa-blog-ws-panel is-collapsed" data-ws-panel data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
         <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="true">
