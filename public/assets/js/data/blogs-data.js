@@ -347,38 +347,131 @@ function _renderStatBox(block) {
     </div>`;
 }
 
-function _renderArticleBody(content, post) {
-  const tpl = _resolveDetailTemplate(post);
-  const numberedSections = tpl === "longform" || tpl === "case-study";
-  let sectionIndex = 0;
-  let html = "";
+function _slugifyHeading(text) {
+  const base = String(text || "")
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+  return base || "section";
+}
+
+function _collectHtmlFromContent(content) {
+  const parts = [];
   (content || []).forEach((block) => {
-    if (block.type === "section") {
-      sectionIndex += 1;
-      const figure = block.figureFirst
-        ? `<figure class="article-figure"><img src="${post.image}" alt="${post.imageAlt}" width="900" height="400" loading="eager" /></figure>`
-        : "";
-      const inner = (block.blocks || [])
-        .map((b) => _renderBlock(b, post))
-        .join("");
-      const sectionNum = numberedSections
-        ? String(sectionIndex).padStart(2, "0")
-        : "";
-      const h2NumAttr = sectionNum
-        ? ` data-section-num="${sectionNum}"`
-        : "";
-      html += `
-        <section id="${block.id}">
-          ${figure}
-          <h2${h2NumAttr}>${block.title}</h2>
-          ${inner}
-        </section>`;
-    } else if (block.type === "stat-box") {
-      html += _renderStatBox(block);
+    if (block.type === "section" && Array.isArray(block.blocks)) {
+      block.blocks.forEach((inner) => {
+        if (inner?.type === "p" && typeof inner.text === "string") {
+          parts.push(inner.text);
+        }
+      });
+    } else if (block.type === "p" && typeof block.text === "string") {
+      parts.push(block.text);
     }
   });
+  return parts.join("");
+}
 
-  html += `
+function _isWrappedHtmlArticle(content) {
+  const sections = _getTocSections(content);
+  const html = _collectHtmlFromContent(content);
+  if (!html || !/<(?:section|h[2-4])\b/i.test(html)) return false;
+  if (!sections.length) return true;
+  if (sections.length !== 1) return false;
+  const only = sections[0];
+  return (
+    only.id === "content" ||
+    only.title === "Article" ||
+    (only.blocks || []).every(
+      (b) => b.type === "p" && typeof b.text === "string",
+    )
+  );
+}
+
+function _ensureArticleHeadingIds(root) {
+  const used = new Set();
+  root.querySelectorAll("[id]").forEach((el) => {
+    if (el.id) used.add(el.id);
+  });
+
+  const claimId = (base) => {
+    let id = base;
+    let n = 2;
+    while (used.has(id)) {
+      id = `${base}-${n}`;
+      n += 1;
+    }
+    used.add(id);
+    return id;
+  };
+
+  root.querySelectorAll("section").forEach((section, index) => {
+    if (section.id) return;
+    const h2 = section.querySelector("h2");
+    const base = h2
+      ? _slugifyHeading(h2.textContent)
+      : `section-${index + 1}`;
+    section.id = claimId(base);
+  });
+
+  root.querySelectorAll("h2").forEach((h2, index) => {
+    if (h2.id) return;
+    const section = h2.closest("section[id]");
+    if (section) return;
+    h2.id = claimId(_slugifyHeading(h2.textContent) || `heading-${index + 1}`);
+  });
+}
+
+function _tocEntriesFromArticleRoot(root) {
+  const entries = [];
+  const seen = new Set();
+
+  root.querySelectorAll("section[id]").forEach((section) => {
+    const id = section.getAttribute("id");
+    if (!id || seen.has(id)) return;
+    const h2 = section.querySelector("h2");
+    const title = (h2?.textContent || id).trim();
+    entries.push({ id, title, heading: h2 });
+    seen.add(id);
+  });
+
+  if (entries.length) return entries;
+
+  root.querySelectorAll("h2[id]").forEach((h2) => {
+    const id = h2.getAttribute("id");
+    if (!id || seen.has(id)) return;
+    entries.push({ id, title: (h2.textContent || id).trim(), heading: h2 });
+    seen.add(id);
+  });
+
+  return entries;
+}
+
+function _applyLongformNumsToEntries(entries) {
+  entries.forEach((entry, index) => {
+    const h2 = entry.heading;
+    if (!h2) return;
+    h2.setAttribute(
+      "data-section-num",
+      String(index + 1).padStart(2, "0"),
+    );
+  });
+}
+
+function _renderHtmlArticleMain(html, post) {
+  const tpl = _resolveDetailTemplate(post);
+  const numberedSections = tpl === "longform" || tpl === "case-study";
+  const doc = new DOMParser().parseFromString(html || "", "text/html");
+  const root = doc.body;
+  _ensureArticleHeadingIds(root);
+  const entries = _tocEntriesFromArticleRoot(root);
+  if (numberedSections) _applyLongformNumsToEntries(entries);
+  return { html: root.innerHTML, tocEntries: entries };
+}
+
+function _renderArticleFooter(post) {
+  return `
     <div class="author-footer">
       <div class="nav-logo" aria-label="Author">
         <div class="logo-box u-flex-center" aria-hidden="true">SI</div>
@@ -403,22 +496,81 @@ function _renderArticleBody(content, post) {
         </a>
       </div>
     </div>`;
+}
 
-  return html;
+function _renderArticleMain(content, post) {
+  if (_isWrappedHtmlArticle(content)) {
+    const html = _collectHtmlFromContent(content);
+    const { html: mainHtml, tocEntries } = _renderHtmlArticleMain(html, post);
+    return { mainHtml, tocEntries };
+  }
+
+  const tpl = _resolveDetailTemplate(post);
+  const numberedSections = tpl === "longform" || tpl === "case-study";
+  let sectionIndex = 0;
+  let html = "";
+  const tocEntries = [];
+
+  (content || []).forEach((block) => {
+    if (block.type === "section") {
+      sectionIndex += 1;
+      tocEntries.push({ id: block.id, title: block.title });
+      const figure = block.figureFirst
+        ? `<figure class="article-figure"><img src="${post.image}" alt="${post.imageAlt}" width="900" height="400" loading="eager" /></figure>`
+        : "";
+      const inner = (block.blocks || [])
+        .map((b) => _renderBlock(b, post))
+        .join("");
+      const sectionNum = numberedSections
+        ? String(sectionIndex).padStart(2, "0")
+        : "";
+      const h2NumAttr = sectionNum
+        ? ` data-section-num="${sectionNum}"`
+        : "";
+      html += `
+        <section id="${block.id}">
+          ${figure}
+          <h2${h2NumAttr}>${block.title}</h2>
+          ${inner}
+        </section>`;
+    } else if (block.type === "stat-box") {
+      html += _renderStatBox(block);
+    }
+  });
+
+  return { mainHtml: html, tocEntries };
+}
+
+function _renderArticleBody(content, post) {
+  const { mainHtml } = _renderArticleMain(content, post);
+  return mainHtml + _renderArticleFooter(post);
 }
 
 function _getTocSections(content) {
   return (content || []).filter((block) => block.type === "section");
 }
 
-function _renderToc(content) {
-  const sections = _getTocSections(content);
-  return sections
+function _renderTocLinks(entries) {
+  return (entries || [])
     .map(
-      (section, index) =>
-        `<a href="#${section.id}"><span class="toc-num">${String(index + 1).padStart(2, "0")}</span> ${section.title}</a>`,
+      (entry, index) =>
+        `<a href="#${entry.id}"><span class="toc-num">${String(index + 1).padStart(2, "0")}</span> ${entry.title}</a>`,
     )
     .join("");
+}
+
+function _renderToc(content, post) {
+  const { tocEntries } = _renderArticleMain(content, post);
+  if (tocEntries.length) {
+    const filtered = tocEntries.filter(
+      (e) => !(e.id === "content" && e.title === "Article"),
+    );
+    if (filtered.length) return _renderTocLinks(filtered);
+  }
+  const sections = _getTocSections(content);
+  return _renderTocLinks(
+    sections.map((section) => ({ id: section.id, title: section.title })),
+  );
 }
 
 function _renderPreFooterFeatures(features) {
@@ -769,9 +921,31 @@ function _refreshSkeleton(root) {
           .join("");
       }
 
+      const body = document.getElementById("bdArticleBody");
+      const { mainHtml, tocEntries } = _renderArticleMain(post.content, post);
+      if (body) {
+        body.innerHTML = mainHtml + _renderArticleFooter(post);
+      }
+
       const toc = document.getElementById("tocNav");
       if (toc) {
-        toc.innerHTML = _renderToc(post.content);
+        let entries = tocEntries;
+        if (
+          entries.length === 1 &&
+          entries[0].id === "content" &&
+          entries[0].title === "Article"
+        ) {
+          entries = [];
+        }
+        if (!entries.length) {
+          entries = _getTocSections(post.content).map((section) => ({
+            id: section.id,
+            title: section.title,
+          }));
+        }
+        toc.innerHTML = entries.length
+          ? _renderTocLinks(entries)
+          : '<span class="bd-toc-empty">Add sections with headings to build a table of contents.</span>';
       }
 
       if (post.sidebarCta) {
@@ -782,11 +956,6 @@ function _refreshSkeleton(root) {
           ctaLink.textContent = post.sidebarCta.linkText;
           ctaLink.href = post.sidebarCta.href || "/contact";
         }
-      }
-
-      const body = document.getElementById("bdArticleBody");
-      if (body) {
-        body.innerHTML = _renderArticleBody(post.content, post);
       }
 
       const engagement = document.getElementById("bdEngagement");

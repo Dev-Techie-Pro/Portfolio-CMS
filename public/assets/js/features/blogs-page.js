@@ -322,14 +322,14 @@
         });
       });
 
-      const tocLinks = document.querySelectorAll("#tocNav a");
-      const sections = document.querySelectorAll(
-        ".article-content section[id]",
+      const tocLinks = document.querySelectorAll("#tocNav a[href^='#']");
+      const tocTargets = document.querySelectorAll(
+        ".article-content section[id], .article-content h2[id]",
       );
 
       if (
         tocLinks.length &&
-        sections.length &&
+        tocTargets.length &&
         "IntersectionObserver" in window
       ) {
         const observer = new IntersectionObserver(
@@ -347,12 +347,14 @@
           },
           { rootMargin: "-20% 0px -60% 0px", threshold: 0 },
         );
-        sections.forEach((section) => observer.observe(section));
+        tocTargets.forEach((target) => observer.observe(target));
       }
 
       tocLinks.forEach((link) => {
         link.addEventListener("click", (e) => {
-          const target = document.querySelector(link.getAttribute("href"));
+          const href = link.getAttribute("href");
+          if (!href || href === "#") return;
+          const target = document.querySelector(href);
           if (!target) return;
           e.preventDefault();
           const top = target.getBoundingClientRect().top + window.scrollY - 96;

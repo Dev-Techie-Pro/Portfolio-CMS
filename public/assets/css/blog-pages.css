@@ -724,6 +724,14 @@
 .toc-list a.active .toc-num {
   color: var(--accent);
 }
+
+.bd-toc-empty {
+  display: block;
+  padding: 10px 15px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--gray);
+}
 .cta-card {
   background: linear-gradient(
     145deg,
