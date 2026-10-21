@@ -75,6 +75,8 @@ var CrudCardModule = class extends Module {
     });
     this.currentEditId = null;
     this.nextId = 1;
+    /** After first grid paint, {@link patchListMotion} runs on re-renders (page enter covers the initial load). */
+    this._listMotionPrimed = false;
     this.config = { idField: "id", pageSize: 9, ...config };
     this.bulkSelect = config.bulkSelect === false ? null : new BulkSelectController(this, {
       containerId: this.config.ids.grid,
@@ -659,4 +661,4 @@ var CrudCardModule = class extends Module {
 export {
   CrudCardModule
 };
-//# sourceMappingURL=chunk-5TMLQ6QP.js.map
+//# sourceMappingURL=chunk-7KSZJW3T.js.map

@@ -1,6 +1,6 @@
 import {
   CrudCardModule
-} from "./chunk-5TMLQ6QP.js";
+} from "./chunk-7KSZJW3T.js";
 import {
   setStatTrend,
   setStatValue
@@ -634,4 +634,4 @@ export {
   DEFAULT_TAG_ENTITY_LABELS,
   TagsModule
 };
-//# sourceMappingURL=chunk-2Z77O6AN.js.map
+//# sourceMappingURL=chunk-CCGNH3SJ.js.map

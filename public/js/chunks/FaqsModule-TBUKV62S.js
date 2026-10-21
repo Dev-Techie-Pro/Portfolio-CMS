@@ -7,7 +7,7 @@ import {
 } from "./chunk-FRUJZYET.js";
 import {
   CrudCardModule
-} from "./chunk-5TMLQ6QP.js";
+} from "./chunk-7KSZJW3T.js";
 import {
   setStatTrend,
   setStatValue
@@ -252,4 +252,4 @@ var FaqsModule = class extends CrudCardModule {
 export {
   FaqsModule
 };
-//# sourceMappingURL=FaqsModule-GA5HSK3F.js.map
+//# sourceMappingURL=FaqsModule-TBUKV62S.js.map

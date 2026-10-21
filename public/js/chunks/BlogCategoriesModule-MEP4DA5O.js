@@ -6,7 +6,7 @@ import {
 } from "./chunk-FRUJZYET.js";
 import {
   CrudCardModule
-} from "./chunk-5TMLQ6QP.js";
+} from "./chunk-7KSZJW3T.js";
 import {
   setStatTrend,
   setStatValue
@@ -547,4 +547,4 @@ var BlogCategoriesModule = class extends CrudCardModule {
 export {
   BlogCategoriesModule
 };
-//# sourceMappingURL=BlogCategoriesModule-RBLQAZZV.js.map
+//# sourceMappingURL=BlogCategoriesModule-MEP4DA5O.js.map

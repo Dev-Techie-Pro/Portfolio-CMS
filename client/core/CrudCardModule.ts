@@ -87,6 +87,8 @@ export class CrudCardModule extends Module {
   currentEditId: string | number | null = null;
   nextId = 1;
   bulkSelect!: BulkSelectController | null;
+  /** After first grid paint, {@link patchListMotion} runs on re-renders (page enter covers the initial load). */
+  _listMotionPrimed = false;
 
   /**
    * @param {object} config

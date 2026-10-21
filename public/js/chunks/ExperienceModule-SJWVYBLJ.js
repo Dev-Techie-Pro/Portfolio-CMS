@@ -7,7 +7,7 @@ import {
 } from "./chunk-FRUJZYET.js";
 import {
   CrudCardModule
-} from "./chunk-5TMLQ6QP.js";
+} from "./chunk-7KSZJW3T.js";
 import {
   setStatTrend,
   setStatValue
@@ -277,4 +277,4 @@ export {
   ExperienceModule,
   SEED_EXPERIENCE
 };
-//# sourceMappingURL=ExperienceModule-I4HKOP6B.js.map
+//# sourceMappingURL=ExperienceModule-SJWVYBLJ.js.map

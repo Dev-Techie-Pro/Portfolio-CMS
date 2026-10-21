@@ -14756,6 +14756,17 @@ body.pa-media-modal-open {
   line-height: 1.7;
   color: var(--pa-text);
 }
+.pa-blog-ws-main-panels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pa-blog-ws-section-gap);
+  width: 100%;
+  flex-shrink: 0;
+  margin-top: var(--pa-blog-ws-section-gap);
+}
+.pa-blog-ws-content-field .pa-blog-ws-main-panels .pa-blog-ws-comments {
+  max-height: 280px;
+}
 .pa-blog-ws-sidebar {
   display: flex;
   flex-direction: column;
@@ -14801,15 +14812,27 @@ body.pa-media-modal-open {
 
 .pa-blog-ws-panel.pa-collapse-root .pa-blog-ws-panel-body {
   max-height: none !important;
-  visibility: visible;
-  transition: none;
   padding: 0;
-  border-top-color: transparent;
+  overflow: hidden;
+  padding: 0 14px;               
+  border-top: 1px solid transparent;
+  visibility: hidden;
+  transition:
+    max-height 0.3s ease,
+    padding 0.3s ease,
+    border-color 0.3s ease,
+    visibility 0s linear 0.3s;   
 }
 
 .pa-blog-ws-panel.pa-collapse-root .pa-blog-ws-panel-body.is-pa-collapse-open {
+  border-top-color: var(--pa-border);       
   padding: 12px 14px 16px;
-  border-top-color: var(--pa-border);
+  visibility: visible;
+  transition:
+    max-height 0.3s ease,
+    padding 0.3s ease,
+    border-color 0.3s ease,
+    visibility 0s;
 }
 
 .pa-blog-ws-panel.is-collapsed .pa-blog-ws-panel-chevron {

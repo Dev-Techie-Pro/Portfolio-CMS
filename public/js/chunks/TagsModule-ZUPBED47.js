@@ -1,8 +1,8 @@
 import {
   DEFAULT_TAG_ENTITY_LABELS,
   TagsModule
-} from "./chunk-2Z77O6AN.js";
-import "./chunk-5TMLQ6QP.js";
+} from "./chunk-CCGNH3SJ.js";
+import "./chunk-7KSZJW3T.js";
 import "./chunk-QIAJXGLR.js";
 import "./chunk-OSDNRQVH.js";
 import "./chunk-V4P62DF3.js";
@@ -20,4 +20,4 @@ export {
   DEFAULT_TAG_ENTITY_LABELS,
   TagsModule
 };
-//# sourceMappingURL=TagsModule-CE3IRPRX.js.map
+//# sourceMappingURL=TagsModule-ZUPBED47.js.map

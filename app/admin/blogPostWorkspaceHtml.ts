@@ -103,6 +103,78 @@ export const BLOG_POST_WORKSPACE_HTML = `
             </div>
           </div>
         </div>
+        <div class="pa-blog-ws-main-panels" aria-label="SEO, revisions, and engagement">
+          <section class="pa-blog-ws-panel is-collapsed" data-ws-panel data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
+            <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="true">
+              <span class="pa-blog-ws-panel-head-left"><i class="ri-search-line"></i> SEO</span>
+              <i class="ri-arrow-down-s-line pa-blog-ws-panel-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="pa-blog-ws-panel-body pa-collapse-panel" data-pa-collapse-panel>
+              <div class="pa-form-group">
+                <label class="pa-form-label" for="blogWsMetaTitle">Meta title</label>
+                <input class="pa-form-input" type="text" id="blogWsMetaTitle" maxlength="70" placeholder="Defaults to post title" />
+                <div class="pa-char-count"><span id="blogWsMetaTitleCount">0</span>/70</div>
+              </div>
+              <div class="pa-form-group">
+                <label class="pa-form-label" for="blogWsMetaDesc">Meta description</label>
+                <textarea class="pa-form-textarea" id="blogWsMetaDesc" maxlength="160" rows="3" placeholder="Defaults to excerpt"></textarea>
+                <div class="pa-char-count"><span id="blogWsMetaDescCount">0</span>/160</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="pa-blog-ws-panel is-collapsed" data-ws-panel id="paBlogWsRevisionsPanel" data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
+            <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="false">
+              <span class="pa-blog-ws-panel-head-left"><i class="ri-history-line"></i> Version history</span>
+              <i class="ri-arrow-down-s-line pa-blog-ws-panel-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="pa-blog-ws-panel-body pa-collapse-panel" data-pa-collapse-panel>
+              <p class="pa-blog-ws-engagement-hint">Up to 10 snapshots are saved before each save. Restore replaces the editor with a past version (save to persist).</p>
+              <ul class="pa-blog-ws-revisions-list" id="paBlogWsRevisionsList" aria-live="polite"></ul>
+              <p class="pa-blog-ws-revisions-empty" id="paBlogWsRevisionsEmpty" hidden>No revisions yet. Save the post to create snapshots.</p>
+            </div>
+          </section>
+
+          <section class="pa-blog-ws-panel is-collapsed" data-ws-panel id="paBlogWsEngagementPanel" data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
+            <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="true">
+              <span class="pa-blog-ws-panel-head-left"><i class="ri-chat-3-line"></i> Comments &amp; likes</span>
+              <span class="pa-blog-ws-engagement-badge" id="paBlogWsEngagementBadge" hidden></span>
+              <i class="ri-arrow-down-s-line pa-blog-ws-panel-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="pa-blog-ws-panel-body pa-collapse-panel" data-pa-collapse-panel>
+              <p class="pa-blog-ws-engagement-hint">Shown on your public portfolio site. Save the post after changing toggles.</p>
+              <div class="pa-form-group">
+                <label class="pa-form-label" for="blogWsCommentsEnabled">Comments</label>
+                <select class="pa-form-select" id="blogWsCommentsEnabled">
+                  <option value="1">Enabled on portfolio</option>
+                  <option value="0">Disabled</option>
+                </select>
+              </div>
+              <div class="pa-form-group">
+                <label class="pa-form-label" for="blogWsLikesEnabled">Likes</label>
+                <select class="pa-form-select" id="blogWsLikesEnabled">
+                  <option value="1">Enabled on portfolio</option>
+                  <option value="0">Disabled</option>
+                </select>
+              </div>
+              <div class="pa-form-group">
+                <label class="pa-form-label" for="blogWsCommentsAutoApprove">New comments</label>
+                <select class="pa-form-select" id="blogWsCommentsAutoApprove">
+                  <option value="0">Require approval (moderation)</option>
+                  <option value="1">Publish immediately</option>
+                </select>
+              </div>
+              <div class="pa-blog-ws-engagement-stats" id="paBlogWsEngagementStats">
+                <span><i class="ri-thumb-up-line"></i> <strong id="paBlogWsLikeCount">0</strong> likes</span>
+                <span><i class="ri-chat-1-line"></i> <strong id="paBlogWsCommentCount">0</strong> approved</span>
+                <span class="pa-blog-ws-engagement-pending" id="paBlogWsPendingWrap" hidden><i class="ri-time-line"></i> <strong id="paBlogWsPendingCount">0</strong> pending</span>
+              </div>
+              <div class="pa-blog-ws-comments" id="paBlogWsCommentsList" aria-live="polite">
+                <div class="pa-blog-ws-comments-empty" id="paBlogWsCommentsEmpty">No comments yet. They will appear here when visitors comment on the portfolio.</div>
+              </div>
+            </div>
+          </section>
+        </div>
         <div class="pa-form-error-msg" id="blogWsContentError"><i class="ri-error-warning-line"></i> Full content is required</div>
       </div>
     </div>
@@ -230,77 +302,6 @@ export const BLOG_POST_WORKSPACE_HTML = `
           <div class="pa-form-group">
             <label class="pa-form-label" for="blogWsImageAlt">Image alt text</label>
             <input class="pa-form-input" type="text" id="blogWsImageAlt" maxlength="120" />
-          </div>
-        </div>
-      </section>
-
-      <section class="pa-blog-ws-panel is-collapsed" data-ws-panel data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
-        <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="true">
-          <span class="pa-blog-ws-panel-head-left"><i class="ri-search-line"></i> SEO</span>
-          <i class="ri-arrow-down-s-line pa-blog-ws-panel-chevron" aria-hidden="true"></i>
-        </button>
-        <div class="pa-blog-ws-panel-body pa-collapse-panel" data-pa-collapse-panel>
-          <div class="pa-form-group">
-            <label class="pa-form-label" for="blogWsMetaTitle">Meta title</label>
-            <input class="pa-form-input" type="text" id="blogWsMetaTitle" maxlength="70" placeholder="Defaults to post title" />
-            <div class="pa-char-count"><span id="blogWsMetaTitleCount">0</span>/70</div>
-          </div>
-          <div class="pa-form-group">
-            <label class="pa-form-label" for="blogWsMetaDesc">Meta description</label>
-            <textarea class="pa-form-textarea" id="blogWsMetaDesc" maxlength="160" rows="3" placeholder="Defaults to excerpt"></textarea>
-            <div class="pa-char-count"><span id="blogWsMetaDescCount">0</span>/160</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="pa-blog-ws-panel is-collapsed" data-ws-panel id="paBlogWsRevisionsPanel" data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
-        <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="false">
-          <span class="pa-blog-ws-panel-head-left"><i class="ri-history-line"></i> Version history</span>
-          <i class="ri-arrow-down-s-line pa-blog-ws-panel-chevron" aria-hidden="true"></i>
-        </button>
-        <div class="pa-blog-ws-panel-body pa-collapse-panel" data-pa-collapse-panel>
-          <p class="pa-blog-ws-engagement-hint">Up to 10 snapshots are saved before each save. Restore replaces the editor with a past version (save to persist).</p>
-          <ul class="pa-blog-ws-revisions-list" id="paBlogWsRevisionsList" aria-live="polite"></ul>
-          <p class="pa-blog-ws-revisions-empty" id="paBlogWsRevisionsEmpty" hidden>No revisions yet. Save the post to create snapshots.</p>
-        </div>
-      </section>
-
-      <section class="pa-blog-ws-panel is-collapsed" data-ws-panel id="paBlogWsEngagementPanel" data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
-        <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="true">
-          <span class="pa-blog-ws-panel-head-left"><i class="ri-chat-3-line"></i> Comments &amp; likes</span>
-          <span class="pa-blog-ws-engagement-badge" id="paBlogWsEngagementBadge" hidden></span>
-          <i class="ri-arrow-down-s-line pa-blog-ws-panel-chevron" aria-hidden="true"></i>
-        </button>
-        <div class="pa-blog-ws-panel-body pa-collapse-panel" data-pa-collapse-panel>
-          <p class="pa-blog-ws-engagement-hint">Shown on your public portfolio site. Save the post after changing toggles.</p>
-          <div class="pa-form-group">
-            <label class="pa-form-label" for="blogWsCommentsEnabled">Comments</label>
-            <select class="pa-form-select" id="blogWsCommentsEnabled">
-              <option value="1">Enabled on portfolio</option>
-              <option value="0">Disabled</option>
-            </select>
-          </div>
-          <div class="pa-form-group">
-            <label class="pa-form-label" for="blogWsLikesEnabled">Likes</label>
-            <select class="pa-form-select" id="blogWsLikesEnabled">
-              <option value="1">Enabled on portfolio</option>
-              <option value="0">Disabled</option>
-            </select>
-          </div>
-          <div class="pa-form-group">
-            <label class="pa-form-label" for="blogWsCommentsAutoApprove">New comments</label>
-            <select class="pa-form-select" id="blogWsCommentsAutoApprove">
-              <option value="0">Require approval (moderation)</option>
-              <option value="1">Publish immediately</option>
-            </select>
-          </div>
-          <div class="pa-blog-ws-engagement-stats" id="paBlogWsEngagementStats">
-            <span><i class="ri-thumb-up-line"></i> <strong id="paBlogWsLikeCount">0</strong> likes</span>
-            <span><i class="ri-chat-1-line"></i> <strong id="paBlogWsCommentCount">0</strong> approved</span>
-            <span class="pa-blog-ws-engagement-pending" id="paBlogWsPendingWrap" hidden><i class="ri-time-line"></i> <strong id="paBlogWsPendingCount">0</strong> pending</span>
-          </div>
-          <div class="pa-blog-ws-comments" id="paBlogWsCommentsList" aria-live="polite">
-            <div class="pa-blog-ws-comments-empty" id="paBlogWsCommentsEmpty">No comments yet. They will appear here when visitors comment on the portfolio.</div>
           </div>
         </div>
       </section>

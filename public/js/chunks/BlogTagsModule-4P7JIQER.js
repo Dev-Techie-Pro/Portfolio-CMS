@@ -1,8 +1,8 @@
 import {
   DEFAULT_TAG_ENTITY_LABELS,
   TagsModule
-} from "./chunk-2Z77O6AN.js";
-import "./chunk-5TMLQ6QP.js";
+} from "./chunk-CCGNH3SJ.js";
+import "./chunk-7KSZJW3T.js";
 import "./chunk-QIAJXGLR.js";
 import "./chunk-OSDNRQVH.js";
 import "./chunk-V4P62DF3.js";
@@ -106,4 +106,4 @@ var BlogTagsModule = class extends TagsModule {
 export {
   BlogTagsModule
 };
-//# sourceMappingURL=BlogTagsModule-ZTUXQ763.js.map
+//# sourceMappingURL=BlogTagsModule-4P7JIQER.js.map
