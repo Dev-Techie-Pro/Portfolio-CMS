@@ -99,26 +99,109 @@ export const MINIMAL_ARTICLE = STANDARD_ARTICLE;
 
 export const LONGFORM_ARTICLE = `
 <article class="article-content">
-  <section id="introduction">
-    <h2 data-section-num="01">Introduction</h2>
-    <p>Longform guides use a sticky table of contents and a wide article column — no right sidebar.</p>
-  </section>
-  <section id="project-overview">
-    <h2 data-section-num="02">Project overview</h2>
-    <p>Describe scope, stack, and constraints for a scalable backend or deep technical narrative.</p>
-  </section>
-  <section id="problem">
-    <h2 data-section-num="03">Problem &amp; challenges</h2>
-    <div class="benefits-row">
-      <div class="benefit-item"><div class="benefit-icon"><i class="ri-shield-line"></i></div><h4>Security</h4><p>Auth and validation.</p></div>
-      <div class="benefit-item"><div class="benefit-icon"><i class="ri-speed-up-line"></i></div><h4>Performance</h4><p>Latency and throughput.</p></div>
-      <div class="benefit-item"><div class="benefit-icon"><i class="ri-expand-diagonal-line"></i></div><h4>Scale</h4><p>Horizontal growth.</p></div>
-      <div class="benefit-item"><div class="benefit-icon"><i class="ri-tools-line"></i></div><h4>Maintainability</h4><p>Clean architecture.</p></div>
+  <section id="whats-new">
+    <h2 data-section-num="01">What's New in Next.js 14</h2>
+    <p>Next.js 14 brings faster builds, improved caching semantics, and a more predictable developer experience for production apps.</p>
+    <div class="feature-grid feature-grid--longform">
+      <div class="feature-card"><div class="feature-icon"><i class="ri-flashlight-line"></i></div><h4>Turbopack</h4><p>Up to 53% faster local server startup.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="ri-server-line"></i></div><h4>Server Actions</h4><p>Run mutations on the server without API routes.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="ri-cpu-line"></i></div><h4>Partial Prerendering</h4><p>Static shell with dynamic holes.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="ri-image-line"></i></div><h4>Image Optimization</h4><p>Smarter defaults for responsive media.</p></div>
     </div>
   </section>
-  <section id="solution">
-    <h2 data-section-num="04">Solution approach</h2>
-    <p>Walk through architecture decisions step by step with diagrams and code samples.</p>
+  <section id="getting-started">
+    <h2 data-section-num="02">Getting Started</h2>
+    <p>Create a new project and explore the App Router with TypeScript out of the box.</p>
+    <pre><code>npx create-next-app@latest my-app --typescript --tailwind --eslint</code></pre>
+  </section>
+  <div class="stat-box stat-box--perf">
+    <div class="stat-icon"><i class="ri-flashlight-line"></i></div>
+    <div class="stat-box__body">
+      <div class="stat-value">Next.js 14 Performance</div>
+      <p class="stat-text">Build and runtime improvements across the stack.</p>
+    </div>
+    <div class="stat-box__metrics">
+      <div><span class="stat-metric-value">2x</span><span class="stat-metric-label">Faster builds</span></div>
+      <div><span class="stat-metric-value">30%</span><span class="stat-metric-label">Better runtime</span></div>
+    </div>
+  </div>
+  <section id="data-fetching">
+    <h2 data-section-num="03">Data Fetching &amp; Caching</h2>
+    <ul class="bullet-list">
+      <li>Request memoization reduces duplicate fetches.</li>
+      <li>Cache tags give fine-grained revalidation control.</li>
+      <li>Streaming works seamlessly with Suspense boundaries.</li>
+    </ul>
+  </section>
+  <section id="comparison">
+    <h2 data-section-num="04">Next.js 13 vs 14</h2>
+    <table class="bd-compare-table">
+      <thead><tr><th>Feature</th><th>Next.js 13</th><th>Next.js 14</th></tr></thead>
+      <tbody>
+        <tr><td>Dev bundler</td><td>Webpack default</td><td>Turbopack (beta)</td></tr>
+        <tr><td>Server Actions</td><td>Experimental</td><td>Stable</td></tr>
+        <tr><td>Metadata API</td><td>Basic</td><td>Enhanced</td></tr>
+      </tbody>
+    </table>
+  </section>
+</article>`;
+
+export const CASE_STUDY_ARTICLE = `
+<article class="article-content">
+  <section id="overview">
+    <header class="bd-section-head">
+      <h2 data-section-num="01">Project Overview</h2>
+      <p class="bd-section-sub">Understanding the challenge and goals</p>
+    </header>
+    <p>We redesigned a high-traffic storefront to improve conversion, accessibility, and maintainability without sacrificing brand identity.</p>
+    <div class="bd-mini-stats-grid">
+      <div class="bd-mini-stat"><span class="bd-mini-stat-value">8.4%</span><span class="bd-mini-stat-label">Conversion (before)</span></div>
+      <div class="bd-mini-stat"><span class="bd-mini-stat-value">12.1%</span><span class="bd-mini-stat-label">Conversion (after)</span></div>
+      <div class="bd-mini-stat"><span class="bd-mini-stat-value">3.2s</span><span class="bd-mini-stat-label">LCP (before)</span></div>
+      <div class="bd-mini-stat"><span class="bd-mini-stat-value">1.4s</span><span class="bd-mini-stat-label">LCP (after)</span></div>
+    </div>
+    <h3 class="bd-block-label">Project Deliverables</h3>
+    <div class="bd-deliverables-grid">
+      <div class="bd-deliverable-card"><div class="feature-icon"><i class="ri-layout-masonry-line"></i></div><h4>UX Audit</h4><p>Heuristic review and funnel analysis.</p></div>
+      <div class="bd-deliverable-card"><div class="feature-icon"><i class="ri-palette-line"></i></div><h4>UI System</h4><p>Tokens, components, and patterns.</p></div>
+      <div class="bd-deliverable-card"><div class="feature-icon"><i class="ri-code-box-line"></i></div><h4>Front-end Build</h4><p>Next.js storefront implementation.</p></div>
+      <div class="bd-deliverable-card"><div class="feature-icon"><i class="ri-line-chart-line"></i></div><h4>Analytics</h4><p>Event taxonomy and dashboards.</p></div>
+    </div>
+  </section>
+  <section id="before-after">
+    <header class="bd-section-head">
+      <h2 data-section-num="02">Before vs After</h2>
+      <p class="bd-section-sub">What changed in the experience</p>
+    </header>
+    <div class="compare-grid compare-grid--case">
+      <div class="compare-card compare-card--before"><h3>Before</h3><ul class="check-list"><li class="danger-item">Cluttered checkout flow</li><li class="danger-item">Slow mobile LCP</li><li class="danger-item">Inconsistent UI</li></ul></div>
+      <div class="compare-card compare-card--after"><h3>After</h3><ul class="check-list"><li class="success-item">Streamlined 3-step checkout</li><li class="success-item">Sub-1.5s LCP on 4G</li><li class="success-item">Unified design system</li></ul></div>
+    </div>
+  </section>
+  <section id="results">
+    <header class="bd-section-head">
+      <h2 data-section-num="03">Results &amp; Impact</h2>
+      <p class="bd-section-sub">Measurable business outcomes</p>
+    </header>
+    <div class="quote-box quote-box--case"><p>"The new experience paid for itself within the first quarter — faster pages and clearer paths to purchase made the difference."</p><span class="quote-box__credit">— Product Lead, Retail Client</span></div>
+    <div class="bd-mini-stats-grid bd-mini-stats-grid--results">
+      <div class="bd-mini-stat"><span class="bd-mini-stat-value">142%</span><span class="bd-mini-stat-label">Conversion lift</span></div>
+      <div class="bd-mini-stat"><span class="bd-mini-stat-value">56%</span><span class="bd-mini-stat-label">Faster LCP</span></div>
+      <div class="bd-mini-stat"><span class="bd-mini-stat-value">38%</span><span class="bd-mini-stat-label">Lower bounce</span></div>
+      <div class="bd-mini-stat"><span class="bd-mini-stat-value">4.8</span><span class="bd-mini-stat-label">CSAT score</span></div>
+    </div>
+  </section>
+  <section id="takeaways">
+    <header class="bd-section-head">
+      <h2 data-section-num="04">Key Takeaways</h2>
+      <p class="bd-section-sub">Lessons for your next redesign</p>
+    </header>
+    <div class="bd-takeaways-grid">
+      <div class="bd-takeaway"><span class="bd-takeaway-num">1</span><p>Start with analytics and funnel drop-offs, not visual polish.</p></div>
+      <div class="bd-takeaway"><span class="bd-takeaway-num">2</span><p>Invest in a token-based system before scaling new pages.</p></div>
+      <div class="bd-takeaway"><span class="bd-takeaway-num">3</span><p>Ship performance budgets alongside design specs.</p></div>
+      <div class="bd-takeaway"><span class="bd-takeaway-num">4</span><p>Test checkout on real devices and networks early.</p></div>
+    </div>
   </section>
 </article>`;
 
@@ -228,20 +311,55 @@ export function longformLayoutHtml(): string {
   return `${blogDetailTemplateHead("Longform blog detail template — reference")}
 ${blogDetailHero({
   tplClass: "bd-tpl-longform",
-  category: "Case study",
+  category: "Frontend",
   titleHtml:
-    'Building a Scalable REST API with <span class="hero-title-accent">.NET Core</span>',
+    'Next.js 14: The Complete Guide for <span class="hero-title-accent">Modern Web Apps</span>',
   excerpt:
-    "Deep-dive layout with TOC meta, hero stats, and numbered sections — no right sidebar.",
+    "Deep technical longform — numbered sections, feature grids, code samples, and comparison tables. TOC and read-time card on the left.",
+  image: "https://res.cloudinary.com/w3xvfqgt/image/upload/v1787743478/angular-performance-tips-production.png",
+})}
+  <div class="container">
+    <div class="main-layout">
+      <aside class="sidebar-left">
+        <div class="bd-sidebar-card card-tbl-content">
+          <h2 class="card-title">Table of Contents</h2>
+          <nav class="toc-list">
+            <a href="#whats-new" class="active"><span class="toc-num">01</span> What's New</a>
+            <a href="#getting-started"><span class="toc-num">02</span> Getting Started</a>
+            <a href="#data-fetching"><span class="toc-num">03</span> Data Fetching</a>
+            <a href="#comparison"><span class="toc-num">04</span> Comparison</a>
+          </nav>
+        </div>
+        <div class="bd-sidebar-card bd-toc-meta">
+          <p class="bd-toc-meta-row"><i class="ri-time-line"></i> <span>12 min read</span></p>
+          <p class="bd-toc-meta-row"><i class="ri-calendar-line"></i> Updated <span>Oct 22, 2026</span></p>
+        </div>
+      </aside>
+      <div class="article-main">${LONGFORM_ARTICLE}</div>
+    </div>
+  </div>
+</div>
+</body></html>`;
+}
+
+export function caseStudyLayoutHtml(): string {
+  return `${blogDetailTemplateHead("Case study blog detail template — reference")}
+${blogDetailHero({
+  tplClass: "bd-tpl-case-study",
+  category: "CASE STUDY",
+  titleHtml:
+    'E-Commerce Redesign for <span class="hero-title-accent">Higher Conversions</span>',
+  excerpt:
+    "How we rebuilt a storefront experience with measurable lifts in conversion, performance, and customer satisfaction.",
   image: "https://res.cloudinary.com/w3xvfqgt/image/upload/v1787743478/angular-performance-tips-production.png",
 })}
   <div class="bd-hero-stats-bar">
     <div class="container">
-      <div class="bd-hero-stats">
-        <div class="bd-hero-stat"><span class="bd-hero-stat-icon"><i class="ri-grid-line"></i></span><span class="bd-hero-stat-value">5</span><span class="bd-hero-stat-label">API Endpoints</span></div>
-        <div class="bd-hero-stat"><span class="bd-hero-stat-icon"><i class="ri-timer-line"></i></span><span class="bd-hero-stat-value">~200ms</span><span class="bd-hero-stat-label">Avg. response time</span></div>
-        <div class="bd-hero-stat"><span class="bd-hero-stat-icon"><i class="ri-shield-check-line"></i></span><span class="bd-hero-stat-value">100%</span><span class="bd-hero-stat-label">Authentication</span></div>
-        <div class="bd-hero-stat"><span class="bd-hero-stat-icon"><i class="ri-pulse-line"></i></span><span class="bd-hero-stat-value">99.9%</span><span class="bd-hero-stat-label">Uptime ready</span></div>
+      <div class="bd-hero-stats bd-hero-stats--case">
+        <div class="bd-hero-stat"><span class="bd-hero-stat-value">142%</span><span class="bd-hero-stat-label">Conversion rate increase</span></div>
+        <div class="bd-hero-stat"><span class="bd-hero-stat-value">56%</span><span class="bd-hero-stat-label">Faster page loads</span></div>
+        <div class="bd-hero-stat"><span class="bd-hero-stat-value">38%</span><span class="bd-hero-stat-label">Lower bounce rate</span></div>
+        <div class="bd-hero-stat"><span class="bd-hero-stat-value">4.8</span><span class="bd-hero-stat-label">Customer satisfaction</span></div>
       </div>
     </div>
   </div>
@@ -250,19 +368,43 @@ ${blogDetailHero({
       <aside class="sidebar-left">
         <div class="bd-sidebar-card card-tbl-content">
           <h2 class="card-title">Table of Contents</h2>
-          <nav class="toc-list">
-            <a href="#introduction" class="active"><span class="toc-num">01</span> Introduction</a>
-            <a href="#project-overview"><span class="toc-num">02</span> Project overview</a>
-            <a href="#problem"><span class="toc-num">03</span> Problem &amp; challenges</a>
-            <a href="#solution"><span class="toc-num">04</span> Solution approach</a>
+          <nav class="toc-list toc-list--case">
+            <a href="#overview" class="active"><span class="toc-num">01</span> Project Overview</a>
+            <a href="#before-after"><span class="toc-num">02</span> Before vs After</a>
+            <a href="#results"><span class="toc-num">03</span> Results &amp; Impact</a>
+            <a href="#takeaways"><span class="toc-num">04</span> Key Takeaways</a>
           </nav>
         </div>
         <div class="bd-sidebar-card bd-toc-meta">
-          <p class="bd-toc-meta-row"><i class="ri-time-line"></i> <span>8 min read</span></p>
-          <p class="bd-toc-meta-row"><i class="ri-calendar-line"></i> Updated <span>May 12, 2025</span></p>
+          <p class="bd-toc-meta-row"><i class="ri-time-line"></i> <span>10 min read</span></p>
+          <p class="bd-toc-meta-row"><i class="ri-calendar-line"></i> Updated <span>Oct 22, 2026</span></p>
+        </div>
+        <div class="bd-sidebar-card bd-sidebar-project-cta">
+          <div class="bd-sidebar-project-cta-icon" aria-hidden="true"><i class="ri-lightbulb-line"></i></div>
+          <h2 class="card-title">Have a similar project?</h2>
+          <p>Let's discuss your goals and build a high-converting experience together.</p>
+          <a href="/contact" class="cta-link">Hire Me →</a>
         </div>
       </aside>
-      <div class="article-main">${LONGFORM_ARTICLE}</div>
+      <div class="article-main">${CASE_STUDY_ARTICLE}</div>
+      <aside class="sidebar-right">
+        <div class="bd-sidebar-card bd-author-card">
+          <p class="section-label">About the Author</p>
+          <div class="bd-author-avatar bd-author-avatar--lg">SI</div>
+          <h3 class="bd-sidebar-title">M. Sohaib Ishaque</h3>
+          <p class="bd-sidebar-text">Full Stack Web Developer building scalable apps with Angular and .NET Core.</p>
+        </div>
+        <div class="bd-sidebar-card">
+          <p class="section-label">Keep Reading</p>
+          <h3 class="bd-sidebar-title">Related articles</h3>
+          <p class="bd-sidebar-text">Related posts load dynamically on the live site.</p>
+        </div>
+        <div class="bd-sidebar-card bd-sidebar-hire-mini">
+          <h3 class="bd-sidebar-title">Ready to work together?</h3>
+          <p class="bd-sidebar-text">Let's turn your product vision into a polished, performant site.</p>
+          <a href="/contact" class="faq-cta-btn bd-sidebar-hire-btn">Hire Me →</a>
+        </div>
+      </aside>
     </div>
   </div>
 </div>

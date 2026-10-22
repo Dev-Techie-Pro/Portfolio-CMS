@@ -26,6 +26,12 @@ export const BLOG_DETAIL_PAGE_TEMPLATES: {
     rootFile: "template-longform.html",
     description: "TOC left, wide article — no right sidebar.",
   },
+  {
+    id: "case-study",
+    label: "Case study",
+    rootFile: "template-case-study.html",
+    description: "Hero stats, TOC + hire CTA left, author & related right.",
+  },
 ];
 
 export function getBlogDetailPageTemplateRootFile(

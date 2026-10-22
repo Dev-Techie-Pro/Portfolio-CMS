@@ -782,11 +782,15 @@ var BLOG_DETAIL_EDITOR_TEMPLATES = {
   <div class="compare-grid">
     <div class="compare-card">
       <h3>Before</h3>
-      <ul class="check-list"><li>Pain point A</li><li>Pain point B</li></ul>
+      <ul class="check-list">
+        <li class="danger-item">3MB of uncompressed PNG and JPG images</li>
+      </ul>
     </div>
     <div class="compare-card">
       <h3>After</h3>
-      <ul class="check-list"><li>Improvement A</li><li>Improvement B</li></ul>
+      <ul class="check-list">
+        <li class="success-item">Lighthouse Performance score: 99/100</li>
+      </ul>
     </div>
   </div>
 </section>
@@ -873,8 +877,31 @@ function syncBlogDetailRtePreview({
     );
     shell.classList.add(resolveBlogDetailPreviewClass(detailTemplate));
   }
-  if (article) article.innerHTML = articleHtml || "";
+  if (article) {
+    article.innerHTML = articleHtml || "";
+    enhanceCompareCheckListItems(article);
+  }
   if (toc) toc.innerHTML = buildTocHtmlFromArticle(articleHtml || "");
+}
+function enhanceCompareCheckListItems(root) {
+  if (!root || typeof root.querySelectorAll !== "function") return;
+  const scope = root;
+  scope.querySelectorAll(".compare-grid").forEach((grid) => {
+    const cards = grid.querySelectorAll(".compare-card");
+    cards.forEach((card, index) => {
+      const heading = (card.querySelector("h3")?.textContent || "").trim().toLowerCase();
+      let itemClass = "";
+      if (heading.includes("before")) itemClass = "danger-item";
+      else if (heading.includes("after")) itemClass = "success-item";
+      else if (cards.length === 2) {
+        itemClass = index === 0 ? "danger-item" : "success-item";
+      }
+      card.querySelectorAll(".check-list li").forEach((li) => {
+        if (li.classList.contains("danger-item") || li.classList.contains("success-item")) return;
+        if (itemClass) li.classList.add(itemClass);
+      });
+    });
+  });
 }
 
 // client/modules/blog/BlogPostWorkspace.ts
@@ -2120,4 +2147,4 @@ var BlogModule = class extends CrudCardModule {
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-JFT5XQBE.js.map
+//# sourceMappingURL=BlogModule-2FV3EB2K.js.map

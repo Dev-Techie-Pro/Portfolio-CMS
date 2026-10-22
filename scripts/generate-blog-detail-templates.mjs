@@ -12,6 +12,7 @@ const files = [
   ["template-standard.html", "standardLayoutHtml"],
   ["template-minimal.html", "minimalLayoutHtml"],
   ["template-longform.html", "longformLayoutHtml"],
+  ["template-case-study.html", "caseStudyLayoutHtml"],
 ];
 
 for (const [name, fn] of files) {

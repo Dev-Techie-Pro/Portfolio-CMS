@@ -93,6 +93,12 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <p class="bd-toc-meta-row"><span class="icon" data-icon="siClock"></span> <span id="bdTocReadTime">—</span></p>
             <p class="bd-toc-meta-row"><span class="icon" data-icon="siCalendar"></span> Updated <span id="bdTocUpdated">—</span></p>
           </div>
+          <div class="bd-sidebar-card bd-sidebar-project-cta" id="bdSidebarLeftProjectCta" hidden>
+            <div class="bd-sidebar-project-cta-icon" aria-hidden="true"><i class="ri-lightbulb-line"></i></div>
+            <h2 class="card-title">Have a similar project?</h2>
+            <p>Let's discuss your goals and build a high-converting experience together.</p>
+            <a href="/contact" class="cta-link">Hire Me →</a>
+          </div>
           <div class="bd-sidebar-card bd-quick-links" id="bdQuickLinksCard" hidden>
             <h2 class="card-title">Quick Links</h2>
             <ul class="bd-quick-links-list">
@@ -237,12 +243,17 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <h3 class="bd-sidebar-title">Related articles</h3>
             <div class="bd-related-list" id="bdRelated"></div>
           </div>
-          <div class="bd-sidebar-card reveal">
+          <div class="bd-sidebar-card reveal" id="bdTagsCard">
             <p class="section-label">Tags</p>
             <h3 class="bd-sidebar-title">Popular tags</h3>
             <div class="bd-tags" id="bdTags"></div>
           </div>
-          <div class="bd-sidebar-card bd-newsletter-card reveal">
+          <div class="bd-sidebar-card bd-sidebar-hire-mini reveal" id="bdSidebarHireMini" hidden>
+            <h3 class="bd-sidebar-title">Ready to work together?</h3>
+            <p class="bd-sidebar-text">Let's turn your product vision into a polished, performant site.</p>
+            <a href="/contact" class="faq-cta-btn bd-sidebar-hire-btn">Hire Me →</a>
+          </div>
+          <div class="bd-sidebar-card bd-newsletter-card reveal" id="bdNewsletterCard">
             <div class="bd-newsletter-icon" aria-hidden="true">
               <span class="icon" data-icon="siEnvelope"></span>
             </div>

@@ -1,7 +1,12 @@
 /**
- * Compile client TypeScript sources to browser-ready ES modules in public/js/.
- * - Standalone scripts: unbundled (boot-prefetch, prefetch-config, body-loader, utilities).
- * - main.ts: bundled with code splitting for page modules.
+ * Compile admin dashboard TypeScript → public/js/ (used only under /admin).
+ * Public portfolio pages use /assets/js/* and never load /js/main.js.
+ *
+ * Default build:
+ *   - main.ts → bundled ESM + code-split chunks (admin SPA)
+ *   - boot-prefetch, prefetch-config, body-loader-template → small standalone scripts
+ *
+ * Optional: --mirror-standalone mirrors every client .ts file under public/js (legacy/debug).
  */
 import * as esbuild from 'esbuild';
 import fs from 'node:fs';
@@ -13,6 +18,14 @@ const OUT_DIR = path.resolve('public/js');
 const CHUNKS_DIR = path.join(OUT_DIR, 'chunks');
 const MAIN_ENTRY = path.join(CLIENT_ROOT, 'main.ts');
 const VENDOR_DIR = path.join(OUT_DIR, 'vendor');
+
+const ADMIN_BOOT_STANDALONE = [
+  path.join(CLIENT_ROOT, 'boot-prefetch.ts'),
+  path.join(CLIENT_ROOT, 'prefetch-config.ts'),
+  path.join(CLIENT_ROOT, 'body-loader-template.ts'),
+].filter((file) => fs.existsSync(file));
+
+const mirrorStandalone = process.argv.includes('--mirror-standalone');
 
 /** Browser vendor assets (not bundled into ESM chunks). */
 const VENDOR_COPIES = [
@@ -70,42 +83,50 @@ function walkTs(dir, results = []) {
 }
 
 const allTs = walkTs(CLIENT_ROOT).sort((a, b) => a.localeCompare(b));
-const standaloneEntries = allTs.filter((file) => path.normalize(file) !== path.normalize(MAIN_ENTRY));
+const mirroredStandaloneEntries = allTs.filter(
+  (file) => path.normalize(file) !== path.normalize(MAIN_ENTRY),
+);
+const standaloneEntries = mirrorStandalone ? mirroredStandaloneEntries : ADMIN_BOOT_STANDALONE;
 
 if (!allTs.length) {
   console.log('No client TypeScript files found in client/.');
   process.exit(0);
 }
 
+async function buildStandalone() {
+  if (!standaloneEntries.length) return;
+  await esbuild.build({
+    ...SHARED_BUILD,
+    entryPoints: standaloneEntries,
+    outdir: OUT_DIR,
+    outbase: CLIENT_ROOT,
+    bundle: false,
+  });
+}
+
+async function buildMainBundle() {
+  if (!fs.existsSync(MAIN_ENTRY)) return;
+  await esbuild.build({
+    ...SHARED_BUILD,
+    entryPoints: [MAIN_ENTRY],
+    outdir: OUT_DIR,
+    outbase: CLIENT_ROOT,
+    bundle: true,
+    splitting: true,
+    chunkNames: 'chunks/[name]-[hash]',
+    plugins: [cleanSplitChunksPlugin],
+  });
+}
+
 async function buildAll() {
   copyVendorAssets();
-
-  if (standaloneEntries.length) {
-    await esbuild.build({
-      ...SHARED_BUILD,
-      entryPoints: standaloneEntries,
-      outdir: OUT_DIR,
-      outbase: CLIENT_ROOT,
-      bundle: false,
-    });
-  }
-
-  if (fs.existsSync(MAIN_ENTRY)) {
-    await esbuild.build({
-      ...SHARED_BUILD,
-      entryPoints: [MAIN_ENTRY],
-      outdir: OUT_DIR,
-      outbase: CLIENT_ROOT,
-      bundle: true,
-      splitting: true,
-      chunkNames: 'chunks/[name]-[hash]',
-      plugins: [cleanSplitChunksPlugin],
-    });
-  }
+  await buildStandalone();
+  await buildMainBundle();
 
   const sourceHash = writeClientSourceHash(CLIENT_ROOT);
+  const mode = mirrorStandalone ? 'mirror-standalone' : 'admin';
   console.log(
-    `Built ${standaloneEntries.length} standalone + main bundle (${allTs.length} source file(s)) → public/js/`,
+    `Built admin client (${mode}): ${standaloneEntries.length} standalone + main bundle (${allTs.length} source file(s)) → public/js/`,
   );
   console.log(`client-source-hash: ${sourceHash}`);
 }
@@ -138,7 +159,7 @@ if (process.argv.includes('--watch')) {
     );
   }
   for (const ctx of contexts) await ctx.watch();
-  console.log(`Watching client sources → public/js/`);
+  console.log(`Watching admin client sources → public/js/`);
 } else {
   await buildAll();
 }

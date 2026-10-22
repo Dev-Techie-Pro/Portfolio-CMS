@@ -136,7 +136,9 @@ function _configureDetailLayout(post, tpl, blogId) {
   const showTocMeta = tpl === "longform" || tpl === "case-study";
   const showQuickLinks = tpl === "standard";
   const showSidebarCta = tpl === "standard";
-  const showHeroStats = tpl === "longform" || tpl === "case-study";
+  const showHeroStats = tpl === "case-study";
+  const showCaseLeftCta = tpl === "case-study";
+  const showCaseHireCard = tpl === "case-study";
   const showRelatedBelow = tpl === "minimal";
   const showPreFooter = tpl !== "minimal";
   const showInlineCta = tpl === "minimal";
@@ -145,8 +147,12 @@ function _configureDetailLayout(post, tpl, blogId) {
   _toggleHidden("bdQuickLinksCard", !showQuickLinks);
   _toggleHidden("bdSidebarCta", !showSidebarCta);
   _toggleHidden("bdHeroStatsBar", !showHeroStats);
+  _toggleHidden("bdSidebarLeftProjectCta", !showCaseLeftCta);
+  _toggleHidden("bdSidebarHireMini", !showCaseHireCard);
+  _toggleHidden("bdTagsCard", tpl === "case-study");
+  _toggleHidden("bdNewsletterCard", tpl === "case-study");
   _toggleHidden("bdRelatedBelow", !showRelatedBelow);
-  _toggleHidden("bdPreFooter", !showPreFooter);
+  _toggleHidden("bdPreFooter", tpl === "case-study" ? true : !showPreFooter);
   _toggleHidden("bdInlineCtaSection", !showInlineCta);
 
   if (showTocMeta) {
@@ -248,22 +254,72 @@ function _searchBlob(post) {
   return parts.join(" ").toLowerCase();
 }
 
-function _renderCheckList(items) {
-  return `<ul class="check-list">${items
-    .map(
-      (item) =>
-        `<li>${_iconHtml("siCheckmark")}${item}</li>`,
-    )
+function _compareColumnItemClass(col, columnIndex, columnCount) {
+  const title = String(col?.title || "").toLowerCase();
+  if (title.includes("before")) return "danger-item";
+  if (title.includes("after")) return "success-item";
+  if (columnCount === 2) {
+    return columnIndex === 0 ? "danger-item" : "success-item";
+  }
+  return "";
+}
+
+function _checkListItemParts(item, fallbackClass = "") {
+  if (item && typeof item === "object") {
+    const text = item.text ?? item.label ?? "";
+    const cls =
+      item.class ||
+      item.className ||
+      item.itemClass ||
+      fallbackClass ||
+      "";
+    return { text: String(text), className: String(cls).trim() };
+  }
+  return { text: String(item ?? ""), className: fallbackClass };
+}
+
+function _enhanceCompareCheckListItems(root) {
+  if (!root || typeof root.querySelectorAll !== "function") return;
+  root.querySelectorAll(".compare-grid").forEach((grid) => {
+    const cards = grid.querySelectorAll(".compare-card");
+    cards.forEach((card, index) => {
+      const heading = (card.querySelector("h3")?.textContent || "")
+        .trim()
+        .toLowerCase();
+      let itemClass = "";
+      if (heading.includes("before")) itemClass = "danger-item";
+      else if (heading.includes("after")) itemClass = "success-item";
+      else if (cards.length === 2) {
+        itemClass = index === 0 ? "danger-item" : "success-item";
+      }
+      card.querySelectorAll(".check-list li").forEach((li) => {
+        if (li.classList.contains("danger-item") || li.classList.contains("success-item")) {
+          return;
+        }
+        if (itemClass) li.classList.add(itemClass);
+      });
+    });
+  });
+}
+
+function _renderCheckList(items, itemClass = "") {
+  return `<ul class="check-list">${(items || [])
+    .map((item) => {
+      const { text, className } = _checkListItemParts(item, itemClass);
+      const cls = className ? ` class="${className}"` : "";
+      return `<li${cls}>${_iconHtml("siCheckmark")}${text}</li>`;
+    })
     .join("")}</ul>`;
 }
 
 function _renderCompareGrid(columns) {
-  return `<div class="compare-grid">${columns
+  const list = Array.isArray(columns) ? columns : [];
+  return `<div class="compare-grid">${list
     .map(
-      (col) => `
+      (col, index) => `
     <div class="compare-card">
       <h3>${col.title}</h3>
-      ${_renderCheckList(col.items)}
+      ${_renderCheckList(col.items, _compareColumnItemClass(col, index, list.length))}
     </div>`,
     )
     .join("")}</div>`;
@@ -336,11 +392,13 @@ function _renderBlock(block, post) {
   }
 }
 
-function _renderStatBox(block) {
+function _renderStatBox(block, tpl) {
+  const perf =
+    tpl === "longform" ? " stat-box--perf" : tpl === "case-study" ? " stat-box--case" : "";
   return `
-    <div class="stat-box">
+    <div class="stat-box${perf}">
       <div class="stat-icon">${_iconHtml(_resolveBlogIcon(block.icon))}</div>
-      <div>
+      <div class="stat-box__body">
         <div class="stat-value">${block.value}</div>
         <p class="stat-text">${block.text}</p>
       </div>
@@ -467,6 +525,7 @@ function _renderHtmlArticleMain(html, post) {
   _ensureArticleHeadingIds(root);
   const entries = _tocEntriesFromArticleRoot(root);
   if (numberedSections) _applyLongformNumsToEntries(entries);
+  _enhanceCompareCheckListItems(root);
   return { html: root.innerHTML, tocEntries: entries };
 }
 
@@ -541,18 +600,24 @@ function _renderArticleMain(content, post) {
       const h2NumAttr = sectionNum
         ? ` data-section-num="${sectionNum}"`
         : "";
+      const sectionHead =
+        tpl === "case-study" && block.subtitle
+          ? `<header class="bd-section-head"><h2${h2NumAttr}>${block.title}</h2><p class="bd-section-sub">${block.subtitle}</p></header>`
+          : `<h2${h2NumAttr}>${block.title}</h2>`;
       html += `
         <section id="${block.id}">
           ${figure}
-          <h2${h2NumAttr}>${block.title}</h2>
+          ${sectionHead}
           ${inner}
         </section>`;
     } else if (block.type === "stat-box") {
-      html += _renderStatBox(block);
+      html += _renderStatBox(block, tpl);
     }
   });
 
-  return { mainHtml: html, tocEntries };
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  _enhanceCompareCheckListItems(doc.body);
+  return { mainHtml: doc.body.innerHTML, tocEntries };
 }
 
 function _renderArticleBody(content, post) {
@@ -910,7 +975,12 @@ function _refreshSkeleton(root) {
 
       setText("bdBreadcrumbCategory", post.category);
       setText("bdBreadcrumbTitle", post.title);
-      setText("bdCategory", post.category);
+      const catBadge = document.getElementById("bdCategory");
+      if (catBadge) {
+        catBadge.classList.toggle("bd-hero-badge--case-study", tpl === "case-study");
+        catBadge.textContent =
+          tpl === "case-study" ? "CASE STUDY" : post.category;
+      }
       _setHeroTitle(post.title, tpl);
       setText("bdExcerpt", post.excerpt);
       setText("bdAuthor", post.author);

@@ -184,11 +184,11 @@ const BLOG_DETAIL_EDITOR_TEMPLATES = {
   <div class="compare-grid">
     <div class="compare-card">
       <h3>Before</h3>
-      <ul class="check-list"><li>Pain point A</li><li>Pain point B</li></ul>
+      <ul class="check-list"><li class="danger-item">Pain point A</li><li class="danger-item">Pain point B</li></ul>
     </div>
     <div class="compare-card">
       <h3>After</h3>
-      <ul class="check-list"><li>Improvement A</li><li>Improvement B</li></ul>
+      <ul class="check-list"><li class="success-item">Improvement A</li><li class="success-item">Improvement B</li></ul>
     </div>
   </div>
 </section>

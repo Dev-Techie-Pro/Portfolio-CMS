@@ -192,11 +192,15 @@ export const BLOG_DETAIL_EDITOR_TEMPLATES: Record<
   <div class="compare-grid">
     <div class="compare-card">
       <h3>Before</h3>
-      <ul class="check-list"><li>Pain point A</li><li>Pain point B</li></ul>
+      <ul class="check-list">
+        <li class="danger-item">3MB of uncompressed PNG and JPG images</li>
+      </ul>
     </div>
     <div class="compare-card">
       <h3>After</h3>
-      <ul class="check-list"><li>Improvement A</li><li>Improvement B</li></ul>
+      <ul class="check-list">
+        <li class="success-item">Lighthouse Performance score: 99/100</li>
+      </ul>
     </div>
   </div>
 </section>

@@ -6,10 +6,13 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "npm run build:client && next dev",
+    "dev": "next dev",
+    "dev:admin": "node client/build-client.mjs --watch",
+    "dev:full": "npm run build:client && next dev",
     "dev:clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && next dev",
     "sync:remixicon": "node scripts/sync-remixicon-vendor.mjs",
     "build:client": "node client/build-client.mjs",
+    "build:client:mirror": "node client/build-client.mjs --mirror-standalone",
     "build": "npm run sync:remixicon && npm run build:client && next build",
     "postinstall": "node scripts/sync-remixicon-vendor.mjs",
     "start": "next start",

@@ -35,7 +35,19 @@ function loadScript(src: string, type?: 'module'): Promise<void> {
 }
 
 
+/** Admin-only boot chain (never loaded on the public portfolio). */
+const ADMIN_BOOT_SCRIPTS = [
+  '/js/body-loader-template.js',
+  '/js/prefetch-config.js',
+  '/js/boot-prefetch.js',
+] as const;
+
 async function bootLegacyApp() {
+  for (const src of ADMIN_BOOT_SCRIPTS) {
+    if (!document.querySelector(`script[src="${src}"]`)) {
+      await loadScript(src);
+    }
+  }
   if (typeof window.__paBootPortfolioApp !== 'function') {
     await loadScript('/js/main.js', 'module');
   }

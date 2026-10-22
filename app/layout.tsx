@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import { WebVitalsReporter } from "@/components/WebVitalsReporter";
 import { AppReady } from "@/components/motion/AppReady";
 
@@ -30,14 +29,6 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-        />
-        <link
-          rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        />
       </head>
       <body>
         <AppReady />

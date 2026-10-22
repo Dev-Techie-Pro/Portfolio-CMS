@@ -88,6 +88,31 @@ export function syncBlogDetailRtePreview({
     shell.classList.add(resolveBlogDetailPreviewClass(detailTemplate));
   }
 
-  if (article) article.innerHTML = articleHtml || '';
+  if (article) {
+    article.innerHTML = articleHtml || '';
+    enhanceCompareCheckListItems(article);
+  }
   if (toc) toc.innerHTML = buildTocHtmlFromArticle(articleHtml || '');
+}
+
+/** Match public blog detail compare-grid list styling (Before/After). */
+export function enhanceCompareCheckListItems(root: ParentNode | null) {
+  if (!root || typeof (root as Element).querySelectorAll !== 'function') return;
+  const scope = root as ParentNode;
+  scope.querySelectorAll('.compare-grid').forEach((grid) => {
+    const cards = grid.querySelectorAll('.compare-card');
+    cards.forEach((card, index) => {
+      const heading = (card.querySelector('h3')?.textContent || '').trim().toLowerCase();
+      let itemClass = '';
+      if (heading.includes('before')) itemClass = 'danger-item';
+      else if (heading.includes('after')) itemClass = 'success-item';
+      else if (cards.length === 2) {
+        itemClass = index === 0 ? 'danger-item' : 'success-item';
+      }
+      card.querySelectorAll('.check-list li').forEach((li) => {
+        if (li.classList.contains('danger-item') || li.classList.contains('success-item')) return;
+        if (itemClass) li.classList.add(itemClass);
+      });
+    });
+  });
 }

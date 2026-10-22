@@ -6,6 +6,7 @@ import { PAGE_BODY_CLASS, type PortfolioRoute } from "@/lib/portfolio/script-con
 import { PortfolioScripts, waitForPortfolioScripts } from "./PortfolioScripts";
 import { initPortfolioPage, resetPortfolioForNavigation } from "@/lib/portfolio/init-portfolio";
 import { PublicPageMotion } from "./PublicPageMotion";
+import { PublicPageHeadAssets } from "./PublicPageHeadAssets";
 
 type PortfolioPageProps = {
   route: PortfolioRoute;
@@ -50,6 +51,7 @@ export function PortfolioPage({ route, children }: PortfolioPageProps) {
 
   return (
     <>
+      <PublicPageHeadAssets route={route} />
       <PublicPageMotion routeKey={`${pathname}:${route}`}>{children}</PublicPageMotion>
       <PortfolioScripts route={route} />
     </>

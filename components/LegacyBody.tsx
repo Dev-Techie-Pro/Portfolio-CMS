@@ -1,5 +1,8 @@
-import LegacyBoot from './LegacyBoot';
+import dynamic from 'next/dynamic';
 import LegacyHtml from './LegacyHtml';
+
+/** Admin-only legacy runtime — kept out of the public Next.js graph. */
+const LegacyBoot = dynamic(() => import('./LegacyBoot'), { ssr: false });
 
 /**
  * LegacyBody — renders one page's original body markup on the server, then
