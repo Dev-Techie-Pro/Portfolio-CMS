@@ -776,6 +776,7 @@
   color: var(--white-dim);
   margin-bottom: 10px;
   line-height: 1.75;
+  font-size: 13px;
 }
 .article-figure {
   border-radius: var(--br-none);
