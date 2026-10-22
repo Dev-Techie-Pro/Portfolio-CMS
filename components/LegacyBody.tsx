@@ -1,3 +1,5 @@
+'use client';
+
 import dynamic from 'next/dynamic';
 import LegacyHtml from './LegacyHtml';
 
