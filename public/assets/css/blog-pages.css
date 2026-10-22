@@ -776,7 +776,6 @@
   color: var(--white-dim);
   margin-bottom: 10px;
   line-height: 1.75;
-  font-size: 13px;
 }
 .article-figure {
   border-radius: var(--br-none);
@@ -796,7 +795,7 @@
   gap: var(--card-gap-lg);
   background: var(--bg-card);
   border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
-  border-radius: var(--br-none);
+  
   padding: 28px 32px;
   margin: 15px 0;
 }
@@ -866,10 +865,11 @@
   display: flex;
   align-items: flex-start;
   gap: var(--card-gap-md);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: var(--white-dim);
   line-height: 1.5;
   padding: 6px 12px;
+  background: color-mix(in srgb, var(--bg-card) 88%, transparent);
   transition:
     border-color 0.2s ease,
     transform 0.2s ease;
@@ -1040,7 +1040,7 @@
   width: 1px;
   height: 87%;
   background: var(--border-accent);
-  border-radius: var(--radius-md);
+  border-radius: var(--br-none);
 }
 .bullet-list li {
   display: flex;
@@ -1158,7 +1158,7 @@
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.85em;
   padding: 0.15em 0.45em;
-  border-radius: 4px;
+  border-radius: var(--br-none);
   background: color-mix(in srgb, var(--accent) 10%, var(--bg-card));
   border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
   color: color-mix(in srgb, var(--accent) 85%, var(--white));
@@ -1170,7 +1170,7 @@
   margin: 28px 0;
   padding: 44px 18px 18px;
   overflow-x: auto;
-  border-radius: 10px;
+  border-radius: var(--br-none);
   border: 1px solid var(--bd-code-border);
   background: var(--bd-code-bg);
   box-shadow:
@@ -1186,7 +1186,7 @@
   left: 0;
   right: 0;
   height: 36px;
-  border-radius: 10px 10px 0 0;
+  border-radius: var(--br-none) var(--br-none) 0 0;
   background: var(--bd-code-bar);
   border-bottom: 1px solid var(--bd-code-border);
   background-image:
@@ -1263,7 +1263,7 @@
   top: 1.15em;
   width: 8px;
   height: 8px;
-  border-radius: 2px;
+  border-radius: var(--br-none);
   background: var(--accent);
   box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 45%, transparent);
   transform: rotate(45deg);
@@ -1625,7 +1625,7 @@
   flex-shrink: 0;
   color: inherit;
   text-decoration: none;
-  border-radius: 50%;
+  border-radius: var(--br-none);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .bd-comment-avatar-link:hover {
@@ -1651,7 +1651,7 @@
     var(--accent-dimmer),
     color-mix(in srgb, var(--accent) 40%, var(--bg))
   );
-  border-radius: 50%;
+  border-radius: var(--br-none);
   box-shadow: 0 0 0 2px var(--bg);
 }
 .bd-comment-avatar--sm {
@@ -1728,7 +1728,7 @@
   color: var(--gray);
   background: transparent;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--br-none);
   cursor: pointer;
   transition:
     color 0.15s ease,
@@ -1765,7 +1765,7 @@
   color: var(--gray);
   background: transparent;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--br-none);
   cursor: pointer;
   transition:
     color 0.15s ease,
@@ -2860,7 +2860,7 @@ body.bd-reply-modal-open {
   width: 28px;
   height: 28px;
   flex-shrink: 0;
-  border-radius: 50%;
+  border-radius: var(--br-none);
   font-size: 0.75rem;
   font-weight: 800;
   color: var(--bg);
@@ -3063,7 +3063,7 @@ body.bd-reply-modal-open {
 .bd-code-block {
   margin: 24px 0 28px;
   border: 1px solid var(--bd-code-border, #30363d);
-  border-radius: 10px;
+  border-radius: var(--br-none);
   overflow: hidden;
   background: var(--bd-code-bg, #0d1117);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
@@ -3099,7 +3099,7 @@ body.bd-reply-modal-open {
   color: var(--white-dim);
   background: transparent;
   border: 1px solid color-mix(in srgb, var(--gray) 35%, transparent);
-  border-radius: 6px;
+  border-radius: var(--br-none);
   cursor: pointer;
   transition:
     color 0.15s ease,
@@ -3140,7 +3140,7 @@ body.bd-reply-modal-open {
 
 .bd-section-visibility {
   position: fixed;
-  left: 18px;
+  right: 18px;
   bottom: 18px;
   z-index: 1100;
   display: flex;
@@ -3222,7 +3222,7 @@ body.bd-reply-modal-open {
   padding: 8px 10px;
   font-size: 0.68rem;
   background: var(--bg-card-hover);
-  border-radius: 8px;
+  border-radius: var(--br-none);
   overflow-x: auto;
   color: var(--white-dim);
 }
