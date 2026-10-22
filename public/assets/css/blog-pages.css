@@ -3159,7 +3159,7 @@ body.bd-reply-modal-open {
   color: var(--white);
   background: var(--bg-card);
   border: 1px solid var(--bg-card-hover);
-  border-radius: 999px;
+  border-radius: var(--br-none);
   cursor: pointer;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 }
