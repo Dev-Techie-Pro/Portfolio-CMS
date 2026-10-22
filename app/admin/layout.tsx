@@ -10,5 +10,11 @@ export const metadata = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      {/* Self-hosted Remix Icon — reliable with CSP font-src 'self' (dev + prod). */}
+      <link rel="stylesheet" href="/vendor/remixicon/remixicon.css" precedence="high" />
+      {children}
+    </>
+  );
 }

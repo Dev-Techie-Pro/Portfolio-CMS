@@ -104,6 +104,10 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: "/vendor/remixicon/:path*",
+        headers: [{ key: "Cache-Control", value: staticCache }],
+      },
+      {
         source: "/js/main.js",
         headers: [{ key: "Cache-Control", value: noCacheJs }],
       },

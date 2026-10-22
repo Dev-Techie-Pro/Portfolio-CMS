@@ -32,7 +32,13 @@ export function buildContentSecurityPolicy(
   const development = opts.development === true;
 
   const supabase = supabaseConnectOrigins();
-  const connectSrc = ["'self'", ...supabase, 'https://challenges.cloudflare.com'].join(' ');
+  const connectSrc = [
+    "'self'",
+    ...supabase,
+    'https://challenges.cloudflare.com',
+    'https://thesvg.org',
+    'https://cdn.jsdelivr.net',
+  ].join(' ');
   const scriptParts = [
     "'self'",
     `'nonce-${nonce}'`,
@@ -59,7 +65,7 @@ export function buildContentSecurityPolicy(
     `script-src ${scriptSrc}`,
     `style-src ${styleSrc}`,
     "font-src 'self' https://fonts.gstatic.com data:",
-    `img-src 'self' data: blob: ${supabase.join(' ')}`.trim(),
+    `img-src 'self' data: blob: https://cdn.jsdelivr.net https://thesvg.org ${supabase.join(' ')}`.trim(),
     `connect-src ${connectSrc}`,
     'frame-src https://challenges.cloudflare.com',
     "frame-ancestors 'none'",
