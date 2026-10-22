@@ -119,24 +119,38 @@
     });
   }
 
+  function escapeHtml(text) {
+    return String(text || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  const SECTION_VIS_EMPTY_HTML = `<p class="bd-section-vis-empty">
+    No sections in this post yet. In the admin editor, use a <strong>Longform</strong> or <strong>Case study</strong> layout starter, or add HTML like
+    <code>&lt;section id="intro"&gt;&lt;h2&gt;Introduction&lt;/h2&gt;…&lt;/section&gt;</code>.
+    Then save and refresh this page.
+  </p>`;
+
   function renderVisibilityPanel(post, articleRoot, hiddenSet) {
     const shell = document.getElementById("bdSectionVisibility");
     const list = document.getElementById("bdSectionVisibilityList");
     if (!shell || !list || !articleRoot) return;
 
     const targets = collectSectionTargets(articleRoot);
+    shell.hidden = false;
     if (!targets.length) {
-      shell.hidden = true;
+      list.innerHTML = SECTION_VIS_EMPTY_HTML;
       return;
     }
 
-    shell.hidden = false;
     list.innerHTML = targets
       .map((item) => {
         const checked = !hiddenSet.has(item.id);
         return `<label class="bd-section-vis-item">
-          <input type="checkbox" data-section-id="${item.id}" ${checked ? "checked" : ""} />
-          <span class="bd-section-vis-title">${item.title}</span>
+          <input type="checkbox" data-section-id="${escapeHtml(item.id)}" ${checked ? "checked" : ""} />
+          <span class="bd-section-vis-title">${escapeHtml(item.title)}</span>
         </label>`;
       })
       .join("");
@@ -186,7 +200,13 @@
     );
 
     probeEditorAccess(post.id).then((canEdit) => {
-      if (!canEdit) return;
+      if (!canEdit) {
+        const shell = document.getElementById("bdSectionVisibility");
+        if (shell) shell.hidden = true;
+        return;
+      }
+      applyHiddenToDom(article, hidden);
+      filterTocLinks(hidden);
       renderVisibilityPanel(post, article, hidden);
       const toggle = document.getElementById("bdSectionVisibilityToggle");
       const panel = document.getElementById("bdSectionVisibilityPanel");

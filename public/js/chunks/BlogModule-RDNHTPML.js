@@ -282,6 +282,45 @@ function setBlogRteHtml(bodyId, codeId, wrapId, html) {
   }
 }
 
+// client/utils/blogSectionVisibility.ts
+function collectSectionTargetsFromHtml(html) {
+  const doc = new DOMParser().parseFromString(String(html || ""), "text/html");
+  const root = doc.body;
+  const items = [];
+  const seen = /* @__PURE__ */ new Set();
+  root.querySelectorAll("section[id]").forEach((section) => {
+    const id = section.getAttribute("id");
+    if (!id || seen.has(id)) return;
+    const title = section.querySelector("h2")?.textContent?.trim() || section.querySelector("h3")?.textContent?.trim() || id;
+    items.push({ id, title });
+    seen.add(id);
+  });
+  root.querySelectorAll("[data-bd-segment-id]").forEach((node) => {
+    const id = node.getAttribute("data-bd-segment-id");
+    if (!id || seen.has(id)) return;
+    const title = node.getAttribute("data-bd-segment-title") || node.querySelector(".stat-value")?.textContent?.trim() || id;
+    items.push({ id, title });
+    seen.add(id);
+  });
+  return items;
+}
+function normalizeHiddenSectionIds(list) {
+  if (!Array.isArray(list)) return [];
+  const out = [];
+  const seen = /* @__PURE__ */ new Set();
+  for (const raw of list) {
+    const id = String(raw || "").trim();
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    out.push(id);
+  }
+  return out;
+}
+function pruneHiddenSections(hiddenSections, validIds) {
+  const valid = validIds instanceof Set ? validIds : new Set(validIds || []);
+  return normalizeHiddenSectionIds(hiddenSections).filter((id) => valid.has(id));
+}
+
 // client/utils/blogContentPayload.ts
 var BLOG_DETAIL_TEMPLATE_META = [
   { id: "auto", label: "Auto", description: "Detect from sections and blocks (default)." },
@@ -312,7 +351,8 @@ function parseContentField(raw) {
       const blocks = parsed.content ?? parsed.sections ?? parsed.blocks;
       return {
         content: Array.isArray(blocks) ? blocks : [],
-        detailTemplate: typeof parsed.detailTemplate === "string" ? parsed.detailTemplate : void 0
+        detailTemplate: typeof parsed.detailTemplate === "string" ? parsed.detailTemplate : void 0,
+        hiddenSections: Array.isArray(parsed.hiddenSections) ? normalizeHiddenSectionIds(parsed.hiddenSections) : void 0
       };
     }
   } catch {
@@ -349,16 +389,17 @@ function extractBlogAdminFields(raw) {
   if (!trimmed) return { html: "", detailTemplate: "auto" };
   const parsed = parseContentField(trimmed);
   const html = extractHtmlFromBlocks(parsed.content);
+  const hiddenSections = parsed.hiddenSections || [];
   if (parsed.detailTemplate && TEMPLATE_IDS.has(parsed.detailTemplate)) {
-    return { html, detailTemplate: parsed.detailTemplate };
+    return { html, detailTemplate: parsed.detailTemplate, hiddenSections };
   }
-  if (html) return { html, detailTemplate: "auto" };
+  if (html) return { html, detailTemplate: "auto", hiddenSections };
   if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) {
-    return { html: trimmed, detailTemplate: "auto" };
+    return { html: trimmed, detailTemplate: "auto", hiddenSections };
   }
-  return { html, detailTemplate: "auto" };
+  return { html, detailTemplate: "auto", hiddenSections };
 }
-function serializeBlogContentForStorage(html, detailTemplate) {
+function serializeBlogContentForStorage(html, detailTemplate, hiddenSections) {
   const choice = String(detailTemplate || "auto").trim();
   const payload = {
     content: [
@@ -374,6 +415,8 @@ function serializeBlogContentForStorage(html, detailTemplate) {
   if (choice !== "auto" && TEMPLATE_IDS.has(choice)) {
     payload.detailTemplate = choice;
   }
+  const hidden = normalizeHiddenSectionIds(hiddenSections);
+  if (hidden.length) payload.hiddenSections = hidden;
   return JSON.stringify(payload);
 }
 function normalizeBlogContentJsonEditor(raw, detailTemplate) {
@@ -382,21 +425,30 @@ function normalizeBlogContentJsonEditor(raw, detailTemplate) {
   const payload = { content: parsed.content || [] };
   const tpl = parsed.detailTemplate && TEMPLATE_IDS.has(parsed.detailTemplate) ? parsed.detailTemplate : choice !== "auto" && TEMPLATE_IDS.has(choice) ? choice : void 0;
   if (tpl) payload.detailTemplate = tpl;
+  const hidden = normalizeHiddenSectionIds(parsed.hiddenSections);
+  if (hidden.length) payload.hiddenSections = hidden;
   return JSON.stringify(payload);
 }
-function prepareBlogContentForStorageClient(raw, detailTemplate) {
+function prepareBlogContentForStorageClient(raw, detailTemplate, hiddenSections) {
   const trimmed = String(raw ?? "").trim();
-  if (!trimmed) return serializeBlogContentForStorage("", detailTemplate);
+  if (!trimmed) return serializeBlogContentForStorage("", detailTemplate, hiddenSections);
   if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
     try {
       const parsed = parseContentField(trimmed);
       if (parsed.content?.length) {
-        return normalizeBlogContentJsonEditor(trimmed, detailTemplate);
+        const mergedHidden = hiddenSections !== void 0 ? normalizeHiddenSectionIds(hiddenSections) : parsed.hiddenSections;
+        const json = normalizeBlogContentJsonEditor(trimmed, detailTemplate);
+        if (mergedHidden?.length) {
+          const obj = JSON.parse(json);
+          obj.hiddenSections = mergedHidden;
+          return JSON.stringify(obj);
+        }
+        return json;
       }
     } catch {
     }
   }
-  return serializeBlogContentForStorage(trimmed, detailTemplate);
+  return serializeBlogContentForStorage(trimmed, detailTemplate, hiddenSections);
 }
 
 // client/utils/paBlogCard.ts
@@ -933,6 +985,7 @@ var BlogPostWorkspace = class {
     this.engagementPostId = null;
     this.tagInputBinding = null;
     this.detailTemplate = "auto";
+    this.hiddenSections = [];
     this.blog = blog;
   }
   bind() {
@@ -991,9 +1044,27 @@ var BlogPostWorkspace = class {
     });
     this.renderTemplateGrid();
     this.syncTemplatePreview();
+    const sectionVisList = $id("paBlogWsSectionVisList");
+    if (sectionVisList && sectionVisList.dataset.wired !== "1") {
+      sectionVisList.dataset.wired = "1";
+      this.blog.on(sectionVisList, "change", (e) => {
+        const t = e.target;
+        const input = t instanceof HTMLInputElement && t.matches("input[data-section-id]") ? t : null;
+        if (!input) return;
+        const id = input.getAttribute("data-section-id");
+        if (!id) return;
+        const set = new Set(this.hiddenSections);
+        if (input.checked) set.delete(id);
+        else set.add(id);
+        this.hiddenSections = Array.from(set);
+      });
+    }
   }
   getDetailTemplate() {
     return this.detailTemplate || "auto";
+  }
+  getHiddenSections() {
+    return [...this.hiddenSections];
   }
   renderTemplateGrid() {
     const grid = $id("paBlogWsTemplateGrid");
@@ -1070,6 +1141,31 @@ var BlogPostWorkspace = class {
     const headerPreview = $id("paBlogWsPreviewContent");
     if (headerPreview) headerPreview.innerHTML = articleHtml;
     this.syncTemplatePreview();
+    this.syncSectionVisibilityPanel(articleHtml);
+  }
+  syncSectionVisibilityPanel(articleHtml) {
+    const list = $id("paBlogWsSectionVisList");
+    const empty = $id("paBlogWsSectionVisEmpty");
+    if (!list || !empty) return;
+    const html = articleHtml ?? getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
+    const targets = collectSectionTargetsFromHtml(html);
+    const validIds = new Set(targets.map((t) => t.id));
+    this.hiddenSections = pruneHiddenSections(this.hiddenSections, validIds);
+    if (!targets.length) {
+      list.innerHTML = "";
+      empty.hidden = false;
+      return;
+    }
+    empty.hidden = true;
+    const hiddenSet = new Set(this.hiddenSections);
+    list.innerHTML = targets.map((item) => {
+      const checked = !hiddenSet.has(item.id);
+      return `<label class="pa-blog-ws-section-vis-item">
+          <input type="checkbox" data-section-id="${escapeHtml(item.id)}" ${checked ? "checked" : ""} />
+          <span class="pa-blog-ws-section-vis-title">${escapeHtml(item.title)}</span>
+          <code class="pa-blog-ws-section-vis-id">#${escapeHtml(item.id)}</code>
+        </label>`;
+    }).join("");
   }
   setDetailTemplateChoice(value) {
     this.detailTemplate = value || "auto";
@@ -1256,6 +1352,8 @@ var BlogPostWorkspace = class {
     this.updateExcerptCount();
     this.updateMetaCounts();
     this.setDetailTemplateChoice("auto");
+    this.hiddenSections = [];
+    this.syncSectionVisibilityPanel("");
     this.clearFieldErrors();
   }
   populateForm(p) {
@@ -1270,6 +1368,7 @@ var BlogPostWorkspace = class {
     const html = contentRaw.startsWith("{") || contentRaw.startsWith("[") ? extracted.html : contentRaw;
     const tpl = typeof p.detailTemplate === "string" && p.detailTemplate ? p.detailTemplate : extracted.detailTemplate;
     setBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap", html);
+    this.hiddenSections = normalizeHiddenSectionIds(extracted.hiddenSections);
     this.setDetailTemplateChoice(tpl);
     this.syncRteTemplatePreview();
     populateChips($id("blogWsTagChips"), Array.isArray(p.tags) ? p.tags : []);
@@ -2096,7 +2195,11 @@ var BlogModule = class extends CrudCardModule {
     if (p === "blogWs") {
       const detailTpl = this.workspace.getDetailTemplate();
       const html = getBlogRteHtml("blogWsContent", "blogWsContentHtml", "blogWsRteWrap");
-      content = prepareBlogContentForStorageClient(html, detailTpl);
+      content = prepareBlogContentForStorageClient(
+        html,
+        detailTpl,
+        this.workspace.getHiddenSections()
+      );
       contentOk = html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().length > 0;
     } else {
       content = getRteHtml(contentEl);
@@ -2163,4 +2266,4 @@ var BlogModule = class extends CrudCardModule {
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-WAYEVRCQ.js.map
+//# sourceMappingURL=BlogModule-RDNHTPML.js.map

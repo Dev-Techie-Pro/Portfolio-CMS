@@ -398,7 +398,7 @@ ${SITE_FOOTER_NEWSLETTER_HTML}
       </button>
       <div class="bd-section-visibility-panel" id="bdSectionVisibilityPanel" hidden>
         <p class="bd-section-visibility-title">Show on live site</p>
-        <p class="bd-section-visibility-hint">Editors only — toggle sections visitors see on this post.</p>
+        <p class="bd-section-visibility-hint">Editors only — uncheck a section to hide it from visitors. Requires <code>&lt;section id="…"&gt;</code> blocks in the post HTML. Changes save automatically; you can also manage sections in Admin → Blog post → Section visibility.</p>
         <div class="bd-section-visibility-list" id="bdSectionVisibilityList"></div>
       </div>
     </div>

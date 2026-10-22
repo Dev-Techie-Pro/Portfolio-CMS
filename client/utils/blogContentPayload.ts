@@ -1,6 +1,8 @@
 // @ts-nocheck
 /** Browser bundle mirror of lib/blog/admin-content.ts (keep in sync). */
 
+import { normalizeHiddenSectionIds } from './blogSectionVisibility.js';
+
 export const BLOG_DETAIL_TEMPLATE_META = [
   { id: 'auto', label: 'Auto', description: 'Detect from sections and blocks (default).' },
   { id: 'standard', label: 'Standard', description: 'Full layout — TOC left, article center, sidebar right.' },
@@ -35,6 +37,9 @@ function parseContentField(raw) {
       return {
         content: Array.isArray(blocks) ? blocks : [],
         detailTemplate: typeof parsed.detailTemplate === 'string' ? parsed.detailTemplate : undefined,
+        hiddenSections: Array.isArray(parsed.hiddenSections)
+          ? normalizeHiddenSectionIds(parsed.hiddenSections)
+          : undefined,
       };
     }
   } catch {
@@ -74,17 +79,18 @@ export function extractBlogAdminFields(raw) {
   if (!trimmed) return { html: '', detailTemplate: 'auto' };
   const parsed = parseContentField(trimmed);
   const html = extractHtmlFromBlocks(parsed.content);
+  const hiddenSections = parsed.hiddenSections || [];
   if (parsed.detailTemplate && TEMPLATE_IDS.has(parsed.detailTemplate)) {
-    return { html, detailTemplate: parsed.detailTemplate };
+    return { html, detailTemplate: parsed.detailTemplate, hiddenSections };
   }
-  if (html) return { html, detailTemplate: 'auto' };
+  if (html) return { html, detailTemplate: 'auto', hiddenSections };
   if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
-    return { html: trimmed, detailTemplate: 'auto' };
+    return { html: trimmed, detailTemplate: 'auto', hiddenSections };
   }
-  return { html, detailTemplate: 'auto' };
+  return { html, detailTemplate: 'auto', hiddenSections };
 }
 
-export function serializeBlogContentForStorage(html, detailTemplate) {
+export function serializeBlogContentForStorage(html, detailTemplate, hiddenSections) {
   const choice = String(detailTemplate || 'auto').trim();
   const payload = {
     content: [
@@ -100,6 +106,8 @@ export function serializeBlogContentForStorage(html, detailTemplate) {
   if (choice !== 'auto' && TEMPLATE_IDS.has(choice)) {
     payload.detailTemplate = choice;
   }
+  const hidden = normalizeHiddenSectionIds(hiddenSections);
+  if (hidden.length) payload.hiddenSections = hidden;
   return JSON.stringify(payload);
 }
 
@@ -122,6 +130,8 @@ export function normalizeBlogContentJsonEditor(raw, detailTemplate) {
         ? choice
         : undefined;
   if (tpl) payload.detailTemplate = tpl;
+  const hidden = normalizeHiddenSectionIds(parsed.hiddenSections);
+  if (hidden.length) payload.hiddenSections = hidden;
   return JSON.stringify(payload);
 }
 
@@ -158,20 +168,30 @@ export function blogContentJsonHasText(raw) {
   return parts.join(' ').replace(/\s+/g, ' ').trim().length > 0;
 }
 
-export function prepareBlogContentForStorageClient(raw, detailTemplate) {
+export function prepareBlogContentForStorageClient(raw, detailTemplate, hiddenSections) {
   const trimmed = String(raw ?? '').trim();
-  if (!trimmed) return serializeBlogContentForStorage('', detailTemplate);
+  if (!trimmed) return serializeBlogContentForStorage('', detailTemplate, hiddenSections);
   if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
     try {
       const parsed = parseContentField(trimmed);
       if (parsed.content?.length) {
-        return normalizeBlogContentJsonEditor(trimmed, detailTemplate);
+        const mergedHidden =
+          hiddenSections !== undefined
+            ? normalizeHiddenSectionIds(hiddenSections)
+            : parsed.hiddenSections;
+        const json = normalizeBlogContentJsonEditor(trimmed, detailTemplate);
+        if (mergedHidden?.length) {
+          const obj = JSON.parse(json);
+          obj.hiddenSections = mergedHidden;
+          return JSON.stringify(obj);
+        }
+        return json;
       }
     } catch {
       /* html */
     }
   }
-  return serializeBlogContentForStorage(trimmed, detailTemplate);
+  return serializeBlogContentForStorage(trimmed, detailTemplate, hiddenSections);
 }
 
 /** Rough admin preview HTML from structured content (not identical to public site). */

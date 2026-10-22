@@ -18,6 +18,11 @@ import {
   BLOG_DETAIL_TEMPLATE_META,
   extractBlogAdminFields,
 } from '../../utils/blogContentPayload.js';
+import {
+  collectSectionTargetsFromHtml,
+  normalizeHiddenSectionIds,
+  pruneHiddenSections,
+} from '../../utils/blogSectionVisibility.js';
 
 type WsEditorMode = 'edit' | 'preview';
 type WsOpenMode = 'add' | 'edit' | 'preview';
@@ -34,6 +39,7 @@ export class BlogPostWorkspace {
   private engagementPostId: string | number | null = null;
   private tagInputBinding: ReturnType<typeof bindCommaSeparatedChipInput> | null = null;
   private detailTemplate: string = 'auto';
+  private hiddenSections: string[] = [];
 
   constructor(blog: BlogModule) {
     this.blog = blog;
@@ -92,10 +98,33 @@ export class BlogPostWorkspace {
 
     this.renderTemplateGrid();
     this.syncTemplatePreview();
+
+    const sectionVisList = $id('paBlogWsSectionVisList');
+    if (sectionVisList && sectionVisList.dataset.wired !== '1') {
+      sectionVisList.dataset.wired = '1';
+      this.blog.on(sectionVisList, 'change', (e) => {
+        const t = e.target;
+        const input =
+          t instanceof HTMLInputElement && t.matches('input[data-section-id]')
+            ? t
+            : null;
+        if (!input) return;
+        const id = input.getAttribute('data-section-id');
+        if (!id) return;
+        const set = new Set(this.hiddenSections);
+        if (input.checked) set.delete(id);
+        else set.add(id);
+        this.hiddenSections = Array.from(set);
+      });
+    }
   }
 
   getDetailTemplate() {
     return this.detailTemplate || 'auto';
+  }
+
+  getHiddenSections() {
+    return [...this.hiddenSections];
   }
 
   private renderTemplateGrid() {
@@ -182,6 +211,40 @@ export class BlogPostWorkspace {
     const headerPreview = $id('paBlogWsPreviewContent');
     if (headerPreview) headerPreview.innerHTML = articleHtml;
     this.syncTemplatePreview();
+    this.syncSectionVisibilityPanel(articleHtml);
+  }
+
+  private syncSectionVisibilityPanel(articleHtml?: string) {
+    const list = $id('paBlogWsSectionVisList');
+    const empty = $id('paBlogWsSectionVisEmpty');
+    if (!list || !empty) return;
+
+    const html =
+      articleHtml ??
+      getBlogRteHtml('blogWsContent', 'blogWsContentHtml', 'blogWsRteWrap');
+    const targets = collectSectionTargetsFromHtml(html);
+    const validIds = new Set(targets.map((t) => t.id));
+    this.hiddenSections = pruneHiddenSections(this.hiddenSections, validIds);
+
+    if (!targets.length) {
+      list.innerHTML = '';
+      empty.hidden = false;
+      return;
+    }
+
+    empty.hidden = true;
+    const hiddenSet = new Set(this.hiddenSections);
+    list.innerHTML = targets
+      .map((item) => {
+        const checked = !hiddenSet.has(item.id);
+        return `<label class="pa-blog-ws-section-vis-item">
+          <input type="checkbox" data-section-id="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} />
+          <span class="pa-blog-ws-section-vis-title">${escapeHtml(item.title)}</span>
+          <code class="pa-blog-ws-section-vis-id">#${escapeHtml(item.id)}</code>
+        </label>`;
+      })
+      .join('');
+
   }
 
   private setDetailTemplateChoice(value: string) {
@@ -383,6 +446,8 @@ export class BlogPostWorkspace {
     this.updateExcerptCount();
     this.updateMetaCounts();
     this.setDetailTemplateChoice('auto');
+    this.hiddenSections = [];
+    this.syncSectionVisibilityPanel('');
     this.clearFieldErrors();
   }
 
@@ -404,6 +469,7 @@ export class BlogPostWorkspace {
         ? p.detailTemplate
         : extracted.detailTemplate;
     setBlogRteHtml('blogWsContent', 'blogWsContentHtml', 'blogWsRteWrap', html);
+    this.hiddenSections = normalizeHiddenSectionIds(extracted.hiddenSections);
     this.setDetailTemplateChoice(tpl);
     this.syncRteTemplatePreview();
     populateChips($id('blogWsTagChips'), Array.isArray(p.tags) ? p.tags : []);

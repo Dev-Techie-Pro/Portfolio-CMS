@@ -530,7 +530,11 @@ export class BlogModule extends CrudCardModule {
     if (p === 'blogWs') {
       const detailTpl = this.workspace.getDetailTemplate();
       const html = getBlogRteHtml('blogWsContent', 'blogWsContentHtml', 'blogWsRteWrap');
-      content = prepareBlogContentForStorageClient(html, detailTpl);
+      content = prepareBlogContentForStorageClient(
+        html,
+        detailTpl,
+        this.workspace.getHiddenSections(),
+      );
       contentOk = html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().length > 0;
     } else {
       content = getRteHtml(contentEl);

@@ -3208,3 +3208,25 @@ body.bd-reply-modal-open {
   margin-top: 3px;
   accent-color: var(--accent);
 }
+
+.bd-section-vis-empty {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--gray);
+}
+
+.bd-section-vis-empty code {
+  display: block;
+  margin-top: 8px;
+  padding: 8px 10px;
+  font-size: 0.68rem;
+  background: var(--bg-card-hover);
+  border-radius: 8px;
+  overflow-x: auto;
+  color: var(--white-dim);
+}
+
+.bd-section-visibility-hint code {
+  font-size: 0.95em;
+}

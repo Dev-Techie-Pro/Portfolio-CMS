@@ -115,6 +115,10 @@ function sanitizeBlogContentPayload(
         : undefined;
   if (tpl) payload.detailTemplate = tpl;
 
+  if (parsed.hiddenSections?.length) {
+    payload.hiddenSections = parsed.hiddenSections;
+  }
+
   walkBlogBlocks(parsed.content as Record<string, unknown>[], (block) => {
     if (typeof block.text === "string") {
       block.text = sanitizeCmsHtml(block.text);

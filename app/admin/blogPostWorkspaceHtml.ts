@@ -114,6 +114,22 @@ export const BLOG_POST_WORKSPACE_HTML = `
           </div>
         </div>
         <div class="pa-blog-ws-main-panels" aria-label="SEO, revisions, and engagement">
+          <section class="pa-blog-ws-panel" data-ws-panel id="paBlogWsSectionVisPanel" data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
+            <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="true">
+              <span class="pa-blog-ws-panel-head-left"><i class="ri-layout-row-line"></i> Section visibility</span>
+              <i class="ri-arrow-down-s-line pa-blog-ws-panel-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="pa-blog-ws-panel-body pa-collapse-panel" data-pa-collapse-panel>
+              <p class="pa-blog-ws-engagement-hint">
+                Control which blocks visitors see on the <strong>live post</strong>. Each row needs an <code>&lt;section id="…"&gt;</code> in your HTML (Longform / Case study starters include these). Uncheck to hide; save the post to publish. While logged in, you can also use the <strong>Sections</strong> button at the bottom-right on the public post.
+              </p>
+              <div class="pa-blog-ws-section-vis-list" id="paBlogWsSectionVisList" aria-live="polite"></div>
+              <p class="pa-blog-ws-section-vis-empty" id="paBlogWsSectionVisEmpty" hidden>
+                No sections found yet. Pick a detail layout above (e.g. Longform), use <strong>Replace with layout starter</strong>, or add sections in the editor — for example <code>&lt;section id="intro"&gt;&lt;h2&gt;Introduction&lt;/h2&gt;…&lt;/section&gt;</code>.
+              </p>
+            </div>
+          </section>
+
           <section class="pa-blog-ws-panel is-collapsed" data-ws-panel data-pa-collapse data-pa-collapse-inverted data-pa-collapse-class="is-collapsed">
             <button type="button" class="pa-blog-ws-panel-head pa-collapse-trigger" data-ws-panel-toggle data-pa-collapse-trigger aria-expanded="true">
               <span class="pa-blog-ws-panel-head-left"><i class="ri-search-line"></i> SEO</span>
