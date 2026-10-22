@@ -14714,8 +14714,8 @@ body.pa-media-modal-open {
   padding: 6px 0;
   border: 1px solid var(--pa-border);
   border-radius: var(--pa-radius-md);
-  background: var(--pa-surface);
-  box-shadow: var(--pa-shadow-lg, 0 12px 40px rgba(0, 0, 0, 0.35));
+  background: var(--pa-bg-chip);
+  box-shadow: var(--pa-shadow-md, 0 12px 40px var(--pa-overlay-faint));
 }
 .pa-rte-code-context-menu__item {
   display: flex;

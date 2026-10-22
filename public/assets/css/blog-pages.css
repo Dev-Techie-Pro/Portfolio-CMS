@@ -2410,8 +2410,8 @@ body.bd-reply-modal-open {
 }
 
 .blog-details-page.bd-tpl-case-study .main-layout {
-  grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) minmax(260px, 300px);
-  gap: 32px;
+  grid-template-columns: minmax(120px, 160px) minmax(0, 1fr) minmax(160px, 200px);
+  gap: 20px;
 }
 
 .blog-details-page.bd-tpl-case-study .badge,
