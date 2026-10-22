@@ -25,6 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
     Portfolio.INTERACTIONS.initContactPage();
   }
 
+  if (document.getElementById("footerNewsletterForm")) {
+    Portfolio.INTERACTIONS.initFooterNewsletter();
+  }
+
   Portfolio.TEXTURES.initUniversalAnimations();
   Portfolio.PAGES.initByRoute();
 

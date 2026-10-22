@@ -6,6 +6,7 @@ export type RateLimitScope =
   | 'auth_login'
   | 'auth_forgot_password'
   | 'public_contact'
+  | 'public_newsletter'
   | 'public_blog_comment'
   | 'public_blog_like'
   | 'public_content_read'
@@ -15,6 +16,7 @@ const DEFAULTS: Record<RateLimitScope, { windowSec: number; maxHits: number }> =
   auth_login: { windowSec: 900, maxHits: 20 },
   auth_forgot_password: { windowSec: 3600, maxHits: 5 },
   public_contact: { windowSec: 3600, maxHits: 5 },
+  public_newsletter: { windowSec: 3600, maxHits: 8 },
   public_blog_comment: { windowSec: 3600, maxHits: 30 },
   public_blog_like: { windowSec: 3600, maxHits: 120 },
   public_content_read: { windowSec: 60, maxHits: 120 },

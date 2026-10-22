@@ -1,6 +1,7 @@
 "use client";
 
 import { PortfolioHtmlContent } from "@/components/portfolio/PortfolioHtmlContent";
+import { SITE_FOOTER_NEWSLETTER_HTML } from "@/lib/portfolio/site-footer-newsletter-html";
 
 /* Auto-generated from static HTML — see MIGRATION.md */
 const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
@@ -430,6 +431,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <p class="freelance-note">
               <strong>Available</strong> for freelance work <br />and exciting opportunities.
             </p>
+${SITE_FOOTER_NEWSLETTER_HTML}
           </div>
         </div>
         <div class="footer-bottom">

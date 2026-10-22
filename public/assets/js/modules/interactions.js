@@ -587,5 +587,67 @@
         (window.Portfolio.TEXTURES.initExperienceCanvas(),
           window.Portfolio.TEXTURES.initExperienceHeroSymbols());
       },
+      initFooterNewsletter: function () {
+        const form = document.getElementById("footerNewsletterForm");
+        if (!form || form.dataset.newsletterInit === "1") return;
+        form.dataset.newsletterInit = "1";
+        const emailInput = form.querySelector("#footerNewsletterEmail");
+        const feedback = form.querySelector("#footerNewsletterFeedback");
+        const hp = form.querySelector('input[name="website"]');
+        const submitBtn = form.querySelector(".footer-newsletter-btn");
+        const emailRe = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+        function setFeedback(message, kind) {
+          if (!feedback) return;
+          feedback.textContent = message;
+          feedback.hidden = !message;
+          feedback.classList.remove("is-success", "is-error");
+          if (kind) feedback.classList.add(kind);
+        }
+        o(form, "submit", async (ev) => {
+          ev.preventDefault();
+          if (form.dataset.newsletterSubmitting === "1") return;
+          const email = (emailInput?.value || "").trim();
+          if (!emailRe.test(email)) {
+            setFeedback("Please enter a valid email address.", "is-error");
+            emailInput?.focus();
+            return;
+          }
+          form.dataset.newsletterSubmitting = "1";
+          setFeedback("", "");
+          submitBtn && (submitBtn.disabled = true);
+          const prevLabel = submitBtn?.textContent;
+          submitBtn && (submitBtn.textContent = "Subscribing…");
+          try {
+            const res = await fetch("/api/newsletter", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email,
+                website: hp?.value || "",
+              }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+              setFeedback(
+                data.error || "Could not subscribe. Please try again.",
+                "is-error",
+              );
+              return;
+            }
+            form.reset();
+            setFeedback(
+              data.message ||
+                "You're subscribed. Watch your inbox for the next update.",
+              "is-success",
+            );
+          } catch (_) {
+            setFeedback("Network error. Please check your connection.", "is-error");
+          } finally {
+            delete form.dataset.newsletterSubmitting;
+            submitBtn && (submitBtn.disabled = false);
+            submitBtn && (submitBtn.textContent = prevLabel || "Subscribe");
+          }
+        });
+      },
     };
   })()));
