@@ -39,6 +39,7 @@
     "motion": "^12.43.0",
     "next": "^15.1.0",
     "nodemailer": "^10.0.10",
+    "prettier": "^3.9.10",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "remixicon": "^4.6.0",

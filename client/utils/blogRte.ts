@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { promptUrl } from './url-prompt.js';
 import { getRteHtml, setRteHtml, updateRteButtonStates } from './rte.js';
+import { setupBlogRteCodePane } from './blogRteCodePane.js';
 
 type BlogRteOptions = {
   onInsertImage?: () => void;
@@ -77,11 +78,13 @@ function setRteEditorMode(
 
   wrap.classList.remove('pa-rte--code-mode', 'pa-rte--preview-mode');
 
+  const codeShell = codeEl?.closest('.pa-rte-code-shell') as HTMLElement | null;
+
   if (mode === 'preview') {
     syncCodeFromVisual(body, codeEl);
     body.hidden = true;
+    if (codeShell) codeShell.hidden = true;
     if (codeEl) {
-      codeEl.hidden = true;
       codeEl.classList.remove('is-active');
     }
     if (previewEl) {
@@ -98,19 +101,21 @@ function setRteEditorMode(
   if (mode === 'code') {
     syncCodeFromVisual(body, codeEl);
     body.hidden = true;
+    if (codeShell) codeShell.hidden = false;
     if (codeEl) {
-      codeEl.hidden = false;
       codeEl.classList.add('is-active');
     }
     toolbar?.setAttribute('hidden', '');
     wrap.classList.add('pa-rte--code-mode');
+    wrap.dispatchEvent(new CustomEvent('pa-rte-code-refresh-meta'));
     codeEl?.focus();
     return;
   }
 
+  if (codeShell) codeShell.hidden = true;
+
   syncVisualFromCode(body, codeEl);
   if (codeEl) {
-    codeEl.hidden = true;
     codeEl.classList.remove('is-active');
   }
   body.hidden = false;
@@ -256,8 +261,11 @@ export function setupBlogPostRte(
   body.addEventListener('paste', (e) => handleBlogPaste(e, body));
 
   if (codeEl) {
-    codeEl.addEventListener('input', () => {
-      if (!wrap.classList.contains('pa-rte--code-mode')) return;
+    setupBlogRteCodePane(wrap, codeEl, {
+      onChange: () => {
+        if (!wrap.classList.contains('pa-rte--code-mode')) return;
+        options.onRefreshPreview?.();
+      },
     });
   }
 

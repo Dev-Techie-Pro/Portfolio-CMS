@@ -549,7 +549,7 @@
   z-index: 2;
 }
 .blog-details-hero .bd-breadcrumb {
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.65);
+  text-shadow: var(--sh3);
 }
 .blog-details-hero .bd-breadcrumb a {
   color: color-mix(in srgb, var(--white) 82%, transparent);
@@ -566,7 +566,7 @@
   border: 1px solid color-mix(in srgb, var(--white) 10%, transparent);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--sh3);
 }
 .badge {
   display: inline-block;
@@ -1173,9 +1173,7 @@
   border-radius: var(--br-none);
   border: 1px solid var(--bd-code-border);
   background: var(--bd-code-bg);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow:var(--sh3);
 }
 
 .article-content pre::before,
@@ -1190,9 +1188,9 @@
   background: var(--bd-code-bar);
   border-bottom: 1px solid var(--bd-code-border);
   background-image:
-    radial-gradient(circle, #ff5f57 5px, transparent 6px),
-    radial-gradient(circle, #febc2e 5px, transparent 6px),
-    radial-gradient(circle, #28c840 5px, transparent 6px);
+    radial-gradient(circle, va(--danger) 5px, transparent 6px),
+    radial-gradient(circle, var(--accent-orange) 5px, transparent 6px),
+    radial-gradient(circle, var(--accent-green) 5px, transparent 6px);
   background-size: 12px 12px;
   background-position: 14px center, 34px center, 54px center;
   background-repeat: no-repeat;
@@ -1213,12 +1211,12 @@
 
 .article-content pre .token-keyword,
 .pa-rte-body--blog pre .token-keyword {
-  color: #ff7b72;
+  color: var(--danger-dim);
 }
 
 .article-content pre .token-string,
 .pa-rte-body--blog pre .token-string {
-  color: #a5d6ff;
+  color: var(--accent-blue-dim);
 }
 
 .article-content ul:not(.check-list):not(.bullet-list):not(
@@ -1868,7 +1866,7 @@ body.bd-reply-modal-open {
 .bd-reply-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.72);
+  background: var(--overlay);
   backdrop-filter: blur(4px);
 }
 .bd-reply-modal-panel {
@@ -1881,7 +1879,7 @@ body.bd-reply-modal-open {
   background: var(--bg-card);
   border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--bg-card-hover));
   border-radius: var(--br-none);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--sh3);
 }
 .bd-reply-modal-head {
   display: flex;
@@ -2350,7 +2348,6 @@ body.bd-reply-modal-open {
   }
 }
 
-/* Image skeleton loaders — blog layouts */
 .blog-page .pg-thumb.si-skel-wrap,
 .blog-page .blog-recent-thumb.si-skel-wrap,
 .blog-details-page .article-figure.si-skel-wrap,
@@ -2373,7 +2370,6 @@ body.bd-reply-modal-open {
   object-fit: cover;
 }
 
-/* —— Blog detail layout templates —— */
 .blog-details-page.bd-tpl-minimal .main-layout {
   grid-template-columns: 1fr;
   max-width: 46rem;
@@ -2588,7 +2584,6 @@ body.bd-reply-modal-open {
   line-height: 1.4;
 }
 
-/* Longform — inline "01." accent prefix (reference layout) */
 .blog-details-page.bd-tpl-longform .article-content h2[data-section-num] {
   display: block;
   font-size: clamp(1.35rem, 2.2vw, 1.65rem);
@@ -2701,7 +2696,6 @@ body.bd-reply-modal-open {
   color: var(--white-dim);
 }
 
-/* Case study — numbered section badges + subtitles */
 .blog-details-page.bd-tpl-case-study .bd-section-head {
   margin-bottom: 18px;
 }
@@ -3059,14 +3053,13 @@ body.bd-reply-modal-open {
   }
 }
 
-/* Code window with language label + copy (longform / article RTE) */
 .bd-code-block {
   margin: 24px 0 28px;
-  border: 1px solid var(--bd-code-border, #30363d);
+  border: 1px solid var(--bd-code-border);
   border-radius: var(--br-none);
   overflow: hidden;
-  background: var(--bd-code-bg, #0d1117);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  background: var(--bd-code-bg);
+  box-shadow: var(--sh3);
 }
 
 .bd-code-block__top {
@@ -3076,8 +3069,8 @@ body.bd-reply-modal-open {
   gap: 12px;
   min-height: 40px;
   padding: 0 14px;
-  background: var(--bd-code-bar, #161b22);
-  border-bottom: 1px solid var(--bd-code-border, #30363d);
+  background: var(--bd-code-bar);
+  border-bottom: 1px solid var(--bd-code-border);
 }
 
 .bd-code-block__lang {
@@ -3161,7 +3154,7 @@ body.bd-reply-modal-open {
   border: 1px solid var(--bg-card-hover);
   border-radius: var(--br-none);
   cursor: pointer;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--sh3);
 }
 
 .bd-section-visibility-panel {
@@ -3172,7 +3165,7 @@ body.bd-reply-modal-open {
   background: var(--bg-card);
   border: 1px solid var(--bg-card-hover);
   border-radius: var(--br-none);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--sh3);
 }
 
 .bd-section-visibility-title {

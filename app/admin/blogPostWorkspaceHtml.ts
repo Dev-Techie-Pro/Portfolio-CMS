@@ -87,7 +87,29 @@ export const BLOG_POST_WORKSPACE_HTML = `
             </div>
             <div class="pa-rte-editor-surface">
               <div class="pa-rte-body pa-rte-body--blog" contenteditable="true" id="blogWsContent" data-placeholder="Start writing your article — paste from Word or Google Docs with formatting preserved…"></div>
-              <textarea class="pa-rte-code-pane pa-blog-ws-html-source" id="blogWsContentHtml" hidden spellcheck="false" aria-label="HTML source"></textarea>
+              <div class="pa-rte-code-shell" id="blogWsRteCodeShell" hidden>
+                <div class="pa-rte-code-toolbar" role="toolbar" aria-label="HTML code tools">
+                  <button type="button" class="pa-rte-code-tool" data-code-action="format" title="Format with Prettier (Ctrl+Shift+F)">
+                    <i class="ri-magic-line" aria-hidden="true"></i><span>Format</span>
+                  </button>
+                  <button type="button" class="pa-rte-code-tool" data-code-action="minify" title="Minify HTML">
+                    <i class="ri-contract-left-right-line" aria-hidden="true"></i><span>Minify</span>
+                  </button>
+                  <button type="button" class="pa-rte-code-tool is-active" data-code-action="wrap" title="Toggle line wrap">
+                    <i class="ri-text-wrap" aria-hidden="true"></i><span>Wrap</span>
+                  </button>
+                  <button type="button" class="pa-rte-code-tool" data-code-action="comment" title="Toggle HTML comment (Ctrl+/)">
+                    <i class="ri-code-line" aria-hidden="true"></i><span>Comment</span>
+                  </button>
+                  <button type="button" class="pa-rte-code-tool" data-code-action="find" title="Find (Ctrl+F)">
+                    <i class="ri-search-line" aria-hidden="true"></i><span>Find</span>
+                  </button>
+                  <span class="pa-rte-code-toolbar-spacer" aria-hidden="true"></span>
+                  <span class="pa-rte-code-hint">Right-click for more actions</span>
+                  <span class="pa-rte-code-meta" id="blogWsCodeMeta">Ln 1, Col 1</span>
+                </div>
+                <textarea class="pa-rte-code-pane pa-blog-ws-html-source pa-rte-code-pane--wrap" id="blogWsContentHtml" spellcheck="false" aria-label="HTML source" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+              </div>
               <div class="pa-rte-preview-pane" id="blogWsRtePreviewWrap" hidden>
                 <p class="pa-blog-ws-preview-layout-label">Detail layout: <strong id="blogWsRtePreviewLayoutLabel">Standard</strong></p>
                 <div class="pa-blog-ws-rte-preview-shell blog-details-page bd-tpl-standard" id="blogWsRteDetailPreviewShell">
