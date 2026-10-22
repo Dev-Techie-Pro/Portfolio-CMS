@@ -51,7 +51,9 @@
             <a href="#whats-new" class="active"><span class="toc-num">01</span> What's New</a>
             <a href="#getting-started"><span class="toc-num">02</span> Getting Started</a>
             <a href="#data-fetching"><span class="toc-num">03</span> Data Fetching</a>
-            <a href="#comparison"><span class="toc-num">04</span> Comparison</a>
+            <a href="#server-actions"><span class="toc-num">04</span> Server Actions</a>
+            <a href="#comparison"><span class="toc-num">05</span> Comparison</a>
+            <a href="#deployment"><span class="toc-num">06</span> Deployment</a>
           </nav>
         </div>
         <div class="bd-sidebar-card bd-toc-meta">
@@ -74,9 +76,11 @@
   <section id="getting-started">
     <h2 data-section-num="02">Getting Started</h2>
     <p>Create a new project and explore the App Router with TypeScript out of the box.</p>
-    <pre><code>npx create-next-app@latest my-app --typescript --tailwind --eslint</code></pre>
+    <pre data-language="bash"><code>npx create-next-app@latest my-app --typescript --tailwind --eslint</code></pre>
+    <p>Start the dev server and open the default App Router layout:</p>
+    <pre data-language="bash"><code>cd my-app &amp;&amp; npm run dev</code></pre>
   </section>
-  <div class="stat-box stat-box--perf">
+  <div class="stat-box stat-box--perf" data-bd-segment-id="perf-callout" data-bd-segment-title="Performance callout">
     <div class="stat-icon"><i class="ri-flashlight-line"></i></div>
     <div class="stat-box__body">
       <div class="stat-value">Next.js 14 Performance</div>
@@ -95,8 +99,17 @@
       <li>Streaming works seamlessly with Suspense boundaries.</li>
     </ul>
   </section>
+  <section id="server-actions">
+    <h2 data-section-num="04">Server Actions</h2>
+    <p>Colocate mutations with your UI using async server functions — no separate API route required.</p>
+    <pre data-language="typescript"><code>export async function createPost(formData: FormData) {
+  'use server'
+  const title = formData.get('title')
+  await db.post.create({ data: { title: String(title) } })
+}</code></pre>
+  </section>
   <section id="comparison">
-    <h2 data-section-num="04">Next.js 13 vs 14</h2>
+    <h2 data-section-num="05">Next.js 13 vs 14</h2>
     <table class="bd-compare-table">
       <thead><tr><th>Feature</th><th>Next.js 13</th><th>Next.js 14</th></tr></thead>
       <tbody>
@@ -105,6 +118,11 @@
         <tr><td>Metadata API</td><td>Basic</td><td>Enhanced</td></tr>
       </tbody>
     </table>
+  </section>
+  <section id="deployment">
+    <h2 data-section-num="06">Deployment</h2>
+    <p>Ship to Vercel or any Node host with zero config for the framework defaults.</p>
+    <pre data-language="bash"><code>npm run build &amp;&amp; npm run start</code></pre>
   </section>
 </article></div>
     </div>

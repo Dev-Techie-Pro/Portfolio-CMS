@@ -517,13 +517,25 @@ function _applyLongformNumsToEntries(entries) {
   });
 }
 
+function _hiddenSectionSet(post) {
+  const list = post?.hiddenSections;
+  return new Set(Array.isArray(list) ? list.filter(Boolean) : []);
+}
+
+function _filterTocEntries(entries, hiddenSet) {
+  if (!hiddenSet?.size) return entries;
+  return (entries || []).filter((entry) => !hiddenSet.has(entry.id));
+}
+
 function _renderHtmlArticleMain(html, post) {
   const tpl = _resolveDetailTemplate(post);
   const numberedSections = tpl === "longform" || tpl === "case-study";
+  const hiddenSet = _hiddenSectionSet(post);
   const doc = new DOMParser().parseFromString(html || "", "text/html");
   const root = doc.body;
   _ensureArticleHeadingIds(root);
-  const entries = _tocEntriesFromArticleRoot(root);
+  let entries = _tocEntriesFromArticleRoot(root);
+  entries = _filterTocEntries(entries, hiddenSet);
   if (numberedSections) _applyLongformNumsToEntries(entries);
   _enhanceCompareCheckListItems(root);
   return { html: root.innerHTML, tocEntries: entries };
@@ -584,8 +596,11 @@ function _renderArticleMain(content, post) {
   let html = "";
   const tocEntries = [];
 
+  const hiddenSet = _hiddenSectionSet(post);
+
   (content || []).forEach((block) => {
     if (block.type === "section") {
+      if (hiddenSet.has(block.id)) return;
       sectionIndex += 1;
       tocEntries.push({ id: block.id, title: block.title });
       const figure = block.figureFirst
@@ -611,6 +626,8 @@ function _renderArticleMain(content, post) {
           ${inner}
         </section>`;
     } else if (block.type === "stat-box") {
+      const segId = block.segmentId || block.id;
+      if (segId && hiddenSet.has(segId)) return;
       html += _renderStatBox(block, tpl);
     }
   });
@@ -1123,6 +1140,15 @@ function _refreshSkeleton(root) {
       }
       if (window.Portfolio.BLOG_PAGE?.initDetail) {
         window.Portfolio.BLOG_PAGE.initDetail(post);
+      }
+
+      const articleRoot = document.getElementById("bdArticleBody");
+      if (window.Portfolio.BLOG_ARTICLE_UI && articleRoot) {
+        const hiddenSet = _hiddenSectionSet(post);
+        window.Portfolio.BLOG_ARTICLE_UI.applyHiddenToDom(articleRoot, hiddenSet);
+        window.Portfolio.BLOG_ARTICLE_UI.filterTocLinks(hiddenSet);
+        window.Portfolio.BLOG_ARTICLE_UI.enhanceCodeBlocks(articleRoot);
+        window.Portfolio.BLOG_ARTICLE_UI.initSectionVisibility(post);
       }
 
       _hydrateBlogIcons(

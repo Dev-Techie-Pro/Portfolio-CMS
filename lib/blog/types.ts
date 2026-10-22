@@ -28,6 +28,7 @@ export type PortfolioBlogPost = {
     ctaHref: string;
   };
   content: Record<string, unknown>[];
+  hiddenSections?: string[];
   prevBlog?: { id: string; title: string } | null;
   nextBlog?: { id: string; title: string } | null;
   isFeatured?: boolean;

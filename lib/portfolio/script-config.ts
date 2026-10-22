@@ -107,6 +107,7 @@ export const PAGE_EXTRA_SCRIPTS: Record<PortfolioRoute, ScriptEntry[]> = {
     { type: "classic", src: "/assets/js/data/blogs-loader.js", defer: true },
     { type: "classic", src: "/assets/js/data/blogs-data.js", defer: true },
     { type: "classic", src: "/assets/js/features/blog-engagement.js", defer: true },
+    { type: "classic", src: "/assets/js/features/blog-article-ui.js", defer: true },
   ],
   testimonials: [
     { type: "classic", src: "/assets/js/managers/index.js", defer: true },

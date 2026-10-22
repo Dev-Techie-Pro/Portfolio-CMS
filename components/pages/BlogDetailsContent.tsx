@@ -391,6 +391,18 @@ ${SITE_FOOTER_NEWSLETTER_HTML}
       </div>
     </footer>
 
+    <div class="bd-section-visibility" id="bdSectionVisibility" hidden>
+      <button type="button" class="bd-section-visibility-toggle" id="bdSectionVisibilityToggle" aria-expanded="false" aria-controls="bdSectionVisibilityPanel">
+        <i class="ri-layout-row-line" aria-hidden="true"></i>
+        <span>Sections</span>
+      </button>
+      <div class="bd-section-visibility-panel" id="bdSectionVisibilityPanel" hidden>
+        <p class="bd-section-visibility-title">Show on live site</p>
+        <p class="bd-section-visibility-hint">Editors only — toggle sections visitors see on this post.</p>
+        <div class="bd-section-visibility-list" id="bdSectionVisibilityList"></div>
+      </div>
+    </div>
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>`;
 
 export function BlogDetailsContent() {

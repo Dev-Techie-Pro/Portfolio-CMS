@@ -709,57 +709,61 @@ var BLOG_DETAIL_EDITOR_TEMPLATES = {
     id: "longform",
     label: "Longform",
     bodyHtml: `
-<section id="introduction">
-  <h2>Introduction</h2>
-  <p>Longform uses a sticky table of contents on the left and no right sidebar \u2014 built for deep guides.</p>
+<section id="whats-new">
+  <h2>What's New in Next.js 14</h2>
+  <p>Next.js 14 brings faster builds, improved caching semantics, and a more predictable developer experience for production apps.</p>
+  <div class="feature-grid feature-grid--longform">
+    <div class="feature-card"><div class="feature-icon"><i class="ri-flashlight-line"></i></div><h4>Turbopack</h4><p>Up to 53% faster local server startup.</p></div>
+    <div class="feature-card"><div class="feature-icon"><i class="ri-server-line"></i></div><h4>Server Actions</h4><p>Run mutations on the server without API routes.</p></div>
+    <div class="feature-card"><div class="feature-icon"><i class="ri-cpu-line"></i></div><h4>Partial Prerendering</h4><p>Static shell with dynamic holes.</p></div>
+    <div class="feature-card"><div class="feature-icon"><i class="ri-image-line"></i></div><h4>Image Optimization</h4><p>Smarter defaults for responsive media.</p></div>
+  </div>
 </section>
-<section id="project-overview">
-  <h2>Project overview</h2>
-  <p>Describe scope, stack, and constraints. Link to repo or case study if relevant.</p>
+<section id="getting-started">
+  <h2>Getting Started</h2>
+  <p>Create a new project and explore the App Router with TypeScript out of the box.</p>
+  <pre data-language="bash"><code>npx create-next-app@latest my-app --typescript --tailwind --eslint</code></pre>
+  <pre data-language="bash"><code>cd my-app &amp;&amp; npm run dev</code></pre>
 </section>
-<div class="stat-box">
-  <div class="stat-icon"><i class="ri-line-chart-line"></i></div>
-  <div>
-    <div class="stat-value">3\xD7</div>
-    <p class="stat-text">Example throughput or delivery metric for the narrative.</p>
+<div class="stat-box stat-box--perf" data-bd-segment-id="perf-callout" data-bd-segment-title="Performance callout">
+  <div class="stat-icon"><i class="ri-flashlight-line"></i></div>
+  <div class="stat-box__body">
+    <div class="stat-value">Next.js 14 Performance</div>
+    <p class="stat-text">Build and runtime improvements across the stack.</p>
+  </div>
+  <div class="stat-box__metrics">
+    <div><span class="stat-metric-value">2x</span><span class="stat-metric-label">Faster builds</span></div>
+    <div><span class="stat-metric-value">30%</span><span class="stat-metric-label">Better runtime</span></div>
   </div>
 </div>
-<section id="problem-challenges">
-  <h2>Problem &amp; challenges</h2>
-  <p>What was broken or risky before your solution?</p>
+<section id="data-fetching">
+  <h2>Data Fetching &amp; Caching</h2>
   <ul class="bullet-list">
-    <li>Challenge one</li>
-    <li>Challenge two</li>
-    <li>Challenge three</li>
+    <li>Request memoization reduces duplicate fetches.</li>
+    <li>Cache tags give fine-grained revalidation control.</li>
+    <li>Streaming works seamlessly with Suspense boundaries.</li>
   </ul>
 </section>
-<section id="solution-approach">
-  <h2>Solution approach</h2>
-  <p>Walk through architecture decisions step by step.</p>
-  <pre><code>// Optional code sample \u2014 edit or remove.</code></pre>
+<section id="server-actions">
+  <h2>Server Actions</h2>
+  <pre data-language="typescript"><code>export async function createPost(formData: FormData) {
+  'use server'
+  await db.post.create({ data: { title: String(formData.get('title')) } })
+}</code></pre>
 </section>
-<section id="key-features">
-  <h2>Key features</h2>
-  <div class="benefits-row">
-    <div class="benefit-item">
-      <div class="benefit-icon"><i class="ri-lock-line"></i></div>
-      <h4>Security</h4>
-      <p>Auth, validation, hardening.</p>
-    </div>
-    <div class="benefit-item">
-      <div class="benefit-icon"><i class="ri-speed-up-line"></i></div>
-      <h4>Performance</h4>
-      <p>Caching and query tuning.</p>
-    </div>
-  </div>
+<section id="comparison">
+  <h2>Next.js 13 vs 14</h2>
+  <table class="bd-compare-table">
+    <thead><tr><th>Feature</th><th>Next.js 13</th><th>Next.js 14</th></tr></thead>
+    <tbody>
+      <tr><td>Dev bundler</td><td>Webpack default</td><td>Turbopack (beta)</td></tr>
+      <tr><td>Server Actions</td><td>Experimental</td><td>Stable</td></tr>
+    </tbody>
+  </table>
 </section>
-<section id="results">
-  <h2>Results</h2>
-  <p>Quantify outcomes and lessons learned.</p>
-</section>
-<section id="next-steps">
-  <h2>Next steps</h2>
-  <p>What should the reader do after finishing this article?</p>
+<section id="deployment">
+  <h2>Deployment</h2>
+  <pre data-language="bash"><code>npm run build &amp;&amp; npm run start</code></pre>
 </section>`.trim()
   },
   "case-study": {
@@ -767,46 +771,58 @@ var BLOG_DETAIL_EDITOR_TEMPLATES = {
     label: "Case study",
     bodyHtml: `
 <section id="overview">
-  <h2>Project overview</h2>
-  <p>Case study layout emphasizes hero, stats, and proof \u2014 describe client, role, and timeline.</p>
-</section>
-<div class="stat-box">
-  <div class="stat-icon"><i class="ri-trending-up-line"></i></div>
-  <div>
-    <div class="stat-value">40%</div>
-    <p class="stat-text">Headline result from the engagement.</p>
+  <header class="bd-section-head">
+    <h2>Project Overview</h2>
+    <p class="bd-section-sub">Understanding the challenge and goals</p>
+  </header>
+  <p>We redesigned a high-traffic storefront to improve conversion, accessibility, and maintainability.</p>
+  <div class="bd-mini-stats-grid">
+    <div class="bd-mini-stat"><span class="bd-mini-stat-value">8.4%</span><span class="bd-mini-stat-label">Conversion (before)</span></div>
+    <div class="bd-mini-stat"><span class="bd-mini-stat-value">12.1%</span><span class="bd-mini-stat-label">Conversion (after)</span></div>
+    <div class="bd-mini-stat"><span class="bd-mini-stat-value">3.2s</span><span class="bd-mini-stat-label">LCP (before)</span></div>
+    <div class="bd-mini-stat"><span class="bd-mini-stat-value">1.4s</span><span class="bd-mini-stat-label">LCP (after)</span></div>
   </div>
-</div>
-<section id="approach">
-  <h2>Approach</h2>
-  <div class="compare-grid">
-    <div class="compare-card">
-      <h3>Before</h3>
-      <ul class="check-list">
-        <li class="danger-item">3MB of uncompressed PNG and JPG images</li>
-      </ul>
-    </div>
-    <div class="compare-card">
-      <h3>After</h3>
-      <ul class="check-list">
-        <li class="success-item">Lighthouse Performance score: 99/100</li>
-      </ul>
-    </div>
+  <h3 class="bd-block-label">Project Deliverables</h3>
+  <div class="bd-deliverables-grid">
+    <div class="bd-deliverable-card"><div class="feature-icon"><i class="ri-layout-masonry-line"></i></div><h4>UX Audit</h4><p>Heuristic review and funnel analysis.</p></div>
+    <div class="bd-deliverable-card"><div class="feature-icon"><i class="ri-palette-line"></i></div><h4>UI System</h4><p>Tokens, components, and patterns.</p></div>
+    <div class="bd-deliverable-card"><div class="feature-icon"><i class="ri-code-box-line"></i></div><h4>Front-end Build</h4><p>Next.js storefront implementation.</p></div>
+    <div class="bd-deliverable-card"><div class="feature-icon"><i class="ri-line-chart-line"></i></div><h4>Analytics</h4><p>Event taxonomy and dashboards.</p></div>
   </div>
 </section>
-<section id="deliverables">
-  <h2>Deliverables</h2>
-  <div class="examples-row">
-    <div class="example-card">
-      <div class="feature-icon"><i class="ri-window-line"></i></div>
-      <h4>Deliverable one</h4>
-      <p>What you shipped.</p>
-    </div>
-    <div class="example-card">
-      <div class="feature-icon"><i class="ri-server-line"></i></div>
-      <h4>Deliverable two</h4>
-      <p>What you shipped.</p>
-    </div>
+<section id="before-after">
+  <header class="bd-section-head">
+    <h2>Before vs After</h2>
+    <p class="bd-section-sub">What changed in the experience</p>
+  </header>
+  <div class="compare-grid compare-grid--case">
+    <div class="compare-card compare-card--before"><h3>Before</h3><ul class="check-list"><li class="danger-item">Cluttered checkout</li><li class="danger-item">Slow mobile LCP</li></ul></div>
+    <div class="compare-card compare-card--after"><h3>After</h3><ul class="check-list"><li class="success-item">Streamlined checkout</li><li class="success-item">Sub-1.5s LCP</li></ul></div>
+  </div>
+</section>
+<section id="results">
+  <header class="bd-section-head">
+    <h2>Results &amp; Impact</h2>
+    <p class="bd-section-sub">Measurable business outcomes</p>
+  </header>
+  <div class="quote-box quote-box--case"><p>"The new experience paid for itself within the first quarter."</p><span class="quote-box__credit">\u2014 Product Lead</span></div>
+  <div class="bd-mini-stats-grid bd-mini-stats-grid--results">
+    <div class="bd-mini-stat"><span class="bd-mini-stat-value">142%</span><span class="bd-mini-stat-label">Conversion lift</span></div>
+    <div class="bd-mini-stat"><span class="bd-mini-stat-value">56%</span><span class="bd-mini-stat-label">Faster LCP</span></div>
+    <div class="bd-mini-stat"><span class="bd-mini-stat-value">38%</span><span class="bd-mini-stat-label">Lower bounce</span></div>
+    <div class="bd-mini-stat"><span class="bd-mini-stat-value">4.8</span><span class="bd-mini-stat-label">CSAT score</span></div>
+  </div>
+</section>
+<section id="takeaways">
+  <header class="bd-section-head">
+    <h2>Key Takeaways</h2>
+    <p class="bd-section-sub">Lessons for your next redesign</p>
+  </header>
+  <div class="bd-takeaways-grid">
+    <div class="bd-takeaway"><span class="bd-takeaway-num">1</span><p>Start with analytics and funnel drop-offs.</p></div>
+    <div class="bd-takeaway"><span class="bd-takeaway-num">2</span><p>Invest in a token-based system early.</p></div>
+    <div class="bd-takeaway"><span class="bd-takeaway-num">3</span><p>Ship performance budgets with design specs.</p></div>
+    <div class="bd-takeaway"><span class="bd-takeaway-num">4</span><p>Test checkout on real devices and networks.</p></div>
   </div>
 </section>`.trim()
   }
@@ -2147,4 +2163,4 @@ var BlogModule = class extends CrudCardModule {
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-2FV3EB2K.js.map
+//# sourceMappingURL=BlogModule-WAYEVRCQ.js.map

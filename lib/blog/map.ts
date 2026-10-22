@@ -116,6 +116,7 @@ export function mapRowToPortfolioPost(
     tags,
     sidebarCta: includeContent ? asSidebarCta(parsed.sidebarCta) : undefined,
     preFooter: includeContent ? asPreFooter(parsed.preFooter) : undefined,
+    hiddenSections: includeContent ? parsed.hiddenSections || [] : undefined,
     content: contentBlocks,
     isFeatured: Boolean(row.is_featured),
     sortOrder: row.sort_order ?? 0,

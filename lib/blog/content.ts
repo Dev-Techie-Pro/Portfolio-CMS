@@ -5,6 +5,7 @@ export type ParsedBlogContent = {
   author?: string;
   readTime?: string;
   detailTemplate?: string;
+  hiddenSections?: string[];
   sidebarCta?: Record<string, unknown>;
   preFooter?: Record<string, unknown>;
 };
@@ -41,6 +42,11 @@ export function parseBlogContentField(raw: string | null): ParsedBlogContent {
             obj.preFooter && typeof obj.preFooter === "object"
               ? (obj.preFooter as Record<string, unknown>)
               : undefined,
+          hiddenSections: Array.isArray(obj.hiddenSections)
+            ? obj.hiddenSections
+                .map((id) => String(id || "").trim())
+                .filter(Boolean)
+            : undefined,
         };
       }
     }
