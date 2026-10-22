@@ -866,11 +866,10 @@
   display: flex;
   align-items: flex-start;
   gap: var(--card-gap-md);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: var(--white-dim);
   line-height: 1.5;
   padding: 6px 12px;
-  background: color-mix(in srgb, var(--bg-card) 88%, transparent);
   transition:
     border-color 0.2s ease,
     transform 0.2s ease;
