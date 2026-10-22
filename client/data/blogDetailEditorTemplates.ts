@@ -206,8 +206,8 @@ export const BLOG_DETAIL_EDITOR_TEMPLATES: Record<
     <p class="bd-section-sub">What changed in the experience</p>
   </header>
   <div class="compare-grid compare-grid--case">
-    <div class="compare-card compare-card--before"><h3>Before</h3><ul class="check-list"><li class="danger-item">Cluttered checkout</li><li class="danger-item">Slow mobile LCP</li></ul></div>
-    <div class="compare-card compare-card--after"><h3>After</h3><ul class="check-list"><li class="success-item">Streamlined checkout</li><li class="success-item">Sub-1.5s LCP</li></ul></div>
+    <div class="compare-card before-card compare-card--before"><h3>Before</h3><ul class="check-list"><li class="danger-item">Cluttered checkout</li><li class="danger-item">Slow mobile LCP</li></ul></div>
+    <div class="compare-card after-card compare-card--after"><h3>After</h3><ul class="check-list"><li class="success-item">Streamlined checkout</li><li class="success-item">Sub-1.5s LCP</li></ul></div>
   </div>
 </section>
 <section id="results">

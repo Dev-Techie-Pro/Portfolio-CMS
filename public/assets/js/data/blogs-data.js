@@ -254,14 +254,39 @@ function _searchBlob(post) {
   return parts.join(" ").toLowerCase();
 }
 
+function _compareColumnVariant(title, columnIndex, columnCount) {
+  const t = String(title || "").toLowerCase();
+  if (t.includes("before")) return "before";
+  if (t.includes("after")) return "after";
+  if (columnCount === 2) return columnIndex === 0 ? "before" : "after";
+  return null;
+}
+
 function _compareColumnItemClass(col, columnIndex, columnCount) {
-  const title = String(col?.title || "").toLowerCase();
-  if (title.includes("before")) return "danger-item";
-  if (title.includes("after")) return "success-item";
-  if (columnCount === 2) {
-    return columnIndex === 0 ? "danger-item" : "success-item";
-  }
+  const variant = _compareColumnVariant(col?.title, columnIndex, columnCount);
+  if (variant === "before") return "danger-item";
+  if (variant === "after") return "success-item";
   return "";
+}
+
+function _compareCardOpeningTag(col, columnIndex, columnCount) {
+  const variant = _compareColumnVariant(col?.title, columnIndex, columnCount);
+  if (variant === "before") {
+    return '<div class="compare-card before-card compare-card--before">';
+  }
+  if (variant === "after") {
+    return '<div class="compare-card after-card compare-card--after">';
+  }
+  return '<div class="compare-card">';
+}
+
+function _applyCompareCardVariantClasses(card, variant) {
+  if (!variant) return;
+  const before = variant === "before";
+  card.classList.toggle("before-card", before);
+  card.classList.toggle("after-card", !before);
+  card.classList.toggle("compare-card--before", before);
+  card.classList.toggle("compare-card--after", !before);
 }
 
 function _checkListItemParts(item, fallbackClass = "") {
@@ -286,12 +311,11 @@ function _enhanceCompareCheckListItems(root) {
       const heading = (card.querySelector("h3")?.textContent || "")
         .trim()
         .toLowerCase();
+      const variant = _compareColumnVariant(heading, index, cards.length);
+      _applyCompareCardVariantClasses(card, variant);
       let itemClass = "";
-      if (heading.includes("before")) itemClass = "danger-item";
-      else if (heading.includes("after")) itemClass = "success-item";
-      else if (cards.length === 2) {
-        itemClass = index === 0 ? "danger-item" : "success-item";
-      }
+      if (variant === "before") itemClass = "danger-item";
+      else if (variant === "after") itemClass = "success-item";
       card.querySelectorAll(".check-list li").forEach((li) => {
         if (li.classList.contains("danger-item") || li.classList.contains("success-item")) {
           return;
@@ -317,7 +341,7 @@ function _renderCompareGrid(columns) {
   return `<div class="compare-grid">${list
     .map(
       (col, index) => `
-    <div class="compare-card">
+    ${_compareCardOpeningTag(col, index, list.length)}
       <h3>${col.title}</h3>
       ${_renderCheckList(col.items, _compareColumnItemClass(col, index, list.length))}
     </div>`,

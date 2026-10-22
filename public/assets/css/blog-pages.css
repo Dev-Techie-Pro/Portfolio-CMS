@@ -850,6 +850,14 @@
   border-radius: var(--br-none);
   padding: 14px;
 }
+.compare-card.before-card{
+  background: color-mix(in srgb, var(--danger) 10%, transparent)  ;
+  border-color: color-mix(in srgb, var(--danger) 20%, transparent);
+}
+.compare-card.after-card{
+  background: color-mix(in srgb, var(--accent-green) 10%, transparent);
+  border-color: color-mix(in srgb, var(--accent-green) 20%, transparent);
+}
 .compare-card h3 {
   font-size: 1rem;
   margin: 0 0 16px;
@@ -1188,7 +1196,7 @@
   background: var(--bd-code-bar);
   border-bottom: 1px solid var(--bd-code-border);
   background-image:
-    radial-gradient(circle, va(--danger) 5px, transparent 6px),
+    radial-gradient(circle, var(--danger) 5px, transparent 6px),
     radial-gradient(circle, var(--accent-orange) 5px, transparent 6px),
     radial-gradient(circle, var(--accent-green) 5px, transparent 6px);
   background-size: 12px 12px;
@@ -1562,7 +1570,7 @@
 .bd-comment-error {
   margin: 0;
   font-size: 0.82rem;
-  color: #f87171;
+  color: var(--danger);
 }
 .bd-comment-submit {
   align-self: flex-start;
@@ -2410,7 +2418,7 @@ body.bd-reply-modal-open {
 }
 
 .blog-details-page.bd-tpl-case-study .main-layout {
-  grid-template-columns: minmax(120px, 160px) minmax(0, 1fr) minmax(160px, 200px);
+  grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) minmax(260px, 300px);
   gap: 20px;
 }
 

@@ -95,6 +95,26 @@ export function syncBlogDetailRtePreview({
   if (toc) toc.innerHTML = buildTocHtmlFromArticle(articleHtml || '');
 }
 
+function resolveCompareCardVariant(
+  heading: string,
+  index: number,
+  cardCount: number,
+): 'before' | 'after' | null {
+  if (heading.includes('before')) return 'before';
+  if (heading.includes('after')) return 'after';
+  if (cardCount === 2) return index === 0 ? 'before' : 'after';
+  return null;
+}
+
+function applyCompareCardVariantClasses(card: Element, variant: 'before' | 'after' | null) {
+  if (!variant) return;
+  const before = variant === 'before';
+  card.classList.toggle('before-card', before);
+  card.classList.toggle('after-card', !before);
+  card.classList.toggle('compare-card--before', before);
+  card.classList.toggle('compare-card--after', !before);
+}
+
 /** Match public blog detail compare-grid list styling (Before/After). */
 export function enhanceCompareCheckListItems(root: ParentNode | null) {
   if (!root || typeof (root as Element).querySelectorAll !== 'function') return;
@@ -103,12 +123,13 @@ export function enhanceCompareCheckListItems(root: ParentNode | null) {
     const cards = grid.querySelectorAll('.compare-card');
     cards.forEach((card, index) => {
       const heading = (card.querySelector('h3')?.textContent || '').trim().toLowerCase();
+      const variant = resolveCompareCardVariant(heading, index, cards.length);
+      applyCompareCardVariantClasses(card, variant);
+
       let itemClass = '';
-      if (heading.includes('before')) itemClass = 'danger-item';
-      else if (heading.includes('after')) itemClass = 'success-item';
-      else if (cards.length === 2) {
-        itemClass = index === 0 ? 'danger-item' : 'success-item';
-      }
+      if (variant === 'before') itemClass = 'danger-item';
+      else if (variant === 'after') itemClass = 'success-item';
+
       card.querySelectorAll('.check-list li').forEach((li) => {
         if (li.classList.contains('danger-item') || li.classList.contains('success-item')) return;
         if (itemClass) li.classList.add(itemClass);

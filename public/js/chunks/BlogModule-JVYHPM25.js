@@ -6750,8 +6750,8 @@ var BLOG_DETAIL_EDITOR_TEMPLATES = {
     <p class="bd-section-sub">What changed in the experience</p>
   </header>
   <div class="compare-grid compare-grid--case">
-    <div class="compare-card compare-card--before"><h3>Before</h3><ul class="check-list"><li class="danger-item">Cluttered checkout</li><li class="danger-item">Slow mobile LCP</li></ul></div>
-    <div class="compare-card compare-card--after"><h3>After</h3><ul class="check-list"><li class="success-item">Streamlined checkout</li><li class="success-item">Sub-1.5s LCP</li></ul></div>
+    <div class="compare-card before-card compare-card--before"><h3>Before</h3><ul class="check-list"><li class="danger-item">Cluttered checkout</li><li class="danger-item">Slow mobile LCP</li></ul></div>
+    <div class="compare-card after-card compare-card--after"><h3>After</h3><ul class="check-list"><li class="success-item">Streamlined checkout</li><li class="success-item">Sub-1.5s LCP</li></ul></div>
   </div>
 </section>
 <section id="results">
@@ -6853,6 +6853,20 @@ function syncBlogDetailRtePreview({
   }
   if (toc) toc.innerHTML = buildTocHtmlFromArticle(articleHtml || "");
 }
+function resolveCompareCardVariant(heading, index, cardCount) {
+  if (heading.includes("before")) return "before";
+  if (heading.includes("after")) return "after";
+  if (cardCount === 2) return index === 0 ? "before" : "after";
+  return null;
+}
+function applyCompareCardVariantClasses(card, variant) {
+  if (!variant) return;
+  const before = variant === "before";
+  card.classList.toggle("before-card", before);
+  card.classList.toggle("after-card", !before);
+  card.classList.toggle("compare-card--before", before);
+  card.classList.toggle("compare-card--after", !before);
+}
 function enhanceCompareCheckListItems(root) {
   if (!root || typeof root.querySelectorAll !== "function") return;
   const scope = root;
@@ -6860,12 +6874,11 @@ function enhanceCompareCheckListItems(root) {
     const cards = grid.querySelectorAll(".compare-card");
     cards.forEach((card, index) => {
       const heading = (card.querySelector("h3")?.textContent || "").trim().toLowerCase();
+      const variant = resolveCompareCardVariant(heading, index, cards.length);
+      applyCompareCardVariantClasses(card, variant);
       let itemClass = "";
-      if (heading.includes("before")) itemClass = "danger-item";
-      else if (heading.includes("after")) itemClass = "success-item";
-      else if (cards.length === 2) {
-        itemClass = index === 0 ? "danger-item" : "success-item";
-      }
+      if (variant === "before") itemClass = "danger-item";
+      else if (variant === "after") itemClass = "success-item";
       card.querySelectorAll(".check-list li").forEach((li3) => {
         if (li3.classList.contains("danger-item") || li3.classList.contains("success-item")) return;
         if (itemClass) li3.classList.add(itemClass);
@@ -8168,4 +8181,4 @@ var BlogModule = class extends CrudCardModule {
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-UGUMOBQE.js.map
+//# sourceMappingURL=BlogModule-JVYHPM25.js.map
