@@ -89,24 +89,38 @@ export const BLOG_POST_WORKSPACE_HTML = `
               <div class="pa-rte-body pa-rte-body--blog" contenteditable="true" id="blogWsContent" data-placeholder="Start writing your article — paste from Word or Google Docs with formatting preserved…"></div>
               <div class="pa-rte-code-shell" id="blogWsRteCodeShell" hidden>
                 <div class="pa-rte-code-toolbar" role="toolbar" aria-label="HTML code tools">
+                  <button type="button" class="pa-rte-code-tool" data-code-action="search-toggle" title="Search in HTML (Ctrl+F)" aria-expanded="false" aria-controls="blogWsCodeSearch">
+                    <i class="ri-search-line" aria-hidden="true"></i><span>Search</span>
+                  </button>
                   <button type="button" class="pa-rte-code-tool" data-code-action="format" title="Format with Prettier (Ctrl+Shift+F)">
                     <i class="ri-magic-line" aria-hidden="true"></i><span>Format</span>
                   </button>
-                  <button type="button" class="pa-rte-code-tool" data-code-action="minify" title="Minify HTML">
-                    <i class="ri-contract-left-right-line" aria-hidden="true"></i><span>Minify</span>
-                  </button>
-                  <button type="button" class="pa-rte-code-tool is-active" data-code-action="wrap" title="Toggle line wrap">
-                    <i class="ri-text-wrap" aria-hidden="true"></i><span>Wrap</span>
-                  </button>
-                  <button type="button" class="pa-rte-code-tool" data-code-action="comment" title="Toggle HTML comment (Ctrl+/)">
-                    <i class="ri-code-line" aria-hidden="true"></i><span>Comment</span>
-                  </button>
-                  <button type="button" class="pa-rte-code-tool" data-code-action="find" title="Find (Ctrl+F)">
-                    <i class="ri-search-line" aria-hidden="true"></i><span>Find</span>
+                  <button type="button" class="pa-rte-code-tool" data-code-action="beautify" title="Beautify HTML (indent tags)">
+                    <i class="ri-code-s-slash-line" aria-hidden="true"></i><span>Beautify</span>
                   </button>
                   <span class="pa-rte-code-toolbar-spacer" aria-hidden="true"></span>
-                  <span class="pa-rte-code-hint">Right-click for more actions</span>
                   <span class="pa-rte-code-meta" id="blogWsCodeMeta">Ln 1, Col 1</span>
+                </div>
+                <div class="pa-rte-code-search" id="blogWsCodeSearch" hidden>
+                  <input
+                    type="search"
+                    class="pa-rte-code-search-input"
+                    id="blogWsCodeSearchInput"
+                    placeholder="Search in HTML…"
+                    autocomplete="off"
+                    spellcheck="false"
+                    aria-label="Search in HTML source"
+                  />
+                  <button type="button" class="pa-rte-code-search-btn" data-code-search="prev" title="Previous match (Shift+Enter)">
+                    <i class="ri-arrow-up-s-line" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="pa-rte-code-search-btn" data-code-search="next" title="Next match (Enter)">
+                    <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+                  </button>
+                  <span class="pa-rte-code-search-status" id="blogWsCodeSearchStatus" aria-live="polite"></span>
+                  <button type="button" class="pa-rte-code-search-close" data-code-search="close" aria-label="Close search">
+                    <i class="ri-close-line" aria-hidden="true"></i>
+                  </button>
                 </div>
                 <textarea class="pa-rte-code-pane pa-blog-ws-html-source pa-rte-code-pane--wrap" id="blogWsContentHtml" spellcheck="false" aria-label="HTML source" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
               </div>

@@ -5774,10 +5774,10 @@ function formatHtmlWithPrettier(source) {
       htmlWhitespaceSensitivity: "ignore"
     });
   } catch {
-    return formatHtmlFallback(input);
+    return beautifyHtml(input);
   }
 }
-function formatHtmlFallback(html) {
+function beautifyHtml(html) {
   const raw = String(html ?? "").replace(/\r\n/g, "\n");
   const tokens = raw.split(/(<[^>]+>)/g).filter((t) => t.length);
   const indent = "  ";
@@ -5808,34 +5808,6 @@ function formatHtmlFallback(html) {
   return `${lines.join("\n").trim()}
 `;
 }
-function minifyHtml(html) {
-  return String(html ?? "").replace(/<!--[\s\S]*?-->/g, (m2) => m2).replace(/\n\s*/g, "").replace(/>\s+</g, "><").trim();
-}
-function getSelection(el) {
-  const start = el.selectionStart ?? 0;
-  const end = el.selectionEnd ?? 0;
-  return { start, end, text: el.value.slice(start, end) };
-}
-function replaceRange(el, start, end, insert) {
-  const before = el.value.slice(0, start);
-  const after = el.value.slice(end);
-  el.value = before + insert + after;
-  const pos = start + insert.length;
-  el.selectionStart = pos;
-  el.selectionEnd = pos;
-  el.dispatchEvent(new Event("input", { bubbles: true }));
-}
-function insertAtCursor(el, insert) {
-  const { start, end } = getSelection(el);
-  replaceRange(el, start, end, insert);
-}
-function getLineBounds(value, index) {
-  const before = value.lastIndexOf("\n", index - 1);
-  const start = before === -1 ? 0 : before + 1;
-  const after = value.indexOf("\n", index);
-  const end = after === -1 ? value.length : after;
-  return { start, end, line: value.slice(start, end) };
-}
 function updateCursorMeta(el, metaEl) {
   if (!metaEl) return;
   const pos = el.selectionStart ?? 0;
@@ -5843,216 +5815,149 @@ function updateCursorMeta(el, metaEl) {
   const lines = before.split("\n");
   const line = lines.length;
   const col = (lines[lines.length - 1]?.length ?? 0) + 1;
-  const len = el.value.length;
-  metaEl.textContent = `Ln ${line}, Col ${col} \xB7 ${len.toLocaleString()} chars`;
+  metaEl.textContent = `Ln ${line}, Col ${col}`;
 }
-function runClipboard(cmd, el) {
-  el.focus();
-  try {
-    document.execCommand(cmd);
-  } catch {
+function scrollSelectionIntoView(el, index) {
+  const lineHeight = parseInt(getComputedStyle(el).lineHeight, 10) || 18;
+  el.scrollTop = (el.value.slice(0, index).split("\n").length - 1) * lineHeight;
+}
+function findMatchIndices(haystack, needle) {
+  const indices = [];
+  if (!needle) return indices;
+  let pos = 0;
+  while (true) {
+    const idx = haystack.indexOf(needle, pos);
+    if (idx === -1) break;
+    indices.push(idx);
+    pos = idx + needle.length;
   }
-}
-function toggleLineComment(el) {
-  const { start, end, text } = getSelection(el);
-  if (!text.trim()) return;
-  if (text.trim().startsWith("<!--")) {
-    const unwrapped = text.replace(/^<!--\s?/, "").replace(/\s?-->$/, "");
-    replaceRange(el, start, end, unwrapped);
-    return;
-  }
-  replaceRange(el, start, end, `<!-- ${text} -->`);
-}
-function duplicateLine(el) {
-  const pos = el.selectionStart ?? 0;
-  const { start, end, line } = getLineBounds(el.value, pos);
-  const insert = `${line}
-`;
-  replaceRange(el, end, end, insert);
-}
-function deleteLine(el) {
-  const pos = el.selectionStart ?? 0;
-  const { start, end } = getLineBounds(el.value, pos);
-  const removeEnd = end < el.value.length ? end + 1 : end;
-  replaceRange(el, start, removeEnd, "");
-}
-function findInCode(el) {
-  const query = window.prompt("Find in HTML");
-  if (!query) return;
-  const idx = el.value.indexOf(query, el.selectionEnd ?? 0);
-  const fromStart = idx === -1 ? el.value.indexOf(query, 0) : idx;
-  if (fromStart === -1) {
-    window.alert("No matches found.");
-    return;
-  }
-  el.focus();
-  el.selectionStart = fromStart;
-  el.selectionEnd = fromStart + query.length;
-  el.scrollTop = (el.value.slice(0, fromStart).split("\n").length - 1) * (parseInt(getComputedStyle(el).lineHeight, 10) || 18);
-}
-var SNIPPETS = {
-  section: `<section id="section-id">
-  <h2>Section title</h2>
-  <p>Content\u2026</p>
-</section>
-`,
-  pre: `<pre><code class="language-javascript">// code</code></pre>
-`,
-  figure: `<figure class="pa-rte-figure">
-  <img src="" alt="" loading="lazy" />
-</figure>
-`
-};
-function buildContextMenuItems() {
-  return [
-    { id: "undo", label: "Undo", shortcut: "Ctrl+Z" },
-    { id: "redo", label: "Redo", shortcut: "Ctrl+Y" },
-    { divider: true, id: "_d1", label: "" },
-    { id: "cut", label: "Cut", shortcut: "Ctrl+X" },
-    { id: "copy", label: "Copy", shortcut: "Ctrl+C" },
-    { id: "paste", label: "Paste", shortcut: "Ctrl+V" },
-    { id: "selectAll", label: "Select all", shortcut: "Ctrl+A" },
-    { divider: true, id: "_d2", label: "" },
-    { id: "format", label: "Format HTML (Prettier)", shortcut: "Ctrl+Shift+F" },
-    { id: "minify", label: "Minify HTML" },
-    { id: "comment", label: "Toggle HTML comment", shortcut: "Ctrl+/" },
-    { divider: true, id: "_d3", label: "" },
-    { id: "dupLine", label: "Duplicate line", shortcut: "Ctrl+Shift+D" },
-    { id: "delLine", label: "Delete line", shortcut: "Ctrl+Shift+K" },
-    { id: "find", label: "Find\u2026", shortcut: "Ctrl+F" },
-    { divider: true, id: "_d4", label: "" },
-    { id: "snippet-section", label: "Insert section block" },
-    { id: "snippet-pre", label: "Insert code block" },
-    { id: "snippet-figure", label: "Insert figure / image" },
-    { divider: true, id: "_d5", label: "" },
-    { id: "wrap", label: "Toggle line wrap" }
-  ];
+  return indices;
 }
 function setupBlogRteCodePane(wrap, codeEl, options = {}) {
   const shell = codeEl.closest(".pa-rte-code-shell");
   const metaEl = shell?.querySelector(".pa-rte-code-meta");
-  let wrapLines = true;
-  codeEl.classList.toggle("pa-rte-code-pane--wrap", wrapLines);
-  let menuEl = null;
+  const searchBar = shell?.querySelector("#blogWsCodeSearch");
+  const searchInput = shell?.querySelector("#blogWsCodeSearchInput");
+  const searchStatus = shell?.querySelector("#blogWsCodeSearchStatus");
+  const searchToggleBtn = shell?.querySelector('[data-code-action="search-toggle"]');
+  codeEl.classList.add("pa-rte-code-pane--wrap");
   const notify = () => {
     updateCursorMeta(codeEl, metaEl);
     options.onChange?.();
   };
   const applyFormat = () => {
-    const formatted = formatHtmlWithPrettier(codeEl.value);
-    codeEl.value = formatted;
+    codeEl.value = formatHtmlWithPrettier(codeEl.value);
     notify();
   };
-  const applyMinify = () => {
-    codeEl.value = minifyHtml(codeEl.value);
+  const applyBeautify = () => {
+    codeEl.value = beautifyHtml(codeEl.value);
     notify();
   };
-  const hideMenu = () => {
-    if (menuEl) menuEl.hidden = true;
+  const setSearchStatus = (message, kind = "") => {
+    if (!searchStatus) return;
+    searchStatus.textContent = message;
+    searchStatus.classList.remove("is-error", "is-match");
+    if (kind) searchStatus.classList.add(kind);
   };
-  const showMenu = (clientX, clientY) => {
-    if (!menuEl) {
-      menuEl = document.createElement("div");
-      menuEl.className = "pa-rte-code-context-menu";
-      menuEl.setAttribute("role", "menu");
-      menuEl.hidden = true;
-      document.body.appendChild(menuEl);
-      menuEl.addEventListener("mousedown", (e) => e.preventDefault());
-      document.addEventListener("click", () => hideMenu());
-      document.addEventListener("scroll", () => hideMenu(), true);
+  const isSearchOpen = () => searchBar && !searchBar.hidden;
+  const setSearchOpen = (open2) => {
+    if (!searchBar) return;
+    searchBar.hidden = !open2;
+    searchToggleBtn?.classList.toggle("is-active", open2);
+    searchToggleBtn?.setAttribute("aria-expanded", open2 ? "true" : "false");
+    if (open2) {
+      window.requestAnimationFrame(() => searchInput?.focus());
+    } else {
+      setSearchStatus("");
     }
-    menuEl.innerHTML = buildContextMenuItems().map((item) => {
-      if (item.divider) return '<div class="pa-rte-code-context-menu__divider" role="separator"></div>';
-      const dis = item.disabled ? ' aria-disabled="true"' : "";
-      const sc = item.shortcut ? `<span class="pa-rte-code-context-menu__shortcut">${item.shortcut}</span>` : "";
-      return `<button type="button" class="pa-rte-code-context-menu__item" data-code-menu="${item.id}" role="menuitem"${dis}>${item.label}${sc}</button>`;
-    }).join("");
-    menuEl.hidden = false;
-    const pad = 8;
-    const rect = menuEl.getBoundingClientRect();
-    let left = clientX;
-    let top = clientY;
-    if (left + rect.width > window.innerWidth - pad) left = window.innerWidth - rect.width - pad;
-    if (top + rect.height > window.innerHeight - pad) top = window.innerHeight - rect.height - pad;
-    menuEl.style.left = `${Math.max(pad, left)}px`;
-    menuEl.style.top = `${Math.max(pad, top)}px`;
-    menuEl.querySelectorAll("[data-code-menu]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const id = btn.getAttribute("data-code-menu");
-        hideMenu();
-        runMenuAction(id, codeEl, wrap, {
-          applyFormat,
-          applyMinify,
-          toggleWrap: () => {
-            wrapLines = !wrapLines;
-            codeEl.classList.toggle("pa-rte-code-pane--wrap", wrapLines);
-          }
-        });
-        notify();
-      });
-    });
   };
+  const selectMatchAt = (index, query, total, ordinal) => {
+    codeEl.focus();
+    codeEl.selectionStart = index;
+    codeEl.selectionEnd = index + query.length;
+    scrollSelectionIntoView(codeEl, index);
+    if (total > 0) {
+      setSearchStatus(`${ordinal} of ${total}`, "is-match");
+    }
+  };
+  const runSearch = (direction) => {
+    const query = (searchInput?.value ?? "").trim();
+    if (!query) {
+      setSearchStatus("Enter text to search", "is-error");
+      searchInput?.focus();
+      return;
+    }
+    const indices = findMatchIndices(codeEl.value, query);
+    if (!indices.length) {
+      setSearchStatus("No matches", "is-error");
+      return;
+    }
+    const caret = codeEl.selectionStart ?? 0;
+    const selEnd = codeEl.selectionEnd ?? 0;
+    let index = indices[0];
+    if (direction === "next") {
+      const next = indices.find((idx) => idx >= selEnd);
+      index = next !== void 0 ? next : indices[0];
+    } else {
+      const prev = [...indices].reverse().find((idx) => idx < caret);
+      index = prev !== void 0 ? prev : indices[indices.length - 1];
+    }
+    const ordinal = indices.indexOf(index) + 1;
+    selectMatchAt(index, query, indices.length, ordinal);
+  };
+  searchInput?.addEventListener("input", () => {
+    setSearchStatus("");
+  });
+  searchInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setSearchOpen(false);
+      codeEl.focus();
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      runSearch(e.shiftKey ? "prev" : "next");
+    }
+  });
+  shell?.querySelectorAll("[data-code-search]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const action = btn.getAttribute("data-code-search");
+      if (action === "close") {
+        setSearchOpen(false);
+        codeEl.focus();
+        return;
+      }
+      if (action === "prev") runSearch("prev");
+      if (action === "next") runSearch("next");
+    });
+  });
   shell?.querySelectorAll("[data-code-action]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       const action = btn.getAttribute("data-code-action");
       if (action === "format") applyFormat();
-      else if (action === "minify") applyMinify();
-      else if (action === "wrap") {
-        wrapLines = !wrapLines;
-        codeEl.classList.toggle("pa-rte-code-pane--wrap", wrapLines);
-        btn.classList.toggle("is-active", wrapLines);
-      } else if (action === "find") findInCode(codeEl);
-      else if (action === "comment") toggleLineComment(codeEl);
+      else if (action === "beautify") applyBeautify();
+      else if (action === "search-toggle") {
+        setSearchOpen(!isSearchOpen());
+      }
       notify();
     });
   });
-  codeEl.addEventListener("contextmenu", (e) => {
-    if (!wrap.classList.contains("pa-rte--code-mode")) return;
-    e.preventDefault();
-    showMenu(e.clientX, e.clientY);
-  });
   codeEl.addEventListener("keydown", (e) => {
     if (!wrap.classList.contains("pa-rte--code-mode")) return;
-    if (e.key === "Tab") {
-      e.preventDefault();
-      insertAtCursor(codeEl, e.shiftKey ? "" : "  ");
-      notify();
-      return;
-    }
     const mod = e.ctrlKey || e.metaKey;
     if (!mod) return;
-    if (e.key === "s") {
-      e.preventDefault();
-      return;
-    }
     if (e.key === "f" && !e.shiftKey) {
       e.preventDefault();
-      findInCode(codeEl);
-      return;
-    }
-    if (e.key === "/" || e.key === "?") {
-      e.preventDefault();
-      toggleLineComment(codeEl);
-      notify();
+      setSearchOpen(true);
+      if (searchInput?.value.trim()) runSearch("next");
       return;
     }
     if (e.shiftKey && (e.key === "F" || e.key === "f")) {
       e.preventDefault();
       applyFormat();
-      return;
-    }
-    if (e.shiftKey && e.key === "D") {
-      e.preventDefault();
-      duplicateLine(codeEl);
-      notify();
-      return;
-    }
-    if (e.shiftKey && e.key === "K") {
-      e.preventDefault();
-      deleteLine(codeEl);
-      notify();
-      return;
     }
   });
   codeEl.addEventListener("input", notify);
@@ -6060,61 +5965,6 @@ function setupBlogRteCodePane(wrap, codeEl, options = {}) {
   codeEl.addEventListener("keyup", notify);
   codeEl.addEventListener("select", notify);
   wrap.addEventListener("pa-rte-code-refresh-meta", () => updateCursorMeta(codeEl, metaEl));
-}
-function runMenuAction(id, el, wrap, helpers) {
-  switch (id) {
-    case "undo":
-      runClipboard("undo", el);
-      break;
-    case "redo":
-      runClipboard("redo", el);
-      break;
-    case "cut":
-      runClipboard("cut", el);
-      break;
-    case "copy":
-      runClipboard("copy", el);
-      break;
-    case "paste":
-      runClipboard("paste", el);
-      break;
-    case "selectAll":
-      el.focus();
-      el.select();
-      break;
-    case "format":
-      helpers.applyFormat();
-      break;
-    case "minify":
-      helpers.applyMinify();
-      break;
-    case "comment":
-      toggleLineComment(el);
-      break;
-    case "dupLine":
-      duplicateLine(el);
-      break;
-    case "delLine":
-      deleteLine(el);
-      break;
-    case "find":
-      findInCode(el);
-      break;
-    case "wrap":
-      helpers.toggleWrap();
-      break;
-    case "snippet-section":
-      insertAtCursor(el, SNIPPETS.section);
-      break;
-    case "snippet-pre":
-      insertAtCursor(el, SNIPPETS.pre);
-      break;
-    case "snippet-figure":
-      insertAtCursor(el, SNIPPETS.figure);
-      break;
-    default:
-      break;
-  }
 }
 
 // client/utils/blogRte.ts
@@ -8318,4 +8168,4 @@ var BlogModule = class extends CrudCardModule {
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-2A5YGCTR.js.map
+//# sourceMappingURL=BlogModule-UGUMOBQE.js.map
