@@ -290,6 +290,18 @@ var BLOG_DETAIL_TEMPLATE_META = [
   { id: "case-study", label: "Case study", description: "Stronger hero and emphasis on stats and grids." },
   { id: "longform", label: "Longform", description: "TOC on the left \u2014 no right sidebar." }
 ];
+function getBlogDetailTemplateLabel(templateId) {
+  const id = String(templateId || "auto").trim() || "auto";
+  const meta = BLOG_DETAIL_TEMPLATE_META.find((m) => m.id === id);
+  return meta?.label || id;
+}
+function resolvePostDetailTemplate(post) {
+  if (post?.detailTemplate) return String(post.detailTemplate);
+  if (post?.content) {
+    return extractBlogAdminFields(post.content).detailTemplate || "auto";
+  }
+  return "auto";
+}
 var TEMPLATE_IDS = /* @__PURE__ */ new Set(["standard", "minimal", "case-study", "longform"]);
 function parseContentField(raw) {
   if (!raw || !String(raw).trim()) return { content: [], detailTemplate: void 0 };
@@ -413,6 +425,11 @@ function renderActions(p, idAttr) {
   return `<button type="button" class="pa-action-btn pa-action-edit" title="Edit post" ${idAttr}="${id}" aria-label="Edit ${title}"><i class="ri-pencil-line"></i></button>
     <button type="button" class="pa-action-btn pa-action-delete" title="Delete post" ${idAttr}="${id}" aria-label="Delete ${title}"><i class="ri-delete-bin-line"></i></button>`;
 }
+function blogTemplateBadgeHtml(post) {
+  const id = resolvePostDetailTemplate(post);
+  const label = getBlogDetailTemplateLabel(id);
+  return `<span class="pa-blog-tpl-badge" data-tpl="${escapeHtml(id)}" title="Detail page template">${escapeHtml(label)}</span>`;
+}
 function formatEngagementShort(engagement) {
   if (!engagement) return "";
   const parts = [];
@@ -453,6 +470,11 @@ function renderMeta(p, engagement) {
       <span class="pa-proj-card__meta-label">Tags</span>
       <span class="pa-proj-card__meta-value">${tagCount}</span>
     </div>
+    <div class="pa-proj-card__meta-item">
+      <i class="ri-layout-line" aria-hidden="true"></i>
+      <span class="pa-proj-card__meta-label">Template</span>
+      <span class="pa-proj-card__meta-value">${blogTemplateBadgeHtml(p)}</span>
+    </div>
     <div class="pa-proj-card__meta-item pa-proj-card__meta-item--demo">
       <i class="ri-article-line" aria-hidden="true"></i>
       <span class="pa-proj-card__meta-label">Status</span>
@@ -473,6 +495,7 @@ function renderPaBlogListRow(p, opts = {}) {
   const category = meta.label || p.category || "\u2014";
   const engShort = formatEngagementShort(engagement);
   const categoryCell = engShort ? `${category} \u2014 ${engShort}` : category;
+  const templateCell = blogTemplateBadgeHtml(p);
   const created = formatDate(p.publishedAt || p.createdAt);
   const statusLabel = p.status || "Draft";
   const variant = getBlogStatusClass(p.status) === "published" ? "active" : "planning";
@@ -483,6 +506,7 @@ function renderPaBlogListRow(p, opts = {}) {
     ${renderListIndexCell(rowIndex)}
     ${renderListProjectCell(title, thumbInner)}
     ${renderListTextCell(categoryCell)}
+    <td class="pa-lv-col-tpl">${templateCell}</td>
     ${renderListStatusCell(statusLabel, variant)}
     ${renderListDateCell(created)}
     ${renderListActionsCell(actions)}
@@ -526,6 +550,7 @@ function renderPaBlogCard(p, opts = {}) {
             <div class="pa-proj-card__title-block">
               <h3 class="pa-proj-card__title" title="${title}">${title}</h3>
               <div class="pa-proj-card__category"><i class="ri-price-tag-3-line"></i> ${category}</div>
+              <div class="pa-proj-card__template">${blogTemplateBadgeHtml(p)}</div>
             </div>
           </div>
           <div class="pa-proj-card__head-more">
@@ -551,6 +576,7 @@ function renderPaBlogCard(p, opts = {}) {
           <div class="pa-proj-card__title-block">
             <h3 class="pa-proj-card__title" title="${title}">${title}</h3>
             <div class="pa-proj-card__category"><i class="ri-price-tag-3-line"></i> ${category}</div>
+            <div class="pa-proj-card__template">${blogTemplateBadgeHtml(p)}</div>
           </div>
           <div class="pa-proj-card__list-status-wrap">
             ${statusBadge}
@@ -1739,6 +1765,17 @@ var BlogModule = class extends CrudCardModule {
   sortRecords(records) {
     return sortByNewestFirst(records);
   }
+  getListTableColumns() {
+    return [
+      { label: "#", className: "pa-lv-col-num" },
+      { label: "Post", className: "pa-lv-col-project" },
+      { label: "Category" },
+      { label: "Template", className: "pa-lv-col-tpl" },
+      { label: "Status", className: "pa-lv-col-status" },
+      { label: "Published", className: "pa-lv-col-date" },
+      { label: "Actions", className: "pa-lv-col-actions" }
+    ];
+  }
   matchesFilters(record, filters) {
     if (filters.category !== "all" && record.category !== filters.category) return false;
     return true;
@@ -2083,4 +2120,4 @@ var BlogModule = class extends CrudCardModule {
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-XQV7CIYM.js.map
+//# sourceMappingURL=BlogModule-JFT5XQBE.js.map

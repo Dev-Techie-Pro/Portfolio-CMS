@@ -7543,7 +7543,7 @@ async function loadPageModuleClass(page) {
     case "testimonials":
       return (await import("./chunks/TestimonialsModule-PDJ5OT2F.js")).TestimonialsModule;
     case "blogposts":
-      return (await import("./chunks/BlogModule-XQV7CIYM.js")).BlogModule;
+      return (await import("./chunks/BlogModule-JFT5XQBE.js")).BlogModule;
     case "experience":
       return (await import("./chunks/ExperienceModule-W2YVIUEV.js")).ExperienceModule;
     case "faqs":

@@ -936,6 +936,11 @@ select.pa-filter-select:not(.pa-select-native):focus {
   color: var(--pa-desk);
 }
 
+.pa-lv-col-tpl {
+  width: 1%;
+  white-space: nowrap;
+}
+
 .pa-lv-col-actions {
   width: 1%;
   white-space: normal;
@@ -15145,6 +15150,25 @@ body.pa-media-modal-open {
   font-size: var(--pa-fs-sm);
   background: color-mix(in srgb, var(--pa-orange) 15%, transparent);
   color: var(--pa-orange);
+}
+
+.pa-blog-tpl-badge {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 2px 8px;
+  border-radius: var(--pa-radius-sm);
+  font-size: var(--pa-fs-sm);
+  font-weight: var(--pa-fw-md);
+  line-height: 1.35;
+  color: var(--pa-text-dim);
+  background: var(--pa-bg-chip);
+  border: 1px solid var(--pa-border-soft);
+  white-space: nowrap;
+}
+
+.pa-proj-card__template {
+  margin-top: 4px;
 }
 .pa-beng-root {
   --pa-beng-aside-w: 360px;

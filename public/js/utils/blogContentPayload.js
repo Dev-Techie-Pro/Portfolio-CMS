@@ -5,6 +5,18 @@ const BLOG_DETAIL_TEMPLATE_META = [
   { id: "case-study", label: "Case study", description: "Stronger hero and emphasis on stats and grids." },
   { id: "longform", label: "Longform", description: "TOC on the left \u2014 no right sidebar." }
 ];
+function getBlogDetailTemplateLabel(templateId) {
+  const id = String(templateId || "auto").trim() || "auto";
+  const meta = BLOG_DETAIL_TEMPLATE_META.find((m) => m.id === id);
+  return meta?.label || id;
+}
+function resolvePostDetailTemplate(post) {
+  if (post?.detailTemplate) return String(post.detailTemplate);
+  if (post?.content) {
+    return extractBlogAdminFields(post.content).detailTemplate || "auto";
+  }
+  return "auto";
+}
 const TEMPLATE_IDS = /* @__PURE__ */ new Set(["standard", "minimal", "case-study", "longform"]);
 function parseContentField(raw) {
   if (!raw || !String(raw).trim()) return { content: [], detailTemplate: void 0 };
@@ -171,10 +183,12 @@ export {
   BLOG_DETAIL_TEMPLATE_META,
   blogContentJsonHasText,
   extractBlogAdminFields,
+  getBlogDetailTemplateLabel,
   normalizeBlogContentJsonEditor,
   prepareBlogContentForStorageClient,
   prettyPrintBlogJson,
   renderBlogContentPreviewHtml,
+  resolvePostDetailTemplate,
   serializeBlogContentForStorage
 };
 //# sourceMappingURL=blogContentPayload.js.map

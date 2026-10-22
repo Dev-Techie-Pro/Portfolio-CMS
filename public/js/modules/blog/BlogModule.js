@@ -217,6 +217,17 @@ class BlogModule extends CrudCardModule {
   sortRecords(records) {
     return sortByNewestFirst(records);
   }
+  getListTableColumns() {
+    return [
+      { label: "#", className: "pa-lv-col-num" },
+      { label: "Post", className: "pa-lv-col-project" },
+      { label: "Category" },
+      { label: "Template", className: "pa-lv-col-tpl" },
+      { label: "Status", className: "pa-lv-col-status" },
+      { label: "Published", className: "pa-lv-col-date" },
+      { label: "Actions", className: "pa-lv-col-actions" }
+    ];
+  }
   matchesFilters(record, filters) {
     if (filters.category !== "all" && record.category !== filters.category) return false;
     return true;

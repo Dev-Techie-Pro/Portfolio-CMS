@@ -9,6 +9,20 @@ export const BLOG_DETAIL_TEMPLATE_META = [
   { id: 'longform', label: 'Longform', description: 'TOC on the left — no right sidebar.' },
 ];
 
+export function getBlogDetailTemplateLabel(templateId) {
+  const id = String(templateId || 'auto').trim() || 'auto';
+  const meta = BLOG_DETAIL_TEMPLATE_META.find((m) => m.id === id);
+  return meta?.label || id;
+}
+
+export function resolvePostDetailTemplate(post) {
+  if (post?.detailTemplate) return String(post.detailTemplate);
+  if (post?.content) {
+    return extractBlogAdminFields(post.content).detailTemplate || 'auto';
+  }
+  return 'auto';
+}
+
 const TEMPLATE_IDS = new Set(['standard', 'minimal', 'case-study', 'longform']);
 
 function parseContentField(raw) {

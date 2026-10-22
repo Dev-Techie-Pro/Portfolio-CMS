@@ -538,12 +538,10 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    115deg,
-    color-mix(in srgb, var(--bg) 88%, transparent) 0%,
-    color-mix(in srgb, var(--bg) 72%, transparent) 42%,
-    color-mix(in srgb, var(--bg) 28%, transparent) 100%
-  );
+  background: linear-gradient(115deg, 
+  color-mix(in srgb, var(--bg) 88%, transparent) 0, 
+  color-mix(in srgb, var(--bg) 72%, transparent) 90%, 
+  color-mix(in srgb, var(--bg) 80%, transparent) 100%);
   z-index: 1;
 }
 .blog-details-hero .container {
@@ -763,7 +761,7 @@
 .article-content h2 {
   font-size: 1.35rem;
   font-weight: 700;
-  margin: 40px 0 16px;
+  margin: 25px 0 16px;
   letter-spacing: -0.02em;
 }
 .article-content section:first-child h2 {
@@ -799,7 +797,7 @@
   border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
   border-radius: var(--br-none);
   padding: 28px 32px;
-  margin: 32px 0;
+  margin: 15px 0;
 }
 .stat-icon {
   width: 56px;
@@ -844,7 +842,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--card-gap-lg);
-  margin: 24px 0 32px;
+  margin: 16px 0 16px;
 }
 .compare-card {
   background: var(--bg-card);
@@ -858,10 +856,7 @@
   color: var(--white);
 }
 .check-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--card-gap-md);
-  list-style: none;
+  list-style: inside;
   padding: 0;
   margin: 0;
 }
@@ -872,7 +867,7 @@
   font-size: 0.875rem;
   color: var(--white-dim);
   line-height: 1.5;
-  padding: 10px 12px;
+  padding: 6px 12px;
   background: color-mix(in srgb, var(--bg-card) 88%, transparent);
   border: 1px solid var(--bg-card-hover);
   border-radius: var(--br-none);
@@ -1343,7 +1338,7 @@
   border: 1px solid var(--bg-card-hover);
   border-radius: var(--br-none);
   padding: 28px;
-  margin-top: 40px;
+  margin-top: 20px;
 }
 .author-footer-actions {
   display: flex;
@@ -1411,7 +1406,7 @@
 }
 
 .bd-engagement {
-  margin-top: 40px;
+  margin-top: 25px;
   padding: 28px;
   background: var(--bg-card);
   border: 1px solid var(--bg-card-hover);

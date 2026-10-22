@@ -3,6 +3,10 @@ import { escapeHtml } from './dom.js';
 import { formatDate } from './format.js';
 import { normalizeCategoryKey } from './categoryClassOptions.js';
 import {
+  getBlogDetailTemplateLabel,
+  resolvePostDetailTemplate,
+} from './blogContentPayload.js';
+import {
   closeListRow,
   listActionBtn,
   renderListActionsCell,
@@ -41,6 +45,12 @@ function renderActions(p, idAttr) {
   const title = escapeHtml(p.title);
   return `<button type="button" class="pa-action-btn pa-action-edit" title="Edit post" ${idAttr}="${id}" aria-label="Edit ${title}"><i class="ri-pencil-line"></i></button>
     <button type="button" class="pa-action-btn pa-action-delete" title="Delete post" ${idAttr}="${id}" aria-label="Delete ${title}"><i class="ri-delete-bin-line"></i></button>`;
+}
+
+function blogTemplateBadgeHtml(post) {
+  const id = resolvePostDetailTemplate(post);
+  const label = getBlogDetailTemplateLabel(id);
+  return `<span class="pa-blog-tpl-badge" data-tpl="${escapeHtml(id)}" title="Detail page template">${escapeHtml(label)}</span>`;
 }
 
 function formatEngagementShort(engagement) {
@@ -87,6 +97,11 @@ function renderMeta(p, engagement) {
       <span class="pa-proj-card__meta-label">Tags</span>
       <span class="pa-proj-card__meta-value">${tagCount}</span>
     </div>
+    <div class="pa-proj-card__meta-item">
+      <i class="ri-layout-line" aria-hidden="true"></i>
+      <span class="pa-proj-card__meta-label">Template</span>
+      <span class="pa-proj-card__meta-value">${blogTemplateBadgeHtml(p)}</span>
+    </div>
     <div class="pa-proj-card__meta-item pa-proj-card__meta-item--demo">
       <i class="ri-article-line" aria-hidden="true"></i>
       <span class="pa-proj-card__meta-label">Status</span>
@@ -108,6 +123,7 @@ export function renderPaBlogListRow(p, opts = {}) {
   const category = meta.label || p.category || '—';
   const engShort = formatEngagementShort(engagement);
   const categoryCell = engShort ? `${category} — ${engShort}` : category;
+  const templateCell = blogTemplateBadgeHtml(p);
   const created = formatDate(p.publishedAt || p.createdAt);
   const statusLabel = p.status || 'Draft';
   const variant = getBlogStatusClass(p.status) === 'published' ? 'active' : 'planning';
@@ -119,6 +135,7 @@ export function renderPaBlogListRow(p, opts = {}) {
     ${renderListIndexCell(rowIndex)}
     ${renderListProjectCell(title, thumbInner)}
     ${renderListTextCell(categoryCell)}
+    <td class="pa-lv-col-tpl">${templateCell}</td>
     ${renderListStatusCell(statusLabel, variant)}
     ${renderListDateCell(created)}
     ${renderListActionsCell(actions)}
@@ -167,6 +184,7 @@ export function renderPaBlogCard(p, opts = {}) {
             <div class="pa-proj-card__title-block">
               <h3 class="pa-proj-card__title" title="${title}">${title}</h3>
               <div class="pa-proj-card__category"><i class="ri-price-tag-3-line"></i> ${category}</div>
+              <div class="pa-proj-card__template">${blogTemplateBadgeHtml(p)}</div>
             </div>
           </div>
           <div class="pa-proj-card__head-more">
@@ -192,6 +210,7 @@ export function renderPaBlogCard(p, opts = {}) {
           <div class="pa-proj-card__title-block">
             <h3 class="pa-proj-card__title" title="${title}">${title}</h3>
             <div class="pa-proj-card__category"><i class="ri-price-tag-3-line"></i> ${category}</div>
+            <div class="pa-proj-card__template">${blogTemplateBadgeHtml(p)}</div>
           </div>
           <div class="pa-proj-card__list-status-wrap">
             ${statusBadge}
