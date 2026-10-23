@@ -185,7 +185,7 @@
   transform: translateY(-50%);
   z-index: 4;
   font-family: var(--font-mono);
-  font-size: var(--fs-8);
+  font-size: var(--fs-14);
   font-weight: var(--fw-7);
   letter-spacing: 0.14em;
   text-transform: uppercase;
