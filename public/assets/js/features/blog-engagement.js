@@ -46,6 +46,82 @@
     }
   }
 
+  function formatRelativeTime(iso) {
+    try {
+      const d = new Date(iso);
+      const sec = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (!Number.isFinite(sec) || sec < 0) return formatDate(iso);
+      if (sec < 45) return "just now";
+      const min = Math.floor(sec / 60);
+      if (min < 60) return `${min} minute${min === 1 ? "" : "s"} ago`;
+      const hr = Math.floor(min / 60);
+      if (hr < 24) return `${hr} hour${hr === 1 ? "" : "s"} ago`;
+      const day = Math.floor(hr / 24);
+      if (day < 7) return `${day} day${day === 1 ? "" : "s"} ago`;
+      const week = Math.floor(day / 7);
+      if (week < 5) return `${week} week${week === 1 ? "" : "s"} ago`;
+      const month = Math.floor(day / 30);
+      if (month < 12) return `${month} month${month === 1 ? "" : "s"} ago`;
+      const year = Math.floor(day / 365);
+      return `${year} year${year === 1 ? "" : "s"} ago`;
+    } catch {
+      return formatDate(iso);
+    }
+  }
+
+  function toHandle(name) {
+    const raw = String(name || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "");
+    return raw ? `@${raw}` : "@user";
+  }
+
+  const AVATAR_HUES = [
+    "#c62828",
+    "#ad1457",
+    "#6a1b9a",
+    "#4527a0",
+    "#283593",
+    "#1565c0",
+    "#0277bd",
+    "#00838f",
+    "#00695c",
+    "#2e7d32",
+    "#558b2f",
+    "#9e9d24",
+    "#f9a825",
+    "#ff8f00",
+    "#ef6c00",
+    "#d84315",
+    "#4e342e",
+    "#546e7a",
+  ];
+
+  function avatarHue(name) {
+    let h = 0;
+    const s = String(name || "user");
+    for (let i = 0; i < s.length; i++) h += s.charCodeAt(i);
+    return AVATAR_HUES[h % AVATAR_HUES.length];
+  }
+
+  function mentionSlug(name) {
+    return String(name || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "");
+  }
+
+  function formatCommentBody(text) {
+    const escaped = escapeHtml(text);
+    return escaped
+      .replace(
+        /@([a-zA-Z0-9_.-]+)/g,
+        '<span class="bd-yt-mention">@$1</span>',
+      )
+      .replace(/\n/g, "<br />");
+  }
+
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, "&amp;")
@@ -82,32 +158,84 @@
   }
 
   function renderActions(comment, likesEnabled) {
+    const likeCount =
+      comment.like_count > 0
+        ? `<span class="bd-yt-like-count">${comment.like_count}</span>`
+        : "";
     const likeBtn = likesEnabled
-      ? `<button type="button" class="bd-comment-like-btn${comment.liked ? " is-liked" : ""}" data-comment-id="${escapeHtml(comment.id)}" aria-pressed="${comment.liked ? "true" : "false"}" aria-label="${comment.liked ? "Unlike comment" : "Like comment"}">
-          <i class="ri-thumb-up-line" aria-hidden="true"></i>
-          <span class="bd-comment-like-count">${comment.like_count}</span>
+      ? `<button type="button" class="bd-yt-action-btn bd-yt-like-btn${comment.liked ? " is-liked" : ""}" data-comment-id="${escapeHtml(comment.id)}" aria-pressed="${comment.liked ? "true" : "false"}" aria-label="${comment.liked ? "Unlike" : "Like"}">
+          <i class="ri-thumb-up-${comment.liked ? "fill" : "line"}" aria-hidden="true"></i>
+          ${likeCount}
+        </button>
+        <button type="button" class="bd-yt-action-btn bd-yt-dislike-btn" aria-label="Dislike">
+          <i class="ri-thumb-down-line" aria-hidden="true"></i>
         </button>`
       : "";
     return `
-      <div class="bd-comment-actions">
+      <div class="bd-yt-comment__actions">
         ${likeBtn}
-        <button type="button" class="bd-comment-reply-btn" data-parent-id="${escapeHtml(comment.id)}" data-preview="${escapeHtml(comment.body.slice(0, 160))}">
+        <button type="button" class="bd-yt-reply-btn bd-comment-reply-btn" data-parent-id="${escapeHtml(comment.id)}" data-preview="${escapeHtml(comment.body.slice(0, 160))}">
           Reply
         </button>
       </div>`;
   }
 
-  function renderCommentAvatar(comment, isRoot) {
+  function renderCommentAvatar(comment, isReply) {
     const id = escapeHtml(comment.id);
-    const name = escapeHtml(comment.author_name);
-    const avatarClass = isRoot
-      ? "bd-comment-avatar"
-      : "bd-comment-avatar bd-comment-avatar--sm";
-    const label = `Comment by ${name}`;
+    const label = `Comment by ${escapeHtml(comment.author_name)}`;
+    const sizeClass = isReply ? "bd-yt-avatar--sm" : "";
     return `
-      <a href="#bd-comment-${id}" class="bd-comment-avatar-link" aria-label="${label}">
-        <span class="${avatarClass}" aria-hidden="true">${escapeHtml(initials(comment.author_name))}</span>
+      <a href="#bd-comment-${id}" class="bd-yt-avatar-link" aria-label="${label}">
+        <span class="bd-yt-avatar ${sizeClass}" aria-hidden="true">${escapeHtml(initials(comment.author_name))}</span>
       </a>`;
+  }
+
+  function renderReplyBlock(
+    parentComment,
+    children,
+    byParent,
+    depth,
+    likesEnabled,
+    expandedThreads,
+  ) {
+    if (!children.length) return "";
+    const parentId = parentComment.id;
+    const isExpanded = expandedThreads.has(parentId);
+    const count = children.length;
+
+    if (!isExpanded) {
+      const label =
+        count === 1 ? "Show 1 reply" : `Show ${count} replies`;
+      return `
+        <div class="bd-yt-replies-toggle-wrap">
+          <button type="button" class="bd-yt-thread-toggle bd-yt-show-replies" data-thread-root="${escapeHtml(parentId)}">
+            <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+            <span>${label}</span>
+          </button>
+        </div>`;
+    }
+
+    const nested = children
+      .map((c) =>
+        renderCommentNode(
+          c,
+          byParent,
+          depth + 1,
+          likesEnabled,
+          expandedThreads,
+          parentComment.author_name,
+        ),
+      )
+      .join("");
+
+    return `
+      <div class="bd-yt-replies" role="group" aria-label="Replies">
+        ${nested}
+        <button type="button" class="bd-yt-thread-toggle bd-yt-hide-replies" data-thread-root="${escapeHtml(parentId)}">
+          <i class="ri-arrow-up-s-line" aria-hidden="true"></i>
+          <span>Hide replies</span>
+        </button>
+      </div>`;
   }
 
   function renderCommentNode(
@@ -115,54 +243,56 @@
     byParent,
     depth,
     likesEnabled,
-    parentAuthor,
+    expandedThreads,
+    parentAuthor = null,
   ) {
-    const name = escapeHtml(comment.author_name);
-    const body = escapeHtml(comment.body).replace(/\n/g, "<br />");
-    const date = formatDate(comment.created_at);
-    const isRoot = depth === 0;
-    const children = byParent.get(comment.id) || [];
-    const childHtml = children.length
-      ? `<div class="bd-comment-replies" role="group" aria-label="Replies">
-          <ul class="bd-comment-replies-inner">${children
-            .map((c) =>
-              renderCommentNode(
-                c,
-                byParent,
-                depth + 1,
-                likesEnabled,
-                comment.author_name,
-              ),
-            )
-            .join("")}</ul>
-        </div>`
-      : "";
-    const mention =
-      !isRoot && parentAuthor
-        ? `<span class="bd-comment-mention">@${escapeHtml(parentAuthor)}</span> `
+    const author = escapeHtml(comment.author_name);
+    const mentionPrefix =
+      depth > 0 && parentAuthor
+        ? `<span class="bd-yt-mention">@${escapeHtml(mentionSlug(parentAuthor))}</span> `
         : "";
-    const itemClass = isRoot
-      ? "bd-comment-thread-item bd-comment-thread-item--root"
-      : "bd-comment-subitem";
-    const leadClass = isRoot
-      ? "bd-comment-lead"
-      : "bd-comment-lead bd-comment-lead--reply";
+    const body = `${mentionPrefix}${formatCommentBody(comment.body)}`;
+    const when = formatDate(comment.created_at);
+    const isReply = depth > 0;
+    const children = byParent.get(comment.id) || [];
+    const id = escapeHtml(comment.id);
+    const replyBlock = renderReplyBlock(
+      comment,
+      children,
+      byParent,
+      depth,
+      likesEnabled,
+      expandedThreads,
+    );
 
-    return `
-      <li class="${itemClass}" id="bd-comment-${escapeHtml(comment.id)}" data-comment-id="${escapeHtml(comment.id)}" data-depth="${depth}">
-        <div class="${leadClass}">
-          ${renderCommentAvatar(comment, isRoot)}
-        </div>
-        <div class="bd-comment-content">
-          <div class="bd-comment-meta">
-            <span class="bd-comment-author">${name}</span>
-            ${date ? `<time class="bd-comment-date" datetime="${escapeHtml(comment.created_at)}">${escapeHtml(date)}</time>` : ""}
+    const tag = isReply ? "div" : "li";
+    const rootClass = isReply
+      ? "bd-yt-comment bd-yt-comment--reply"
+      : "bd-yt-thread";
+
+    const inner = `
+      <article class="${isReply ? "bd-yt-comment bd-yt-comment--reply" : "bd-yt-comment"}" id="bd-comment-${id}" data-comment-id="${id}" data-depth="${depth}">
+        <div class="bd-yt-comment__row">
+          ${renderCommentAvatar(comment, isReply)}
+          <div class="bd-yt-comment__main">
+            <div class="bd-yt-comment__header">
+              <span class="bd-yt-author">${author}</span>
+              ${when ? `<time class="bd-yt-time" datetime="${escapeHtml(comment.created_at)}">${escapeHtml(when)}</time>` : ""}
+            </div>
+            <div class="bd-yt-comment__text">${body}</div>
+            ${renderActions(comment, likesEnabled)}
           </div>
-          <p class="bd-comment-text">${mention}${body}</p>
-          ${renderActions(comment, likesEnabled)}
-          ${childHtml}
+          <button type="button" class="bd-yt-menu-btn" data-comment-menu="${id}" aria-label="Comment actions" aria-haspopup="menu">
+            <i class="ri-more-vertical-fill" aria-hidden="true"></i>
+          </button>
         </div>
-      </li>`;
+        ${replyBlock}
+      </article>`;
+
+    if (isReply) {
+      return `<div class="bd-yt-reply-item">${inner}</div>`;
+    }
+    return `<${tag} class="${rootClass}">${inner}</${tag}>`;
   }
 
   window.Portfolio.BLOG_ENGAGEMENT = {
@@ -218,8 +348,10 @@
       }
 
       function commentCountLabel(n) {
-        return n === 1 ? "1 comment" : `${n} comments`;
+        return n === 1 ? "1 COMMENT" : `${n} COMMENTS`;
       }
+
+      const expandedThreads = new Set();
 
       function findComment(id) {
         return cachedComments.find((c) => c.id === id);
@@ -231,7 +363,9 @@
         const { roots, byParent } = buildCommentTree(cachedComments);
         if (listEl) {
           listEl.innerHTML = roots
-            .map((c) => renderCommentNode(c, byParent, 0, likesEnabled, null))
+            .map((c) =>
+              renderCommentNode(c, byParent, 0, likesEnabled, expandedThreads),
+            )
             .join("");
         }
         if (emptyEl) emptyEl.hidden = total > 0;
@@ -370,8 +504,75 @@
           .finally(() => commentLikeSync.delete(commentId));
       }
 
+      function closeCommentMenus() {
+        document.querySelectorAll(".bd-yt-menu-popover").forEach((el) => el.remove());
+      }
+
+      function openCommentMenu(anchor, commentId) {
+        closeCommentMenus();
+        const pop = document.createElement("div");
+        pop.className = "bd-yt-menu-popover";
+        pop.setAttribute("role", "menu");
+        pop.innerHTML = `
+          <button type="button" class="bd-yt-menu-item" data-menu-action="copy-link" role="menuitem">Copy link</button>
+          <button type="button" class="bd-yt-menu-item" data-menu-action="copy-text" role="menuitem">Copy comment</button>`;
+        document.body.appendChild(pop);
+        const rect = anchor.getBoundingClientRect();
+        pop.style.top = `${rect.bottom + 4}px`;
+        pop.style.left = `${Math.max(8, rect.right - 180)}px`;
+        pop.addEventListener("click", (ev) => {
+          const btn = ev.target.closest("[data-menu-action]");
+          if (!btn) return;
+          const action = btn.getAttribute("data-menu-action");
+          const comment = findComment(commentId);
+          if (action === "copy-link") {
+            const url = `${location.origin}${location.pathname}${location.search}#bd-comment-${commentId}`;
+            navigator.clipboard?.writeText(url).then(
+              () => showToast("Link copied"),
+              () => showToast("Could not copy link"),
+            );
+          } else if (action === "copy-text" && comment) {
+            navigator.clipboard?.writeText(comment.body).then(
+              () => showToast("Comment copied"),
+              () => showToast("Could not copy"),
+            );
+          }
+          closeCommentMenus();
+        });
+        setTimeout(() => {
+          document.addEventListener(
+            "click",
+            () => closeCommentMenus(),
+            { once: true },
+          );
+        }, 0);
+      }
+
       if (listEl) {
         listEl.addEventListener("click", (e) => {
+          const showBtn = e.target.closest(".bd-yt-show-replies");
+          if (showBtn && listEl.contains(showBtn)) {
+            const rootId = showBtn.getAttribute("data-thread-root");
+            if (rootId) expandedThreads.add(rootId);
+            renderComments();
+            return;
+          }
+          const hideBtn = e.target.closest(".bd-yt-hide-replies");
+          if (hideBtn && listEl.contains(hideBtn)) {
+            const rootId = hideBtn.getAttribute("data-thread-root");
+            if (rootId) expandedThreads.delete(rootId);
+            renderComments();
+            return;
+          }
+          const menuBtn = e.target.closest(".bd-yt-menu-btn");
+          if (menuBtn && listEl.contains(menuBtn)) {
+            e.stopPropagation();
+            openCommentMenu(
+              menuBtn,
+              menuBtn.getAttribute("data-comment-menu"),
+            );
+            return;
+          }
           const replyBtn = e.target.closest(".bd-comment-reply-btn");
           if (replyBtn && listEl.contains(replyBtn)) {
             openReplyModal(
@@ -380,12 +581,22 @@
             );
             return;
           }
-          const likeCommentBtn = e.target.closest(".bd-comment-like-btn");
+          const likeCommentBtn = e.target.closest(".bd-yt-like-btn");
           if (likeCommentBtn && listEl.contains(likeCommentBtn)) {
             toggleCommentLike(
               likeCommentBtn.getAttribute("data-comment-id"),
               likeCommentBtn,
             );
+            return;
+          }
+          const dislikeBtn = e.target.closest(".bd-yt-dislike-btn");
+          if (dislikeBtn && listEl.contains(dislikeBtn)) {
+            dislikeBtn.classList.toggle("is-disliked");
+            const icon = dislikeBtn.querySelector("i");
+            if (icon) {
+              icon.classList.toggle("ri-thumb-down-line", !dislikeBtn.classList.contains("is-disliked"));
+              icon.classList.toggle("ri-thumb-down-fill", dislikeBtn.classList.contains("is-disliked"));
+            }
           }
         });
       }
