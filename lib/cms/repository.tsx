@@ -49,7 +49,7 @@ const TECHNOLOGY_COLUMNS = 'legacy_id, name, category_id, level_key, documentati
 const TESTIMONIAL_COLUMNS = 'legacy_id, client_name, client_role, company, quote, rating, avatar_url, avatar_alt, is_featured, created_at';
 const BLOG_POST_COLUMNS = 'legacy_id, title, slug, excerpt, category_key, status, is_featured, featured_image_url, featured_image_alt, published_at, sort_order, meta_title, meta_description, comments_enabled, likes_enabled, comments_auto_approve, created_at';
 const BLOG_POST_TAG_COLUMNS = 'sort_order, blog_tags(name)';
-const EXPERIENCE_COLUMNS = 'legacy_id, job_title, company, location, employment_type, start_date, end_date, is_current, description, sort_order, created_at';
+const EXPERIENCE_COLUMNS = 'legacy_id, job_title, company, location, employment_type, work_mode, team_size, domain, start_date, end_date, is_current, description, key_achievements, role_impacts, technology_ids, sort_order, created_at';
 const FAQ_COLUMNS = 'legacy_id, question, answer, is_published, sort_order, created_at';
 const CONTACT_MESSAGE_COLUMNS = 'id, legacy_id, sender_name, sender_email, subject, snippet, body, status, sender_ip, reply_body, replied_at, is_starred, created_at';
 const CONTACT_REPLY_COLUMNS = 'id, message_id, body, subject, cc, attachment_url, attachment_name, attachment_mime, attachment_size, sent_at, created_at, updated_at';
@@ -1297,6 +1297,17 @@ export async function saveBlogPosts(records, { reconcileMedia = true } = {}) {
 
 // ─── Experience ──────────────────────────────────────────────────────────────
 
+function normalizeRoleImpacts(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .slice(0, 3)
+    .map((item) => ({
+      value: String(item?.value || '').trim(),
+      label: String(item?.label || '').trim(),
+    }))
+    .filter((item) => item.value || item.label);
+}
+
 function experienceFromDb(row) {
   return {
     id: row.legacy_id,
@@ -1304,10 +1315,16 @@ function experienceFromDb(row) {
     company: row.company,
     location: row.location || '',
     type: row.employment_type,
+    mode: row.work_mode || '',
+    teamSize: row.team_size || '',
+    domain: row.domain || '',
     startDate: row.start_date,
     endDate: row.end_date || '',
     current: row.is_current,
     desc: row.description || '',
+    achievements: Array.isArray(row.key_achievements) ? row.key_achievements.filter(Boolean) : [],
+    impacts: normalizeRoleImpacts(row.role_impacts),
+    technologies: Array.isArray(row.technology_ids) ? row.technology_ids : [],
     sortOrder: row.sort_order,
     createdAt: row.created_at,
   };
@@ -1338,6 +1355,15 @@ export async function saveExperience(records) {
 
   for (const e of records) {
     const ex = (existing || []).find((x) => String(x.legacy_id) === String(e.id));
+    const achievements = (e.achievements || [])
+      .map((a) => String(a || '').trim())
+      .filter(Boolean)
+      .slice(0, 3);
+    const impacts = normalizeRoleImpacts(e.impacts);
+    const technologyIds = (e.technologies || [])
+      .map((id) => Number(id))
+      .filter((id) => !Number.isNaN(id));
+
     const { error } = await sb.from('experience_entries').upsert({
       id: ex?.id || legacyUuid('exp', e.id),
       site_id: SITE_ID,
@@ -1346,10 +1372,16 @@ export async function saveExperience(records) {
       company: e.company,
       location: e.location || null,
       employment_type: e.type,
+      work_mode: e.mode || null,
+      team_size: e.teamSize || null,
+      domain: e.domain || null,
       start_date: e.startDate,
       end_date: e.current ? null : (e.endDate || null),
       is_current: !!e.current,
       description: e.desc || null,
+      key_achievements: achievements,
+      role_impacts: impacts,
+      technology_ids: technologyIds,
       sort_order: e.sortOrder ?? 0,
     });
     if (error) throw error;

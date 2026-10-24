@@ -12952,7 +12952,7 @@ html.theme-light .back-top:hover {
   position: relative;
   z-index: 1;
   text-align: left;
-  padding: 1rem;
+  padding: 1rem .5rem;
   background:
     radial-gradient(circle at 50% 0%, var(--accent-dim), transparent 58%),
     var(--bg-card);
@@ -13016,7 +13016,6 @@ html.theme-light .back-top:hover {
 .exp-work--hscroll .exp-tl-card .exp-tl-content {
   display: flex;
   flex-direction: column;
-  gap: var(--card-gap-sm);
 }
 .exp-work--hscroll .exp-tl-card:hover:not(.is-exp-active) {
   border-color: var(--accent-dim);
@@ -13057,7 +13056,7 @@ html.theme-light .back-top:hover {
 }
 .exp-work--hscroll .exp-tl-role {
   font-family: var(--font-head);
-  font-size: var(--fs-16);
+  font-size: var(--fs-14);
   letter-spacing: 0.02em;
   color: var(--white);
   line-height: 1.25;
