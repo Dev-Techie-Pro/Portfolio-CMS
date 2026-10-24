@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+﻿import fs from 'node:fs';
 import path from 'node:path';
 
 const mig = path.join(process.cwd(), 'supabase/migrations/20261014120000_effective_role_and_cron.sql');

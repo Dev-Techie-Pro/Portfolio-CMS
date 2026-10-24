@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Static + optional live RLS probes for security migration (C1, H2, H4).
  */
 import fs from 'node:fs';
@@ -36,7 +36,7 @@ const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
 async function liveProbes() {
   if (!url || !anonKey) {
-    console.log('OK: static RLS security checks (live probes skipped — no Supabase URL/anon key).');
+    console.log('OK: static RLS security checks (live probes skipped ΓÇö no Supabase URL/anon key).');
     return;
   }
 

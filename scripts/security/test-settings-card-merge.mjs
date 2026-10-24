@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Ensures general/other site settings merge helpers stay isolated (no cross-card DOM fields).
  * Run: node scripts/test-settings-card-merge.mjs
  */

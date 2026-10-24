@@ -7344,16 +7344,17 @@ function segmentPillClipRound(track) {
   );
   return isAdmin ? "var(--pa-radius)" : "var(--br-none)";
 }
+var SEG_PILL_INSET_PAD = 3;
 function clipInset(top, right, bottom, left, round) {
   return `inset(${top}px ${right}px ${bottom}px ${left}px round ${round})`;
 }
 function moveSegmentPill(pill, track, activeBtn, animate2 = true) {
   const trackW = track.offsetWidth;
   const trackH = track.offsetHeight;
-  const left = activeBtn.offsetLeft;
-  const right = trackW - (activeBtn.offsetLeft + activeBtn.offsetWidth);
-  const top = activeBtn.offsetTop;
-  const bottom = trackH - (activeBtn.offsetTop + activeBtn.offsetHeight);
+  const left = activeBtn.offsetLeft + SEG_PILL_INSET_PAD;
+  const right = trackW - (activeBtn.offsetLeft + activeBtn.offsetWidth) + SEG_PILL_INSET_PAD;
+  const top = activeBtn.offsetTop + SEG_PILL_INSET_PAD;
+  const bottom = trackH - (activeBtn.offsetTop + activeBtn.offsetHeight) + SEG_PILL_INSET_PAD;
   const round = segmentPillClipRound(track);
   const clip = (l, r) => clipInset(top, r, bottom, l, round);
   const pillState = pill;

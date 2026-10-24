@@ -167,7 +167,6 @@
         const prevPanel = panels[prev];
         const nextPanel = panels[next];
         const animate =
-          !fromScroll &&
           !prefersReduced() &&
           prevPanel &&
           nextPanel &&
@@ -186,6 +185,14 @@
         });
 
         if (animate) {
+          if (section.classList.contains("is-exp-switching")) {
+            clearTimeout(section._expSwitchTimer);
+            panels.forEach((panel) => {
+              panel.classList.remove(EXITING, ENTERING);
+            });
+            section.classList.remove("is-exp-switching");
+            if (roleStage) roleStage.style.removeProperty("--exp-stage-h");
+          }
           if (roleStage) {
             roleStage.style.setProperty(
               "--exp-stage-h",

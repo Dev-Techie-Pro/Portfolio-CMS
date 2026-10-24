@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Static smoke checks for auth guards on sensitive routes (no server required).
  */
 import fs from 'node:fs';

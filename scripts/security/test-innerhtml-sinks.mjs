@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Heuristic audit (M3): flag innerHTML templates that embed object fields without escapeHtml.
  */
 import fs from 'node:fs';

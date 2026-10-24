@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Regression for CMS HTML sanitizer (blog content).
  */
 const FORBIDDEN_TAGS = /<\/?(?:script|iframe|object|embed|form|input|button|textarea|select|meta|link|base|style)\b[^>]*>/gi;

@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 
 function sanitizeRedirectPath(raw, fallback = '/') {
   if (raw == null || raw === '') return fallback;

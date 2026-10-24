@@ -687,7 +687,7 @@ body.light .pa-body-loader__panel {
   padding: 8px 15px;
   font-size: var(--pa-fs-xmd);
   font-weight: var(--pa-fw-md);
-  color: var(--pa-text-mute);
+  color: var(--pa-text);
   border-radius: var(--pa-radius);
   cursor: pointer;
   background: none;

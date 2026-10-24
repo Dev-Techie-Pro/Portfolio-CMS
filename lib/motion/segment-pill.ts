@@ -11,6 +11,8 @@ export function segmentPillClipRound(track: HTMLElement): string {
   return isAdmin ? 'var(--pa-radius)' : 'var(--br-none)';
 }
 
+const SEG_PILL_INSET_PAD = 3;
+
 function clipInset(
   top: number,
   right: number,
@@ -29,10 +31,12 @@ export function moveSegmentPill(
 ) {
   const trackW = track.offsetWidth;
   const trackH = track.offsetHeight;
-  const left = activeBtn.offsetLeft;
-  const right = trackW - (activeBtn.offsetLeft + activeBtn.offsetWidth);
-  const top = activeBtn.offsetTop;
-  const bottom = trackH - (activeBtn.offsetTop + activeBtn.offsetHeight);
+  const left = activeBtn.offsetLeft + SEG_PILL_INSET_PAD;
+  const right =
+    trackW - (activeBtn.offsetLeft + activeBtn.offsetWidth) + SEG_PILL_INSET_PAD;
+  const top = activeBtn.offsetTop + SEG_PILL_INSET_PAD;
+  const bottom =
+    trackH - (activeBtn.offsetTop + activeBtn.offsetHeight) + SEG_PILL_INSET_PAD;
   const round = segmentPillClipRound(track);
   const clip = (l: number, r: number) => clipInset(top, r, bottom, l, round);
 

@@ -1,7 +1,10 @@
-/**
+﻿/**
  * Regression for audit M1: MFA AAL fail-closed helper.
  */
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+
 // Mirror lib/auth/mfa-aal.ts logic for CI without ts-node.
 function needsMfaFromAal(aal) {
   return aal?.nextLevel === 'aal2' && aal?.currentLevel !== 'aal2';
@@ -12,9 +15,7 @@ assert.equal(needsMfaFromAal({ nextLevel: 'aal2', currentLevel: 'aal2' }), false
 assert.equal(needsMfaFromAal(null), false);
 assert.equal(needsMfaFromAal(undefined), false);
 
-const middlewareSrc = await import('node:fs').then((fs) =>
-  fs.readFileSync(new URL('../middleware.ts', import.meta.url), 'utf8'),
-);
+const middlewareSrc = fs.readFileSync(path.join(process.cwd(), 'middleware.ts'), 'utf8');
 if (/catch\s*\{[^}]*needsMfa\s*=\s*false/s.test(middlewareSrc)) {
   console.error('FAIL: middleware still sets needsMfa = false on AAL error (M1).');
   process.exit(1);

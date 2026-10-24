@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 
 function isBlogPostPubliclyVisible(row, now = new Date()) {
   if (row.status === 'Draft') return false;

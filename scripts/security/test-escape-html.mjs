@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Regression for audit C2: attribute-context XSS via escapeHtml (Appendix B).
  */
 function escapeHtml(str) {
