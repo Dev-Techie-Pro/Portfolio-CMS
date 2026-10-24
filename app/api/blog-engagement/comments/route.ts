@@ -7,6 +7,7 @@ import {
 } from '@/lib/cms/blog-engagement';
 import { guardEditor } from '@/lib/auth/guard';
 import { withEditorGet } from '@/lib/api/with-editor-get';
+import { recordUserAction } from '@/lib/cms/activity-log';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -31,6 +32,14 @@ export async function PATCH(request) {
     }
     if (body?.delete === true) {
       const result = await bulkSoftDeleteComments(ids);
+      await recordUserAction({
+        userId: auth.user.id,
+        actionTitle: 'Blog comment deleted',
+        actionDescription: `Removed ${ids.length} comment(s) from moderation`,
+        status: 'success',
+        metadata: { action: 'blog.comment.delete', ids },
+        request,
+      });
       return NextResponse.json({ ok: true, ...result });
     }
     const status = body?.status;
@@ -39,6 +48,14 @@ export async function PATCH(request) {
       return NextResponse.json({ error: 'Valid status is required.' }, { status: 400 });
     }
     const result = await bulkUpdateCommentStatus(ids, status);
+    await recordUserAction({
+      userId: auth.user.id,
+      actionTitle: 'Blog comment moderated',
+      actionDescription: `Marked ${ids.length} comment(s) as ${status}`,
+      status: 'success',
+      metadata: { action: 'blog.comment.status', ids, status },
+      request,
+    });
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

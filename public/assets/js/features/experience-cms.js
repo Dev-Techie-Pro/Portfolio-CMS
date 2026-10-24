@@ -132,8 +132,7 @@
   function renderPanel(entry, index, active) {
     const badge = roleBadge(entry);
     const desc = entry.description
-      ? `<p class="exp-role-desc is-collapsed">${escapeHtml(entry.description)}</p>
-              <button class="exp-role-toggle is-collapsed" type="button" aria-expanded="false"><span class="exp-role-toggle-label">Show more</span> <span class="icon" data-icon="siArrowUp"></span></button>`
+      ? `<p class="exp-role-desc">${escapeHtml(entry.description)}</p>`
       : "";
     const loc = entry.location
       ? `<p class="exp-role-company-loc"><span class="icon" data-icon="siLocationPin"></span> ${escapeHtml(entry.location)}</p>`

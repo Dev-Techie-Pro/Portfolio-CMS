@@ -6,7 +6,6 @@ import {
   getTechChipLegacyIds,
   populateTechChips
 } from "./chunk-JFWNZ4BR.js";
-import "./chunk-777AU2J4.js";
 import {
   renderPaCatCard,
   renderPaCatListRow
@@ -18,24 +17,17 @@ import {
   setStatTrend,
   setStatValue
 } from "./chunk-NAHW6JXX.js";
-import "./chunk-25T6YHMS.js";
-import "./chunk-VXJMB3CY.js";
 import {
   categoryKeyFromAccentHex
 } from "./chunk-FRUJZYET.js";
-import "./chunk-PD6FJZHW.js";
-import "./chunk-6FXKQLBA.js";
 import {
   formatMonthYear,
   parseSortInput,
   sortByNewestFirst
 } from "./chunk-JWEJ6YLS.js";
-import "./chunk-WNHYA5Z5.js";
 import {
   PAGE
 } from "./chunk-47N5NP2E.js";
-import "./chunk-IZ7T64RP.js";
-import "./chunk-UHXU6UPR.js";
 import {
   storage
 } from "./chunk-7KTA4S5K.js";
@@ -44,12 +36,10 @@ import {
   canManageContent,
   openPanel
 } from "./chunk-FTMH3SUW.js";
-import "./chunk-HWSNCMVP.js";
 import {
   $id,
   escapeHtml
 } from "./chunk-HFEWIT3P.js";
-import "./chunk-MTDZJ6X7.js";
 
 // client/utils/expHighlightsForm.ts
 var EXP_HIGHLIGHT_MAX_ACH = 3;
@@ -692,9 +682,10 @@ var ExperienceModule = class extends CrudCardModule {
     }
   }
 };
+
 export {
   EXP_TYPE_META,
-  ExperienceModule,
-  SEED_EXPERIENCE
+  SEED_EXPERIENCE,
+  ExperienceModule
 };
-//# sourceMappingURL=ExperienceModule-LKFLPYGG.js.map
+//# sourceMappingURL=chunk-6MWGY3P4.js.map

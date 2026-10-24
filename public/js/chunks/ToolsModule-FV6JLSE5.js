@@ -11,6 +11,9 @@ import {
   renderIconHtml
 } from "./chunk-Q6LT2MRI.js";
 import {
+  uniqueCopyName
+} from "./chunk-2XY7RIAB.js";
+import {
   attachPaCatCardViewListeners,
   renderPaCatCard,
   renderPaCatListRow
@@ -24,9 +27,6 @@ import {
 } from "./chunk-NAHW6JXX.js";
 import "./chunk-25T6YHMS.js";
 import "./chunk-VXJMB3CY.js";
-import {
-  uniqueCopyName
-} from "./chunk-2XY7RIAB.js";
 import {
   categoryKeyFromAccentHex
 } from "./chunk-FRUJZYET.js";
@@ -499,4 +499,4 @@ var ToolsModule = class extends CrudCardModule {
 export {
   ToolsModule
 };
-//# sourceMappingURL=ToolsModule-JWQVQ5U2.js.map
+//# sourceMappingURL=ToolsModule-FV6JLSE5.js.map

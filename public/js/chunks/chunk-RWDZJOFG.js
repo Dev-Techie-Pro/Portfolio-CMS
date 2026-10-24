@@ -6,6 +6,10 @@ import {
   renderIconHtml
 } from "./chunk-Q6LT2MRI.js";
 import {
+  isValidUrl,
+  uniqueCopyName
+} from "./chunk-2XY7RIAB.js";
+import {
   attachPaCatCardViewListeners,
   renderPaCatCard,
   renderPaCatListRow
@@ -17,10 +21,6 @@ import {
   setStatTrend,
   setStatValue
 } from "./chunk-NAHW6JXX.js";
-import {
-  isValidUrl,
-  uniqueCopyName
-} from "./chunk-2XY7RIAB.js";
 import {
   categoryKeyFromAccentHex
 } from "./chunk-FRUJZYET.js";
@@ -551,4 +551,4 @@ export {
   SEED_TECHNOLOGIES,
   TechnologiesModule
 };
-//# sourceMappingURL=chunk-TNXZ7WP3.js.map
+//# sourceMappingURL=chunk-RWDZJOFG.js.map

@@ -1,9 +1,9 @@
 import {
-  addChipsFromText
-} from "./chunk-JFWNZ4BR.js";
-import {
   isValidUrl
 } from "./chunk-2XY7RIAB.js";
+import {
+  addChipsFromText
+} from "./chunk-JFWNZ4BR.js";
 
 // client/utils/url-prompt.ts
 var overlay = null;
@@ -388,4 +388,4 @@ export {
   updateRteButtonStates,
   bindCommaSeparatedChipInput
 };
-//# sourceMappingURL=chunk-K2G2TZW5.js.map
+//# sourceMappingURL=chunk-ZSETD5SA.js.map

@@ -333,23 +333,6 @@
         });
       });
 
-      t(".exp-role-toggle", section).forEach((btn) => {
-        const desc = btn.previousElementSibling;
-        if (!desc || !desc.classList.contains("exp-role-desc")) return;
-        const label = btn.querySelector(".exp-role-toggle-label");
-        desc.classList.add("is-collapsed");
-        btn.classList.add("is-collapsed");
-        btn.setAttribute("aria-expanded", "false");
-        if (label) label.textContent = "Show more";
-        btn.addEventListener("click", () => {
-          const open = btn.getAttribute("aria-expanded") === "true";
-          desc.classList.toggle("is-collapsed", open);
-          btn.classList.toggle("is-collapsed", open);
-          btn.setAttribute("aria-expanded", open ? "false" : "true");
-          if (label) label.textContent = open ? "Show more" : "Show less";
-        });
-      });
-
       let gsapScrollDriver = null;
       if (
         window.__paExpHscrollUseGsap &&

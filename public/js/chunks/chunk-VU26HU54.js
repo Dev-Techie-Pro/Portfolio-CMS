@@ -1,13 +1,13 @@
 import {
+  slugify
+} from "./chunk-2XY7RIAB.js";
+import {
   CrudCardModule
 } from "./chunk-32QF3LCW.js";
 import {
   setStatTrend,
   setStatValue
 } from "./chunk-NAHW6JXX.js";
-import {
-  slugify
-} from "./chunk-2XY7RIAB.js";
 import {
   renderGroupedCards
 } from "./chunk-PD6FJZHW.js";
@@ -636,4 +636,4 @@ export {
   DEFAULT_TAG_ENTITY_LABELS,
   TagsModule
 };
-//# sourceMappingURL=chunk-VW7OWZ3Q.js.map
+//# sourceMappingURL=chunk-VU26HU54.js.map

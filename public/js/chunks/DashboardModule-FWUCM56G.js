@@ -1,28 +1,31 @@
 import {
   CATEGORY_META_PROJECTS
-} from "./chunk-3GPA3KGX.js";
-import "./chunk-K2G2TZW5.js";
-import "./chunk-IBKEZKLB.js";
-import "./chunk-JFWNZ4BR.js";
+} from "./chunk-P6SC6P2P.js";
+import "./chunk-ZSETD5SA.js";
 import "./chunk-T2NFGIV5.js";
 import "./chunk-OL6GWZCM.js";
 import {
   syncPaSelect
 } from "./chunk-HYF3MIUV.js";
-import "./chunk-777AU2J4.js";
 import "./chunk-XZ5R2AN2.js";
 import {
   GROUP_META,
   LEVEL_META
-} from "./chunk-TNXZ7WP3.js";
+} from "./chunk-RWDZJOFG.js";
 import "./chunk-N6KQWXTY.js";
 import "./chunk-Q6LT2MRI.js";
+import "./chunk-2XY7RIAB.js";
+import {
+  EXP_TYPE_META
+} from "./chunk-6MWGY3P4.js";
+import "./chunk-IBKEZKLB.js";
+import "./chunk-JFWNZ4BR.js";
+import "./chunk-777AU2J4.js";
 import "./chunk-V7ZPEMLL.js";
 import "./chunk-32QF3LCW.js";
 import "./chunk-NAHW6JXX.js";
 import "./chunk-25T6YHMS.js";
 import "./chunk-VXJMB3CY.js";
-import "./chunk-2XY7RIAB.js";
 import "./chunk-FRUJZYET.js";
 import "./chunk-PD6FJZHW.js";
 import "./chunk-6FXKQLBA.js";
@@ -38,8 +41,13 @@ import {
   Module,
   storage
 } from "./chunk-7KTA4S5K.js";
-import "./chunk-FTMH3SUW.js";
-import "./chunk-HWSNCMVP.js";
+import {
+  getAccessCapabilities,
+  requestBulkAction
+} from "./chunk-FTMH3SUW.js";
+import {
+  showToast
+} from "./chunk-HWSNCMVP.js";
 import {
   $,
   $id,
@@ -388,6 +396,561 @@ function renderMultiLineChart(mountEl, seriesDefs) {
   });
 }
 
+// client/modules/dashboard/widgets/experienceChart.ts
+var MONTH_MS = 30.4375 * 24 * 60 * 60 * 1e3;
+function parseYmStart(ym) {
+  if (!ym || typeof ym !== "string") return null;
+  const [y, m] = ym.split("-").map(Number);
+  if (!y || !m) return null;
+  return new Date(y, m - 1, 1);
+}
+function parseYmEnd(ym) {
+  if (!ym || typeof ym !== "string") return null;
+  const [y, m] = ym.split("-").map(Number);
+  if (!y || !m) return null;
+  return new Date(y, m, 0, 23, 59, 59, 999);
+}
+function entryRange(entry) {
+  const start = parseYmStart(entry.startDate);
+  if (!start) return null;
+  const end = entry.current ? /* @__PURE__ */ new Date() : parseYmEnd(entry.endDate) || start;
+  if (end.getTime() < start.getTime()) return { start, end: start };
+  return { start, end };
+}
+function mergeRanges(ranges) {
+  const sorted = [...ranges].sort((a, b) => a.start.getTime() - b.start.getTime());
+  const merged = [];
+  for (const r of sorted) {
+    if (!merged.length || r.start.getTime() > merged[merged.length - 1].end.getTime()) {
+      merged.push({ start: r.start, end: r.end });
+    } else {
+      merged[merged.length - 1].end = new Date(
+        Math.max(merged[merged.length - 1].end.getTime(), r.end.getTime())
+      );
+    }
+  }
+  return merged;
+}
+function totalYearsFromMerged(merged) {
+  const ms = merged.reduce((sum, r) => sum + (r.end.getTime() - r.start.getTime()), 0);
+  return ms / (365.25 * 24 * 60 * 60 * 1e3);
+}
+function monthsBetween(start, end) {
+  return Math.max(0, (end.getTime() - start.getTime()) / MONTH_MS);
+}
+function formatDurationTooltip(start, end) {
+  const months = Math.round(monthsBetween(start, end));
+  if (months < 12) return `${months} mo`;
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  return m ? `${y}y ${m}mo` : `${y}y`;
+}
+function formatYmLabel(d) {
+  return d.toLocaleDateString(void 0, { month: "short", year: "numeric" });
+}
+function computeExperienceSummary(entries) {
+  const list = Array.isArray(entries) ? entries.filter((e) => e?.startDate) : [];
+  const ranges = list.map(entryRange).filter(Boolean);
+  const merged = mergeRanges(ranges);
+  const companies = new Set(list.map((e) => String(e.company || "").trim()).filter(Boolean));
+  const current = list.find((e) => e.current) || null;
+  return {
+    totalYears: merged.length ? totalYearsFromMerged(merged) : 0,
+    roleCount: list.length,
+    companyCount: companies.size,
+    currentRole: current ? `${current.title || "Role"} @ ${current.company || "\u2014"}` : "\u2014",
+    ranges: list.map((e, i) => ({ entry: e, range: entryRange(e), index: i })).filter((x) => x.range)
+  };
+}
+function durationSegments(entries, mode) {
+  const map = /* @__PURE__ */ new Map();
+  for (const e of entries) {
+    const r = entryRange(e);
+    if (!r) continue;
+    const months = monthsBetween(r.start, r.end);
+    const key = mode === "type" ? EXP_TYPE_META[e.type]?.label || e.type || "Other" : String(e.company || "Unknown").trim() || "Unknown";
+    map.set(key, (map.get(key) || 0) + months);
+  }
+  return [...map.entries()].map(([label, value]) => ({ label, value: Math.round(value) })).filter((s) => s.value > 0).sort((a, b) => b.value - a.value);
+}
+function typeColor(type) {
+  return EXP_TYPE_META[type]?.color || "var(--pa-teal)";
+}
+function renderMiniStats(summary) {
+  const years = summary.totalYears < 0.25 ? "< 1 mo" : summary.totalYears < 1 ? `${Math.round(summary.totalYears * 12)} mo` : `${summary.totalYears.toFixed(1)} yrs`;
+  return `
+    <div class="pa-dash-exp-stat"><span class="pa-dash-exp-stat-val">${escapeHtml(years)}</span><span class="pa-dash-exp-stat-label">Experience</span></div>
+    <div class="pa-dash-exp-stat"><span class="pa-dash-exp-stat-val">${summary.roleCount}</span><span class="pa-dash-exp-stat-label">Roles</span></div>
+    <div class="pa-dash-exp-stat"><span class="pa-dash-exp-stat-val">${summary.companyCount}</span><span class="pa-dash-exp-stat-label">Companies</span></div>
+    <div class="pa-dash-exp-stat pa-dash-exp-stat--wide"><span class="pa-dash-exp-stat-val">${escapeHtml(summary.currentRole)}</span><span class="pa-dash-exp-stat-label">Current</span></div>`;
+}
+function renderGantt(summary) {
+  const rows = summary.ranges;
+  if (!rows.length) return '<p class="pa-text-mute fs-sm">No dated roles to display.</p>';
+  let min = Infinity;
+  let max = -Infinity;
+  rows.forEach(({ range }) => {
+    min = Math.min(min, range.start.getTime());
+    max = Math.max(max, range.end.getTime());
+  });
+  const span = Math.max(max - min, 1);
+  const axisStart = formatYmLabel(new Date(min));
+  const axisEnd = formatYmLabel(new Date(max));
+  const rowHtml = rows.sort((a, b) => a.range.start.getTime() - b.range.start.getTime()).map(({ entry, range }) => {
+    const left = (range.start.getTime() - min) / span * 100;
+    const width = Math.max(0.8, (range.end.getTime() - range.start.getTime()) / span * 100);
+    const title = escapeHtml(entry.title || "Role");
+    const company = escapeHtml(entry.company || "");
+    const type = entry.type || "full-time";
+    const tip = `${entry.title} @ ${entry.company}
+${formatYmLabel(range.start)} \u2013 ${entry.current ? "Present" : formatYmLabel(range.end)}
+${formatDurationTooltip(range.start, range.end)}`;
+    const currentCls = entry.current ? " is-current" : "";
+    return `<div class="pa-dash-exp-gantt-row">
+        <div class="pa-dash-exp-gantt-label" title="${title} \u2014 ${company}">${title}</div>
+        <div class="pa-dash-exp-gantt-track">
+          <div class="pa-dash-exp-gantt-bar${currentCls}" style="left:${left}%;width:${width}%;--exp-bar-color:${typeColor(type)}"
+            title="${escapeHtml(tip)}" role="presentation">
+            ${entry.current ? '<span class="pa-dash-exp-gantt-badge">Current</span>' : ""}
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+  return `<div class="pa-dash-exp-gantt-axis"><span>${escapeHtml(axisStart)}</span><span>${escapeHtml(axisEnd)}</span></div>${rowHtml}`;
+}
+function renderDonutLegend(segments) {
+  return segments.map(
+    (seg) => `<div class="pa-donut-legend-item"><span class="pa-donut-legend-swatch" style="background:${resolveColor(seg.color)}"></span><span class="pa-donut-legend-label">${escapeHtml(seg.label)}</span><span class="pa-donut-legend-value">${seg.value}</span></div>`
+  ).join("");
+}
+function resolveColor(c) {
+  if (!c || typeof c !== "string") return c;
+  if (!c.startsWith("var(")) return c;
+  const m = c.match(/var\((--[\w-]+)\)/);
+  if (!m) return c;
+  return getComputedStyle(document.body).getPropertyValue(m[1]).trim() || c;
+}
+function mountExperienceWidget(opts = {}) {
+  const root = $id("paDashExpWidget");
+  const gantt = $id("paDashExpGantt");
+  const mini = $id("paDashExpMiniStats");
+  const empty = $id("paDashExpEmpty");
+  const skeleton = $id("paDashExpSkeleton");
+  const donutMount = $id("paDashExpDonutMount");
+  const donutLegend = $id("paDashExpDonutLegend");
+  const donutTotal = $id("paDashExpDonutTotal");
+  const donutLabel = $id("paDashExpDonutLabel");
+  let donutMode = "company";
+  let entries = [];
+  const toggleBtns = root?.querySelectorAll("[data-exp-donut-mode]") || [];
+  toggleBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const mode = btn.getAttribute("data-exp-donut-mode");
+      if (!mode || mode === donutMode) return;
+      donutMode = mode;
+      toggleBtns.forEach((el) => {
+        const on = el.getAttribute("data-exp-donut-mode") === mode;
+        el.classList.toggle("is-active", on);
+        el.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      if (donutLabel) {
+        donutLabel.textContent = mode === "type" ? "Duration by type" : "Duration by company";
+      }
+      renderDonut();
+      opts.onModeChange?.();
+    });
+  });
+  function renderDonut() {
+    if (!donutMount || !donutLegend) return;
+    const raw = durationSegments(entries, donutMode);
+    const segments = assignSegmentColors(raw.map((s) => ({ ...s })));
+    const total = segments.reduce((n, s) => n + (Number(s.value) || 0), 0);
+    if (donutTotal) donutTotal.textContent = String(Math.round(total));
+    renderDonutChart(donutMount, segments);
+    donutLegend.innerHTML = renderDonutLegend(segments);
+  }
+  function refresh(list) {
+    entries = Array.isArray(list) ? list : [];
+    skeleton?.setAttribute("hidden", "");
+    const has = entries.length > 0;
+    empty?.toggleAttribute("hidden", has);
+    if (gantt) gantt.toggleAttribute("hidden", !has);
+    mini?.toggleAttribute("hidden", !has);
+    root?.querySelector(".pa-dash-exp-body")?.toggleAttribute("hidden", !has);
+    if (!has) {
+      if (mini) mini.innerHTML = "";
+      if (gantt) gantt.innerHTML = "";
+      renderDonut();
+      return;
+    }
+    const summary = computeExperienceSummary(entries);
+    if (mini) mini.innerHTML = renderMiniStats(summary);
+    if (gantt) gantt.innerHTML = renderGantt(summary);
+    renderDonut();
+  }
+  skeleton?.removeAttribute("hidden");
+  return {
+    refresh,
+    destroy() {
+      if (donutMount) renderDonutChart(donutMount, []);
+      toggleBtns.forEach((btn) => btn.replaceWith(btn.cloneNode(true)));
+    }
+  };
+}
+
+// client/modules/dashboard/widgets/roleRequestsCard.ts
+var DEFAULT_DURATION_HOURS = 3;
+function formatRole(role) {
+  return String(role || "viewer").replace(/_/g, " ");
+}
+function mountAccessRequestsWidget() {
+  const caps = getAccessCapabilities();
+  if (!caps.isAdmin) return null;
+  const widget = document.getElementById("paDashAccessWidget");
+  const list = document.getElementById("paDashAccessList");
+  const empty = document.getElementById("paDashAccessEmpty");
+  const badge = document.getElementById("paDashAccessBadge");
+  const skeleton = document.getElementById("paDashAccessSkeleton");
+  if (!widget || !list) return null;
+  widget.removeAttribute("hidden");
+  let items = [];
+  async function fetchPending() {
+    skeleton?.removeAttribute("hidden");
+    empty?.setAttribute("hidden", "");
+    list.innerHTML = "";
+    try {
+      const res = await fetch(
+        `/api/admin/access-requests?status=pending&limit=8`,
+        { credentials: "include", headers: { Accept: "application/json" } }
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Could not load requests.");
+      items = Array.isArray(data.items) ? data.items.filter((i) => i.status === "pending") : [];
+      const pendingCount = data.pendingCount ?? items.length;
+      if (badge) {
+        if (pendingCount > 0) {
+          badge.textContent = String(pendingCount);
+          badge.removeAttribute("hidden");
+        } else {
+          badge.setAttribute("hidden", "");
+        }
+      }
+    } catch (err) {
+      showToast(err?.message || "Could not load access requests.", "danger");
+      items = [];
+    } finally {
+      skeleton?.setAttribute("hidden", "");
+      render();
+    }
+  }
+  function render() {
+    if (!items.length) {
+      list.innerHTML = "";
+      empty?.removeAttribute("hidden");
+      return;
+    }
+    empty?.setAttribute("hidden", "");
+    list.innerHTML = items.map((item) => renderRow(item)).join("");
+  }
+  function renderRow(item) {
+    const name = escapeHtml(item.requesterName || item.requesterEmail || "Staff");
+    const email = escapeHtml(item.requesterEmail || item.contactEmail || "");
+    const role = formatRole(item.requesterRole);
+    const msg = escapeHtml((item.message || "").slice(0, 120));
+    const when = escapeHtml(timeAgo(item.createdAt) || "");
+    return `<article class="pa-dash-quick-item" data-access-id="${escapeHtml(item.id)}">
+      <div class="pa-dash-quick-item-main">
+        <div class="pa-dash-quick-item-title">${name}</div>
+        <div class="pa-dash-quick-item-meta">${escapeHtml(role)} \u2192 <strong>editor</strong> \xB7 ${when}</div>
+        ${email ? `<div class="pa-dash-quick-item-sub">${email}</div>` : ""}
+        ${msg ? `<p class="pa-dash-quick-item-excerpt">${msg}${(item.message || "").length > 120 ? "\u2026" : ""}</p>` : ""}
+      </div>
+      <div class="pa-dash-quick-item-actions">
+        <button type="button" class="pa-btn pa-btn-primary pa-btn-sm" data-dash-access-approve="${escapeHtml(item.id)}" aria-label="Approve request from ${name}">
+          <i class="ri-check-line" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="pa-btn pa-btn-cancel pa-btn-sm" data-dash-access-reject="${escapeHtml(item.id)}" aria-label="Reject request from ${name}">
+          <i class="ri-close-line" aria-hidden="true"></i>
+        </button>
+      </div>
+    </article>`;
+  }
+  async function patchReview(id, action) {
+    const payload = { action };
+    if (action === "approve") payload.durationHours = DEFAULT_DURATION_HOURS;
+    const res = await fetch(`/api/admin/access-requests/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Request failed.");
+  }
+  function onListClick(e) {
+    const approve = e.target.closest("[data-dash-access-approve]");
+    const reject = e.target.closest("[data-dash-access-reject]");
+    const id = approve?.getAttribute("data-dash-access-approve") || reject?.getAttribute("data-dash-access-reject");
+    if (!id) return;
+    if (approve) {
+      requestBulkAction({
+        title: "Approve temporary editor access?",
+        message: `Grant <strong>editor</strong> access for <strong>${DEFAULT_DURATION_HOURS} hours</strong> (default). User management stays restricted.`,
+        confirmLabel: "Approve",
+        danger: false,
+        iconClass: "ri-check-line",
+        iconTone: "warning",
+        onConfirm: async () => {
+          try {
+            await patchReview(id, "approve");
+            showToast("Access approved.", "success");
+            await fetchPending();
+          } catch (err) {
+            showToast(err?.message || "Could not approve.", "danger");
+          }
+        }
+      });
+      return;
+    }
+    requestBulkAction({
+      title: "Reject access request?",
+      message: "The requester will be notified.",
+      confirmLabel: "Reject",
+      iconClass: "ri-close-circle-line",
+      onConfirm: async () => {
+        try {
+          await patchReview(id, "reject");
+          showToast("Request rejected.", "success");
+          await fetchPending();
+        } catch (err) {
+          showToast(err?.message || "Could not reject.", "danger");
+        }
+      }
+    });
+  }
+  list.addEventListener("click", onListClick);
+  void fetchPending();
+  return {
+    refresh: fetchPending,
+    destroy() {
+      list.removeEventListener("click", onListClick);
+      list.innerHTML = "";
+    }
+  };
+}
+
+// client/core/optimistic-save.ts
+async function optimisticSave({
+  apply,
+  rollback,
+  persist
+}) {
+  apply();
+  try {
+    await persist();
+  } catch (err) {
+    rollback();
+    throw err;
+  }
+}
+
+// client/modules/dashboard/widgets/commentsModerationCard.ts
+var EXCERPT_LEN = 140;
+function mountCommentsModerationWidget() {
+  const caps = getAccessCapabilities();
+  if (!caps.canAccessBlogEngagement) return null;
+  const widget = document.getElementById("paDashCommentsWidget");
+  const list = document.getElementById("paDashCommentsList");
+  const empty = document.getElementById("paDashCommentsEmpty");
+  const badge = document.getElementById("paDashCommentsBadge");
+  const skeleton = document.getElementById("paDashCommentsSkeleton");
+  if (!widget || !list) return null;
+  widget.removeAttribute("hidden");
+  let tab = "pending";
+  let items = [];
+  const tabs = widget.querySelectorAll("[data-dash-comment-tab]");
+  tabs.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const next = btn.getAttribute("data-dash-comment-tab");
+      if (!next || next === tab) return;
+      tab = next;
+      tabs.forEach((el) => {
+        const on = el.getAttribute("data-dash-comment-tab") === tab;
+        el.classList.toggle("is-active", on);
+        el.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      void fetchComments();
+    });
+  });
+  async function fetchComments() {
+    skeleton?.removeAttribute("hidden");
+    empty?.setAttribute("hidden", "");
+    list.innerHTML = "";
+    const params = new URLSearchParams({ limit: "8" });
+    if (tab === "pending") {
+      params.set("status", "pending");
+    } else {
+      params.set("time", "week");
+      params.set("status", "all");
+    }
+    try {
+      const res = await fetch(`/api/blog-engagement/comments?${params}`, {
+        credentials: "include",
+        headers: { Accept: "application/json" }
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Could not load comments.");
+      let rows = Array.isArray(data.items) ? data.items : [];
+      if (tab === "recent") {
+        rows = rows.filter((c) => c.status === "pending" || c.status === "spam");
+      }
+      items = rows.slice(0, 8);
+      const pendingN = tab === "pending" ? data.total ?? items.length : items.length;
+      if (badge) {
+        if (pendingN > 0 && tab === "pending") {
+          badge.textContent = String(pendingN);
+          badge.removeAttribute("hidden");
+        } else {
+          badge.setAttribute("hidden", "");
+        }
+      }
+    } catch (err) {
+      showToast(err?.message || "Could not load comments.", "danger");
+      items = [];
+    } finally {
+      skeleton?.setAttribute("hidden", "");
+      render();
+    }
+  }
+  function render() {
+    if (!items.length) {
+      list.innerHTML = "";
+      empty?.removeAttribute("hidden");
+      return;
+    }
+    empty?.setAttribute("hidden", "");
+    list.innerHTML = items.map((c) => renderRow(c)).join("");
+  }
+  function renderRow(c) {
+    const name = escapeHtml(c.authorName || "Guest");
+    const body = escapeHtml(c.body || "");
+    const excerpt = body.length > EXCERPT_LEN ? `${body.slice(0, EXCERPT_LEN)}\u2026` : body;
+    const post = escapeHtml(c.postTitle || "Post");
+    const postHref = "/blog-engagement";
+    const when = escapeHtml(timeAgo(c.createdAt) || "");
+    const expanded = body.length > EXCERPT_LEN;
+    return `<article class="pa-dash-quick-item" data-comment-id="${escapeHtml(c.id)}">
+      <div class="pa-dash-quick-item-main">
+        <div class="pa-dash-quick-item-title">${name}</div>
+        <div class="pa-dash-quick-item-meta">${when} \xB7 <a href="${postHref}" class="pa-dash-quick-link">${post}</a></div>
+        <p class="pa-dash-quick-item-excerpt" ${expanded ? `title="${body}"` : ""}>${excerpt}</p>
+      </div>
+      <div class="pa-dash-quick-item-actions pa-dash-quick-item-actions--icons">
+        <button type="button" class="pa-icon-btn" data-dash-comment-action="approve" data-id="${escapeHtml(c.id)}" title="Approve" aria-label="Approve comment">
+          <i class="ri-check-line" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="pa-icon-btn" data-dash-comment-action="spam" data-id="${escapeHtml(c.id)}" title="Spam" aria-label="Mark as spam">
+          <i class="ri-spam-2-line" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="pa-icon-btn" data-dash-comment-action="hide" data-id="${escapeHtml(c.id)}" title="Hide" aria-label="Hide comment">
+          <i class="ri-eye-off-line" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="pa-icon-btn pa-icon-btn--danger" data-dash-comment-action="delete" data-id="${escapeHtml(c.id)}" title="Delete" aria-label="Delete comment">
+          <i class="ri-delete-bin-line" aria-hidden="true"></i>
+        </button>
+      </div>
+    </article>`;
+  }
+  const actionStatus = {
+    approve: "approved",
+    spam: "spam",
+    hide: "rejected"
+  };
+  async function patchStatus(id, status) {
+    const res = await fetch("/api/blog-engagement/comments", {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ ids: [id], status })
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || "Update failed");
+    }
+  }
+  async function deleteComment(id) {
+    const res = await fetch("/api/blog-engagement/comments", {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: [id], delete: true })
+    });
+    if (!res.ok) throw new Error("Delete failed");
+  }
+  function removeLocal(id) {
+    items = items.filter((c) => c.id !== id);
+    render();
+    if (!items.length) empty?.removeAttribute("hidden");
+  }
+  async function moderate(id, action) {
+    const status = actionStatus[action];
+    if (!status) return;
+    const prev = items;
+    await optimisticSave({
+      apply: () => removeLocal(id),
+      rollback: () => {
+        items = prev;
+        render();
+      },
+      persist: () => patchStatus(id, status)
+    });
+    showToast("Comment updated", "success");
+    if (badge && tab === "pending") {
+      const n = Math.max(0, parseInt(badge.textContent || "0", 10) - 1);
+      if (n > 0) badge.textContent = String(n);
+      else badge.setAttribute("hidden", "");
+    }
+  }
+  function onListClick(e) {
+    const btn = e.target.closest("[data-dash-comment-action]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-id");
+    const action = btn.getAttribute("data-dash-comment-action");
+    if (!id || !action) return;
+    if (action === "delete") {
+      requestBulkAction({
+        title: "Delete comment?",
+        message: "This will permanently remove this comment.",
+        confirmLabel: "Delete",
+        onConfirm: async () => {
+          try {
+            await deleteComment(id);
+            removeLocal(id);
+            showToast("Comment removed", "success");
+          } catch {
+            showToast("Could not delete comment", "danger");
+            void fetchComments();
+          }
+        }
+      });
+      return;
+    }
+    void moderate(id, action).catch(() => {
+      showToast("Could not update comment", "danger");
+      void fetchComments();
+    });
+  }
+  list.addEventListener("click", onListClick);
+  void fetchComments();
+  return {
+    refresh: fetchComments,
+    destroy() {
+      list.removeEventListener("click", onListClick);
+      list.innerHTML = "";
+    }
+  };
+}
+
 // client/modules/dashboard/DashboardModule.ts
 var KNOWN_PROJECT_STATUSES = /* @__PURE__ */ new Set([
   "Completed",
@@ -466,10 +1029,26 @@ var DashboardModule = class extends Module {
     this.techGroupFilter = "all";
     this.completionCategoryFilter = "all";
     this.techLevelFilter = "all";
+    this._expWidget = null;
+    this._accessWidget = null;
+    this._commentsWidget = null;
+  }
+  async init() {
+    await super.init();
+    this.mountDashboardWidgets();
+  }
+  mountDashboardWidgets() {
+    this._expWidget = mountExperienceWidget();
+    this._expWidget?.refresh(this.experience);
+    this._accessWidget = mountAccessRequestsWidget();
+    this._commentsWidget = mountCommentsModerationWidget();
   }
   async reload() {
     await this.load();
     this.render();
+    this._expWidget?.refresh(this.experience);
+    void this._accessWidget?.refresh();
+    void this._commentsWidget?.refresh();
   }
   async load() {
     const [
@@ -557,9 +1136,18 @@ var DashboardModule = class extends Module {
     this.renderTechLevelDonut();
   }
   bindEvents() {
+    this.onBus("storage:invalidated", (key) => {
+      if (key === "pa_experience") {
+        void storage.get("pa_experience", []).then((rows) => {
+          this.experience = rows || [];
+          this._expWidget?.refresh(this.experience);
+        });
+      }
+    });
     this.onBus("appearance:updated", () => {
       this.renderSparklines();
       this._renderCharts();
+      this._expWidget?.refresh(this.experience);
     });
     const yearSelect = $id("dashProjectsYearSelect");
     if (yearSelect) {
@@ -1140,6 +1728,12 @@ var DashboardModule = class extends Module {
       cancelAnimationFrame(this._chartWaitId);
       this._chartWaitId = null;
     }
+    this._expWidget?.destroy();
+    this._accessWidget?.destroy();
+    this._commentsWidget?.destroy();
+    this._expWidget = null;
+    this._accessWidget = null;
+    this._commentsWidget = null;
     document.querySelectorAll(".pa-donut-canvas, .pa-gauge-canvas, .pa-canvasjs-mount-line, .pa-canvasjs-mount-multiline").forEach((el) => destroyChart(el));
     super.destroy();
   }
@@ -1147,4 +1741,4 @@ var DashboardModule = class extends Module {
 export {
   DashboardModule
 };
-//# sourceMappingURL=DashboardModule-DXVADZ3B.js.map
+//# sourceMappingURL=DashboardModule-FWUCM56G.js.map

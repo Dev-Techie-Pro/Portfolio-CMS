@@ -1,28 +1,17 @@
 import {
   CATEGORY_META_PROJECTS,
   pickSceneForCategory
-} from "./chunk-3GPA3KGX.js";
+} from "./chunk-P6SC6P2P.js";
 import {
   bindCommaSeparatedChipInput,
   getRteHtml,
   setupRte
-} from "./chunk-K2G2TZW5.js";
-import {
-  bindTechnologySuggest,
-  resolveProjectStackFromChips
-} from "./chunk-IBKEZKLB.js";
-import {
-  addProjectCategoryChip,
-  getChipValues,
-  getProjectCategoryChipKeys,
-  hasProjectStackChips
-} from "./chunk-JFWNZ4BR.js";
+} from "./chunk-ZSETD5SA.js";
 import "./chunk-T2NFGIV5.js";
 import "./chunk-OL6GWZCM.js";
 import {
   syncPaSelect
 } from "./chunk-HYF3MIUV.js";
-import "./chunk-777AU2J4.js";
 import {
   handleFileValidation,
   uploadCmsFile,
@@ -33,6 +22,17 @@ import {
   isValidUrl,
   slugify
 } from "./chunk-2XY7RIAB.js";
+import {
+  bindTechnologySuggest,
+  resolveProjectStackFromChips
+} from "./chunk-IBKEZKLB.js";
+import {
+  addProjectCategoryChip,
+  getChipValues,
+  getProjectCategoryChipKeys,
+  hasProjectStackChips
+} from "./chunk-JFWNZ4BR.js";
+import "./chunk-777AU2J4.js";
 import "./chunk-FRUJZYET.js";
 import "./chunk-PD6FJZHW.js";
 import "./chunk-6FXKQLBA.js";
@@ -947,4 +947,4 @@ var QuickAddModule = class extends Module {
 export {
   QuickAddModule
 };
-//# sourceMappingURL=QuickAddModule-7YHIBF6S.js.map
+//# sourceMappingURL=QuickAddModule-KCY2ZFMS.js.map

@@ -13389,34 +13389,6 @@ html.theme-light .back-top:hover {
   font-size: var(--fs-14);
   color: var(--gray);
   line-height: 1.75;
-  max-height: 9.5em;
-  overflow: hidden;
-  transition: max-height var(--transition);
-}
-.exp-work--hscroll .exp-role-desc.is-collapsed {
-  max-height: 4.5em;
-}
-.exp-work--hscroll .exp-role-toggle {
-  align-self: flex-end;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--card-gap-sm);
-  font-family: var(--font-head);
-  font-size: var(--fs-14);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--gray-light);
-  padding: 0;
-  transition: color var(--transition);
-}
-.exp-work--hscroll .exp-role-toggle:hover {
-  color: var(--accent);
-}
-.exp-work--hscroll .exp-role-toggle .icon {
-  transition: transform var(--transition);
-}
-.exp-work--hscroll .exp-role-toggle.is-collapsed .icon {
-  transform: rotate(180deg);
 }
 .exp-work--hscroll .exp-role-kicker {
   display: flex;

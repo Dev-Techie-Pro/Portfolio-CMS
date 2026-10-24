@@ -1,4 +1,8 @@
 import {
+  isValidCategoryKey,
+  slugify
+} from "./chunk-2XY7RIAB.js";
+import {
   renderPaCatListRow
 } from "./chunk-V7ZPEMLL.js";
 import {
@@ -10,10 +14,6 @@ import {
 } from "./chunk-NAHW6JXX.js";
 import "./chunk-25T6YHMS.js";
 import "./chunk-VXJMB3CY.js";
-import {
-  isValidCategoryKey,
-  slugify
-} from "./chunk-2XY7RIAB.js";
 import {
   normalizeCategoryKey
 } from "./chunk-FRUJZYET.js";
@@ -550,4 +550,4 @@ var BlogCategoriesModule = class extends CrudCardModule {
 export {
   BlogCategoriesModule
 };
-//# sourceMappingURL=BlogCategoriesModule-6JUWGFL2.js.map
+//# sourceMappingURL=BlogCategoriesModule-YAOQ2PR7.js.map

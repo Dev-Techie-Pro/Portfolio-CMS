@@ -1,4 +1,8 @@
 import {
+  isValidCategoryKey,
+  slugify
+} from "./chunk-2XY7RIAB.js";
+import {
   renderPaCatListRow
 } from "./chunk-V7ZPEMLL.js";
 import {
@@ -10,10 +14,6 @@ import {
 } from "./chunk-NAHW6JXX.js";
 import "./chunk-25T6YHMS.js";
 import "./chunk-VXJMB3CY.js";
-import {
-  isValidCategoryKey,
-  slugify
-} from "./chunk-2XY7RIAB.js";
 import "./chunk-FRUJZYET.js";
 import "./chunk-PD6FJZHW.js";
 import "./chunk-6FXKQLBA.js";
@@ -638,4 +638,4 @@ var CategoriesModule = class extends CrudCardModule {
 export {
   CategoriesModule
 };
-//# sourceMappingURL=CategoriesModule-LTC65UN5.js.map
+//# sourceMappingURL=CategoriesModule-KNYYVRAO.js.map

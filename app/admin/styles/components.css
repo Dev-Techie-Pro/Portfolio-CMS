@@ -8234,6 +8234,282 @@ body.light .custom-theme-card.active {
   flex-shrink: 0;
 }
 
+/* —— Dashboard widgets (experience timeline, access, comments) —— */
+.pa-dash-widget--experience {
+  margin-bottom: var(--pa-card-gap);
+}
+.pa-dash-exp-mini-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--pa-card-gap-sm);
+  margin-bottom: 1rem;
+}
+.pa-dash-exp-stat {
+  background: var(--pa-bg-input);
+  border: 1px solid var(--pa-border-soft);
+  border-radius: var(--pa-radius);
+  padding: 0.65rem 0.75rem;
+}
+.pa-dash-exp-stat--wide {
+  grid-column: span 1;
+}
+.pa-dash-exp-stat-val {
+  display: block;
+  font-weight: var(--pa-fw-lg);
+  font-size: var(--pa-fs-md);
+  color: var(--pa-text);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pa-dash-exp-stat-label {
+  font-size: var(--pa-fs-sm);
+  color: var(--pa-text-mute);
+}
+.pa-dash-exp-body {
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr;
+  gap: var(--pa-card-gap);
+  align-items: start;
+}
+.pa-dash-exp-gantt-wrap {
+  min-width: 0;
+}
+.pa-dash-exp-gantt-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--pa-fs-sm);
+  color: var(--pa-text-mute);
+  margin-bottom: 0.5rem;
+  padding: 0 0.25rem;
+}
+.pa-dash-exp-gantt-row {
+  display: grid;
+  grid-template-columns: minmax(7rem, 28%) 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.55rem;
+}
+.pa-dash-exp-gantt-label {
+  font-size: var(--pa-fs-sm);
+  color: var(--pa-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pa-dash-exp-gantt-track {
+  position: relative;
+  height: 1.65rem;
+  background: var(--pa-bg-input);
+  border-radius: var(--pa-radius-sm);
+  border: 1px solid var(--pa-border-soft);
+}
+.pa-dash-exp-gantt-bar {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: var(--pa-radius-sm);
+  background: var(--exp-bar-color, var(--pa-teal));
+  min-width: 4px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--exp-bar-color, var(--pa-teal)) 40%, transparent);
+}
+.pa-dash-exp-gantt-bar.is-current {
+  box-shadow: 0 0 0 1px var(--pa-green), 0 0 12px color-mix(in srgb, var(--pa-green) 35%, transparent);
+}
+.pa-dash-exp-gantt-badge {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.65rem;
+  font-weight: var(--pa-fw-lg);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--pa-text);
+  background: color-mix(in srgb, var(--pa-bg-card) 85%, transparent);
+  padding: 0 0.35rem;
+  border-radius: var(--pa-radius-sm);
+}
+.pa-dash-exp-secondary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+.pa-dash-exp-toggle {
+  display: inline-flex;
+  border: 1px solid var(--pa-border-soft);
+  border-radius: var(--pa-radius);
+  overflow: hidden;
+}
+.pa-dash-exp-toggle-btn {
+  border: none;
+  background: transparent;
+  color: var(--pa-text-mute);
+  font-size: var(--pa-fs-sm);
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+}
+.pa-dash-exp-toggle-btn.is-active {
+  background: var(--pa-green-dim);
+  color: var(--pa-green);
+}
+.pa-dash-exp-donut-body {
+  flex-direction: column;
+  align-items: center;
+}
+.pa-dash-quick-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--pa-card-gap);
+  margin-bottom: var(--pa-card-gap);
+}
+.pa-dash-quick-card .pa-dash-recent-header {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.pa-dash-widget-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  font-size: var(--pa-fs-sm);
+  font-weight: var(--pa-fw-lg);
+  background: var(--pa-green-dim);
+  color: var(--pa-green);
+}
+.pa-dash-quick-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+.pa-dash-quick-tab {
+  border: 1px solid var(--pa-border-soft);
+  background: var(--pa-bg-input);
+  color: var(--pa-text-mute);
+  font-size: var(--pa-fs-sm);
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--pa-radius);
+  cursor: pointer;
+}
+.pa-dash-quick-tab.is-active {
+  border-color: var(--pa-green);
+  color: var(--pa-green);
+  background: var(--pa-green-dim);
+}
+.pa-dash-quick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  max-height: 22rem;
+  overflow-y: auto;
+}
+.pa-dash-quick-item {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--pa-border-soft);
+  border-radius: var(--pa-radius);
+  background: var(--pa-bg-input);
+}
+.pa-dash-quick-item-title {
+  font-weight: var(--pa-fw-md);
+  color: var(--pa-text);
+  font-size: var(--pa-fs-md);
+}
+.pa-dash-quick-item-meta {
+  font-size: var(--pa-fs-sm);
+  color: var(--pa-text-mute);
+  margin-top: 0.15rem;
+}
+.pa-dash-quick-item-sub {
+  font-size: var(--pa-fs-sm);
+  color: var(--pa-text-dim);
+}
+.pa-dash-quick-item-excerpt {
+  font-size: var(--pa-fs-sm);
+  color: var(--pa-text-dim);
+  margin: 0.35rem 0 0;
+  line-height: 1.45;
+}
+.pa-dash-quick-link {
+  color: var(--pa-green);
+  text-decoration: none;
+}
+.pa-dash-quick-link:hover {
+  text-decoration: underline;
+}
+.pa-dash-quick-item-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.35rem;
+  align-items: center;
+}
+.pa-dash-quick-item-actions--icons {
+  gap: 0.2rem;
+}
+.pa-dash-widget-empty {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  color: var(--pa-text-mute);
+}
+.pa-dash-widget-empty i {
+  font-size: 1.75rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  opacity: 0.7;
+}
+.pa-dash-widget-skeleton {
+  min-height: 8rem;
+  border-radius: var(--pa-radius);
+  background: linear-gradient(
+    90deg,
+    var(--pa-bg-input) 0%,
+    var(--pa-border-soft) 50%,
+    var(--pa-bg-input) 100%
+  );
+  background-size: 200% 100%;
+  animation: pa-dash-skeleton 1.2s ease-in-out infinite;
+}
+.pa-dash-widget-skeleton--short {
+  min-height: 6rem;
+}
+@keyframes pa-dash-skeleton {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+@media (max-width: 1100px) {
+  .pa-dash-exp-body {
+    grid-template-columns: 1fr;
+  }
+  .pa-dash-exp-mini-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pa-dash-exp-stat--wide {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 768px) {
+  .pa-dash-quick-row {
+    grid-template-columns: 1fr;
+  }
+  .pa-dash-exp-gantt-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .pa-dash-bottom-grid {
   display: grid;
   grid-template-columns: 1.7fr 1fr;

@@ -3,20 +3,7 @@ import {
   getRteHtml,
   setRteHtml,
   setupRte
-} from "./chunk-K2G2TZW5.js";
-import {
-  bindTechnologySuggest,
-  resolveProjectStackFromChips
-} from "./chunk-IBKEZKLB.js";
-import {
-  addProjectCategoryChip,
-  getChipValues,
-  getProjectCategoryChipKeys,
-  hasProjectStackChips,
-  populateChips,
-  populateProjectCategoryChips,
-  populateProjectStackChips
-} from "./chunk-JFWNZ4BR.js";
+} from "./chunk-ZSETD5SA.js";
 import {
   open
 } from "./chunk-T2NFGIV5.js";
@@ -30,6 +17,19 @@ import {
 import {
   isValidUrl
 } from "./chunk-2XY7RIAB.js";
+import {
+  bindTechnologySuggest,
+  resolveProjectStackFromChips
+} from "./chunk-IBKEZKLB.js";
+import {
+  addProjectCategoryChip,
+  getChipValues,
+  getProjectCategoryChipKeys,
+  hasProjectStackChips,
+  populateChips,
+  populateProjectCategoryChips,
+  populateProjectStackChips
+} from "./chunk-JFWNZ4BR.js";
 import {
   normalizeCategoryKey
 } from "./chunk-FRUJZYET.js";
@@ -1543,4 +1543,4 @@ export {
   PROJ_WS_PREFIX,
   ProjectsModule
 };
-//# sourceMappingURL=chunk-3GPA3KGX.js.map
+//# sourceMappingURL=chunk-P6SC6P2P.js.map

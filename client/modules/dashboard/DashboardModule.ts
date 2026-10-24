@@ -19,6 +19,9 @@ import {
   ensureApexChartsLoaded,
 } from '../../utils/dashboardCharts.js';
 import { syncPaSelect } from '../../utils/paSelect.js';
+import { mountExperienceWidget } from './widgets/experienceChart.js';
+import { mountAccessRequestsWidget } from './widgets/roleRequestsCard.js';
+import { mountCommentsModerationWidget } from './widgets/commentsModerationCard.js';
 
 const KNOWN_PROJECT_STATUSES = new Set([
   'Completed', 'In Progress', 'Pending', 'Draft', 'On Hold', 'Cancelled',
@@ -101,11 +104,30 @@ export class DashboardModule extends Module {
     this.techGroupFilter = 'all';
     this.completionCategoryFilter = 'all';
     this.techLevelFilter = 'all';
+    this._expWidget = null;
+    this._accessWidget = null;
+    this._commentsWidget = null;
+  }
+
+  async init() {
+    await super.init();
+    this.mountDashboardWidgets();
+  }
+
+  mountDashboardWidgets() {
+    this._expWidget = mountExperienceWidget();
+    this._expWidget?.refresh(this.experience);
+
+    this._accessWidget = mountAccessRequestsWidget();
+    this._commentsWidget = mountCommentsModerationWidget();
   }
 
   async reload() {
     await this.load();
     this.render();
+    this._expWidget?.refresh(this.experience);
+    void this._accessWidget?.refresh();
+    void this._commentsWidget?.refresh();
   }
 
   async load() {
@@ -197,9 +219,19 @@ export class DashboardModule extends Module {
   }
 
   bindEvents() {
+    this.onBus('storage:invalidated', (key) => {
+      if (key === 'pa_experience') {
+        void storage.get('pa_experience', []).then((rows) => {
+          this.experience = rows || [];
+          this._expWidget?.refresh(this.experience);
+        });
+      }
+    });
+
     this.onBus('appearance:updated', () => {
       this.renderSparklines();
       this._renderCharts();
+      this._expWidget?.refresh(this.experience);
     });
 
     const yearSelect = $id('dashProjectsYearSelect');
@@ -883,6 +915,12 @@ export class DashboardModule extends Module {
       cancelAnimationFrame(this._chartWaitId);
       this._chartWaitId = null;
     }
+    this._expWidget?.destroy();
+    this._accessWidget?.destroy();
+    this._commentsWidget?.destroy();
+    this._expWidget = null;
+    this._accessWidget = null;
+    this._commentsWidget = null;
     document.querySelectorAll('.pa-donut-canvas, .pa-gauge-canvas, .pa-canvasjs-mount-line, .pa-canvasjs-mount-multiline')
       .forEach((el) => destroyChart(el));
     super.destroy();
