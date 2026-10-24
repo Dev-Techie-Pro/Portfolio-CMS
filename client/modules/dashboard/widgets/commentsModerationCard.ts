@@ -6,14 +6,39 @@ import { requestBulkAction } from '../../shell/confirm.js';
 import { getAccessCapabilities } from '../../../core/access.js';
 import { optimisticSave } from '../../../core/optimistic-save.js';
 
-const EXCERPT_LEN = 140;
+const EXCERPT_LEN = 200;
+
+const AVATAR_COLORS = ['#3b82f6', '#7c3aed', '#b45309', '#e5484d', '#22c55e', '#38bdf8', '#a78bfa', '#f472b6'];
+
+function commentInitials(name) {
+  return (name || '?')
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+}
+
+function commentAvatarColor(name) {
+  let hash = 0;
+  for (let i = 0; i < (name || '').length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+}
+
+function setPendingBadge(badge, count) {
+  if (!badge) return;
+  const n = Math.max(0, Number(count) || 0);
+  if (n > 0) {
+    badge.textContent = `${n} pending`;
+    badge.removeAttribute('hidden');
+  } else {
+    badge.setAttribute('hidden', '');
+  }
+}
 
 /**
- * @typedef {{ destroy: () => void, refresh: () => Promise<void> }} CommentsWidgetHandle
- */
-
-/**
- * @returns {CommentsWidgetHandle | null}
+ * @returns {{ destroy: () => void, refresh: () => Promise<void> }} | null
  */
 export function mountCommentsModerationWidget() {
   const caps = getAccessCapabilities();
@@ -30,6 +55,7 @@ export function mountCommentsModerationWidget() {
 
   let tab = 'pending';
   let items = [];
+  let pendingTotal = 0;
 
   const tabs = widget.querySelectorAll('[data-dash-comment-tab]');
   tabs.forEach((btn) => {
@@ -46,6 +72,22 @@ export function mountCommentsModerationWidget() {
     });
   });
 
+  async function fetchPendingTotal() {
+    try {
+      const res = await fetch('/api/blog-engagement/comments?limit=1&status=pending', {
+        credentials: 'include',
+        headers: { Accept: 'application/json' },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) return pendingTotal;
+      pendingTotal = data.total ?? 0;
+      setPendingBadge(badge, pendingTotal);
+      return pendingTotal;
+    } catch {
+      return pendingTotal;
+    }
+  }
+
   async function fetchComments() {
     skeleton?.removeAttribute('hidden');
     empty?.setAttribute('hidden', '');
@@ -58,10 +100,13 @@ export function mountCommentsModerationWidget() {
       params.set('status', 'all');
     }
     try {
-      const res = await fetch(`/api/blog-engagement/comments?${params}`, {
-        credentials: 'include',
-        headers: { Accept: 'application/json' },
-      });
+      const [res] = await Promise.all([
+        fetch(`/api/blog-engagement/comments?${params}`, {
+          credentials: 'include',
+          headers: { Accept: 'application/json' },
+        }),
+        fetchPendingTotal(),
+      ]);
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not load comments.');
       let rows = Array.isArray(data.items) ? data.items : [];
@@ -69,14 +114,9 @@ export function mountCommentsModerationWidget() {
         rows = rows.filter((c) => c.status === 'pending' || c.status === 'spam');
       }
       items = rows.slice(0, 8);
-      const pendingN = tab === 'pending' ? (data.total ?? items.length) : items.length;
-      if (badge) {
-        if (pendingN > 0 && tab === 'pending') {
-          badge.textContent = String(pendingN);
-          badge.removeAttribute('hidden');
-        } else {
-          badge.setAttribute('hidden', '');
-        }
+      if (tab === 'pending') {
+        pendingTotal = data.total ?? items.length;
+        setPendingBadge(badge, pendingTotal);
       }
     } catch (err) {
       showToast(err?.message || 'Could not load comments.', 'danger');
@@ -98,31 +138,39 @@ export function mountCommentsModerationWidget() {
   }
 
   function renderRow(c) {
-    const name = escapeHtml(c.authorName || 'Guest');
+    const name = c.authorName || 'Guest';
     const body = escapeHtml(c.body || '');
     const excerpt =
       body.length > EXCERPT_LEN ? `${body.slice(0, EXCERPT_LEN)}…` : body;
     const post = escapeHtml(c.postTitle || 'Post');
-    const postHref = '/blog-engagement';
     const when = escapeHtml(timeAgo(c.createdAt) || '');
-    const expanded = body.length > EXCERPT_LEN;
-    return `<article class="pa-dash-quick-item" data-comment-id="${escapeHtml(c.id)}">
-      <div class="pa-dash-quick-item-main">
-        <div class="pa-dash-quick-item-title">${name}</div>
-        <div class="pa-dash-quick-item-meta">${when} · <a href="${postHref}" class="pa-dash-quick-link">${post}</a></div>
-        <p class="pa-dash-quick-item-excerpt" ${expanded ? `title="${body}"` : ''}>${excerpt}</p>
+    const init = escapeHtml(commentInitials(name));
+    const avatarBg = commentAvatarColor(name);
+    const isSpam = c.status === 'spam';
+    const spamBtnClass = isSpam ? ' is-flagged' : '';
+    const rowClass = isSpam ? ' is-spam' : '';
+
+    return `<article class="pa-dash-comments-item${rowClass}" data-comment-id="${escapeHtml(c.id)}">
+      <div class="pa-dash-comments-item-avatar" style="background:${avatarBg}">${init}</div>
+      <div class="pa-dash-comments-item-body">
+        <div class="pa-dash-comments-item-head">
+          <span class="pa-dash-comments-item-name">${escapeHtml(name)}</span>
+          <span class="pa-dash-comments-item-time">· ${when}</span>
+        </div>
+        <p class="pa-dash-comments-item-text">${excerpt}</p>
+        <p class="pa-dash-comments-item-post">on: <span>${post}</span></p>
       </div>
-      <div class="pa-dash-quick-item-actions pa-dash-quick-item-actions--icons">
-        <button type="button" class="pa-icon-btn" data-dash-comment-action="approve" data-id="${escapeHtml(c.id)}" title="Approve" aria-label="Approve comment">
+      <div class="pa-dash-comments-item-actions" role="group" aria-label="Moderate comment">
+        <button type="button" class="pa-dash-comments-act-btn" data-dash-comment-action="approve" data-id="${escapeHtml(c.id)}" title="Approve" aria-label="Approve comment">
           <i class="ri-check-line" aria-hidden="true"></i>
         </button>
-        <button type="button" class="pa-icon-btn" data-dash-comment-action="spam" data-id="${escapeHtml(c.id)}" title="Spam" aria-label="Mark as spam">
-          <i class="ri-spam-2-line" aria-hidden="true"></i>
+        <button type="button" class="pa-dash-comments-act-btn is-spam${spamBtnClass}" data-dash-comment-action="spam" data-id="${escapeHtml(c.id)}" title="Mark as spam" aria-label="Mark as spam">
+          <i class="ri-shield-flash-line" aria-hidden="true"></i>
         </button>
-        <button type="button" class="pa-icon-btn" data-dash-comment-action="hide" data-id="${escapeHtml(c.id)}" title="Hide" aria-label="Hide comment">
+        <button type="button" class="pa-dash-comments-act-btn" data-dash-comment-action="hide" data-id="${escapeHtml(c.id)}" title="Hide" aria-label="Hide comment">
           <i class="ri-eye-off-line" aria-hidden="true"></i>
         </button>
-        <button type="button" class="pa-icon-btn pa-icon-btn--danger" data-dash-comment-action="delete" data-id="${escapeHtml(c.id)}" title="Delete" aria-label="Delete comment">
+        <button type="button" class="pa-dash-comments-act-btn is-delete" data-dash-comment-action="delete" data-id="${escapeHtml(c.id)}" title="Delete" aria-label="Delete comment">
           <i class="ri-delete-bin-line" aria-hidden="true"></i>
         </button>
       </div>
@@ -168,20 +216,23 @@ export function mountCommentsModerationWidget() {
     const status = actionStatus[action];
     if (!status) return;
     const prev = items;
+    const wasPending = prev.some((c) => c.id === id && c.status === 'pending');
     await optimisticSave({
-      apply: () => removeLocal(id),
+      apply: () => {
+        removeLocal(id);
+        if (wasPending) {
+          pendingTotal = Math.max(0, pendingTotal - 1);
+          setPendingBadge(badge, pendingTotal);
+        }
+      },
       rollback: () => {
         items = prev;
         render();
+        void fetchPendingTotal();
       },
       persist: () => patchStatus(id, status),
     });
     showToast('Comment updated', 'success');
-    if (badge && tab === 'pending') {
-      const n = Math.max(0, parseInt(badge.textContent || '0', 10) - 1);
-      if (n > 0) badge.textContent = String(n);
-      else badge.setAttribute('hidden', '');
-    }
   }
 
   function onListClick(e) {
@@ -197,8 +248,13 @@ export function mountCommentsModerationWidget() {
         confirmLabel: 'Delete',
         onConfirm: async () => {
           try {
+            const wasPending = items.some((c) => c.id === id && c.status === 'pending');
             await deleteComment(id);
             removeLocal(id);
+            if (wasPending) {
+              pendingTotal = Math.max(0, pendingTotal - 1);
+              setPendingBadge(badge, pendingTotal);
+            }
             showToast('Comment removed', 'success');
           } catch {
             showToast('Could not delete comment', 'danger');

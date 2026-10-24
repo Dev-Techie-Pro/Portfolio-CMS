@@ -3,7 +3,7 @@ import {
   populateStaffRoleSelect,
   showStaffInviteLinkModal,
   showUserCredentialsPanel
-} from "./chunk-HCSIVKPO.js";
+} from "./chunk-IIC4VDHS.js";
 import {
   authService
 } from "./chunk-IRZPJAKT.js";
@@ -742,4 +742,4 @@ var UsersModule = class extends CrudCardModule {
 export {
   UsersModule
 };
-//# sourceMappingURL=UsersModule-PBBVTKML.js.map
+//# sourceMappingURL=UsersModule-AIL3GXGC.js.map

@@ -21,7 +21,7 @@ import {
   notifyCredentialsEmailStatus,
   populateStaffRoleSelect,
   showUserCredentialsPanel
-} from "./chunks/chunk-HCSIVKPO.js";
+} from "./chunks/chunk-IIC4VDHS.js";
 import {
   authService
 } from "./chunks/chunk-IRZPJAKT.js";
@@ -7525,7 +7525,7 @@ var getPrefetchKeysForPage = PREFETCH_CONFIG.getKeysForPage || ((p) => PREFETCH_
 async function loadPageModuleClass(page) {
   switch (page) {
     case "dashboard":
-      return (await import("./chunks/DashboardModule-TLARSAN2.js")).DashboardModule;
+      return (await import("./chunks/DashboardModule-JDJF2SWQ.js")).DashboardModule;
     case "projects":
       return (await import("./chunks/ProjectsModule-OMCTCB7P.js")).ProjectsModule;
     case "categories":
@@ -7562,7 +7562,7 @@ async function loadPageModuleClass(page) {
     case "access-requests":
       return (await import("./chunks/AccessRequestsModule-AYEILZV7.js")).AccessRequestsModule;
     case "users":
-      return (await import("./chunks/UsersModule-PBBVTKML.js")).UsersModule;
+      return (await import("./chunks/UsersModule-AIL3GXGC.js")).UsersModule;
     case "recent-activities":
       return (await import("./chunks/RecentActivitiesModule-FDQOMHQ4.js")).RecentActivitiesModule;
     case "settings":

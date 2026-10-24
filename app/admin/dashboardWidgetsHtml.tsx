@@ -73,24 +73,29 @@ export const DASHBOARD_QUICK_WIDGETS_ROW_HTML = `
             </div>
             <div class="pa-dash-widget-skeleton pa-dash-widget-skeleton--short" id="paDashAccessSkeleton" aria-hidden="true"></div>
           </div>
-          <div class="pa-dash-panel pa-dash-quick-card pa-card-no-hover pa-editor-only-item" id="paDashCommentsWidget" hidden>
-            <div class="pa-dash-recent-header">
-              <div class="pa-dash-chart-head-text">
-                <span class="pa-dash-recent-title">Comment moderation</span>
-                <span class="pa-dash-chart-sub">Review blog comments</span>
+          <div class="pa-dash-panel pa-dash-quick-card pa-dash-comments-card pa-card-no-hover pa-editor-only-item" id="paDashCommentsWidget" hidden>
+            <header class="pa-dash-comments-head">
+              <div class="pa-dash-comments-head-main">
+                <div class="pa-dash-comments-icon" aria-hidden="true"><i class="ri-chat-3-line"></i></div>
+                <div class="pa-dash-comments-head-text">
+                  <h3 class="pa-dash-comments-title">Comment Moderation</h3>
+                  <p class="pa-dash-comments-sub">New comments on blog posts</p>
+                </div>
               </div>
-              <span class="pa-dash-widget-badge" id="paDashCommentsBadge" hidden>0</span>
-              <a href="/blog-engagement" class="pa-dash-view-all">View all</a>
+              <div class="pa-dash-comments-head-end">
+                <span class="pa-dash-comments-pending-badge" id="paDashCommentsBadge" hidden>0 pending</span>
+                <a href="/blog-engagement" class="pa-dash-view-all">View all</a>
+              </div>
+            </header>
+            <div class="pa-dash-comments-tabs" role="tablist" aria-label="Comment filter">
+              <button type="button" class="pa-dash-comments-tab is-active" data-dash-comment-tab="pending" role="tab" aria-selected="true">Pending</button>
+              <button type="button" class="pa-dash-comments-tab" data-dash-comment-tab="recent" role="tab" aria-selected="false">All new</button>
             </div>
-            <div class="pa-dash-quick-tabs" role="tablist" aria-label="Comment filter">
-              <button type="button" class="pa-dash-quick-tab is-active" data-dash-comment-tab="pending" role="tab" aria-selected="true">Pending</button>
-              <button type="button" class="pa-dash-quick-tab" data-dash-comment-tab="recent" role="tab" aria-selected="false">All new</button>
-            </div>
-            <div class="pa-dash-quick-list" id="paDashCommentsList" aria-live="polite"></div>
-            <div class="pa-dash-widget-empty" id="paDashCommentsEmpty" hidden>
+            <div class="pa-dash-comments-list" id="paDashCommentsList" aria-live="polite"></div>
+            <div class="pa-dash-widget-empty pa-dash-comments-empty" id="paDashCommentsEmpty" hidden>
               <i class="ri-chat-smile-3-line" aria-hidden="true"></i>
               <p>No comments to review</p>
             </div>
-            <div class="pa-dash-widget-skeleton pa-dash-widget-skeleton--short" id="paDashCommentsSkeleton" aria-hidden="true"></div>
+            <div class="pa-dash-widget-skeleton pa-dash-comments-skeleton" id="paDashCommentsSkeleton" aria-hidden="true"></div>
           </div>
         </div>`;

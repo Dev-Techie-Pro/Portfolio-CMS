@@ -4,6 +4,10 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { SITE_ID } from '@/lib/cms/constants';
 import { profileFromDb } from '@/lib/auth/profile';
 import { ADMIN_ROLES, getCreatableRoles } from '@/lib/auth/constants';
+import { buildAuthCallbackUrl } from '@/lib/auth/callback-url';
+import { normalizeStaffInviteActionLink } from '@/lib/auth/invite-action-link';
+import { adminPath } from '@/lib/admin-paths';
+import { getSiteUrlFromEnv } from '@/lib/site-url';
 
 function admin() {
   return createAdminClient();
@@ -20,15 +24,17 @@ function deriveUsername(email, fullName, username) {
 export async function generatePasswordSetupLink(email: string) {
   const normalized = String(email || '').trim().toLowerCase();
   if (!normalized) throw new Error('Email is required to generate a setup link.');
+  const redirectTo = buildAuthCallbackUrl(getSiteUrlFromEnv(), adminPath('/reset-password'));
   const { data, error } = await admin().auth.admin.generateLink({
     type: 'recovery',
     email: normalized,
+    options: { redirectTo },
   });
   if (error) throw new Error(error.message);
   const props = data?.properties as { action_link?: string } | null | undefined;
   const link = props?.action_link;
   if (!link) throw new Error('Could not generate password setup link.');
-  return String(link);
+  return normalizeStaffInviteActionLink(String(link)) || String(link);
 }
 
 export function generateTemporaryPassword(length = 14) {
@@ -119,14 +125,18 @@ export async function createStaffUser({
 
   const { data: profileRow, error: profileError } = await client
     .from('profiles')
-    .update({
-      role: normalizedRole,
-      full_name: normalizedName,
-      username: resolvedUsername,
-      email: normalizedEmail,
-      is_active: true,
-    })
-    .eq('id', userId)
+    .upsert(
+      {
+        id: userId,
+        site_id: SITE_ID,
+        role: normalizedRole,
+        full_name: normalizedName,
+        username: resolvedUsername,
+        email: normalizedEmail,
+        is_active: true,
+      },
+      { onConflict: 'id' },
+    )
     .select('*')
     .single();
 
@@ -144,7 +154,7 @@ export async function createStaffUser({
     },
     credentials: {
       email: normalizedEmail,
-      role: normalizedRole,
+      role: profileRow?.role || normalizedRole,
       setPasswordUrl,
     },
   };

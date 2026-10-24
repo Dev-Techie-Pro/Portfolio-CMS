@@ -45,12 +45,19 @@ export function clearUserCredentials() {
   lastCredentials = null;
 }
 
+function credentialSecretLine(credentials) {
+  if (credentials?.setPasswordUrl) {
+    return `Set password: ${credentials.setPasswordUrl}`;
+  }
+  return `Password: ${credentials.password || ''}`;
+}
+
 export function formatUserCredentialsText(credentials = lastCredentials) {
   if (!credentials) return '';
   return [
     'Portfolio Dashboard Login',
     `Email: ${credentials.email}`,
-    `Password: ${credentials.password}`,
+    credentialSecretLine(credentials),
     `Role: ${formatStaffRoleLabel(credentials.role)}`,
   ].join('\n');
 }
@@ -63,7 +70,14 @@ export function showUserCredentialsPanel(credentials, { closePanelIds = [], emai
     if (el) el.value = value;
   };
   set('credEmail', credentials.email || '');
-  set('credPassword', credentials.password || '');
+  const secretValue = credentials.setPasswordUrl || credentials.password || '';
+  set('credPassword', secretValue);
+  const passwordLabel = document.querySelector('label[for="credPassword"]');
+  if (passwordLabel) {
+    passwordLabel.textContent = credentials.setPasswordUrl
+      ? 'Set password link'
+      : 'Temporary password';
+  }
   set('credRole', formatStaffRoleLabel(credentials.role));
   const title = $id('paUserCredentialsPanelTitle');
   if (title) {
@@ -71,9 +85,14 @@ export function showUserCredentialsPanel(credentials, { closePanelIds = [], emai
   }
   const hint = $id('paUserCredentialsPanel')?.querySelector('.pa-panel-body .pa-text-mute');
   if (hint) {
+    const linkFlow = !!credentials.setPasswordUrl;
     const baseHint = credentials.reset
-      ? 'A new temporary password was generated. Share these credentials securely with the user.'
-      : 'Share these credentials securely with the new user. They should change their password after first login.';
+      ? linkFlow
+        ? 'A new password setup link was generated. Share it securely with the user.'
+        : 'A new temporary password was generated. Share these credentials securely with the user.'
+      : linkFlow
+        ? 'Share the setup link securely. The user sets their password before signing in.'
+        : 'Share these credentials securely with the new user. They should change their password after first login.';
     if (emailSent === true) {
       hint.textContent = `${baseHint} Login credentials were emailed to ${credentials.email || 'the user'}.`;
     } else if (emailSent === false && emailError) {

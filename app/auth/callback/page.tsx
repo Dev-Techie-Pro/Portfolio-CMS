@@ -17,7 +17,7 @@ const OTP_TYPES = new Set<string>([
 
 function loginUrl(params: Record<string, string>) {
   const q = new URLSearchParams(params);
-  return `/login?${q.toString()}`;
+  return `/admin/login?${q.toString()}`;
 }
 
 export default function AuthCallbackPage() {

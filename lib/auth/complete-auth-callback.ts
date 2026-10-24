@@ -7,6 +7,7 @@ import {
   acceptStaffInviteForUser,
   hasPendingStaffInvite,
 } from '@/lib/auth/staff-invites';
+import { adminPath } from '@/lib/admin-paths';
 
 function safeNextPath(raw: string | null | undefined) {
   const next = raw ?? '/';
@@ -54,6 +55,6 @@ export async function completeAuthCallbackAfterSignIn(
     };
   }
 
-  const redirect = needsPasswordSetup ? '/reset-password' : next;
+  const redirect = needsPasswordSetup ? adminPath('/reset-password') : next;
   return { ok: true, redirect };
 }

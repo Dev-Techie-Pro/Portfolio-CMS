@@ -73,7 +73,7 @@ export function getBrand() {
 
 export function getLoginUrl() {
   const base = process.env.NEXT_PUBLIC_SITE_URL?.trim()?.replace(/\/$/, '');
-  return base ? `${base}/login` : '/login';
+  return base ? `${base}/admin/login` : '/admin/login';
 }
 
 export function avatarInitial(nameOrEmail) {

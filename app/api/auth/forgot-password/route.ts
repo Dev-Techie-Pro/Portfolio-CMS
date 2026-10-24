@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { buildAuthCallbackUrl } from '@/lib/auth/callback-url';
+import { adminPath } from '@/lib/admin-paths';
 import { getSiteUrl } from '@/lib/site-url';
 import { checkRateLimit, rateLimitResponse } from '@/lib/api/rate-limit';
 
@@ -23,7 +24,7 @@ export async function POST(request) {
 
     const supabase = await createClient();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: buildAuthCallbackUrl(getSiteUrl(request), '/reset-password'),
+      redirectTo: buildAuthCallbackUrl(getSiteUrl(request), adminPath('/reset-password')),
     });
 
     if (error) {
