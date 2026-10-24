@@ -3747,6 +3747,7 @@ body.pa-rte-fullscreen-active {
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
+  position: relative;
 }
 .pa-exp-dynamic-row__field {
   flex: 1;
@@ -3760,9 +3761,12 @@ body.pa-rte-fullscreen-active {
   gap: 0.5rem;
 }
 .pa-exp-dynamic-row__remove {
-  flex-shrink: 0;
-  margin-top: 1.65rem;
-  padding: 0.35rem 0.5rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--pa-radius);
 }
 .pa-exp-dynamic-add {
   margin-top: 0.5rem;

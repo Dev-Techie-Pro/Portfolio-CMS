@@ -1,12 +1,21 @@
 /** Fraction of scrub range where index 0 stays locked (easier to read first role). */
 export const EXP_HSCROLL_FIRST_HOLD = 0.14;
 
+/** Active index = snap point closest to current scrub progress (stable clicks + scroll). */
 export function expIndexFromProgress(progress: number, count: number): number {
   if (count <= 1) return 0;
   const p = Math.max(0, Math.min(1, progress));
-  if (p <= EXP_HSCROLL_FIRST_HOLD) return 0;
-  const t = (p - EXP_HSCROLL_FIRST_HOLD) / (1 - EXP_HSCROLL_FIRST_HOLD);
-  return Math.min(count - 1, Math.floor(t * count + 1e-4));
+  const snaps = expSnapProgressValues(count);
+  let best = 0;
+  let bestDist = Infinity;
+  for (let i = 0; i < snaps.length; i++) {
+    const d = Math.abs(p - snaps[i]);
+    if (d < bestDist) {
+      bestDist = d;
+      best = i;
+    }
+  }
+  return best;
 }
 
 export function expProgressForIndex(index: number, count: number): number {

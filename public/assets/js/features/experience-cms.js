@@ -191,9 +191,6 @@
       if (Portfolio.ANIMATIONS?.initScrollReveal) {
         Portfolio.ANIMATIONS.initScrollReveal();
       }
-      window.dispatchEvent(
-        new CustomEvent("pa:public-page-ready", { detail: { source: "experience-cms" } }),
-      );
     };
     window.requestAnimationFrame(() => window.requestAnimationFrame(run));
   }

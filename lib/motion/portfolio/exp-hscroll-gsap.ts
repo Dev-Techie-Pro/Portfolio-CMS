@@ -27,7 +27,7 @@ export type ExpHscrollMountApi = {
 
 type Driver = {
   kill: () => void;
-  scrollToProgress: (progress: number) => void;
+  scrollToProgress: (progress: number, onComplete?: () => void) => void;
 };
 
 const drivers = new WeakMap<HTMLElement, Driver>();
@@ -51,12 +51,12 @@ export function mountExpHscrollGsap(api: ExpHscrollMountApi): Driver | null {
     trigger: api.root,
     start: () => `top ${api.pinOffset()}px`,
     end: () => `+=${api.scrollTravel()}`,
-    scrub: 1.15,
+    scrub: 0.85,
     invalidateOnRefresh: true,
     snap: {
       snapTo: snapPoints,
-      duration: { min: 0.18, max: 0.55 },
-      delay: 0.06,
+      duration: { min: 0.12, max: 0.4 },
+      delay: 0.04,
       ease: 'power2.inOut',
     },
     onUpdate: (self) => {
@@ -95,8 +95,11 @@ export function mountExpHscrollGsap(api: ExpHscrollMountApi): Driver | null {
       introTrigger = null;
       drivers.delete(api.section);
     },
-    scrollToProgress: (progress) => {
-      if (!scrollTrigger) return;
+    scrollToProgress: (progress, onComplete) => {
+      if (!scrollTrigger) {
+        onComplete?.();
+        return;
+      }
       const start = scrollTrigger.start;
       const end = scrollTrigger.end;
       const targetY = start + (end - start) * progress;
@@ -110,6 +113,10 @@ export function mountExpHscrollGsap(api: ExpHscrollMountApi): Driver | null {
         onUpdate: () => {
           window.scrollTo(0, proxy.y);
         },
+        onComplete: () => {
+          ScrollTrigger.update();
+          onComplete?.();
+        },
       });
     },
   };
@@ -120,11 +127,15 @@ export function mountExpHscrollGsap(api: ExpHscrollMountApi): Driver | null {
   return driver;
 }
 
-export function scrollExpHscrollToIndex(api: ExpHscrollMountApi, index: number) {
+export function scrollExpHscrollToIndex(
+  api: ExpHscrollMountApi,
+  index: number,
+  onComplete?: () => void,
+) {
   const driver = drivers.get(api.section);
   const progress = expProgressForIndex(index, api.cards.length);
   if (driver) {
-    driver.scrollToProgress(progress);
+    driver.scrollToProgress(progress, onComplete);
     return;
   }
   const travel = api.scrollTravel();
@@ -164,8 +175,15 @@ export function registerExpHscrollApi(section: HTMLElement, api: ExpHscrollMount
   sectionApis.set(section, api);
 }
 
-export function scrollExpHscrollSectionToIndex(section: HTMLElement, index: number) {
+export function scrollExpHscrollSectionToIndex(
+  section: HTMLElement,
+  index: number,
+  onComplete?: () => void,
+) {
   const api = sectionApis.get(section);
-  if (!api) return;
-  scrollExpHscrollToIndex(api, index);
+  if (!api) {
+    onComplete?.();
+    return;
+  }
+  scrollExpHscrollToIndex(api, index, onComplete);
 }

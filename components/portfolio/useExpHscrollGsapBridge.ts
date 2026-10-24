@@ -15,7 +15,11 @@ declare global {
   interface Window {
     __paExpHscrollUseGsap?: boolean;
     __paMountExpHscrollGsap?: (api: ExpHscrollMountApi) => unknown;
-    __paExpHscrollScrollTo?: (section: HTMLElement, index: number) => void;
+    __paExpHscrollScrollTo?: (
+      section: HTMLElement,
+      index: number,
+      onComplete?: () => void,
+    ) => void;
     __paExpHscrollAnimateIndicator?: (
       indicator: HTMLElement,
       track: HTMLElement,
@@ -34,8 +38,8 @@ export function useExpHscrollGsapBridge() {
       api.section.dataset.expGsapDriver = '1';
       return mountExpHscrollGsap(api);
     };
-    window.__paExpHscrollScrollTo = (section, index) => {
-      scrollExpHscrollSectionToIndex(section, index);
+    window.__paExpHscrollScrollTo = (section, index, onComplete) => {
+      scrollExpHscrollSectionToIndex(section, index, onComplete);
     };
     window.__paExpHscrollAnimateIndicator = (indicator, track, card) => {
       animateExpTimelineIndicator(indicator, track, card);

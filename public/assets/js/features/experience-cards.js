@@ -8,12 +8,27 @@
       READY = "expHscrollReady",
       FIRST_HOLD = 0.14;
 
+    function snapProgressValues(count) {
+      if (count <= 1) return [0];
+      return Array.from({ length: count }, (_, i) =>
+        progressForIndex(i, count),
+      );
+    }
+
     function indexFromProgress(progress, count) {
       if (count <= 1) return 0;
       const p = Math.max(0, Math.min(1, progress));
-      if (p <= FIRST_HOLD) return 0;
-      const t = (p - FIRST_HOLD) / (1 - FIRST_HOLD);
-      return Math.min(count - 1, Math.floor(t * count + 1e-4));
+      const snaps = snapProgressValues(count);
+      let best = 0;
+      let bestDist = Infinity;
+      for (let i = 0; i < snaps.length; i++) {
+        const d = Math.abs(p - snaps[i]);
+        if (d < bestDist) {
+          bestDist = d;
+          best = i;
+        }
+      }
+      return best;
     }
 
     function progressForIndex(index, count) {
@@ -131,8 +146,17 @@
         card.classList.add(TL_PULSE);
       }
 
+      function clearScrollLock() {
+        clicking = false;
+        delete section.dataset.expScrollLock;
+      }
+
       function setActive(index, fromScroll) {
-        const next = Math.max(0, Math.min(cards.length - 1, index));
+        let next = Math.max(0, Math.min(cards.length - 1, index));
+        if (fromScroll && section.dataset.expScrollLock !== undefined) {
+          const locked = parseInt(section.dataset.expScrollLock, 10);
+          if (!Number.isNaN(locked)) next = locked;
+        }
         if (next === active && cards[next].classList.contains(ACTIVE)) {
           return;
         }
@@ -144,6 +168,7 @@
         const prevPanel = panels[prev];
         const nextPanel = panels[next];
         const animate =
+          !fromScroll &&
           !prefersReduced() &&
           prevPanel &&
           nextPanel &&
@@ -228,23 +253,28 @@
       }
 
       function scrollToIndex(index) {
+        const target = Math.max(0, Math.min(cards.length - 1, index));
         if (!pinMode) {
-          setActive(index, false);
+          setActive(target, false);
           return;
         }
         clicking = true;
+        section.dataset.expScrollLock = String(target);
+        setActive(target, false);
+        const unlockMs = prefersReduced() ? 80 : 900;
         if (
           section.dataset.expGsapDriver === "1" &&
           typeof window.__paExpHscrollScrollTo === "function"
         ) {
-          window.__paExpHscrollScrollTo(section, index);
-          setActive(index, false);
-          window.setTimeout(
-            () => {
-              clicking = false;
-            },
-            prefersReduced() ? 50 : 700,
-          );
+          let finished = false;
+          const finishScrollTo = function () {
+            if (finished) return;
+            finished = true;
+            clearScrollLock();
+            schedule();
+          };
+          window.__paExpHscrollScrollTo(section, target, finishScrollTo);
+          window.setTimeout(finishScrollTo, unlockMs);
           return;
         }
         const rectTop = window.scrollY + root.getBoundingClientRect().top;
@@ -253,18 +283,15 @@
           rectTop -
           pinOffset() +
           introHeight() +
-          progressForIndex(index, cards.length) * travel;
+          progressForIndex(target, cards.length) * travel;
         window.scrollTo({
           top: y,
           behavior: prefersReduced() ? "auto" : "smooth",
         });
-        setActive(index, false);
-        window.setTimeout(
-          () => {
-            clicking = false;
-          },
-          prefersReduced() ? 50 : 450,
-        );
+        window.setTimeout(() => {
+          clearScrollLock();
+          schedule();
+        }, unlockMs);
       }
 
       cards.forEach((card, i) => {
@@ -415,6 +442,7 @@
         window.__paTeardownExpHscrollGsap(section);
       }
       clearTimeout(section._expSwitchTimer);
+      delete section.dataset.expScrollLock;
       if (typeof section._expRemoveScroll === "function") {
         section._expRemoveScroll();
         section._expRemoveScroll = null;
