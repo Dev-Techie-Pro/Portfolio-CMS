@@ -1,15 +1,7 @@
-@layer portfolio.vendor, portfolio.site;
-
-/* Lower cascade priority than unlayered admin CSS when both bundles are present (client nav). */
-@layer portfolio.vendor {
-  @import "remixicon/fonts/remixicon.css";
-}
-
-@layer portfolio.site {
-  @import "../public/assets/css/styles.css";
-  @import "../public/assets/css/blog-pages.css";
-  @import "../public/assets/css/carousel.css";
-}
+@import "remixicon/fonts/remixicon.css";
+@import "../public/assets/css/styles.css";
+@import "../public/assets/css/blog-pages.css";
+@import "../public/assets/css/carousel.css";
 
 /* Leaflet map styles are loaded per-page via layout head links when needed */
 
