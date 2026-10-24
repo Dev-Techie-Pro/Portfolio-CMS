@@ -1,32 +1,27 @@
 // @ts-nocheck
 /** Dashboard widget shells — mounted by client/modules/dashboard/widgets/*.ts */
 export const DASHBOARD_EXPERIENCE_WIDGET_HTML = `
-        <section class="pa-exp-overview" id="paDashExpWidget" aria-labelledby="paDashExpTitle">
-          <header class="pa-exp-overview-head">
-            <div class="pa-exp-overview-head-text">
-              <h2 class="pa-exp-overview-title" id="paDashExpTitle">Experience Overview</h2>
-              <p class="pa-exp-overview-sub">Your career timeline at a glance</p>
-            </div>
-            <a href="/experience" class="pa-exp-overview-manage">
-              <i class="ri-arrow-right-line" aria-hidden="true"></i>
-              Manage Experience
-            </a>
-          </header>
-          <div class="pa-exp-overview-stats" id="paDashExpMiniStats" aria-live="polite"></div>
+        <section class="pa-exp-overview" id="paDashExpWidget" aria-label="Experience overview">
           <div class="pa-exp-overview-panels" id="paDashExpPanels">
             <div class="pa-exp-overview-panel pa-exp-overview-panel--timeline">
               <div class="pa-exp-overview-panel-head">
                 <div>
                   <div class="pa-exp-overview-panel-title">Career Timeline</div>
-                  <div class="pa-exp-overview-panel-sub">Hover a bar for role details</div>
+                  <div class="pa-exp-overview-panel-sub">Hover or focus a bar for role details</div>
                 </div>
-                <div class="pa-exp-overview-seg" role="tablist" aria-label="Timeline view">
-                  <button type="button" class="pa-exp-overview-seg-btn is-active" data-exp-timeline-mode="timeline" role="tab" aria-selected="true">Timeline</button>
-                  <button type="button" class="pa-exp-overview-seg-btn" data-exp-timeline-mode="year" role="tab" aria-selected="false">By Year</button>
+                <div class="pa-exp-overview-head-actions">
+                  <div class="pa-exp-overview-seg" role="tablist" aria-label="Timeline view">
+                    <button type="button" class="pa-exp-overview-seg-btn is-active" data-exp-timeline-mode="timeline" role="tab" aria-selected="true">Timeline</button>
+                    <button type="button" class="pa-exp-overview-seg-btn" data-exp-timeline-mode="year" role="tab" aria-selected="false">By Year</button>
+                  </div>
+                  <a href="/experience" class="pa-exp-overview-manage pa-exp-overview-manage--compact">
+                    <i class="ri-arrow-right-line" aria-hidden="true"></i>
+                    Manage
+                  </a>
                 </div>
               </div>
               <div class="pa-exp-overview-timeline-scroll">
-                <div class="pa-exp-overview-timeline" id="paDashExpGantt" role="img" aria-label="Career timeline chart"></div>
+                <div class="pa-exp-overview-timeline" id="paDashExpGantt" role="group" aria-label="Career timeline chart"></div>
               </div>
               <div class="pa-exp-overview-legend" id="paDashExpTypeLegend" aria-hidden="true"></div>
             </div>
