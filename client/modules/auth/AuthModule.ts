@@ -156,6 +156,6 @@ export class AuthModule extends Module {
   }
 
   redirectToDashboard() {
-    window.location.href = '/';
+    window.location.href = '/admin';
   }
 }

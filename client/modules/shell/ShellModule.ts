@@ -31,6 +31,8 @@ import {
 import { maybeShowRoleAccessModal } from './roleAccessModal.js';
 import { syncElevationBanner } from './elevationBanner.js';
 import { focusGlobalSearch, initGlobalSearch } from './globalSearch.js';
+import { normalizeAdminDocumentLinks } from '../../utils/adminLinks.js';
+
 export class ShellModule extends Module {
   constructor() {
     super({ name: 'Shell' });
@@ -46,6 +48,7 @@ export class ShellModule extends Module {
   }
 
   async init() {
+    normalizeAdminDocumentLinks();
     initConfirmDialog();
     this.bindEvents();
     this.addUser.bindEvents();

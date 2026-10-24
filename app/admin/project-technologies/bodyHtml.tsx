@@ -74,7 +74,7 @@ export const BODY_HTML = `<div class="pa-toast-wrap" id="paToastWrap" role="stat
               <a href="/admin/settings/profile" class="pa-user-dropdown-item" role="menuitem"><i class="ri-user-line"></i> My Profile</a>
               <a href="/admin/settings/general" class="pa-user-dropdown-item" role="menuitem"><i class="ri-settings-3-line"></i> Settings</a>
               <a href="/admin/settings/security" class="pa-user-dropdown-item" role="menuitem"><i class="ri-shield-keyhole-line"></i> Security</a>
-              <a href="/recent-activities" class="pa-user-dropdown-item" role="menuitem"><i class="ri-history-line"></i> Recent Activities</a>
+              <a href="/admin/recent-activities" class="pa-user-dropdown-item" role="menuitem"><i class="ri-history-line"></i> Recent Activities</a>
               <button type="button" class="pa-user-dropdown-item pa-admin-only-item" id="paAddUserMenuBtn" role="menuitem" hidden><i class="ri-user-add-line"></i> Add User</button>
               <div class="pa-user-dropdown-divider"></div>
               <button type="button" class="pa-user-dropdown-item danger" id="paUserDropdownLogout" role="menuitem"><i class="ri-logout-circle-line"></i> Logout</button>
@@ -96,7 +96,7 @@ export const BODY_HTML = `<div class="pa-toast-wrap" id="paToastWrap" role="stat
           </div>
         </div>
         <div class="pa-header-page-right">
-          <a class="pa-btn-add" href="/technologies"><i class="ri-code-s-slash-line"></i> <span>Manage skills</span></a>
+          <a class="pa-btn-add" href="/admin/technologies"><i class="ri-code-s-slash-line"></i> <span>Manage skills</span></a>
         </div>
       </div>
 

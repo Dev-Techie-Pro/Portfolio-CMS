@@ -8,11 +8,10 @@ import {
   hasPendingStaffInvite,
 } from '@/lib/auth/staff-invites';
 import { adminPath } from '@/lib/admin-paths';
+import { sanitizeStaffRedirectPath } from '@/lib/auth/safe-redirect-path';
 
 function safeNextPath(raw: string | null | undefined) {
-  const next = raw ?? '/';
-  if (!next.startsWith('/') || next.startsWith('//')) return '/';
-  return next;
+  return sanitizeStaffRedirectPath(raw, adminPath('/'));
 }
 
 export type CompleteAuthCallbackResult =

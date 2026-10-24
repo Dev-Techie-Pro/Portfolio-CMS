@@ -116,7 +116,7 @@ export class BlogEngagementModule extends Module {
   async load() {
     if (!getAccessCapabilities().canAccessBlogEngagement) {
       this.toast('You do not have access to Comments & Likes.', 'danger');
-      window.location.assign('/');
+      window.location.assign('/admin');
       return;
     }
     await this.fetchStats();
@@ -191,7 +191,7 @@ export class BlogEngagementModule extends Module {
       });
       if (res.status === 403) {
         this.toast('You do not have access to Comments & Likes.', 'danger');
-        window.location.assign('/');
+        window.location.assign('/admin');
         return;
       }
       if (!res.ok) throw new Error('fetch failed');

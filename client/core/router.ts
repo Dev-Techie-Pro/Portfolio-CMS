@@ -91,15 +91,15 @@ export function getCurrentPage(path = window.location.pathname) {
 export const PAGE = getCurrentPage();
 
 export function getLoginPath() {
-  return adminPath('/admin/login');
+  return adminPath('/login');
 }
 
 /** @param {string} page */
 export function getAuthPath(page) {
   const map = {
-    'login.html': adminPath('/admin/login'),
-    'forget-password.html': adminPath('/admin/forget-password'),
-    'reset-password.html': adminPath('/admin/reset-password'),
+    'login.html': adminPath('/login'),
+    'forget-password.html': adminPath('/forget-password'),
+    'reset-password.html': adminPath('/reset-password'),
   };
-  return map[page] || adminPath('/admin/login');
+  return map[page] || adminPath('/login');
 }

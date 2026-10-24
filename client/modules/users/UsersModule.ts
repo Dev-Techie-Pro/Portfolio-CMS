@@ -133,7 +133,7 @@ export class UsersModule extends CrudCardModule {
       this.actorRole = null;
     }
     if (!ADMIN_ROLES.includes(this.actorRole)) {
-      window.location.href = '/';
+      window.location.href = '/admin';
       return false;
     }
     return true;

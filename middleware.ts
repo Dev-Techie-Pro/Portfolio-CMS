@@ -16,7 +16,7 @@ import { MFA_STEPUP_COOKIE, readMfaStepUpCookie } from '@/lib/auth/mfa-stepup-co
 import { stripSensitiveAuthQueryParams } from '@/lib/auth/sensitive-query-params';
 import { getMfaAssuranceLevel } from '@/lib/auth/mfa';
 import { needsMfaFromAal, NEEDS_MFA_ON_AAL_ERROR } from '@/lib/auth/mfa-aal';
-import { sanitizeRedirectPath } from '@/lib/auth/safe-redirect-path';
+import { sanitizeStaffRedirectPath } from '@/lib/auth/safe-redirect-path';
 import { resolveMiddlewareUser } from '@/lib/auth/middleware-session';
 import {
   applyDocumentSecurityHeaders,
@@ -174,7 +174,7 @@ export async function middleware(request: NextRequest) {
     }
     const url = request.nextUrl.clone();
     url.pathname = loginPath;
-    url.searchParams.set('redirect', sanitizeRedirectPath(pathname));
+    url.searchParams.set('redirect', sanitizeStaffRedirectPath(pathname));
     return withCsp(request, NextResponse.redirect(url), nonce);
   }
 

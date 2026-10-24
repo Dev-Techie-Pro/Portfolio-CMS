@@ -14,7 +14,7 @@ export const DASHBOARD_EXPERIENCE_WIDGET_HTML = `
                     <button type="button" class="pa-exp-overview-seg-btn is-active" data-exp-timeline-mode="timeline" role="tab" aria-selected="true">Timeline</button>
                     <button type="button" class="pa-exp-overview-seg-btn" data-exp-timeline-mode="year" role="tab" aria-selected="false">By Year</button>
                   </div>
-                  <a href="/experience" class="pa-exp-overview-manage pa-exp-overview-manage--compact">
+                  <a href="/admin/experience" class="pa-exp-overview-manage pa-exp-overview-manage--compact">
                     <i class="ri-arrow-right-line" aria-hidden="true"></i>
                     Manage
                   </a>
@@ -50,7 +50,7 @@ export const DASHBOARD_EXPERIENCE_WIDGET_HTML = `
           <div class="pa-dash-widget-empty pa-exp-overview-empty" id="paDashExpEmpty" hidden>
             <i class="ri-briefcase-line" aria-hidden="true"></i>
             <p>No experience entries yet.</p>
-            <a href="/experience" class="pa-btn pa-btn-primary pa-btn-sm">Add experience</a>
+            <a href="/admin/experience" class="pa-btn pa-btn-primary pa-btn-sm">Add experience</a>
           </div>
           <div class="pa-dash-widget-skeleton pa-exp-overview-skeleton" id="paDashExpSkeleton" aria-hidden="true"></div>
         </section>`;
@@ -68,7 +68,7 @@ export const DASHBOARD_QUICK_WIDGETS_ROW_HTML = `
               </div>
               <div class="pa-dash-role-head-end">
                 <span class="pa-dash-role-pending-badge" id="paDashAccessBadge" hidden>0 pending</span>
-                <a href="/access-requests" class="pa-dash-view-all">View all</a>
+                <a href="/admin/access-requests" class="pa-dash-view-all">View all</a>
               </div>
             </header>
             <div class="pa-dash-role-list" id="paDashAccessList" aria-live="polite"></div>
@@ -89,7 +89,7 @@ export const DASHBOARD_QUICK_WIDGETS_ROW_HTML = `
               </div>
               <div class="pa-dash-comments-head-end">
                 <span class="pa-dash-comments-pending-badge" id="paDashCommentsBadge" hidden>0 pending</span>
-                <a href="/blog-engagement" class="pa-dash-view-all">View all</a>
+                <a href="/admin/blog-engagement" class="pa-dash-view-all">View all</a>
               </div>
             </header>
             <div class="pa-dash-comments-tabs" role="tablist" aria-label="Comment filter">
