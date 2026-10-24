@@ -12,6 +12,13 @@ import { storage } from '../../core/StorageService.js';
 import { resolveProjectStackFromChips } from '../../utils/stackResolve.js';
 import { PAGE } from '../../core/router.js';
 import { canManageContent } from '../../core/cms-access.js';
+import {
+  achievementRowHtml,
+  impactRowHtml,
+  EXP_HIGHLIGHT_MAX_ACH,
+  EXP_HIGHLIGHT_MAX_IMPACT,
+} from '../../utils/expHighlightsForm.js';
+import { suggestExperienceHighlights } from '../../utils/expHighlightsSuggest.js';
 
 export const EXP_TYPE_META = {
   'full-time': { label: 'Full-time', icon: 'ri-briefcase-line', color: '#60a5fa' },
@@ -223,6 +230,135 @@ export class ExperienceModule extends CrudCardModule {
         if (endDateGroup) endDateGroup.style.display = e.target.value === '1' ? 'none' : 'block';
       });
     });
+    this.bindHighlightListEvents('expAdd');
+    this.bindHighlightListEvents('expEdit');
+    this.renderAchievementsList('expAdd', ['']);
+    this.renderImpactsList('expAdd', [{ value: '', label: '' }]);
+  }
+
+  bindHighlightListEvents(prefix) {
+    const achAdd = $id(`${prefix}AchievementAdd`);
+    const impactAdd = $id(`${prefix}ImpactAdd`);
+    const suggest = $id(`${prefix}SuggestHighlights`);
+    const achList = $id(`${prefix}AchievementsList`);
+    const impactList = $id(`${prefix}ImpactsList`);
+
+    if (achAdd) {
+      this.on(achAdd, 'click', () => {
+        const values = this.collectAchievementValues(prefix);
+        if (values.length >= EXP_HIGHLIGHT_MAX_ACH) {
+          this.toast(`You can add up to ${EXP_HIGHLIGHT_MAX_ACH} achievements`, 'info');
+          return;
+        }
+        values.push('');
+        this.renderAchievementsList(prefix, values);
+      });
+    }
+    if (impactAdd) {
+      this.on(impactAdd, 'click', () => {
+        const rows = this.collectImpactValues(prefix);
+        if (rows.length >= EXP_HIGHLIGHT_MAX_IMPACT) {
+          this.toast(`You can add up to ${EXP_HIGHLIGHT_MAX_IMPACT} impact metrics`, 'info');
+          return;
+        }
+        rows.push({ value: '', label: '' });
+        this.renderImpactsList(prefix, rows);
+      });
+    }
+    if (suggest) {
+      this.on(suggest, 'click', () => this.suggestHighlightsFromDetails(prefix));
+    }
+    if (achList) {
+      this.on(achList, 'click', (e) => {
+        const btn = e.target.closest('[data-exp-remove-achievement]');
+        if (!btn) return;
+        const values = this.collectAchievementValues(prefix);
+        if (values.length <= 1) return;
+        const row = btn.closest('[data-exp-achievement-row]');
+        const idx = Number(row?.getAttribute('data-exp-achievement-row'));
+        if (!Number.isNaN(idx)) values.splice(idx, 1);
+        else values.pop();
+        this.renderAchievementsList(prefix, values.length ? values : ['']);
+      });
+    }
+    if (impactList) {
+      this.on(impactList, 'click', (e) => {
+        const btn = e.target.closest('[data-exp-remove-impact]');
+        if (!btn) return;
+        const rows = this.collectImpactValues(prefix);
+        if (rows.length <= 1) return;
+        const row = btn.closest('[data-exp-impact-row]');
+        const idx = Number(row?.getAttribute('data-exp-impact-row'));
+        if (!Number.isNaN(idx)) rows.splice(idx, 1);
+        else rows.pop();
+        this.renderImpactsList(prefix, rows.length ? rows : [{ value: '', label: '' }]);
+      });
+    }
+  }
+
+  collectAchievementValues(prefix) {
+    const list = $id(`${prefix}AchievementsList`);
+    if (!list) return [];
+    return Array.from(list.querySelectorAll('input')).map((el) => el.value);
+  }
+
+  collectImpactValues(prefix) {
+    const list = $id(`${prefix}ImpactsList`);
+    if (!list) return [];
+    return Array.from(list.querySelectorAll('[data-exp-impact-row]')).map((row) => ({
+      value: row.querySelector('[id$="Value"]')?.value || '',
+      label: row.querySelector('[id$="Label"]')?.value || '',
+    }));
+  }
+
+  renderAchievementsList(prefix, values) {
+    const list = $id(`${prefix}AchievementsList`);
+    const addBtn = $id(`${prefix}AchievementAdd`);
+    if (!list) return;
+    const items = (values.length ? values : ['']).slice(0, EXP_HIGHLIGHT_MAX_ACH);
+    list.innerHTML = items
+      .map((value, index) => achievementRowHtml(prefix, index, value, items.length > 1))
+      .join('');
+    if (addBtn) addBtn.disabled = items.length >= EXP_HIGHLIGHT_MAX_ACH;
+  }
+
+  renderImpactsList(prefix, rows) {
+    const list = $id(`${prefix}ImpactsList`);
+    const addBtn = $id(`${prefix}ImpactAdd`);
+    if (!list) return;
+    const items = (rows.length ? rows : [{ value: '', label: '' }]).slice(0, EXP_HIGHLIGHT_MAX_IMPACT);
+    list.innerHTML = items
+      .map((row, index) => impactRowHtml(prefix, index, row.value, row.label, items.length > 1))
+      .join('');
+    if (addBtn) addBtn.disabled = items.length >= EXP_HIGHLIGHT_MAX_IMPACT;
+  }
+
+  suggestHighlightsFromDetails(prefix) {
+    const desc = ($id(`${prefix}Desc`)?.value || '').trim();
+    const title = ($id(`${prefix}Title`)?.value || '').trim();
+    const company = ($id(`${prefix}Company`)?.value || '').trim();
+    if (!desc && !title) {
+      this.toast('Add a role and description on the Details tab first', 'info');
+      activateTab(prefix, 'details');
+      return;
+    }
+    const suggested = suggestExperienceHighlights({
+      title,
+      company,
+      domain: ($id(`${prefix}Domain`)?.value || '').trim(),
+      teamSize: ($id(`${prefix}TeamSize`)?.value || '').trim(),
+      desc,
+    });
+    this.renderAchievementsList(
+      prefix,
+      suggested.achievements.length ? suggested.achievements : [''],
+    );
+    this.renderImpactsList(
+      prefix,
+      suggested.impacts.length ? suggested.impacts : [{ value: '', label: '' }],
+    );
+    activateTab(prefix, 'highlights');
+    this.toast('Suggestions added — review and edit before saving', 'success');
   }
 
   clearExtendedFields(prefix) {
@@ -230,16 +366,8 @@ export class ExperienceModule extends CrudCardModule {
       const el = $id(`${prefix}${f}`);
       if (el) el.value = '';
     });
-    [1, 2, 3].forEach((n) => {
-      const ach = $id(`${prefix}Achievement${n}`);
-      if (ach) ach.value = '';
-      const iv = $id(`${prefix}Impact${n}Value`);
-      const il = $id(`${prefix}Impact${n}Label`);
-      if (iv) iv.value = '';
-      if (il) il.value = '';
-      this._err(`${prefix}Achievement${n}`, false);
-      this._err(`${prefix}Impact${n}Label`, false);
-    });
+    this.renderAchievementsList(prefix, ['']);
+    this.renderImpactsList(prefix, [{ value: '', label: '' }]);
     const chips = $id(`${prefix}TechChips`);
     if (chips) chips.innerHTML = '';
     const techInput = $id(`${prefix}TechInput`);
@@ -277,19 +405,13 @@ export class ExperienceModule extends CrudCardModule {
     const endGroup = $id('expEditEndDateGroup');
     if (endGroup) endGroup.style.display = e.current ? 'none' : 'block';
 
-    const achievements = e.achievements || [];
-    [1, 2, 3].forEach((n) => {
-      const el = $id(`expEditAchievement${n}`);
-      if (el) el.value = achievements[n - 1] || '';
-    });
-    const impacts = e.impacts || [];
-    [1, 2, 3].forEach((n) => {
-      const row = impacts[n - 1] || {};
-      const iv = $id(`expEditImpact${n}Value`);
-      const il = $id(`expEditImpact${n}Label`);
-      if (iv) iv.value = row.value || '';
-      if (il) il.value = row.label || '';
-    });
+    const achievements = (e.achievements || []).slice(0, EXP_HIGHLIGHT_MAX_ACH);
+    this.renderAchievementsList('expEdit', achievements.length ? achievements : ['']);
+    const impacts = (e.impacts || []).slice(0, EXP_HIGHLIGHT_MAX_IMPACT);
+    this.renderImpactsList(
+      'expEdit',
+      impacts.length ? impacts : [{ value: '', label: '' }],
+    );
     populateTechChips($id('expEditTechChips'), this.technologiesCatalog, e.technologies || []);
 
     const descCount = $id('expEditDescCount');
@@ -302,39 +424,43 @@ export class ExperienceModule extends CrudCardModule {
   }
 
   readAchievements(prefix) {
-    const out = [];
-    for (let n = 1; n <= 3; n += 1) {
-      const val = ($id(`${prefix}Achievement${n}`)?.value || '').trim();
-      if (val) out.push(val);
-    }
-    return out;
+    return this.collectAchievementValues(prefix)
+      .map((val) => val.trim())
+      .filter(Boolean)
+      .slice(0, EXP_HIGHLIGHT_MAX_ACH);
   }
 
   readImpacts(prefix) {
-    const out = [];
-    for (let n = 1; n <= 3; n += 1) {
-      const value = ($id(`${prefix}Impact${n}Value`)?.value || '').trim();
-      const label = ($id(`${prefix}Impact${n}Label`)?.value || '').trim();
-      if (value || label) out.push({ value, label });
-    }
-    return out;
+    return this.collectImpactValues(prefix)
+      .map((row) => ({
+        value: String(row.value || '').trim(),
+        label: String(row.label || '').trim(),
+      }))
+      .filter((row) => row.value || row.label)
+      .slice(0, EXP_HIGHLIGHT_MAX_IMPACT);
   }
 
   validateWordLimits(prefix) {
     let valid = true;
-    for (let n = 1; n <= 3; n += 1) {
-      const ach = $id(`${prefix}Achievement${n}`);
-      if (ach) {
-        const tooMany = countWords(ach.value) > 20;
-        this._err(`${prefix}Achievement${n}`, tooMany);
+    const achList = $id(`${prefix}AchievementsList`);
+    if (achList) {
+      achList.querySelectorAll('input').forEach((input) => {
+        const max = Number(input.dataset.expWordMax || 20);
+        const tooMany = countWords(input.value) > max;
+        const id = input.id;
+        if (id) this._err(id, tooMany);
         if (tooMany) valid = false;
-      }
-      const lbl = $id(`${prefix}Impact${n}Label`);
-      if (lbl && lbl.value.trim()) {
-        const tooMany = countWords(lbl.value) > 3;
-        this._err(`${prefix}Impact${n}Label`, tooMany);
+      });
+    }
+    const impactList = $id(`${prefix}ImpactsList`);
+    if (impactList) {
+      impactList.querySelectorAll('input[data-exp-word-max]').forEach((input) => {
+        const max = Number(input.dataset.expWordMax || 3);
+        const tooMany = countWords(input.value) > max;
+        const id = input.id;
+        if (id) this._err(id, tooMany);
         if (tooMany) valid = false;
-      }
+      });
     }
     return valid;
   }

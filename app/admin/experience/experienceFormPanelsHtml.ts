@@ -83,36 +83,22 @@ function expFormFields(prefix: 'expAdd' | 'expEdit', tabGroup: 'expAdd' | 'expEd
     </div>
 
     <div class="pa-tab-panel" data-panel="${tabGroup}" data-content="highlights">
-      <p class="pa-form-label">Key achievements <span class="pa-form-hint">— up to 3, max 20 words each</span></p>
-      ${[1, 2, 3]
-        .map(
-          (n) => `
-      <div class="pa-form-group">
-        <label class="pa-form-label" for="${prefix}Achievement${n}">Achievement ${n}</label>
-        <input class="pa-form-input" type="text" id="${prefix}Achievement${n}" placeholder="Max 20 words" maxlength="240" data-exp-word-max="20" />
-        <div class="pa-form-error-msg" id="${prefix}Achievement${n}Error">
-          <i class="ri-error-warning-line"></i> Max 20 words
-        </div>
-      </div>`,
-        )
-        .join('')}
-      <p class="pa-form-label">Role impact <span class="pa-form-hint">— up to 3, label max 3 words each</span></p>
-      ${[1, 2, 3]
-        .map(
-          (n) => `
-      <div class="pa-form-group">
-        <label class="pa-form-label" for="${prefix}Impact${n}Value">Impact ${n} — value</label>
-        <input class="pa-form-input" type="text" id="${prefix}Impact${n}Value" placeholder="e.g. 10+" maxlength="24" />
+      <div class="pa-exp-highlights-toolbar">
+        <button type="button" class="pa-btn pa-btn-cancel pa-btn-sm" id="${prefix}SuggestHighlights">
+          <i class="ri-magic-line"></i> Suggest from details
+        </button>
+        <span class="pa-form-hint">Uses role, company, domain &amp; description (fill Details first)</span>
       </div>
-      <div class="pa-form-group">
-        <label class="pa-form-label" for="${prefix}Impact${n}Label">Impact ${n} — label</label>
-        <input class="pa-form-input" type="text" id="${prefix}Impact${n}Label" placeholder="Max 3 words" maxlength="48" data-exp-word-max="3" />
-        <div class="pa-form-error-msg" id="${prefix}Impact${n}LabelError">
-          <i class="ri-error-warning-line"></i> Max 3 words
-        </div>
-      </div>`,
-        )
-        .join('')}
+      <p class="pa-form-label">Key achievements <span class="pa-form-hint">— up to 3, max 20 words each</span></p>
+      <div class="pa-exp-dynamic-list" id="${prefix}AchievementsList"></div>
+      <button type="button" class="pa-btn pa-btn-cancel pa-btn-sm pa-exp-dynamic-add" id="${prefix}AchievementAdd">
+        <i class="ri-add-line"></i> Add another achievement
+      </button>
+      <p class="pa-form-label pa-exp-dynamic-section-gap">Role impact <span class="pa-form-hint">— up to 3, label max 3 words each</span></p>
+      <div class="pa-exp-dynamic-list" id="${prefix}ImpactsList"></div>
+      <button type="button" class="pa-btn pa-btn-cancel pa-btn-sm pa-exp-dynamic-add" id="${prefix}ImpactAdd">
+        <i class="ri-add-line"></i> Add another impact
+      </button>
     </div>
 
     <div class="pa-tab-panel" data-panel="${tabGroup}" data-content="dates">
