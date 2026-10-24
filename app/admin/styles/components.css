@@ -8269,7 +8269,7 @@ body.light .custom-theme-card.active {
   padding: 0.65rem 1.25rem;
   border-radius: var(--pa-radius);
   background: var(--pa-orange);  
-  color: var(--pa-orange-dim);
+  color: var(--pa-text);
   font-size: var(--pa-fs-sm);
   font-weight: var(--pa-fw-lg);
   text-decoration: none;
@@ -8974,7 +8974,6 @@ body.light .custom-theme-card.active {
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
-  min-height: 40px;
   padding: 0.45rem 0.9rem;
   border: 0;
   border-radius: var(--pa-radius);
