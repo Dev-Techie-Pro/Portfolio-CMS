@@ -1,6 +1,11 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motionDuration } from '../duration';
+import {
+  expIndexFromProgress,
+  expProgressForIndex,
+  expSnapProgressValues,
+} from './exp-hscroll-progress';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -40,25 +45,22 @@ export function mountExpHscrollGsap(api: ExpHscrollMountApi): Driver | null {
   let scrollTrigger: ScrollTrigger | null = null;
   let introTrigger: ScrollTrigger | null = null;
 
-  const snapPoints =
-    api.cards.length > 1
-      ? api.cards.map((_, i) => i / (api.cards.length - 1))
-      : [0];
+  const snapPoints = expSnapProgressValues(api.cards.length);
 
   scrollTrigger = ScrollTrigger.create({
     trigger: api.root,
     start: () => `top ${api.pinOffset()}px`,
     end: () => `+=${api.scrollTravel()}`,
-    scrub: 0.85,
+    scrub: 1.15,
     invalidateOnRefresh: true,
     snap: {
       snapTo: snapPoints,
-      duration: { min: 0.12, max: 0.42 },
-      delay: 0.02,
+      duration: { min: 0.18, max: 0.55 },
+      delay: 0.06,
       ease: 'power2.inOut',
     },
     onUpdate: (self) => {
-      const idx = Math.round(self.progress * (api.cards.length - 1));
+      const idx = expIndexFromProgress(self.progress, api.cards.length);
       api.setActive(idx, true);
     },
   });
@@ -120,8 +122,7 @@ export function mountExpHscrollGsap(api: ExpHscrollMountApi): Driver | null {
 
 export function scrollExpHscrollToIndex(api: ExpHscrollMountApi, index: number) {
   const driver = drivers.get(api.section);
-  const count = Math.max(1, api.cards.length - 1);
-  const progress = index / count;
+  const progress = expProgressForIndex(index, api.cards.length);
   if (driver) {
     driver.scrollToProgress(progress);
     return;

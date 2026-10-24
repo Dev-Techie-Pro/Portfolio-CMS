@@ -5,7 +5,25 @@
       MOBILE_MAX = 768,
       STEP_VH = 0.72,
       ACTIVE = "is-exp-active",
-      READY = "expHscrollReady";
+      READY = "expHscrollReady",
+      FIRST_HOLD = 0.14;
+
+    function indexFromProgress(progress, count) {
+      if (count <= 1) return 0;
+      const p = Math.max(0, Math.min(1, progress));
+      if (p <= FIRST_HOLD) return 0;
+      const t = (p - FIRST_HOLD) / (1 - FIRST_HOLD);
+      return Math.min(count - 1, Math.floor(t * count + 1e-4));
+    }
+
+    function progressForIndex(index, count) {
+      if (count <= 1) return 0;
+      const i = Math.max(0, Math.min(count - 1, index));
+      if (i === 0) return 0;
+      if (i === count - 1) return 1;
+      const slot = (i + 0.5) / count;
+      return FIRST_HOLD + slot * (1 - FIRST_HOLD);
+    }
 
     function animSpeed() {
       return window.Portfolio.TEXTURES && window.Portfolio.TEXTURES.getAnimSpeed
@@ -200,7 +218,7 @@
         let progress = (start - rect.top - introHeight()) / travel;
         if (!isFinite(progress)) progress = 0;
         progress = Math.max(0, Math.min(1, progress));
-        const idx = Math.round(progress * (cards.length - 1));
+        const idx = indexFromProgress(progress, cards.length);
         setActive(idx, true);
       }
 
@@ -235,7 +253,7 @@
           rectTop -
           pinOffset() +
           introHeight() +
-          (index / Math.max(1, cards.length - 1)) * travel;
+          progressForIndex(index, cards.length) * travel;
         window.scrollTo({
           top: y,
           behavior: prefersReduced() ? "auto" : "smooth",
