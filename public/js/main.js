@@ -7539,7 +7539,7 @@ var getPrefetchKeysForPage = PREFETCH_CONFIG.getKeysForPage || ((p) => PREFETCH_
 async function loadPageModuleClass(page) {
   switch (page) {
     case "dashboard":
-      return (await import("./chunks/DashboardModule-5VNEHCHS.js")).DashboardModule;
+      return (await import("./chunks/DashboardModule-ZBAYBJU5.js")).DashboardModule;
     case "projects":
       return (await import("./chunks/ProjectsModule-SYWJTJKB.js")).ProjectsModule;
     case "categories":

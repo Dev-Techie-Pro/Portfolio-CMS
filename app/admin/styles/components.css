@@ -407,11 +407,12 @@
   font-size: var(--pa-fs-xmd);
 }
 
+.pa-dash-role-reject,
 .pa-btn-add {
   display: flex;
   align-items: center;
   gap: var(--pa-card-gap);
-  background: var(--pa-orange);
+  background: var(--pa-orange-glow);
   color: var(--pa-text);
   border: none;
   border-radius: var(--pa-radius);
@@ -423,6 +424,9 @@
     background 0.2s,
     transform 0.1s;
   white-space: nowrap;
+}
+.pa-dash-role-reject{
+  padding: 7px 12px;
 }
 
 .pa-btn-add:hover {
@@ -8440,8 +8444,9 @@ body.light .custom-theme-card.active {
 }
 .pa-exp-overview-today {
   position: absolute;
-  left: calc(var(--exp-label-col, 210px) + (100% - var(--exp-label-col, 210px)) * (var(--exp-today-pct, 100) / 100));
-  top: 1rem;
+  left: auto;
+  right: 3rem;
+  top: 3rem;
   bottom: 0;
   z-index: 2;
   pointer-events: none;
@@ -8504,6 +8509,7 @@ body.light .custom-theme-card.active {
   flex: 1;
   height: 64px;
   position: relative;
+  overflow: visible;
   background: repeating-linear-gradient(
     90deg,
     var(--pa-border-soft) 0,
@@ -8540,13 +8546,24 @@ body.light .custom-theme-card.active {
 .pa-exp-overview-bar.is-tip-open {
   z-index: 5;
 }
+.pa-exp-overview-bar > .pa-exp-overview-tip {
+  display: none !important;
+}
+.pa-exp-overview-tip-portal {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  pointer-events: none;
+  overflow: visible;
+}
+.pa-exp-overview-tip-portal[hidden] {
+  display: none !important;
+}
 .pa-exp-overview-tip {
-  display: none;
-  position: absolute;
-  left: 0;
-  bottom: calc(100% + 10px);
+  display: block;
+  position: fixed;
   min-width: 220px;
-  max-width: min(320px, 70vw);
+  max-width: min(320px, calc(100vw - 16px));
   padding: 0.75rem 0.875rem 0.75rem 0.9375rem;
   background: color-mix(in srgb, var(--pa-bg-card) 92%, var(--pa-bg));
   border: 1px solid var(--pa-border-soft);
@@ -8554,7 +8571,7 @@ body.light .custom-theme-card.active {
   box-shadow: 0 12px 32px color-mix(in srgb, var(--pa-bg) 45%, transparent);
   text-align: left;
   pointer-events: none;
-  z-index: 10;
+  box-sizing: border-box;
 }
 .pa-exp-overview-tip::before {
   content: '';
@@ -8591,15 +8608,6 @@ body.light .custom-theme-card.active {
   font-weight: var(--pa-fw-lg);
   color: var(--pa-orange);
   padding-left: 0.35rem;
-}
-.pa-exp-overview-bar:hover .pa-exp-overview-tip,
-.pa-exp-overview-bar:focus-visible .pa-exp-overview-tip,
-.pa-exp-overview-bar.is-tip-open .pa-exp-overview-tip {
-  display: block;
-}
-.pa-exp-overview-bar.is-tip-end .pa-exp-overview-tip {
-  left: auto;
-  right: 0;
 }
 .pa-exp-overview-bar.is-fulltime {
   background: color-mix(in srgb, var(--pa-green) 85%, var(--pa-bg));
@@ -8993,23 +9001,6 @@ body.light .custom-theme-card.active {
   font-size: 1.05rem;
   line-height: 1;
 }
-.pa-dash-role-reject {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--pa-border-soft);
-  border-radius: var(--pa-radius);
-  background: var(--pa-bg-input);
-  color: var(--pa-text-mute);
-  font-size: 1.15rem;
-  padding: 0;
-  cursor: pointer;
-  font-family: inherit;
-  transition: color 0.15s, border-color 0.15s;
-}
 .pa-dash-role-reject:hover {
   color: var(--pa-text);
   border-color: var(--pa-border-hover);
@@ -9123,8 +9114,8 @@ body.light .custom-theme-card.active {
   transition: background 0.15s, color 0.15s;
 }
 .pa-dash-comments-tab.is-active {
-  background: var(--pa-green);
-  color: var(--pa-green-dim);
+  background: var(--pa-orange);
+  color: var(--pa-text);
   font-weight: var(--pa-fw-lg);
 }
 .pa-dash-comments-list {

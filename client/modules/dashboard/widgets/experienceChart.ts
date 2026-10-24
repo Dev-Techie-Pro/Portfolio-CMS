@@ -198,7 +198,8 @@ function renderTimeline(summary, timelineMode) {
       const companyLine = entry.current
         ? `${escapeHtml(entry.company || '')} · <span class="pa-exp-overview-current-tag">CURRENT</span>`
         : escapeHtml(entry.company || '');
-      const tipAlign = entry.current ? ' is-tip-end' : '';
+      const tipAlign =
+        entry.current ? ' is-tip-end' : width < 8 || left < 6 ? ' is-tip-start' : '';
       return `<div class="pa-exp-overview-row">
         <div class="pa-exp-overview-row-label">
           <div class="pa-exp-overview-row-title">${escapeHtml(entry.title || 'Role')}</div>
@@ -257,40 +258,148 @@ function renderDonutLegendRows(segments, totalMonths) {
     .join('');
 }
 
+function getExpTipPortal() {
+  let portal = document.getElementById('paDashExpTipPortal');
+  if (!portal) {
+    portal = document.createElement('div');
+    portal.id = 'paDashExpTipPortal';
+    portal.className = 'pa-exp-overview-tip-portal';
+    portal.hidden = true;
+    document.body.appendChild(portal);
+  }
+  return portal;
+}
+
+function positionExpBarTip(bar, tipEl) {
+  const barRect = bar.getBoundingClientRect();
+  const margin = 8;
+  tipEl.style.position = 'fixed';
+  tipEl.style.display = 'block';
+  tipEl.style.visibility = 'hidden';
+  tipEl.style.left = '0';
+  tipEl.style.top = '0';
+  tipEl.style.bottom = 'auto';
+  tipEl.style.right = 'auto';
+  const tipW = tipEl.offsetWidth;
+  const tipH = tipEl.offsetHeight;
+  tipEl.style.visibility = '';
+
+  let left;
+  if (bar.classList.contains('is-tip-end')) {
+    left = barRect.right - tipW;
+  } else if (bar.classList.contains('is-tip-start')) {
+    left = barRect.left;
+  } else {
+    left = barRect.left + barRect.width / 2 - tipW / 2;
+  }
+  left = Math.max(margin, Math.min(left, window.innerWidth - tipW - margin));
+
+  let top = barRect.top - tipH - 10;
+  tipEl.classList.toggle('is-below', false);
+  if (top < margin) {
+    top = barRect.bottom + 10;
+    tipEl.classList.add('is-below');
+  }
+
+  tipEl.style.left = `${Math.round(left)}px`;
+  tipEl.style.top = `${Math.round(top)}px`;
+}
+
 function bindBarTooltips(container) {
   if (!container) return;
+  const portal = getExpTipPortal();
   let openBar = null;
+  let hoverBar = null;
+
+  const hidePortal = () => {
+    portal.hidden = true;
+    portal.innerHTML = '';
+  };
+
+  const showTipForBar = (bar) => {
+    const source = bar.querySelector('.pa-exp-overview-tip');
+    if (!source) return;
+    portal.innerHTML = source.outerHTML;
+    const tipEl = portal.querySelector('.pa-exp-overview-tip');
+    if (!tipEl) return;
+    portal.hidden = false;
+    positionExpBarTip(bar, tipEl);
+  };
 
   const closeOpen = () => {
     if (openBar) {
       openBar.classList.remove('is-tip-open');
       openBar = null;
     }
+    if (!hoverBar) hidePortal();
+    else showTipForBar(hoverBar);
+  };
+
+  const onDocClick = (e) => {
+    if (!e.target.closest('.pa-exp-overview-bar') && !e.target.closest('.pa-exp-overview-tip-portal')) {
+      closeOpen();
+      hoverBar = null;
+      hidePortal();
+    }
+  };
+
+  const onScroll = () => {
+    if (openBar) showTipForBar(openBar);
+    else if (hoverBar) showTipForBar(hoverBar);
+    else hidePortal();
   };
 
   container.querySelectorAll('.pa-exp-overview-bar').forEach((bar) => {
+    bar.addEventListener('mouseenter', () => {
+      hoverBar = bar;
+      if (!openBar || openBar === bar) showTipForBar(bar);
+    });
+    bar.addEventListener('mouseleave', () => {
+      if (hoverBar === bar) hoverBar = null;
+      if (openBar === bar) return;
+      hidePortal();
+    });
+    bar.addEventListener('focus', () => {
+      hoverBar = bar;
+      showTipForBar(bar);
+    });
+    bar.addEventListener('blur', () => {
+      if (hoverBar === bar) hoverBar = null;
+      if (openBar !== bar) hidePortal();
+    });
     bar.addEventListener('click', (e) => {
       e.stopPropagation();
       if (bar.classList.contains('is-tip-open')) {
-        closeOpen();
+        bar.classList.remove('is-tip-open');
+        openBar = null;
+        if (hoverBar === bar) showTipForBar(bar);
+        else hidePortal();
       } else {
-        closeOpen();
+        container.querySelectorAll('.pa-exp-overview-bar.is-tip-open').forEach((el) => {
+          el.classList.remove('is-tip-open');
+        });
         bar.classList.add('is-tip-open');
         openBar = bar;
+        showTipForBar(bar);
       }
     });
   });
 
-  document.addEventListener(
-    'click',
-    (e) => {
-      if (!e.target.closest('.pa-exp-overview-bar')) closeOpen();
-    },
-    { capture: true },
-  );
+  document.addEventListener('click', onDocClick, { capture: true });
+  window.addEventListener('resize', onScroll);
+  window.addEventListener('scroll', onScroll, true);
+  container.closest('.pa-exp-overview-timeline-scroll')?.addEventListener('scroll', onScroll, {
+    passive: true,
+  });
 
   container._expTipCleanup = () => {
+    document.removeEventListener('click', onDocClick, { capture: true });
+    window.removeEventListener('resize', onScroll);
+    window.removeEventListener('scroll', onScroll, true);
+    container.closest('.pa-exp-overview-timeline-scroll')?.removeEventListener('scroll', onScroll);
     closeOpen();
+    hoverBar = null;
+    hidePortal();
   };
 }
 
