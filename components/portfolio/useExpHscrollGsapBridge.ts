@@ -7,6 +7,7 @@ import {
   refreshExpHscrollGsap,
   registerExpHscrollApi,
   scrollExpHscrollSectionToIndex,
+  syncExpHscrollSectionActive,
   teardownExpHscrollGsap,
   type ExpHscrollMountApi,
 } from '@/lib/motion/portfolio/exp-hscroll-gsap';
@@ -26,6 +27,7 @@ declare global {
       card: HTMLElement,
     ) => void;
     __paTeardownExpHscrollGsap?: (section: HTMLElement) => void;
+    __paExpHscrollSyncActive?: (section: HTMLElement) => void;
     Portfolio?: { EXP_CARDS?: { init?: () => void } };
   }
 }
@@ -47,6 +49,9 @@ export function useExpHscrollGsapBridge() {
     window.__paTeardownExpHscrollGsap = (section) => {
       teardownExpHscrollGsap(section);
     };
+    window.__paExpHscrollSyncActive = (section) => {
+      syncExpHscrollSectionActive(section);
+    };
 
     const refresh = () => {
       refreshExpHscrollGsap();
@@ -61,6 +66,7 @@ export function useExpHscrollGsapBridge() {
       delete window.__paMountExpHscrollGsap;
       delete window.__paExpHscrollScrollTo;
       delete window.__paExpHscrollAnimateIndicator;
+      delete window.__paExpHscrollSyncActive;
       document.querySelectorAll<HTMLElement>('.exp-work--hscroll').forEach((section) => {
         delete section.dataset.expGsapDriver;
         teardownExpHscrollGsap(section);

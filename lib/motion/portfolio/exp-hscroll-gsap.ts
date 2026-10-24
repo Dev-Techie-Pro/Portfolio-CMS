@@ -28,6 +28,7 @@ export type ExpHscrollMountApi = {
 type Driver = {
   kill: () => void;
   scrollToProgress: (progress: number, onComplete?: () => void) => void;
+  syncActive: () => void;
 };
 
 const drivers = new WeakMap<HTMLElement, Driver>();
@@ -49,7 +50,8 @@ export function mountExpHscrollGsap(api: ExpHscrollMountApi): Driver | null {
 
   scrollTrigger = ScrollTrigger.create({
     trigger: api.root,
-    start: () => `top ${api.pinOffset()}px`,
+    // Match native scrub math in experience-cards.js (intro offsets progress 0).
+    start: () => `top ${api.pinOffset() - api.introHeight()}px`,
     end: () => `+=${api.scrollTravel()}`,
     scrub: 0.85,
     invalidateOnRefresh: true,
@@ -94,6 +96,11 @@ export function mountExpHscrollGsap(api: ExpHscrollMountApi): Driver | null {
       scrollTrigger = null;
       introTrigger = null;
       drivers.delete(api.section);
+    },
+    syncActive: () => {
+      if (!scrollTrigger) return;
+      const idx = expIndexFromProgress(scrollTrigger.progress, api.cards.length);
+      api.setActive(idx, true);
     },
     scrollToProgress: (progress, onComplete) => {
       if (!scrollTrigger) {
@@ -186,4 +193,8 @@ export function scrollExpHscrollSectionToIndex(
     return;
   }
   scrollExpHscrollToIndex(api, index, onComplete);
+}
+
+export function syncExpHscrollSectionActive(section: HTMLElement) {
+  drivers.get(section)?.syncActive();
 }

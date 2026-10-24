@@ -35,7 +35,6 @@
       if (count <= 1) return 0;
       const i = Math.max(0, Math.min(count - 1, index));
       if (i === 0) return 0;
-      if (i === count - 1) return 1;
       const slot = (i + 0.5) / count;
       return FIRST_HOLD + slot * (1 - FIRST_HOLD);
     }
@@ -236,7 +235,7 @@
 
       function render() {
         raf = null;
-        if (!pinMode) return;
+        if (!pinMode || section.dataset.expGsapDriver === "1") return;
         const rect = root.getBoundingClientRect();
         const start = pinOffset();
         const travel = scrollTravel();
@@ -271,7 +270,9 @@
             if (finished) return;
             finished = true;
             clearScrollLock();
-            schedule();
+            if (typeof window.__paExpHscrollSyncActive === "function") {
+              window.__paExpHscrollSyncActive(section);
+            }
           };
           window.__paExpHscrollScrollTo(section, target, finishScrollTo);
           window.setTimeout(finishScrollTo, unlockMs);

@@ -22,7 +22,6 @@ export function expProgressForIndex(index: number, count: number): number {
   if (count <= 1) return 0;
   const i = Math.max(0, Math.min(count - 1, index));
   if (i === 0) return 0;
-  if (i === count - 1) return 1;
   const slot = (i + 0.5) / count;
   return EXP_HSCROLL_FIRST_HOLD + slot * (1 - EXP_HSCROLL_FIRST_HOLD);
 }
