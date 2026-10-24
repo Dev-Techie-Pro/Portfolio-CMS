@@ -35,6 +35,7 @@ export function resetPortfolioForNavigation() {
 
   window.Portfolio?.__nextReset?.();
   (window.Portfolio as { resetExperience?: () => void })?.resetExperience?.();
+  (window.Portfolio as { EXP_CARDS?: { teardown?: (el?: Element) => void } })?.EXP_CARDS?.teardown?.();
   window.Portfolio?.COMPONENT_LOADER?.reset?.();
   window.Portfolio?.BLOG_DETAILS?.reset?.();
   if (window.Portfolio?.BLOG_ENGAGEMENT) {
@@ -46,7 +47,7 @@ export function resetPortfolioForNavigation() {
     .forEach((el) => el.classList.remove("visible"));
 }
 
-export function initPortfolioPage(route: PortfolioRoute) {
+export async function initPortfolioPage(route: PortfolioRoute) {
   if (typeof window === "undefined") return;
   const P = window.Portfolio;
   if (!P) return;
@@ -99,11 +100,15 @@ export function initPortfolioPage(route: PortfolioRoute) {
   P.BLOG_LINKS?.init?.();
   P.BLOGS_PAGE?.init?.();
   P.TESTIMONIALS_PAGE?.init?.();
-  void (P as { EXPERIENCE_CMS?: { hydrateAll?: () => Promise<void> } }).EXPERIENCE_CMS?.hydrateAll?.();
+  const experienceCms = (P as { EXPERIENCE_CMS?: { hydrateAll?: () => Promise<void> } }).EXPERIENCE_CMS;
+  if (document.querySelector("[data-cms-experience]") && experienceCms?.hydrateAll) {
+    await experienceCms.hydrateAll();
+  }
+
   P.CAROUSEL?.init?.();
   (window as unknown as { Portfolio?: { TICKER?: { initTickers?: () => void } } }).Portfolio?.TICKER?.initTickers?.();
 
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('pa:public-page-ready', { detail: { route } }));
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("pa:public-page-ready", { detail: { route } }));
   }
 }

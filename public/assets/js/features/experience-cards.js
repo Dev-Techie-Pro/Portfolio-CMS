@@ -27,7 +27,7 @@
     }
 
     function setup(section) {
-      if (section.dataset[READY] === "1") return;
+      if (section.dataset[READY] === "1") teardown(section);
       section.dataset[READY] = "1";
 
       const root = section.querySelector(".exp-hscroll-root");
@@ -37,7 +37,7 @@
       const cards = t(".exp-tl-card", section);
       const panels = t(".exp-role", section);
       const roleStage = section.querySelector(".exp-role-stage");
-      if (!root || !stage || cards.length < 2) return;
+      if (!root || !stage || cards.length < 1) return;
 
       let indicator = track && track.querySelector(".exp-tl-indicator");
       if (track && !indicator) {
@@ -420,9 +420,13 @@
         ) {
           teardown(section);
         }
-        if (cards.length >= 2) setup(section);
+        if (cards.length >= 1) setup(section);
         else teardown(section);
       });
+    }
+
+    function teardownAll() {
+      t(".exp-work--hscroll").forEach((section) => teardown(section));
     }
 
     window.addEventListener(
@@ -433,13 +437,9 @@
 
     return {
       init: reconcile,
+      teardown: (section) => {
+        if (section) teardown(section);
+        else teardownAll();
+      },
     };
-  })()),
-  (function () {
-    const run = () => window.Portfolio.EXP_CARDS.init();
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", run, { once: true });
-    } else {
-      run();
-    }
   })());

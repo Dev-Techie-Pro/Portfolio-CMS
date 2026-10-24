@@ -41,7 +41,7 @@ export function PortfolioPage({ route, children }: PortfolioPageProps) {
       await waitForPortfolioScripts(route);
       if (cancelled) return;
       resetPortfolioForNavigation();
-      initPortfolioPage(route);
+      await initPortfolioPage(route);
     })();
 
     return () => {

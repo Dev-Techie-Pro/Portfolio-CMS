@@ -183,15 +183,33 @@
       </article>`;
   }
 
+  function reinitScroll(section) {
+    const run = () => {
+      Portfolio.EXP_CARDS?.teardown?.(section);
+      Portfolio.EXP_CARDS?.init?.();
+      Portfolio.ICONS?.hydrateAll?.(section);
+      if (Portfolio.ANIMATIONS?.initScrollReveal) {
+        Portfolio.ANIMATIONS.initScrollReveal();
+      }
+      window.dispatchEvent(
+        new CustomEvent("pa:public-page-ready", { detail: { source: "experience-cms" } }),
+      );
+    };
+    window.requestAnimationFrame(() => window.requestAnimationFrame(run));
+  }
+
   function renderSection(section, entries) {
     const track = section.querySelector("[data-cms-exp-track]");
     const stage = section.querySelector("[data-cms-exp-stage]");
     if (!track || !stage) return;
 
+    Portfolio.EXP_CARDS?.teardown?.(section);
+
     if (!entries.length) {
       track.innerHTML =
         '<p class="exp-cms-empty">No experience entries published yet.</p>';
       stage.innerHTML = "";
+      Portfolio.EXP_CARDS?.teardown?.(section);
       return;
     }
 
@@ -202,12 +220,7 @@
       .map((entry, index) => renderPanel(entry, index, index === 0))
       .join("");
 
-    Portfolio.ICONS?.hydrateAll?.(section);
-    if (Portfolio.ANIMATIONS?.initScrollReveal) {
-      Portfolio.ANIMATIONS.initScrollReveal();
-    }
-    Portfolio.EXP_CARDS?.init?.();
-    window.dispatchEvent(new CustomEvent("pa:public-page-ready", { detail: { source: "experience-cms" } }));
+    reinitScroll(section);
   }
 
   function hydrateAll() {
@@ -230,17 +243,4 @@
   }
 
   Portfolio.EXPERIENCE_CMS = { hydrateAll, renderSection };
-
-  function boot() {
-    if (!document.querySelector("[data-cms-experience]")) return;
-    hydrateAll();
-  }
-
-  if (document.querySelector("[data-cms-experience]")) {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", boot, { once: true });
-    } else {
-      boot();
-    }
-  }
 })();
