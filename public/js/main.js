@@ -491,7 +491,7 @@ async function buildCustomFontFromFile(file) {
 }
 
 // client/utils/googleFonts.ts
-var LAYOUT_PRELOADED = /* @__PURE__ */ new Set(["inter", "outfit"]);
+var LAYOUT_PRELOADED = /* @__PURE__ */ new Set(["outfit", "figtree", "poppins"]);
 var GOOGLE_FONT_SPECS = {
   "plus-jakarta-sans": { family: "Plus+Jakarta+Sans", weights: "300;400;600;700" },
   manrope: { family: "Manrope", weights: "300;400;600;700" },

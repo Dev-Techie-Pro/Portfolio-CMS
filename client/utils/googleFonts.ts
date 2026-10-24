@@ -1,9 +1,9 @@
 // @ts-nocheck
 /**
- * Load Google Font families on demand (layout preloads Inter + Outfit only).
+ * Load Google Font families on demand (root layout preloads Outfit + Figtree + Poppins).
  */
 
-const LAYOUT_PRELOADED = new Set(['inter', 'outfit']);
+const LAYOUT_PRELOADED = new Set(['outfit', 'figtree', 'poppins']);
 
 /** Google Fonts CSS2 family param + weight list per appearance preset id. */
 const GOOGLE_FONT_SPECS: Record<string, { family: string; weights: string }> = {

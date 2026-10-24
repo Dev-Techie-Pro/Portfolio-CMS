@@ -49,7 +49,7 @@
     "dm-mono": "https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap"
   };
   function ensureGoogleFontEarly(fontId) {
-    if (!fontId || fontId === "inter" || fontId === "outfit") return;
+    if (!fontId || fontId === "outfit" || fontId === "figtree" || fontId === "poppins") return;
     var href = GOOGLE_FONT_URLS[fontId];
     if (!href) return;
     var linkId = "pa-gf-" + fontId;
