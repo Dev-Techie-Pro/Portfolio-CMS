@@ -8412,7 +8412,7 @@ body.light .custom-theme-card.active {
 }
 .pa-exp-overview-seg-btn.is-active {
   background: var(--pa-orange);
-  color: var(--pa-orange-dim);
+  color: var(--pa-text);
   font-weight: var(--pa-fw-lg);
 }
 .pa-exp-overview-timeline-scroll {
@@ -8459,7 +8459,7 @@ body.light .custom-theme-card.active {
   left: 0;
   transform: translateX(-50%);
   background: var(--pa-orange);    
-  color: var(--pa-orange-dim);
+  color: var(--pa-text);
   font-size: 0.625rem;
   font-weight: var(--pa-fw-xxl);
   padding: 2px 6px;
@@ -8525,7 +8525,7 @@ body.light .custom-theme-card.active {
   font-size: var(--pa-fs-sm);
   font-weight: var(--pa-fw-lg);
   font-family: inherit;
-  color: var(--pa-orange-dim);
+  color: var(--pa-text);
   min-width: 4px;
   cursor: pointer;
   z-index: 1;
@@ -8978,7 +8978,7 @@ body.light .custom-theme-card.active {
   border: 0;
   border-radius: var(--pa-radius);
   background: var(--pa-green);
-  color: var(--pa-green-dim);
+  color: var(--pa-text);
   font-size: var(--pa-fs-sm);
   font-weight: var(--pa-fw-xxl);
   font-family: inherit;
