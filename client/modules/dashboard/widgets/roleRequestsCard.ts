@@ -7,16 +7,39 @@ import { getAccessCapabilities } from '../../../core/access.js';
 
 const DEFAULT_DURATION_HOURS = 3;
 
-function formatRole(role) {
+function formatRoleLabel(role) {
   return String(role || 'viewer').replace(/_/g, ' ');
 }
 
-/**
- * @typedef {{ destroy: () => void, refresh: () => Promise<void> }} AccessWidgetHandle
- */
+function roleInitials(name) {
+  return (name || '?')
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+}
+
+function setPendingBadge(badge, count) {
+  if (!badge) return;
+  const n = Math.max(0, Number(count) || 0);
+  if (n > 0) {
+    badge.textContent = `${n} pending`;
+    badge.removeAttribute('hidden');
+  } else {
+    badge.setAttribute('hidden', '');
+  }
+}
+
+function requestedRoleLabel(item) {
+  const explicit = item.requestedRole || item.requested_role;
+  if (explicit) return formatRoleLabel(explicit);
+  return 'editor';
+}
 
 /**
- * @returns {AccessWidgetHandle | null}
+ * @returns {{ destroy: () => void, refresh: () => Promise<void> }} | null
  */
 export function mountAccessRequestsWidget() {
   const caps = getAccessCapabilities();
@@ -48,14 +71,7 @@ export function mountAccessRequestsWidget() {
         ? data.items.filter((i) => i.status === 'pending')
         : [];
       const pendingCount = data.pendingCount ?? items.length;
-      if (badge) {
-        if (pendingCount > 0) {
-          badge.textContent = String(pendingCount);
-          badge.removeAttribute('hidden');
-        } else {
-          badge.setAttribute('hidden', '');
-        }
-      }
+      setPendingBadge(badge, pendingCount);
     } catch (err) {
       showToast(err?.message || 'Could not load access requests.', 'danger');
       items = [];
@@ -76,23 +92,33 @@ export function mountAccessRequestsWidget() {
   }
 
   function renderRow(item) {
-    const name = escapeHtml(item.requesterName || item.requesterEmail || 'Staff');
+    const rawName = item.requesterName || item.requesterEmail || 'Staff';
+    const name = escapeHtml(rawName);
     const email = escapeHtml(item.requesterEmail || item.contactEmail || '');
-    const role = formatRole(item.requesterRole);
-    const msg = escapeHtml((item.message || '').slice(0, 120));
+    const fromRole = formatRoleLabel(item.roleBeforeElevation || item.requesterRole);
+    const toRole = requestedRoleLabel(item);
     const when = escapeHtml(timeAgo(item.createdAt) || '');
-    return `<article class="pa-dash-quick-item" data-access-id="${escapeHtml(item.id)}">
-      <div class="pa-dash-quick-item-main">
-        <div class="pa-dash-quick-item-title">${name}</div>
-        <div class="pa-dash-quick-item-meta">${escapeHtml(role)} → <strong>editor</strong> · ${when}</div>
-        ${email ? `<div class="pa-dash-quick-item-sub">${email}</div>` : ''}
-        ${msg ? `<p class="pa-dash-quick-item-excerpt">${msg}${(item.message || '').length > 120 ? '…' : ''}</p>` : ''}
+    const init = escapeHtml(roleInitials(rawName));
+    const id = escapeHtml(item.id);
+
+    return `<article class="pa-dash-role-item" data-access-id="${id}">
+      <div class="pa-dash-role-item-avatar" aria-hidden="true">${init}</div>
+      <div class="pa-dash-role-item-body">
+        <div class="pa-dash-role-item-name">${name}</div>
+        ${email ? `<div class="pa-dash-role-item-email">${email}</div>` : ''}
+        <div class="pa-dash-role-item-change">
+          <span class="pa-dash-role-tag pa-dash-role-tag--from">${escapeHtml(fromRole)}</span>
+          <span class="pa-dash-role-item-to">to</span>
+          <span class="pa-dash-role-tag pa-dash-role-tag--to">${escapeHtml(toRole)}</span>
+          <span class="pa-dash-role-item-time">${when}</span>
+        </div>
       </div>
-      <div class="pa-dash-quick-item-actions">
-        <button type="button" class="pa-btn pa-btn-primary pa-btn-sm" data-dash-access-approve="${escapeHtml(item.id)}" aria-label="Approve request from ${name}">
+      <div class="pa-dash-role-item-actions">
+        <button type="button" class="pa-dash-role-approve" data-dash-access-approve="${id}" aria-label="Approve request from ${name}">
           <i class="ri-check-line" aria-hidden="true"></i>
+          Approve
         </button>
-        <button type="button" class="pa-btn pa-btn-cancel pa-btn-sm" data-dash-access-reject="${escapeHtml(item.id)}" aria-label="Reject request from ${name}">
+        <button type="button" class="pa-dash-role-reject" data-dash-access-reject="${id}" aria-label="Reject request from ${name}">
           <i class="ri-close-line" aria-hidden="true"></i>
         </button>
       </div>

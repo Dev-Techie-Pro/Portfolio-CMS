@@ -57,21 +57,26 @@ export const DASHBOARD_EXPERIENCE_WIDGET_HTML = `
 
 export const DASHBOARD_QUICK_WIDGETS_ROW_HTML = `
         <div class="pa-dash-quick-row">
-          <div class="pa-dash-panel pa-dash-quick-card pa-card-no-hover pa-admin-only-item" id="paDashAccessWidget" hidden>
-            <div class="pa-dash-recent-header">
-              <div class="pa-dash-chart-head-text">
-                <span class="pa-dash-recent-title">Access requests</span>
-                <span class="pa-dash-chart-sub">Temporary editor access</span>
+          <div class="pa-dash-panel pa-dash-quick-card pa-dash-role-card pa-card-no-hover pa-admin-only-item" id="paDashAccessWidget" hidden>
+            <header class="pa-dash-role-head">
+              <div class="pa-dash-role-head-main">
+                <div class="pa-dash-role-icon" aria-hidden="true"><i class="ri-shield-check-line"></i></div>
+                <div class="pa-dash-role-head-text">
+                  <h3 class="pa-dash-role-title">Role Requests</h3>
+                  <p class="pa-dash-role-sub">Users asking for a higher role</p>
+                </div>
               </div>
-              <span class="pa-dash-widget-badge" id="paDashAccessBadge" hidden>0</span>
-              <a href="/access-requests" class="pa-dash-view-all">View all</a>
-            </div>
-            <div class="pa-dash-quick-list" id="paDashAccessList" aria-live="polite"></div>
-            <div class="pa-dash-widget-empty" id="paDashAccessEmpty" hidden>
+              <div class="pa-dash-role-head-end">
+                <span class="pa-dash-role-pending-badge" id="paDashAccessBadge" hidden>0 pending</span>
+                <a href="/access-requests" class="pa-dash-view-all">View all</a>
+              </div>
+            </header>
+            <div class="pa-dash-role-list" id="paDashAccessList" aria-live="polite"></div>
+            <div class="pa-dash-widget-empty pa-dash-role-empty" id="paDashAccessEmpty" hidden>
               <i class="ri-shield-user-line" aria-hidden="true"></i>
               <p>No pending requests</p>
             </div>
-            <div class="pa-dash-widget-skeleton pa-dash-widget-skeleton--short" id="paDashAccessSkeleton" aria-hidden="true"></div>
+            <div class="pa-dash-widget-skeleton pa-dash-role-skeleton" id="paDashAccessSkeleton" aria-hidden="true"></div>
           </div>
           <div class="pa-dash-panel pa-dash-quick-card pa-dash-comments-card pa-card-no-hover pa-editor-only-item" id="paDashCommentsWidget" hidden>
             <header class="pa-dash-comments-head">
