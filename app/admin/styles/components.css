@@ -3721,6 +3721,15 @@ body.pa-rte-fullscreen-active {
 .pa-chip-remove:hover {
   color: var(--pa-red);
 }
+.pa-chip-list{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pa-gap-sm);
+  margin-bottom: 10px;
+}
+.pa-chip-input{
+  margin-bottom: 10px;
+}
 
 .pa-panel-footer {
   padding: 10px 14px;

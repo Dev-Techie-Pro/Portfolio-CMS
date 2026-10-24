@@ -65,6 +65,8 @@ export const PAGE_BODY_CLASS: Partial<Record<PortfolioRoute, string>> = {
 
 export const PAGE_EXTRA_SCRIPTS: Record<PortfolioRoute, ScriptEntry[]> = {
   home: [
+    { type: "classic", src: "/assets/js/data/experience-loader.js", defer: true },
+    { type: "classic", src: "/assets/js/features/experience-cms.js", defer: true },
     { type: "classic", src: "/assets/js/features/experience-cards.js", defer: true },
     { type: "classic", src: "/assets/js/data/projects-data.js", defer: true },
     { type: "classic", src: "/assets/js/data/projects-loader.js", defer: true },
@@ -82,6 +84,8 @@ export const PAGE_EXTRA_SCRIPTS: Record<PortfolioRoute, ScriptEntry[]> = {
   about: [],
   skills: [...SWIPER],
   experience: [
+    { type: "classic", src: "/assets/js/data/experience-loader.js", defer: true },
+    { type: "classic", src: "/assets/js/features/experience-cms.js", defer: true },
     { type: "classic", src: "/assets/js/features/experience-cards.js", defer: true },
   ],
   projects: [

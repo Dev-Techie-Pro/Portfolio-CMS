@@ -34,6 +34,7 @@ export function resetPortfolioForNavigation() {
   if (typeof window === "undefined") return;
 
   window.Portfolio?.__nextReset?.();
+  (window.Portfolio as { resetExperience?: () => void })?.resetExperience?.();
   window.Portfolio?.COMPONENT_LOADER?.reset?.();
   window.Portfolio?.BLOG_DETAILS?.reset?.();
   if (window.Portfolio?.BLOG_ENGAGEMENT) {
@@ -98,6 +99,7 @@ export function initPortfolioPage(route: PortfolioRoute) {
   P.BLOG_LINKS?.init?.();
   P.BLOGS_PAGE?.init?.();
   P.TESTIMONIALS_PAGE?.init?.();
+  void (P as { EXPERIENCE_CMS?: { hydrateAll?: () => Promise<void> } }).EXPERIENCE_CMS?.hydrateAll?.();
   P.CAROUSEL?.init?.();
   (window as unknown as { Portfolio?: { TICKER?: { initTickers?: () => void } } }).Portfolio?.TICKER?.initTickers?.();
 

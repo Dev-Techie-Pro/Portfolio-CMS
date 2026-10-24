@@ -23,6 +23,7 @@ const endpoints = [
   "/api/portfolio/highlights",
   "/api/portfolio/testimonials",
   "/api/portfolio/faqs",
+  "/api/portfolio/experience",
 ];
 
 export default function run() {

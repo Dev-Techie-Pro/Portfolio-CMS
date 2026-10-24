@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Experience career timeline — preview (CMS fields)</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/standalone/experience-timeline-preview.css" />
+  <script type="application/json" id="experience-entries-db">[
+  {
+    "legacy_id": 1,
+    "job_title": "Full Stack Web Developer",
+    "company": "Web-Tech",
+    "location": "Islamabad, Pakistan",
+    "employment_type": "full-time",
+    "work_mode": "on-site",
+    "team_size": "8+ Members",
+    "domain": "Web Development",
+    "start_date": "2025-04",
+    "end_date": null,
+    "is_current": true,
+    "description": "Developed fully custom WordPress themes and plugins from scratch using PHP, Advanced Custom Fields, and WordPress hooks/filters for scalable solutions. Built and maintained enterprise-level .NET web applications using ASP.NET Core, MVC, Entity Framework, and SQL Server. Developed scalable backend services and RESTful APIs using Node.js, Express.js, and MongoDB/MySQL databases. Created dynamic, responsive front-end interfaces using Angular, TypeScript, Bootstrap, and Tailwind CSS.",
+    "key_achievements": [
+      "Optimized database performance through complex LINQ queries, stored procedures, and indexing strategies",
+      "Integrated third-party services and payment gateways into WordPress and Node.js applications",
+      "Collaborated with cross-functional teams in an agile environment, ensuring timely delivery of high-quality solutions"
+    ],
+    "role_impacts": [
+      {
+        "value": "10+",
+        "label": "Projects Delivered"
+      },
+      {
+        "value": "40%",
+        "label": "Improvement in Performance"
+      },
+      {
+        "value": "100%",
+        "label": "Client Satisfaction"
+      }
+    ],
+    "technology_ids": [],
+    "sort_order": 0
+  },
+  {
+    "legacy_id": 2,
+    "job_title": "Full Stack Web Developer",
+    "company": "Media@Marsons",
+    "location": "Islamabad, Pakistan",
+    "employment_type": "full-time",
+    "work_mode": "on-site",
+    "team_size": "6+ Members",
+    "domain": "Digital Media",
+    "start_date": "2023-12",
+    "end_date": "2025-01",
+    "is_current": false,
+    "description": "Developed and maintained full-stack web applications using Angular and .NET Core. Designed and optimized RESTful APIs using Entity Framework, LINQ, and SQL Server. Built custom WordPress themes and plugins using Elementor Pro and WP Bakery for client projects.",
+    "key_achievements": [
+      "Delivered 10+ scalable web applications",
+      "Improved API performance by 40%",
+      "Built a reusable components and plugins library"
+    ],
+    "role_impacts": [
+      {
+        "value": "10+",
+        "label": "Apps Delivered"
+      },
+      {
+        "value": "40%",
+        "label": "API Performance Gain"
+      },
+      {
+        "value": "12+",
+        "label": "Reusable Modules"
+      }
+    ],
+    "technology_ids": [],
+    "sort_order": 1
+  },
+  {
+    "legacy_id": 3,
+    "job_title": ".NET Developer & Web Developer",
+    "company": "Oxygen Soft",
+    "location": "Lahore, Pakistan",
+    "employment_type": "full-time",
+    "work_mode": "on-site",
+    "team_size": "10+ Members",
+    "domain": "Enterprise Software",
+    "start_date": "2022-05",
+    "end_date": "2023-11",
+    "is_current": false,
+    "description": "Designed and developed .NET Core and Angular-based web applications. Built desktop applications using WPF and WinForms for enterprise clients. Advanced WordPress development, theme and plugin creation with custom PHP and MySQL integration.",
+    "key_achievements": [
+      "Developed enterprise-grade applications",
+      "Integrated 3rd-party APIs and payment gateways",
+      "Reduced bugs by 30% through optimized code"
+    ],
+    "role_impacts": [
+      {
+        "value": "8+",
+        "label": "Enterprise Apps"
+      },
+      {
+        "value": "30%",
+        "label": "Fewer Production Bugs"
+      },
+      {
+        "value": "15+",
+        "label": "API Integrations"
+      }
+    ],
+    "technology_ids": [],
+    "sort_order": 2
+  },
+  {
+    "legacy_id": 4,
+    "job_title": ".NET Developer Intern",
+    "company": "Oxygen Soft",
+    "location": "Lahore, Pakistan",
+    "employment_type": "internship",
+    "work_mode": "on-site",
+    "team_size": "10+ Members",
+    "domain": ".NET Development",
+    "start_date": "2021-05",
+    "end_date": "2021-08",
+    "is_current": false,
+    "description": "Developed and maintained .NET desktop applications ensuring optimal performance and scalability. Collaborated with teams to analyze requirements, design solutions, and implement features adhering to coding standards. Participated in code reviews and documented processes.",
+    "key_achievements": [
+      "Implemented 5+ core features",
+      "Assisted in system analysis and design",
+      "Followed best coding practices"
+    ],
+    "role_impacts": [
+      {
+        "value": "5+",
+        "label": "Core Features Shipped"
+      },
+      {
+        "value": "100%",
+        "label": "Sprint Delivery Rate"
+      },
+      {
+        "value": "3",
+        "label": "Systems Documented"
+      }
+    ],
+    "technology_ids": [],
+    "sort_order": 3
+  }
+]</script>
+</head>
+<body>
+  <header class="exp-preview-banner" role="note">
+    <div class="container">
+      <p><strong>Standalone preview</strong> — Career timeline HTML aligned with <code>experience_entries</code> (job_title, company, location, employment_type, work_mode, team_size, domain, dates, description, key_achievements, role_impacts, technology_ids). JSON payload: <code>#experience-entries-db</code>. Not wired into the Next.js app.</p>
+      <p class="exp-preview-banner-hint">Serve via <code>npm run dev</code> and open <code>/standalone/experience-timeline-preview.html</code>.</p>
+    </div>
+  </header>
+<section class="exp-work exp-work--hscroll" id="exp-work" aria-label="Career timeline">
+      <div class="exp-hscroll-root">
+        <div class="container exp-hscroll-intro">
+          <div class="exp-work-header reveal">
+            <div class="exp-work-title-wrap">
+              <div class="section-title-group reveal-left ">
+                <p class="section-label">My Journey</p>
+                <h2 class="about-heading"> Career <br />
+                  <strong> Timeline</strong>
+                </h2>
+              </div>
+              <p class="exp-work-subtitle reveal" >A timeline of my professional journey, the impact I've created, and the technologies I've mastered along the way.</p>
+            </div>
+          </div>
+        </div>
+        <div class="exp-hscroll-stage">
+        <div class="container">
+        <div class="exp-tl" data-exp-timeline="">
+          <div class="exp-tl-track" role="tablist" aria-label="Career timeline">
+            <button class="exp-tl-card is-exp-active" type="button" role="tab" id="exp-tab-0" aria-selected="true" aria-controls="exp-panel-0" data-exp-index="0">
+              <span class="exp-tl-num" aria-hidden="true">01</span>
+              <div class="exp-tl-content">
+                <h3 class="exp-tl-role">Full Stack Web Developer</h3>
+                <p class="exp-tl-company">Web-Tech</p>
+                <p class="exp-tl-meta"><span class="icon" data-icon="siLocationPin"></span> Islamabad, Pakistan</p>
+                <p class="exp-tl-meta"><span class="icon" data-icon="siCalendar"></span> Apr 2025 – Present</p>
+              </div>
+            </button>
+            <button class="exp-tl-card" type="button" role="tab" id="exp-tab-1" aria-selected="false" aria-controls="exp-panel-1" data-exp-index="1" tabindex="-1">
+              <span class="exp-tl-num" aria-hidden="true">02</span>
+              <div class="exp-tl-content">
+                <h3 class="exp-tl-role">Full Stack Web Developer</h3>
+                <p class="exp-tl-company">Media@Marsons</p>
+                <p class="exp-tl-meta"><span class="icon" data-icon="siLocationPin"></span> Islamabad, Pakistan</p>
+                <p class="exp-tl-meta"><span class="icon" data-icon="siCalendar"></span> Dec 2023 – Jan 2025</p>
+              </div>
+            </button>
+
+            <button class="exp-tl-card" type="button" role="tab" id="exp-tab-2" aria-selected="false" aria-controls="exp-panel-2" data-exp-index="2" tabindex="-1">
+              <span class="exp-tl-num" aria-hidden="true">03</span>
+              <div class="exp-tl-content">
+                <h3 class="exp-tl-role">.NET Developer &amp; Web Developer</h3>
+                <p class="exp-tl-company">Oxygen Soft</p>
+                <p class="exp-tl-meta"><span class="icon" data-icon="siLocationPin"></span> Lahore, Pakistan</p>
+                <p class="exp-tl-meta"><span class="icon" data-icon="siCalendar"></span> May 2022 – Nov 2023</p>
+              </div>
+            </button>
+
+            <button class="exp-tl-card" type="button" role="tab" id="exp-tab-3" aria-selected="false" aria-controls="exp-panel-3" data-exp-index="3" tabindex="-1">
+              <span class="exp-tl-num" aria-hidden="true">04</span>
+              <div class="exp-tl-content">
+                <h3 class="exp-tl-role">.NET Developer Intern</h3>
+                <p class="exp-tl-company">Oxygen Soft</p>
+                <p class="exp-tl-meta"><span class="icon" data-icon="siLocationPin"></span> Lahore, Pakistan</p>
+                <p class="exp-tl-meta"><span class="icon" data-icon="siCalendar"></span> May 2021 – Aug 2021</p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="exp-role-stage" data-exp-stage="">
+          <article class="exp-role is-exp-active" id="exp-panel-0" role="tabpanel" aria-labelledby="exp-tab-0" data-exp-index="0" data-cms-legacy-id="1" data-cms-table="experience_entries">
+            <aside class="exp-role-company">
+              <h3 class="exp-role-company-name">Web-Tech</h3>
+              <p class="exp-role-company-loc"><span class="icon" data-icon="siLocationPin"></span> Islamabad, Pakistan</p>
+              <ul class="exp-role-facts">
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siBriefcase"></span></span><span><small>Type</small>Full Time</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siHome"></span></span><span><small>Mode</small>On-site</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siUsers"></span></span><span><small>Team Size</small>8+ Members</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siGlobe"></span></span><span><small>Domain</small>Web Development</span></li>
+              </ul>
+            </aside>
+            <div class="exp-role-main">
+              <div class="exp-role-head">
+                <span class="exp-role-badge">Current Role</span>
+                <p class="exp-role-dates">Apr 2025 – Present</p>
+                <h3 class="exp-role-title">Full Stack Web Developer</h3>
+              </div>
+              <p class="exp-role-desc is-collapsed">Developed fully custom WordPress themes and plugins from scratch using PHP, Advanced Custom Fields, and WordPress hooks/filters for scalable solutions. Built and maintained enterprise-level .NET web applications using ASP.NET Core, MVC, Entity Framework, and SQL Server. Developed scalable backend services and RESTful APIs using Node.js, Express.js, and MongoDB/MySQL databases. Created dynamic, responsive front-end interfaces using Angular, TypeScript, Bootstrap, and Tailwind CSS.</p>
+              <button class="exp-role-toggle is-collapsed" type="button" aria-expanded="false"><span class="exp-role-toggle-label">Show more</span> <span class="icon" data-icon="siArrowUp"></span></button>
+              <div class="exp-role-achievements">
+                  <div class="exp-role-achievements-list">
+                    <h4 class="exp-role-kicker"> Key Achievements</h4>
+                    <ul>
+                      <li>Optimized database performance through complex LINQ queries, stored procedures, and indexing strategies</li>
+                      <li>Integrated third-party services and payment gateways into WordPress and Node.js applications</li>
+                      <li>Collaborated with cross-functional teams in an agile environment, ensuring timely delivery of high-quality solutions</li>
+                    </ul>
+                  </div>
+                  <div class="exp-role-impact">
+                    <h4 class="exp-role-kicker">Role Impact</h4>
+                    <ul>
+                      <li><strong>10+</strong><span>Projects Delivered</span></li>
+                      <li><strong>40%</strong><span>Improvement in Performance</span></li>
+                      <li><strong>100%</strong><span>Client Satisfaction</span></li>
+                    </ul>
+                  </div>
+                </div>
+            </div>
+            <aside class="exp-role-aside">
+              <div class="exp-role-tech">
+                <h4 class="exp-role-kicker">Technologies</h4>
+                <div class="exp-role-tech-grid">
+                  <span class="exp-tech-chip" title="WordPress"><span class="icon" data-icon="siWordpress"></span></span>
+                  <span class="exp-tech-chip" title="PHP"><span class="icon" data-icon="siPhpFill"></span></span>
+                  <span class="exp-tech-chip" title="Node.js"><span class="icon" data-icon="siNodeJs"></span></span>
+                  <span class="exp-tech-chip" title="Angular"><span class="icon" data-icon="siAngularJs"></span></span>
+                  <span class="exp-tech-chip express-js" title="Express JS"><span class="icon" data-icon="siExpressJs"></span></span>
+                  <span class="exp-tech-chip" title="TypeScript"><span class="icon" data-icon="siTypescript"></span></span>
+                  <span class="exp-tech-chip" title=".NET Core"><span class="icon" data-icon="siDotNetCore"></span></span>
+                  <span class="exp-tech-chip" title="MongoDB"><span class="icon" data-icon="siMongodB"></span></span>
+                  <span class="exp-tech-chip" title="Bootstrap"><span class="icon" data-icon="siBootstrap"></span></span>
+                  <span class="exp-tech-chip" title="Tailwind CSS"><span class="icon" data-icon="siTailwindcss"></span></span>
+                  <span class="exp-tech-chip" title="SQL Server"><span class="icon" data-icon="siSql"></span></span>
+                  <span class="exp-tech-chip" title="PHP MyAdmin"><span class="icon" data-icon="siMySql"></span></span>
+                </div>
+              </div>
+              <a href="/projects" class="exp-role-cases">View Case Studies <span class="icon" data-icon="siArrowRight"></span></a>
+            </aside>
+          </article>
+
+          <article class="exp-role" id="exp-panel-1" role="tabpanel" aria-labelledby="exp-tab-1" data-exp-index="1" aria-hidden="true" data-cms-legacy-id="2" data-cms-table="experience_entries">
+            <aside class="exp-role-company">
+              <h3 class="exp-role-company-name">Media@Marsons</h3>
+              <p class="exp-role-company-loc"><span class="icon" data-icon="siLocationPin"></span> Islamabad, Pakistan</p>
+              <ul class="exp-role-facts">
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siBriefcase"></span></span><span><small>Type</small>Full Time</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siHome"></span></span><span><small>Mode</small>On-site</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siUsers"></span></span><span><small>Team Size</small>6+ Members</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siGlobe"></span></span><span><small>Domain</small>Digital Media</span></li>
+              </ul>
+            </aside>
+            <div class="exp-role-main">
+              <div class="exp-role-head">
+                <span class="exp-role-badge is-past">Previous Role</span>
+                <p class="exp-role-dates">Dec 2023 – Jan 2025</p>
+                <h3 class="exp-role-title">Full Stack Web Developer</h3>
+              </div>
+              <p class="exp-role-desc is-collapsed">Developed and maintained full-stack web applications using Angular and .NET Core. Designed and optimized RESTful APIs using Entity Framework, LINQ, and SQL Server. Built custom WordPress themes and plugins using Elementor Pro and WP Bakery for client projects.</p>
+              <button class="exp-role-toggle is-collapsed" type="button" aria-expanded="false"><span class="exp-role-toggle-label">Show more</span> <span class="icon" data-icon="siArrowUp"></span></button>
+              <div class="exp-role-achievements">
+                  <div class="exp-role-achievements-list">
+                    <h4 class="exp-role-kicker">Key Achievements</h4>
+                    <ul>
+                      <li>Delivered 10+ scalable web applications</li>
+                      <li>Improved API performance by 40%</li>
+                      <li>Built a reusable components and plugins library</li>
+                    </ul>
+                  </div>
+                  <div class="exp-role-impact">
+                    <h4 class="exp-role-kicker">Role Impact</h4>
+                    <ul>
+                      <li><strong>10+</strong><span>Apps Delivered</span></li>
+                      <li><strong>40%</strong><span>API Performance Gain</span></li>
+                      <li><strong>12+</strong><span>Reusable Modules</span></li>
+                    </ul>
+                  </div>
+                </div>
+            </div>
+            <aside class="exp-role-aside">
+              <div class="exp-role-tech">
+                <h4 class="exp-role-kicker">Technologies</h4>
+                <div class="exp-role-tech-grid">
+                  <span class="exp-tech-chip" title="WordPress">
+                    <span class="icon" data-icon="siWordpress"></span>
+                  </span>
+                  <span class="exp-tech-chip" title=".NET">
+                    <span class="icon" data-icon="siDotNet"></span>
+                  </span>
+                  <span class="exp-tech-chip" title=".Net Core">
+                    <span class="icon" data-icon="siDotNetCore"></span>
+
+                  </span>
+                  <span class="exp-tech-chip" title="JavaScript">
+                    <span class="icon" data-icon="siJavascript"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="TypeScript">
+                    <span class="icon" data-icon="siTypescript"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="SQL Server">
+                    <span class="icon" data-icon="siSql"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="Next Js">
+                   <span class="icon" data-icon="siNodeJs"></span>
+                  </span>
+                  
+                  <span class="exp-tech-chip" title="Visual Studio">
+                    <span class="icon" data-icon="siVisualStudio"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="SQL Database">
+                   <span class="icon" data-icon="siSql"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="PHP">
+                    <span class="icon" data-icon="siPhpFill"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="PHP MyAdmin">
+                    <span class="icon" data-icon="siPhpMyAdmin"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="MySQL">
+                    <span class="icon" data-icon="siMySql"></span>
+                  </span>    
+                  <span class="exp-tech-chip" title="Sublime IDE">
+                    <span class="icon" data-icon="siSublimeIDE"></span>
+                  </span>         
+                  <span class="exp-tech-chip" title="Elementor">
+                    <span class="icon" data-icon="siElementor"></span>
+                  </span>                     
+                </div>
+              </div>
+              <a href="/projects" class="exp-role-cases">View Case Studies <span class="icon" data-icon="siArrowRight"></span></a>
+            </aside>
+          </article>
+
+          <article class="exp-role" id="exp-panel-2" role="tabpanel" aria-labelledby="exp-tab-2" data-exp-index="2" aria-hidden="true" data-cms-legacy-id="3" data-cms-table="experience_entries">
+            <aside class="exp-role-company">
+              <h3 class="exp-role-company-name">Oxygen Soft</h3>
+              <p class="exp-role-company-loc"><span class="icon" data-icon="siLocationPin"></span> Lahore, Pakistan</p>
+              <ul class="exp-role-facts">
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siBriefcase"></span></span><span><small>Type</small>Full Time</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siHome"></span></span><span><small>Mode</small>On-site</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siUsers"></span></span><span><small>Team Size</small>10+ Members</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siGlobe"></span></span><span><small>Domain</small>Enterprise Software</span></li>
+              </ul>
+            </aside>
+            <div class="exp-role-main">
+              <div class="exp-role-head">
+                <span class="exp-role-badge is-past">Previous Role</span>
+                <p class="exp-role-dates">May 2022 – Nov 2023</p>
+                <h3 class="exp-role-title">.NET Developer &amp; Web Developer</h3>
+              </div>
+              <p class="exp-role-desc is-collapsed">Designed and developed .NET Core and Angular-based web applications. Built desktop applications using WPF and WinForms for enterprise clients. Advanced WordPress development, theme and plugin creation with custom PHP and MySQL integration.</p>
+              <button class="exp-role-toggle is-collapsed" type="button" aria-expanded="false"><span class="exp-role-toggle-label">Show more</span> <span class="icon" data-icon="siArrowUp"></span></button>
+              <div class="exp-role-achievements">
+                  <div class="exp-role-achievements-list">
+                    <h4 class="exp-role-kicker">Key Achievements</h4>
+                    <ul>
+                      <li>Developed enterprise-grade applications</li>
+                      <li>Integrated 3rd-party APIs and payment gateways</li>
+                      <li>Reduced bugs by 30% through optimized code</li>
+                    </ul>
+                  </div>
+                  <div class="exp-role-impact">
+                    <h4 class="exp-role-kicker">Role Impact</h4>
+                    <ul>
+                      <li><strong>8+</strong><span>Enterprise Apps</span></li>
+                      <li><strong>30%</strong><span>Fewer Production Bugs</span></li>
+                      <li><strong>15+</strong><span>API Integrations</span></li>
+                    </ul>
+                  </div>
+                </div>
+            </div>
+            <aside class="exp-role-aside">
+              <div class="exp-role-tech">
+                <h4 class="exp-role-kicker">Technologies</h4>
+                <div class="exp-role-tech-grid">
+                  <span class="exp-tech-chip" title=".NET">
+                    <span class="icon" data-icon="siDotNet"></span>
+                  </span>
+                  <span class="exp-tech-chip" title=".Net Core">
+                    <span class="icon" data-icon="siDotNetCore"></span>
+
+                  </span>
+                  <span class="exp-tech-chip" title="C Sharp">
+                    <span class="icon" data-icon="siCsharp"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="Visual Studio">
+                    <span class="icon" data-icon="siVisualStudio"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="SQL Database">
+                   <span class="icon" data-icon="siSql"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="PHP">
+                    <span class="icon" data-icon="siPhpFill"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="MySQL">
+                    <span class="icon" data-icon="siMySql"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="Sublime IDE">
+                    <span class="icon" data-icon="siSublimeIDE"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="Web Auth">
+                    <span class="icon" data-icon="siWebAuth"></span>
+                  </span>
+                  
+                  <span class="exp-tech-chip" title="Compose Multiplatform">
+                    <span class="icon" data-icon="siComposeMultiplatform"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="Microsoft Azure">
+                    <span class="icon" data-icon="siMicrosoftAzure"></span>
+                  </span>
+                
+                </div>
+              </div>
+              <a href="/projects" class="exp-role-cases">View Case Studies <span class="icon" data-icon="siArrowRight"></span></a>
+            </aside>
+          </article>
+
+          <article class="exp-role" id="exp-panel-3" role="tabpanel" aria-labelledby="exp-tab-3" data-exp-index="3" aria-hidden="true" data-cms-legacy-id="4" data-cms-table="experience_entries">
+            <aside class="exp-role-company">
+              <h3 class="exp-role-company-name">Oxygen Soft</h3>
+              <p class="exp-role-company-loc"><span class="icon" data-icon="siLocationPin"></span> Lahore, Pakistan</p>
+              <ul class="exp-role-facts">
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siBriefcase"></span></span><span><small>Type</small>Internship</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siHome"></span></span><span><small>Mode</small>On-site</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siUsers"></span></span><span><small>Team Size</small>10+ Members</span></li>
+                <li><span class="exp-role-fact-icon"><span class="icon" data-icon="siGlobe"></span></span><span><small>Domain</small>.NET Development</span></li>
+              </ul>
+            </aside>
+            <div class="exp-role-main">
+              <div class="exp-role-head">
+                <span class="exp-role-badge is-past">Internship</span>
+                <p class="exp-role-dates">May 2021 – Aug 2021</p>
+                <h3 class="exp-role-title">.NET Developer Intern</h3>
+              </div>
+              <p class="exp-role-desc is-collapsed">Developed and maintained .NET desktop applications ensuring optimal performance and scalability. Collaborated with teams to analyze requirements, design solutions, and implement features adhering to coding standards. Participated in code reviews and documented processes.</p>
+              <button class="exp-role-toggle is-collapsed" type="button" aria-expanded="false"><span class="exp-role-toggle-label">Show more</span> <span class="icon" data-icon="siArrowUp"></span></button>
+              <div class="exp-role-achievements">
+                <div class="exp-role-achievements-list">
+                  <h4 class="exp-role-kicker">Key Achievements</h4>
+                  <ul>
+                    <li>Implemented 5+ core features</li>
+                    <li>Assisted in system analysis and design</li>
+                    <li>Followed best coding practices</li>
+                  </ul>
+                </div>
+                <div class="exp-role-impact">
+                  <h4 class="exp-role-kicker">Role Impact</h4>
+                  <ul>
+                    <li><strong>5+</strong><span>Core Features Shipped</span></li>
+                    <li><strong>100%</strong><span>Sprint Delivery Rate</span></li>
+                    <li><strong>3</strong><span>Systems Documented</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <aside class="exp-role-aside">
+              <div class="exp-role-tech">
+                <h4 class="exp-role-kicker">Technologies</h4>
+                <div class="exp-role-tech-grid">
+                  <span class="exp-tech-chip" title=".NET">
+                    <span class="icon" data-icon="siDotNet"></span>
+                  </span>
+                  <span class="exp-tech-chip" title=".Net Core">
+                    <span class="icon" data-icon="siDotNetCore"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="C Sharp">
+                    <span class="icon" data-icon="siCsharp"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="Visual Studio">
+                    <span class="icon" data-icon="siVisualStudio"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="SQL Database">
+                   <span class="icon" data-icon="siSql"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="Compose Multiplatform">
+                    <span class="icon" data-icon="siComposeMultiplatform"></span>
+                  </span>
+                  <span class="exp-tech-chip" title="Microsoft Azure">
+                    <span class="icon" data-icon="siMicrosoftAzure"></span>
+                  </span>
+                </div>
+              </div>
+              <a href="/projects" class="exp-role-cases">View Case Studies <span class="icon" data-icon="siArrowRight"></span></a>
+            </aside>
+          </article>
+        </div>
+
+        <div class="exp-skill-row">
+          <div class="exp-skill-item">
+            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="siCode"></span></div>
+            <div>
+              <h4>Full Stack Expertise</h4>
+              <p>End-to-end delivery across UI, APIs, and databases.</p>
+            </div>
+          </div>
+          <div class="exp-skill-item">
+            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="siUsers"></span></div>
+            <div>
+              <h4>Agile Collaboration</h4>
+              <p>Cross-functional teamwork with timely, quality releases.</p>
+            </div>
+          </div>
+          <div class="exp-skill-item">
+            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="siSpark"></span></div>
+            <div>
+              <h4>Performance Focus</h4>
+              <p>Faster queries, lighter frontends, measurable gains.</p>
+            </div>
+          </div>
+          <div class="exp-skill-item">
+            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="siAward"></span></div>
+            <div>
+              <h4>Client Satisfaction</h4>
+              <p>Reliable handoffs and 100% client satisfaction.</p>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    
+  <script src="/assets/js/utils/dom.js" defer></script>
+  <script src="/assets/js/utils/events.js" defer></script>
+  <script src="/assets/js/utils/helpers.js" defer></script>
+  <script src="/assets/js/modules/textures.js" defer></script>
+  <script src="/assets/js/features/experience-cards.js" defer></script>
+  <script type="module" src="/assets/js/loaders/icon-loader.js"></script>
+</body>
+</html>

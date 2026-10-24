@@ -12883,7 +12883,7 @@ html.theme-light .back-top:hover {
 }
 .exp-work--hscroll.is-exp-pinned .exp-hscroll-stage {
   position: sticky;
-  top: calc(var(--nav-h) + 12px);
+  top: calc(var(--nav-h) + 5px);
   z-index: 4;
 }
 .exp-work--hscroll .exp-tl {
@@ -13060,7 +13060,6 @@ html.theme-light .back-top:hover {
   letter-spacing: 0.02em;
   color: var(--white);
   line-height: 1.25;
-  margin-bottom: 0.35rem;
 }
 .exp-work--hscroll .exp-tl-company {
   font-family: var(--font-mono);

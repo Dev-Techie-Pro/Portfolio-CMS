@@ -32,6 +32,7 @@ const allowlist = new Set([
   'portfolio/highlights/route.ts',
   'portfolio/faqs/route.ts',
   'portfolio/testimonials/route.ts',
+  'portfolio/experience/route.ts',
   'metrics/web-vitals/route.ts',
 ]);
 
