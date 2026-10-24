@@ -100,7 +100,7 @@
   width: auto !important;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--fs-8);
   padding: 0 !important;
 }
 .si-swiper-pagination .swiper-pagination-bullet {
@@ -185,8 +185,8 @@
   transform: translateY(-50%);
   z-index: 4;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  font-weight: 700;
+  font-size: var(--fs-10);
+  font-weight: var(--fw-7);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
@@ -235,7 +235,7 @@
 .si-ticker-item {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--fs-10);
   padding: 10px 20px;
   margin: 0 6px;
   background: var(--bg-card);
@@ -269,8 +269,8 @@
 }
 .si-ticker-label {
   font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-6);
   letter-spacing: 0.04em;
   color: var(--gray-muted);
   transition: color var(--si-transition);
@@ -285,7 +285,7 @@
   margin: 0 8px;
   color: var(--accent);
   opacity: 0.35;
-  font-size: 1rem;
+  font-size: var(--fs-16);
   flex-shrink: 0;
   pointer-events: none;
   user-select: none;
@@ -311,7 +311,7 @@
     height: 22px;
   }
   .si-ticker-label {
-    font-size: 0.72rem;
+    font-size: var(--fs-12);
   }
   .si-ticker-track {
     padding: 0;

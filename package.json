@@ -11,6 +11,7 @@
     "dev:full": "npm run build:client && next dev",
     "dev:clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && next dev",
     "sync:remixicon": "node scripts/sync-remixicon-vendor.mjs",
+    "tokens:public-css": "node scripts/apply-public-css-tokens.mjs",
     "build:client": "node client/build-client.mjs",
     "build:client:mirror": "node client/build-client.mjs --mirror-standalone",
     "build": "npm run sync:remixicon && npm run build:client && next build",
