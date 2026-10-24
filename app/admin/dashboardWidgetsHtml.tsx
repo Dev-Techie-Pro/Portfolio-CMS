@@ -1,46 +1,64 @@
 // @ts-nocheck
 /** Dashboard widget shells — mounted by client/modules/dashboard/widgets/*.ts */
 export const DASHBOARD_EXPERIENCE_WIDGET_HTML = `
-        <div class="pa-dash-widget pa-dash-widget--experience pa-dash-chart pa-card-no-hover" id="paDashExpWidget">
-          <div class="pa-dash-chart-head">
-            <div class="pa-dash-chart-head-text">
-              <span class="pa-dash-chart-title">Career timeline</span>
-              <span class="pa-dash-chart-sub">Experience overview</span>
+        <section class="pa-exp-overview" id="paDashExpWidget" aria-labelledby="paDashExpTitle">
+          <header class="pa-exp-overview-head">
+            <div class="pa-exp-overview-head-text">
+              <h2 class="pa-exp-overview-title" id="paDashExpTitle">Experience Overview</h2>
+              <p class="pa-exp-overview-sub">Your career timeline at a glance</p>
             </div>
-            <a href="/experience" class="pa-dash-view-all">Manage</a>
-          </div>
-          <div class="pa-dash-exp-mini-stats" id="paDashExpMiniStats" aria-live="polite"></div>
-          <div class="pa-dash-exp-body">
-            <div class="pa-dash-exp-gantt-wrap">
-              <div class="pa-dash-exp-gantt" id="paDashExpGantt" role="img" aria-label="Career timeline chart"></div>
-            </div>
-            <div class="pa-dash-exp-secondary">
-              <div class="pa-dash-exp-secondary-head">
-                <span class="pa-dash-chart-sub" id="paDashExpDonutLabel">Duration by company</span>
-                <div class="pa-dash-exp-toggle" role="tablist" aria-label="Duration breakdown">
-                  <button type="button" class="pa-dash-exp-toggle-btn is-active" data-exp-donut-mode="company" role="tab" aria-selected="true">Company</button>
-                  <button type="button" class="pa-dash-exp-toggle-btn" data-exp-donut-mode="type" role="tab" aria-selected="false">Type</button>
+            <a href="/experience" class="pa-exp-overview-manage">
+              <i class="ri-arrow-right-line" aria-hidden="true"></i>
+              Manage Experience
+            </a>
+          </header>
+          <div class="pa-exp-overview-stats" id="paDashExpMiniStats" aria-live="polite"></div>
+          <div class="pa-exp-overview-panels" id="paDashExpPanels">
+            <div class="pa-exp-overview-panel pa-exp-overview-panel--timeline">
+              <div class="pa-exp-overview-panel-head">
+                <div>
+                  <div class="pa-exp-overview-panel-title">Career Timeline</div>
+                  <div class="pa-exp-overview-panel-sub">Hover a bar for role details</div>
+                </div>
+                <div class="pa-exp-overview-seg" role="tablist" aria-label="Timeline view">
+                  <button type="button" class="pa-exp-overview-seg-btn is-active" data-exp-timeline-mode="timeline" role="tab" aria-selected="true">Timeline</button>
+                  <button type="button" class="pa-exp-overview-seg-btn" data-exp-timeline-mode="year" role="tab" aria-selected="false">By Year</button>
                 </div>
               </div>
-              <div class="pa-donut-body pa-dash-exp-donut-body">
-                <div class="pa-donut-svg-wrap">
-                  <div class="pa-donut-canvas" id="paDashExpDonutMount" role="img" aria-label="Experience duration breakdown"></div>
-                  <div class="pa-donut-center">
-                    <div class="pa-donut-center-value" id="paDashExpDonutTotal">0</div>
-                    <div class="pa-donut-center-label">Months</div>
+              <div class="pa-exp-overview-timeline-scroll">
+                <div class="pa-exp-overview-timeline" id="paDashExpGantt" role="img" aria-label="Career timeline chart"></div>
+              </div>
+              <div class="pa-exp-overview-legend" id="paDashExpTypeLegend" aria-hidden="true"></div>
+            </div>
+            <div class="pa-exp-overview-panel pa-exp-overview-panel--donut">
+              <div class="pa-exp-overview-panel-head">
+                <div class="pa-exp-overview-panel-title" id="paDashExpDonutLabel">Time by Company</div>
+                <div class="pa-exp-overview-seg" role="tablist" aria-label="Duration breakdown">
+                  <button type="button" class="pa-exp-overview-seg-btn is-active" data-exp-donut-mode="company" role="tab" aria-selected="true">Company</button>
+                  <button type="button" class="pa-exp-overview-seg-btn" data-exp-donut-mode="type" role="tab" aria-selected="false">Type</button>
+                </div>
+              </div>
+              <div class="pa-exp-overview-donut-wrap">
+                <div class="pa-donut-body pa-exp-overview-donut-body">
+                  <div class="pa-donut-svg-wrap pa-exp-overview-donut-ring">
+                    <div class="pa-donut-canvas" id="paDashExpDonutMount" role="img" aria-label="Experience duration breakdown"></div>
+                    <div class="pa-donut-center">
+                      <div class="pa-donut-center-value" id="paDashExpDonutTotal">0</div>
+                      <div class="pa-donut-center-label">total</div>
+                    </div>
                   </div>
                 </div>
-                <div class="pa-donut-legend" id="paDashExpDonutLegend"></div>
               </div>
+              <div class="pa-exp-overview-donut-legend" id="paDashExpDonutLegend"></div>
             </div>
           </div>
-          <div class="pa-dash-widget-empty" id="paDashExpEmpty" hidden>
+          <div class="pa-dash-widget-empty pa-exp-overview-empty" id="paDashExpEmpty" hidden>
             <i class="ri-briefcase-line" aria-hidden="true"></i>
             <p>No experience entries yet.</p>
             <a href="/experience" class="pa-btn pa-btn-primary pa-btn-sm">Add experience</a>
           </div>
-          <div class="pa-dash-widget-skeleton" id="paDashExpSkeleton" aria-hidden="true"></div>
-        </div>`;
+          <div class="pa-dash-widget-skeleton pa-exp-overview-skeleton" id="paDashExpSkeleton" aria-hidden="true"></div>
+        </section>`;
 
 export const DASHBOARD_QUICK_WIDGETS_ROW_HTML = `
         <div class="pa-dash-quick-row">

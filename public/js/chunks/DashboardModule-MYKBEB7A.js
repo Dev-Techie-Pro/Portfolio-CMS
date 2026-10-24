@@ -398,6 +398,13 @@ function renderMultiLineChart(mountEl, seriesDefs) {
 
 // client/modules/dashboard/widgets/experienceChart.ts
 var MONTH_MS = 30.4375 * 24 * 60 * 60 * 1e3;
+var TYPE_BAR_CLASS = {
+  "full-time": "is-fulltime",
+  "part-time": "is-parttime",
+  contract: "is-contract",
+  freelance: "is-freelance",
+  internship: "is-internship"
+};
 function parseYmStart(ym) {
   if (!ym || typeof ym !== "string") return null;
   const [y, m] = ym.split("-").map(Number);
@@ -422,7 +429,7 @@ function mergeRanges(ranges) {
   const merged = [];
   for (const r of sorted) {
     if (!merged.length || r.start.getTime() > merged[merged.length - 1].end.getTime()) {
-      merged.push({ start: r.start, end: r.end });
+      merged.push({ start: new Date(r.start), end: new Date(r.end) });
     } else {
       merged[merged.length - 1].end = new Date(
         Math.max(merged[merged.length - 1].end.getTime(), r.end.getTime())
@@ -431,35 +438,57 @@ function mergeRanges(ranges) {
   }
   return merged;
 }
-function totalYearsFromMerged(merged) {
-  const ms = merged.reduce((sum, r) => sum + (r.end.getTime() - r.start.getTime()), 0);
-  return ms / (365.25 * 24 * 60 * 60 * 1e3);
-}
 function monthsBetween(start, end) {
   return Math.max(0, (end.getTime() - start.getTime()) / MONTH_MS);
 }
-function formatDurationTooltip(start, end) {
-  const months = Math.round(monthsBetween(start, end));
-  if (months < 12) return `${months} mo`;
+function formatMonthsShort(totalMonths) {
+  const months = Math.round(totalMonths);
+  if (months < 1) return "< 1m";
   const y = Math.floor(months / 12);
   const m = months % 12;
-  return m ? `${y}y ${m}mo` : `${y}y`;
+  if (!y) return `${m}m`;
+  if (!m) return `${y}y`;
+  return `${y}y ${m}m`;
 }
 function formatYmLabel(d) {
   return d.toLocaleDateString(void 0, { month: "short", year: "numeric" });
+}
+function formatRangeLabel(start, end, current) {
+  const a = formatYmLabel(start);
+  const b = current ? "Present" : formatYmLabel(end);
+  return `${a} \u2192 ${b}`;
+}
+function countByType(entries) {
+  const map = /* @__PURE__ */ new Map();
+  entries.forEach((e) => {
+    const key = EXP_TYPE_META[e.type]?.label || e.type || "Other";
+    map.set(key, (map.get(key) || 0) + 1);
+  });
+  return [...map.entries()].map(([label, n]) => `${n} ${label.toLowerCase()}`).join(" \xB7 ");
 }
 function computeExperienceSummary(entries) {
   const list = Array.isArray(entries) ? entries.filter((e) => e?.startDate) : [];
   const ranges = list.map(entryRange).filter(Boolean);
   const merged = mergeRanges(ranges);
-  const companies = new Set(list.map((e) => String(e.company || "").trim()).filter(Boolean));
+  const totalMonths = merged.reduce((sum, r) => sum + monthsBetween(r.start, r.end), 0);
+  const companies = [...new Set(list.map((e) => String(e.company || "").trim()).filter(Boolean))];
   const current = list.find((e) => e.current) || null;
+  const earliest = merged.length ? merged.reduce((min, r) => r.start < min ? r.start : min, merged[0].start) : null;
+  const latestEnd = merged.length ? merged.reduce((max, r) => r.end > max ? r.end : max, merged[0].end) : null;
   return {
-    totalYears: merged.length ? totalYearsFromMerged(merged) : 0,
+    list,
+    totalMonths,
+    totalLabel: formatMonthsShort(totalMonths),
+    rangeLabel: earliest && latestEnd ? formatRangeLabel(earliest, latestEnd, !!current) : "\u2014",
     roleCount: list.length,
-    companyCount: companies.size,
-    currentRole: current ? `${current.title || "Role"} @ ${current.company || "\u2014"}` : "\u2014",
-    ranges: list.map((e, i) => ({ entry: e, range: entryRange(e), index: i })).filter((x) => x.range)
+    typeSummary: countByType(list) || "\u2014",
+    companyCount: companies.length,
+    companySummary: companies.slice(0, 3).join(" \xB7 ") || "\u2014",
+    current,
+    currentTitle: current?.title || "\u2014",
+    currentSince: current ? formatRangeLabel(entryRange(current).start, entryRange(current).end, true) : "",
+    currentDuration: current ? formatMonthsShort(monthsBetween(entryRange(current).start, entryRange(current).end)) : "",
+    rows: list.map((e) => ({ entry: e, range: entryRange(e) })).filter((x) => x.range).sort((a, b) => a.range.start.getTime() - b.range.start.getTime())
   };
 }
 function durationSegments(entries, mode) {
@@ -473,19 +502,57 @@ function durationSegments(entries, mode) {
   }
   return [...map.entries()].map(([label, value]) => ({ label, value: Math.round(value) })).filter((s) => s.value > 0).sort((a, b) => b.value - a.value);
 }
-function typeColor(type) {
-  return EXP_TYPE_META[type]?.color || "var(--pa-teal)";
+function yearTicks(minMs, maxMs) {
+  const startYear = new Date(minMs).getFullYear();
+  const endYear = new Date(maxMs).getFullYear();
+  const years = [];
+  for (let y = startYear; y <= endYear; y++) years.push(y);
+  if (years.length < 2) years.push(endYear + 1);
+  return years;
 }
-function renderMiniStats(summary) {
-  const years = summary.totalYears < 0.25 ? "< 1 mo" : summary.totalYears < 1 ? `${Math.round(summary.totalYears * 12)} mo` : `${summary.totalYears.toFixed(1)} yrs`;
+function renderStatCards(summary) {
   return `
-    <div class="pa-dash-exp-stat"><span class="pa-dash-exp-stat-val">${escapeHtml(years)}</span><span class="pa-dash-exp-stat-label">Experience</span></div>
-    <div class="pa-dash-exp-stat"><span class="pa-dash-exp-stat-val">${summary.roleCount}</span><span class="pa-dash-exp-stat-label">Roles</span></div>
-    <div class="pa-dash-exp-stat"><span class="pa-dash-exp-stat-val">${summary.companyCount}</span><span class="pa-dash-exp-stat-label">Companies</span></div>
-    <div class="pa-dash-exp-stat pa-dash-exp-stat--wide"><span class="pa-dash-exp-stat-val">${escapeHtml(summary.currentRole)}</span><span class="pa-dash-exp-stat-label">Current</span></div>`;
+    <article class="pa-exp-overview-stat pa-exp-overview-stat--green">
+      <div class="pa-exp-overview-stat-icon" aria-hidden="true"><i class="ri-briefcase-line"></i></div>
+      <div>
+        <div class="pa-exp-overview-stat-label">Total Experience</div>
+        <div class="pa-exp-overview-stat-value">${escapeHtml(summary.totalLabel)}</div>
+        <div class="pa-exp-overview-stat-hint">${escapeHtml(summary.rangeLabel)}</div>
+      </div>
+    </article>
+    <article class="pa-exp-overview-stat pa-exp-overview-stat--blue">
+      <div class="pa-exp-overview-stat-icon" aria-hidden="true"><i class="ri-bar-chart-grouped-line"></i></div>
+      <div>
+        <div class="pa-exp-overview-stat-label">Roles Held</div>
+        <div class="pa-exp-overview-stat-value">${summary.roleCount}</div>
+        <div class="pa-exp-overview-stat-hint">${escapeHtml(summary.typeSummary)}</div>
+      </div>
+    </article>
+    <article class="pa-exp-overview-stat pa-exp-overview-stat--teal">
+      <div class="pa-exp-overview-stat-icon" aria-hidden="true"><i class="ri-building-line"></i></div>
+      <div>
+        <div class="pa-exp-overview-stat-label">Companies</div>
+        <div class="pa-exp-overview-stat-value">${summary.companyCount}</div>
+        <div class="pa-exp-overview-stat-hint">${escapeHtml(summary.companySummary)}</div>
+      </div>
+    </article>
+    <article class="pa-exp-overview-stat pa-exp-overview-stat--purple">
+      <div class="pa-exp-overview-stat-icon" aria-hidden="true"><i class="ri-time-line"></i></div>
+      <div>
+        <div class="pa-exp-overview-stat-label">Current Role</div>
+        <div class="pa-exp-overview-stat-value pa-exp-overview-stat-value--sm">${escapeHtml(summary.currentTitle)}</div>
+        <div class="pa-exp-overview-stat-hint">${escapeHtml(summary.current ? `Since ${formatYmLabel(entryRange(summary.current).start)} \xB7 ${summary.currentDuration}` : "\u2014")}</div>
+      </div>
+    </article>`;
 }
-function renderGantt(summary) {
-  const rows = summary.ranges;
+function renderTypeLegend() {
+  return `
+    <span class="pa-exp-overview-legend-item"><span class="pa-exp-overview-swatch is-fulltime"></span>Full-time</span>
+    <span class="pa-exp-overview-legend-item"><span class="pa-exp-overview-swatch is-current"></span>Current</span>
+    <span class="pa-exp-overview-legend-item"><span class="pa-exp-overview-swatch is-internship"></span>Internship</span>`;
+}
+function renderTimeline(summary, timelineMode) {
+  const rows = summary.rows;
   if (!rows.length) return '<p class="pa-text-mute fs-sm">No dated roles to display.</p>';
   let min = Infinity;
   let max = -Infinity;
@@ -493,35 +560,46 @@ function renderGantt(summary) {
     min = Math.min(min, range.start.getTime());
     max = Math.max(max, range.end.getTime());
   });
+  const now = Date.now();
+  max = Math.max(max, now);
   const span = Math.max(max - min, 1);
-  const axisStart = formatYmLabel(new Date(min));
-  const axisEnd = formatYmLabel(new Date(max));
-  const rowHtml = rows.sort((a, b) => a.range.start.getTime() - b.range.start.getTime()).map(({ entry, range }) => {
+  const years = yearTicks(min, max);
+  const yearCols = years.length;
+  const todayPct = Math.min(100, Math.max(0, (now - min) / span * 100));
+  const yearHeader = years.map((y) => `<span>${y}</span>`).join("");
+  const rowHtml = rows.map(({ entry, range }) => {
     const left = (range.start.getTime() - min) / span * 100;
-    const width = Math.max(0.8, (range.end.getTime() - range.start.getTime()) / span * 100);
-    const title = escapeHtml(entry.title || "Role");
-    const company = escapeHtml(entry.company || "");
-    const type = entry.type || "full-time";
+    const width = Math.max(1.2, (range.end.getTime() - range.start.getTime()) / span * 100);
+    const dur = formatMonthsShort(monthsBetween(range.start, range.end));
+    const typeCls = TYPE_BAR_CLASS[entry.type] || "is-fulltime";
+    const currentCls = entry.current ? " is-current" : "";
+    const barLabel = width > 8 ? escapeHtml(dur) : "";
+    const companyLine = entry.current ? `${escapeHtml(entry.company || "")} \xB7 <span class="pa-exp-overview-current-tag">CURRENT</span>` : escapeHtml(entry.company || "");
     const tip = `${entry.title} @ ${entry.company}
 ${formatYmLabel(range.start)} \u2013 ${entry.current ? "Present" : formatYmLabel(range.end)}
-${formatDurationTooltip(range.start, range.end)}`;
-    const currentCls = entry.current ? " is-current" : "";
-    return `<div class="pa-dash-exp-gantt-row">
-        <div class="pa-dash-exp-gantt-label" title="${title} \u2014 ${company}">${title}</div>
-        <div class="pa-dash-exp-gantt-track">
-          <div class="pa-dash-exp-gantt-bar${currentCls}" style="left:${left}%;width:${width}%;--exp-bar-color:${typeColor(type)}"
-            title="${escapeHtml(tip)}" role="presentation">
-            ${entry.current ? '<span class="pa-dash-exp-gantt-badge">Current</span>' : ""}
-          </div>
+${dur} \xB7 ${EXP_TYPE_META[entry.type]?.label || entry.type || ""}`;
+    return `<div class="pa-exp-overview-row">
+        <div class="pa-exp-overview-row-label">
+          <div class="pa-exp-overview-row-title">${escapeHtml(entry.title || "Role")}</div>
+          <div class="pa-exp-overview-row-company">${companyLine}</div>
+        </div>
+        <div class="pa-exp-overview-row-track" style="--exp-year-cols:${yearCols}">
+          <div class="pa-exp-overview-bar ${typeCls}${currentCls}" style="left:${left}%;width:${width}%;" title="${escapeHtml(tip)}">${barLabel}</div>
         </div>
       </div>`;
   }).join("");
-  return `<div class="pa-dash-exp-gantt-axis"><span>${escapeHtml(axisStart)}</span><span>${escapeHtml(axisEnd)}</span></div>${rowHtml}`;
-}
-function renderDonutLegend(segments) {
-  return segments.map(
-    (seg) => `<div class="pa-donut-legend-item"><span class="pa-donut-legend-swatch" style="background:${resolveColor(seg.color)}"></span><span class="pa-donut-legend-label">${escapeHtml(seg.label)}</span><span class="pa-donut-legend-value">${seg.value}</span></div>`
-  ).join("");
+  const modeClass = timelineMode === "year" ? " is-by-year" : "";
+  return `<div class="pa-exp-overview-timeline-inner${modeClass}">
+    <div class="pa-exp-overview-years">
+      <div class="pa-exp-overview-years-spacer" aria-hidden="true"></div>
+      <div class="pa-exp-overview-years-grid" style="--exp-year-cols:${yearCols}">${yearHeader}</div>
+    </div>
+    <div class="pa-exp-overview-today" style="--exp-today-pct:${todayPct}%">
+      <span class="pa-exp-overview-today-line" aria-hidden="true"></span>
+      <span class="pa-exp-overview-today-label">TODAY</span>
+    </div>
+    ${rowHtml}
+  </div>`;
 }
 function resolveColor(c) {
   if (!c || typeof c !== "string") return c;
@@ -530,10 +608,24 @@ function resolveColor(c) {
   if (!m) return c;
   return getComputedStyle(document.body).getPropertyValue(m[1]).trim() || c;
 }
+function renderDonutLegendRows(segments, totalMonths) {
+  const total = totalMonths || segments.reduce((n, s) => n + (Number(s.value) || 0), 0) || 1;
+  return segments.map((seg) => {
+    const pct = Math.round(seg.value / total * 100);
+    return `<div class="pa-exp-overview-donut-row">
+        <span class="pa-exp-overview-donut-dot" style="background:${resolveColor(seg.color)}"></span>
+        <span class="pa-exp-overview-donut-name">${escapeHtml(seg.label)}</span>
+        <span class="pa-exp-overview-donut-dur">${formatMonthsShort(seg.value)}</span>
+        <span class="pa-exp-overview-donut-pct">${pct}%</span>
+      </div>`;
+  }).join("");
+}
 function mountExperienceWidget(opts = {}) {
   const root = $id("paDashExpWidget");
   const gantt = $id("paDashExpGantt");
   const mini = $id("paDashExpMiniStats");
+  const panels = $id("paDashExpPanels");
+  const typeLegend = $id("paDashExpTypeLegend");
   const empty = $id("paDashExpEmpty");
   const skeleton = $id("paDashExpSkeleton");
   const donutMount = $id("paDashExpDonutMount");
@@ -541,51 +633,67 @@ function mountExperienceWidget(opts = {}) {
   const donutTotal = $id("paDashExpDonutTotal");
   const donutLabel = $id("paDashExpDonutLabel");
   let donutMode = "company";
+  let timelineMode = "timeline";
   let entries = [];
-  const toggleBtns = root?.querySelectorAll("[data-exp-donut-mode]") || [];
-  toggleBtns.forEach((btn) => {
+  root?.querySelectorAll("[data-exp-donut-mode]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const mode = btn.getAttribute("data-exp-donut-mode");
       if (!mode || mode === donutMode) return;
       donutMode = mode;
-      toggleBtns.forEach((el) => {
+      root.querySelectorAll("[data-exp-donut-mode]").forEach((el) => {
         const on = el.getAttribute("data-exp-donut-mode") === mode;
         el.classList.toggle("is-active", on);
         el.setAttribute("aria-selected", on ? "true" : "false");
       });
       if (donutLabel) {
-        donutLabel.textContent = mode === "type" ? "Duration by type" : "Duration by company";
+        donutLabel.textContent = mode === "type" ? "Time by Type" : "Time by Company";
       }
       renderDonut();
-      opts.onModeChange?.();
+    });
+  });
+  root?.querySelectorAll("[data-exp-timeline-mode]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const mode = btn.getAttribute("data-exp-timeline-mode");
+      if (!mode || mode === timelineMode) return;
+      timelineMode = mode;
+      root.querySelectorAll("[data-exp-timeline-mode]").forEach((el) => {
+        const on = el.getAttribute("data-exp-timeline-mode") === mode;
+        el.classList.toggle("is-active", on);
+        el.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      const summary = computeExperienceSummary(entries);
+      if (gantt) gantt.innerHTML = renderTimeline(summary, timelineMode);
     });
   });
   function renderDonut() {
     if (!donutMount || !donutLegend) return;
+    const summary = computeExperienceSummary(entries);
     const raw = durationSegments(entries, donutMode);
     const segments = assignSegmentColors(raw.map((s) => ({ ...s })));
-    const total = segments.reduce((n, s) => n + (Number(s.value) || 0), 0);
-    if (donutTotal) donutTotal.textContent = String(Math.round(total));
+    const totalMonths = segments.reduce((n, s) => n + (Number(s.value) || 0), 0);
+    if (donutTotal) donutTotal.textContent = formatMonthsShort(summary.totalMonths || totalMonths);
     renderDonutChart(donutMount, segments);
-    donutLegend.innerHTML = renderDonutLegend(segments);
+    donutLegend.innerHTML = renderDonutLegendRows(segments, totalMonths);
   }
   function refresh(list) {
     entries = Array.isArray(list) ? list : [];
     skeleton?.setAttribute("hidden", "");
     const has = entries.length > 0;
     empty?.toggleAttribute("hidden", has);
-    if (gantt) gantt.toggleAttribute("hidden", !has);
+    panels?.toggleAttribute("hidden", !has);
     mini?.toggleAttribute("hidden", !has);
-    root?.querySelector(".pa-dash-exp-body")?.toggleAttribute("hidden", !has);
+    root?.querySelector(".pa-exp-overview-head")?.toggleAttribute("hidden", !has);
     if (!has) {
       if (mini) mini.innerHTML = "";
       if (gantt) gantt.innerHTML = "";
+      if (typeLegend) typeLegend.innerHTML = "";
       renderDonut();
       return;
     }
     const summary = computeExperienceSummary(entries);
-    if (mini) mini.innerHTML = renderMiniStats(summary);
-    if (gantt) gantt.innerHTML = renderGantt(summary);
+    if (mini) mini.innerHTML = renderStatCards(summary);
+    if (gantt) gantt.innerHTML = renderTimeline(summary, timelineMode);
+    if (typeLegend) typeLegend.innerHTML = renderTypeLegend();
     renderDonut();
   }
   skeleton?.removeAttribute("hidden");
@@ -593,7 +701,6 @@ function mountExperienceWidget(opts = {}) {
     refresh,
     destroy() {
       if (donutMount) renderDonutChart(donutMount, []);
-      toggleBtns.forEach((btn) => btn.replaceWith(btn.cloneNode(true)));
     }
   };
 }
@@ -1741,4 +1848,4 @@ var DashboardModule = class extends Module {
 export {
   DashboardModule
 };
-//# sourceMappingURL=DashboardModule-FWUCM56G.js.map
+//# sourceMappingURL=DashboardModule-MYKBEB7A.js.map
