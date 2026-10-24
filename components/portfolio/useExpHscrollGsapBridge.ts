@@ -1,0 +1,67 @@
+'use client';
+
+import { useEffect } from 'react';
+import {
+  animateExpTimelineIndicator,
+  mountExpHscrollGsap,
+  refreshExpHscrollGsap,
+  registerExpHscrollApi,
+  scrollExpHscrollSectionToIndex,
+  teardownExpHscrollGsap,
+  type ExpHscrollMountApi,
+} from '@/lib/motion/portfolio/exp-hscroll-gsap';
+
+declare global {
+  interface Window {
+    __paExpHscrollUseGsap?: boolean;
+    __paMountExpHscrollGsap?: (api: ExpHscrollMountApi) => unknown;
+    __paExpHscrollScrollTo?: (section: HTMLElement, index: number) => void;
+    __paExpHscrollAnimateIndicator?: (
+      indicator: HTMLElement,
+      track: HTMLElement,
+      card: HTMLElement,
+    ) => void;
+    __paTeardownExpHscrollGsap?: (section: HTMLElement) => void;
+    Portfolio?: { EXP_CARDS?: { init?: () => void } };
+  }
+}
+
+export function useExpHscrollGsapBridge() {
+  useEffect(() => {
+    window.__paExpHscrollUseGsap = true;
+    window.__paMountExpHscrollGsap = (api) => {
+      registerExpHscrollApi(api.section, api);
+      api.section.dataset.expGsapDriver = '1';
+      return mountExpHscrollGsap(api);
+    };
+    window.__paExpHscrollScrollTo = (section, index) => {
+      scrollExpHscrollSectionToIndex(section, index);
+    };
+    window.__paExpHscrollAnimateIndicator = (indicator, track, card) => {
+      animateExpTimelineIndicator(indicator, track, card);
+    };
+    window.__paTeardownExpHscrollGsap = (section) => {
+      teardownExpHscrollGsap(section);
+    };
+
+    const refresh = () => {
+      refreshExpHscrollGsap();
+      window.Portfolio?.EXP_CARDS?.init?.();
+    };
+
+    window.addEventListener('pa:public-page-ready', refresh);
+    refresh();
+
+    return () => {
+      window.__paExpHscrollUseGsap = false;
+      delete window.__paMountExpHscrollGsap;
+      delete window.__paExpHscrollScrollTo;
+      delete window.__paExpHscrollAnimateIndicator;
+      document.querySelectorAll<HTMLElement>('.exp-work--hscroll').forEach((section) => {
+        delete section.dataset.expGsapDriver;
+        teardownExpHscrollGsap(section);
+      });
+      window.removeEventListener('pa:public-page-ready', refresh);
+    };
+  }, []);
+}

@@ -92,6 +92,13 @@
 
       function moveIndicator(card) {
         if (!indicator || !card || !track) return;
+        if (
+          section.dataset.expGsapDriver === "1" &&
+          typeof window.__paExpHscrollAnimateIndicator === "function"
+        ) {
+          window.__paExpHscrollAnimateIndicator(indicator, track, card);
+          return;
+        }
         const trackRect = track.getBoundingClientRect();
         const cardRect = card.getBoundingClientRect();
         indicator.style.width = cardRect.width + "px";
@@ -208,6 +215,20 @@
           return;
         }
         clicking = true;
+        if (
+          section.dataset.expGsapDriver === "1" &&
+          typeof window.__paExpHscrollScrollTo === "function"
+        ) {
+          window.__paExpHscrollScrollTo(section, index);
+          setActive(index, false);
+          window.setTimeout(
+            () => {
+              clicking = false;
+            },
+            prefersReduced() ? 50 : 700,
+          );
+          return;
+        }
         const rectTop = window.scrollY + root.getBoundingClientRect().top;
         const travel = scrollTravel();
         const y =
@@ -276,7 +297,35 @@
         });
       });
 
-      window.addEventListener("scroll", schedule, { passive: true });
+      let gsapScrollDriver = null;
+      if (
+        window.__paExpHscrollUseGsap &&
+        typeof window.__paMountExpHscrollGsap === "function"
+      ) {
+        gsapScrollDriver = window.__paMountExpHscrollGsap({
+          section,
+          root,
+          intro,
+          stage,
+          cards,
+          pinOffset,
+          introHeight,
+          scrollTravel,
+          canPin,
+          measure,
+          setActive,
+          moveIndicator,
+          prefersReduced,
+        });
+      }
+
+      if (!gsapScrollDriver) {
+        window.addEventListener("scroll", schedule, { passive: true });
+        section._expRemoveScroll = () =>
+          window.removeEventListener("scroll", schedule);
+      } else {
+        section._expRemoveScroll = null;
+      }
 
       if ("IntersectionObserver" in window) {
         new IntersectionObserver(
@@ -343,7 +392,15 @@
       if (section.dataset[READY] !== "1") return;
       section.dataset[READY] = "0";
       section.dataset.expInit = "0";
+      delete section.dataset.expGsapDriver;
+      if (typeof window.__paTeardownExpHscrollGsap === "function") {
+        window.__paTeardownExpHscrollGsap(section);
+      }
       clearTimeout(section._expSwitchTimer);
+      if (typeof section._expRemoveScroll === "function") {
+        section._expRemoveScroll();
+        section._expRemoveScroll = null;
+      }
       section.classList.remove(
         "js-exp-hscroll",
         "is-exp-pinned",
@@ -356,6 +413,13 @@
     function reconcile() {
       t(".exp-work--hscroll").forEach((section) => {
         const cards = t(".exp-tl-card", section);
+        if (
+          window.__paExpHscrollUseGsap &&
+          section.dataset.expGsapDriver !== "1" &&
+          section.dataset[READY] === "1"
+        ) {
+          teardown(section);
+        }
         if (cards.length >= 2) setup(section);
         else teardown(section);
       });

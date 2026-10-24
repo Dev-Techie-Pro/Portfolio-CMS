@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { fadeSlide, fadeUp } from '@/lib/motion/presets';
 import { isNarrowViewport, motionDuration } from '@/lib/motion/duration';
 import { usePageEnter } from '@/components/motion/usePageEnter';
+import { useExpHscrollGsapBridge } from './useExpHscrollGsapBridge';
 
 type PublicPageMotionProps = {
   children: React.ReactNode;
@@ -15,6 +16,8 @@ type PublicPageMotionProps = {
  * Scoped to `[data-portfolio-page]` content; does not replace scroll-reveal scripts.
  */
 export function PublicPageMotion({ children, routeKey }: PublicPageMotionProps) {
+  useExpHscrollGsapBridge();
+
   const rootRef = usePageEnter(
     (root) => {
       const tl = gsap.timeline();
@@ -31,7 +34,9 @@ export function PublicPageMotion({ children, routeKey }: PublicPageMotionProps) 
         );
       }
 
-      const sections = root.querySelectorAll('main section, .hero-v2, .page-hero, .ch-hero');
+      const sections = root.querySelectorAll(
+        'main section:not(#exp-work), .hero-v2, .page-hero, .ch-hero',
+      );
       tl.add(
         fadeUp(sections, {
           y: narrow ? 20 : 34,

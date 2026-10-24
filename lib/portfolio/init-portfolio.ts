@@ -101,5 +101,7 @@ export function initPortfolioPage(route: PortfolioRoute) {
   P.CAROUSEL?.init?.();
   (window as unknown as { Portfolio?: { TICKER?: { initTickers?: () => void } } }).Portfolio?.TICKER?.initTickers?.();
 
-  void route;
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('pa:public-page-ready', { detail: { route } }));
+  }
 }
