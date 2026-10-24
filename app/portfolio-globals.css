@@ -1,0 +1,51 @@
+@layer portfolio.vendor, portfolio.site;
+
+/* Lower cascade priority than unlayered admin CSS when both bundles are present (client nav). */
+@layer portfolio.vendor {
+  @import "remixicon/fonts/remixicon.css";
+}
+
+@layer portfolio.site {
+  @import "../public/assets/css/styles.css";
+  @import "../public/assets/css/blog-pages.css";
+  @import "../public/assets/css/carousel.css";
+}
+
+/* Leaflet map styles are loaded per-page via layout head links when needed */
+
+.head__title .word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  margin-bottom: -0.08em;
+  padding-bottom: 0.08em;
+}
+
+.head__title .ch {
+  display: inline-block;
+}
+
+html.js:not(.failsafe) .app {
+  visibility: hidden;
+}
+
+html.js.is-ready .app {
+  visibility: visible;
+}
+
+.meter__fill {
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+.seg .seg__pill {
+  border-radius: var(--br-none);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}

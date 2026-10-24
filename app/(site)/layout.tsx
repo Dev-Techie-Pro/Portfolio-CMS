@@ -1,4 +1,4 @@
-import "../globals.css";
+import "../portfolio-globals.css";
 
 /**
  * Public portfolio routes only — admin uses app/admin/globals.css (no /js/main.js).

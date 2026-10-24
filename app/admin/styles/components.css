@@ -14618,7 +14618,7 @@ body.pa-media-modal-open {
 .pa-rte-body--blog h2 { font-size: 1.5rem; }
 .pa-rte-body--blog h3 { font-size: 1.25rem; }
 .pa-rte-body--blog h4 { font-size: 1.1rem; }
-/* Code / list prose: shared rules in public/assets/css/blog-pages.css (.pa-rte-body--blog) */
+/* Code / list prose: see app/admin/styles/blog-rte-prose.css (.pa-rte-body--blog) */
 .pa-rte-body--blog .pa-rte-figure,
 .pa-rte-body--blog figure {
   margin: 1.25em 0;
@@ -14776,46 +14776,13 @@ body.pa-media-modal-open {
   min-width: 0;
   overflow: hidden;
 }
-.pa-blog-ws-rte-preview-shell {
+.pa-blog-ws-rte-preview-iframe {
   flex: 1;
-  min-height: 0;
-  overflow: auto;
-  padding: 12px 14px 18px;
+  width: 100%;
+  min-height: 420px;
   border: 1px solid var(--pa-border);
   border-radius: var(--pa-radius-md);
   background: var(--pa-bg-input);
-}
-.pa-blog-ws-rte-preview-shell .main-layout {
-  margin-top: 0;
-  grid-template-columns: 120px 1fr 120px;
-  gap: var(--pa-gap-sm);
-}
-.pa-blog-ws-rte-preview-shell .main-layout .toc-list a{
-  font-size: var(--pa-fs-sm);
-    padding: 5px 8px;
-}
-.pa-blog-ws-rte-preview-shell .main-layout .card-tbl-content .card-title{
-  padding: 5px 8px;
-}
-.pa-blog-ws-rte-preview-shell .main-layout .card-tbl-content .stat-box{
-  padding: 12px;
-  margin: 0;
-}
-.pa-blog-ws-rte-preview-shell .main-layout .card-tbl-content .stat-box .feature-grid{
-  margin: 0;
-}
-.pa-blog-ws-rte-preview-article {
-  min-height: 200px;
-}
-.pa-blog-ws-rte-preview-shell.bd-tpl-longform .main-layout,
-.pa-blog-ws-rte-preview-shell.bd-tpl-case-study .main-layout {
-  grid-template-columns: 120px 1fr;
-}
-.pa-blog-ws-rte-preview-shell.bd-tpl-longform .sidebar-right,
-.pa-blog-ws-rte-preview-shell.bd-tpl-case-study .sidebar-right,
-.pa-blog-ws-rte-preview-shell.bd-tpl-minimal .sidebar-left,
-.pa-blog-ws-rte-preview-shell.bd-tpl-minimal .sidebar-right {
-  display: none;
 }
 .pa-blog-ws-preview-sidebar-note,
 .pa-blog-ws-preview-toc-empty {

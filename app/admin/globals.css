@@ -8,4 +8,4 @@
 @import "./styles/components/system-ops.css";
 @import "./styles/components/overlays.css";
 @import "./styles/responsive.css";
-@import "../../public/assets/css/blog-pages.css";
+@import "./styles/blog-rte-prose.css";

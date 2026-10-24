@@ -126,25 +126,11 @@ export const BLOG_POST_WORKSPACE_HTML = `
               </div>
               <div class="pa-rte-preview-pane" id="blogWsRtePreviewWrap" hidden>
                 <p class="pa-blog-ws-preview-layout-label">Detail layout: <strong id="blogWsRtePreviewLayoutLabel">Standard</strong></p>
-                <div class="pa-blog-ws-rte-preview-shell blog-details-page bd-tpl-standard" id="blogWsRteDetailPreviewShell">
-                  <div class="main-layout pa-blog-ws-rte-preview-main">
-                    <aside class="sidebar-left pa-blog-ws-rte-preview-aside" aria-label="Table of contents preview">
-                      <div class="bd-sidebar-card card-tbl-content">
-                        <h2 class="card-title">Table of Contents</h2>
-                        <nav class="toc-list" id="blogWsRtePreviewToc" aria-label="Table of contents"></nav>
-                      </div>
-                    </aside>
-                    <div class="article-main">
-                      <article class="article-content pa-blog-ws-rte-preview-article" id="blogWsRtePreview" aria-label="Article preview"></article>
-                    </div>
-                    <aside class="sidebar-right pa-blog-ws-rte-preview-aside" aria-label="Sidebar preview">
-                      <div class="bd-sidebar-card">
-                        <h2 class="card-title">Related &amp; author</h2>
-                        <p class="pa-blog-ws-preview-sidebar-note">Widgets and related posts render on your live portfolio detail page.</p>
-                      </div>
-                    </aside>
-                  </div>
-                </div>
+                <iframe
+                  class="pa-blog-ws-rte-preview-iframe"
+                  id="blogWsRtePreviewFrame"
+                  title="Article detail preview"
+                ></iframe>
               </div>
             </div>
           </div>

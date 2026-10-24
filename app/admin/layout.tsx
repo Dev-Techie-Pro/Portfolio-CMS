@@ -1,4 +1,5 @@
 import './globals.css';
+import { AdminDocumentScope } from '@/components/admin/AdminDocumentScope';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <>
       {/* Self-hosted Remix Icon — reliable with CSP font-src 'self' (dev + prod). */}
       <link rel="stylesheet" href="/vendor/remixicon/remixicon.css" precedence="high" />
+      <AdminDocumentScope />
       {children}
     </>
   );

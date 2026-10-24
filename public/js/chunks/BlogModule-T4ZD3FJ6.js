@@ -6788,6 +6788,7 @@ function getBlogDetailEditorTemplate(id) {
 
 // client/utils/blogDetailTemplatePreview.ts
 var SHELL_CLASS = "bd-tpl-standard";
+var PREVIEW_FRAME_ID = "blogWsRtePreviewFrame";
 function resolveBlogDetailPreviewClass(detailTemplate) {
   if (detailTemplate && detailTemplate !== "auto") {
     return `bd-tpl-${detailTemplate}`;
@@ -6824,6 +6825,66 @@ function buildTocHtmlFromArticle(articleHtml) {
     (section, index) => `<a href="#${section.id}"><span class="toc-num">${String(index + 1).padStart(2, "0")}</span> ${section.title}</a>`
   ).join("");
 }
+function previewFrameDoc() {
+  const frame = document.getElementById(PREVIEW_FRAME_ID);
+  if (!frame) return null;
+  return ensureBlogDetailPreviewFrame(frame);
+}
+function ensureBlogDetailPreviewFrame(frame) {
+  const doc = frame.contentDocument;
+  if (!doc) return null;
+  if (frame.dataset.previewReady === "1") {
+    return doc;
+  }
+  doc.open();
+  doc.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/blog-pages.css" />
+  <link rel="stylesheet" href="/vendor/remixicon/remixicon.css" />
+  <style>
+    body { margin: 0; padding: 12px; background: var(--bg); }
+    .pa-blog-ws-rte-preview-main { margin-top: 0; }
+    .pa-blog-ws-preview-sidebar-note {
+      font-size: var(--fs-14);
+      color: var(--gray);
+      line-height: 1.45;
+      margin: 0;
+    }
+    .pa-blog-ws-preview-toc-empty { font-size: var(--fs-12); color: var(--gray); }
+  </style>
+</head>
+<body>
+  <div class="blog-details-page bd-tpl-standard" id="blogWsRteDetailPreviewShell">
+    <div class="container" style="max-width: 100%; padding: 0;">
+      <div class="main-layout pa-blog-ws-rte-preview-main">
+        <aside class="sidebar-left pa-blog-ws-rte-preview-aside" aria-label="Table of contents preview">
+          <div class="bd-sidebar-card card-tbl-content">
+            <h2 class="card-title">Table of Contents</h2>
+            <nav class="toc-list" id="blogWsRtePreviewToc" aria-label="Table of contents"></nav>
+          </div>
+        </aside>
+        <div class="article-main">
+          <article class="article-content pa-blog-ws-rte-preview-article" id="blogWsRtePreview" aria-label="Article preview"></article>
+        </div>
+        <aside class="sidebar-right pa-blog-ws-rte-preview-aside" aria-label="Sidebar preview">
+          <div class="bd-sidebar-card">
+            <h2 class="card-title">Related &amp; author</h2>
+            <p class="pa-blog-ws-preview-sidebar-note">Widgets and related posts render on your live portfolio detail page.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`);
+  doc.close();
+  frame.dataset.previewReady = "1";
+  return frame.contentDocument;
+}
 function syncBlogDetailRtePreview({
   detailTemplate,
   articleHtml,
@@ -6833,11 +6894,13 @@ function syncBlogDetailRtePreview({
   layoutLabelId = "blogWsRtePreviewLayoutLabel",
   layoutLabel
 }) {
-  const shell = document.getElementById(shellId);
-  const article = document.getElementById(articleId);
-  const toc = document.getElementById(tocId);
+  const previewDoc = previewFrameDoc();
+  const root = previewDoc ?? document;
   const labelEl = document.getElementById(layoutLabelId);
   if (labelEl && layoutLabel) labelEl.textContent = layoutLabel;
+  const shell = root.getElementById(shellId);
+  const article = root.getElementById(articleId);
+  const toc = root.getElementById(tocId);
   if (shell) {
     shell.classList.remove(
       "bd-tpl-standard",
@@ -8181,4 +8244,4 @@ var BlogModule = class extends CrudCardModule {
 export {
   BlogModule
 };
-//# sourceMappingURL=BlogModule-JVYHPM25.js.map
+//# sourceMappingURL=BlogModule-T4ZD3FJ6.js.map
