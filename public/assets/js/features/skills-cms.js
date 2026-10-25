@@ -71,7 +71,9 @@
     ["crystal reports", "Crystal Reports"],
     ["barcode", "Barcode Scanner"],
     ["mongoose", "Mongoose"],
+    ["restful apis", "RESTful APIs"],
     ["restful api", "RESTful API"],
+    ["ms sql", "MS SQL"],
     ["itextsharp", "iTextSharp"],
     ["closedxml", "ClosedXML"],
     ["acf", "ACF"],
@@ -80,6 +82,47 @@
 
   function siteIconsRegistry() {
     return Portfolio.CONSTANTS && Portfolio.CONSTANTS.ICONS;
+  }
+
+  function skillNameForIcon(name) {
+    return normalizeTechLabel(name)
+      .replace(/\s*·\s*[\d.]+%?\s*$/i, "")
+      .trim();
+  }
+
+  /** Client fallback when API icon key is missing or stale (mirrors resolve-tech-icon.ts). */
+  function resolveIconKeyFromName(name) {
+    const n = skillNameForIcon(name);
+    if (!n) return "siCode";
+    if (/\brestful\s*apis?\b/.test(n) || /\brest\s*apis?\b/.test(n)) {
+      return "siRestfulApi";
+    }
+    if (/\bms\s*sql\b/.test(n) || /\bmssql\b/.test(n) || /\bsql\s*server\b/.test(n)) {
+      return "siSql";
+    }
+    if (n === "sql") return "siSql";
+    return "siCode";
+  }
+
+  function svgFromIconKey(key) {
+    const icons = siteIconsRegistry();
+    if (!icons || !key) return null;
+    const svg = icons[key];
+    return svg && String(svg).trim().startsWith("<svg") ? svg : null;
+  }
+
+  function brandSvgForSkill(item) {
+    let key = item.portfolioIcon || "siCode";
+    const fromName = resolveIconKeyFromName(item.name);
+    if (fromName !== "siCode") key = fromName;
+    if (key === "siMsSqlBrand" && !svgFromIconKey(key)) key = "siSql";
+    let svg = svgFromIconKey(key);
+    if (svg) return svg;
+    if (key === "siCode") {
+      const tickerSvg = lookupBrandSvg(item.name);
+      if (tickerSvg) return tickerSvg;
+    }
+    return null;
   }
 
   function lookupBrandSvg(name) {
@@ -118,20 +161,12 @@
       const url = escapeHtml(item.iconUrl);
       return `<img src="${url}" alt="" loading="lazy" />`;
     }
-    const si = item.portfolioIcon || "siCode";
-    if (si !== "siCode") {
-      const icons = siteIconsRegistry();
-      const svg = icons && icons[si];
-      if (svg && String(svg).trim().startsWith("<svg")) {
-        return `<span class="skill-brand-svg" aria-hidden="true">${svg}</span>`;
-      }
+    const brandSvg = brandSvgForSkill(item);
+    if (brandSvg) {
+      return `<span class="skill-brand-svg" aria-hidden="true">${brandSvg}</span>`;
     }
-    if (si === "siCode") {
-      const brandSvg = lookupBrandSvg(item.name);
-      if (brandSvg) {
-        return `<span class="skill-brand-svg" aria-hidden="true">${brandSvg}</span>`;
-      }
-    }
+    const resolvedKey = resolveIconKeyFromName(item.name);
+    const si = resolvedKey !== "siCode" ? resolvedKey : item.portfolioIcon || "siCode";
     return `<span class="icon" data-icon="${escapeHtml(si)}"></span>`;
   }
 
@@ -191,7 +226,13 @@
     if (registry[label]) return registry[label];
     const norm = String(label).trim().toLowerCase();
     const key = Object.keys(registry).find((k) => k.trim().toLowerCase() === norm);
-    return key ? registry[key] : null;
+    if (key) return registry[key];
+    const iconKey = resolveIconKeyFromName(label);
+    if (iconKey !== "siCode") {
+      const fromSite = svgFromIconKey(iconKey);
+      if (fromSite) return fromSite;
+    }
+    return lookupBrandSvg(label);
   }
 
   function tickerItemsFromLabels(labels, registry) {
