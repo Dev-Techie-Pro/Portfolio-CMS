@@ -114,18 +114,32 @@
         }
         link.href = mailtoHref(email);
         link.textContent = email;
-      } else if (icon.includes("phone") && (phone || whatsapp)) {
-        const display = phone || whatsapp;
-        const tel = telHref(display);
-        const span = textWrap.querySelector("span");
-        const link = textWrap.querySelector("a[href^='tel:']");
-        if (link) {
-          link.href = tel;
-          if (!link.querySelector(".icon")) link.textContent = display;
-        } else if (span) {
-          span.textContent = display;
-        } else {
-          textWrap.textContent = display;
+      } else if (icon.includes("phone")) {
+        const phonesWrap = textWrap.querySelector(".contact-detail-phones");
+        if (phonesWrap) {
+          const phoneLink = phonesWrap.querySelector("[data-cms-profile-contact='phone']");
+          const waLink = phonesWrap.querySelector("[data-cms-profile-contact='whatsapp']");
+          if (phone && phoneLink) applyToElement(phoneLink, contact);
+          if (whatsapp && waLink) applyToElement(waLink, contact);
+          const sep = phonesWrap.querySelector(".contact-phone-sep");
+          if (sep) sep.hidden = !(phone && whatsapp);
+        } else if (phone || whatsapp) {
+          const display = phone || whatsapp;
+          const tel = telHref(display);
+          const span = textWrap.querySelector("span");
+          const link = textWrap.querySelector("a[href^='tel:'], a[href*='wa.me']");
+          if (link) {
+            if (String(link.getAttribute("data-cms-profile-contact")) === "whatsapp") {
+              applyToElement(link, contact);
+            } else {
+              link.href = tel;
+              if (!link.querySelector(".icon")) link.textContent = display;
+            }
+          } else if (span) {
+            span.textContent = display;
+          } else {
+            textWrap.textContent = display;
+          }
         }
       } else if (icon.includes("location") && location) {
         const span = textWrap.querySelector("span") || textWrap;

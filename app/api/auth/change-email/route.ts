@@ -3,6 +3,9 @@ import { NextResponse } from 'next/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { guardAal2 } from '@/lib/auth/guard';
 import { jsonInternalError } from '@/lib/api/api-error';
+import { getSiteUrl } from '@/lib/site-url';
+import { buildAuthCallbackUrl } from '@/lib/auth/callback-url';
+import { adminPath } from '@/lib/admin-paths';
 
 export async function POST(request) {
   try {
@@ -36,7 +39,14 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Current password is incorrect.' }, { status: 401 });
     }
 
-    const { error } = await auth.supabase.auth.updateUser({ email: nextEmail });
+    const emailRedirectTo = buildAuthCallbackUrl(
+      getSiteUrl(request),
+      `${adminPath('/settings/profile')}?email_change=1`,
+    );
+    const { error } = await auth.supabase.auth.updateUser(
+      { email: nextEmail },
+      { emailRedirectTo },
+    );
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }

@@ -54,6 +54,13 @@ export async function completeAuthCallbackAfterSignIn(
     };
   }
 
+  if (options.otpType === 'email_change') {
+    return {
+      ok: true,
+      redirect: `${adminPath('/settings/profile')}?email_change=1`,
+    };
+  }
+
   const redirect = needsPasswordSetup ? adminPath('/reset-password') : next;
   return { ok: true, redirect };
 }

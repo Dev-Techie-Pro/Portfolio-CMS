@@ -773,7 +773,8 @@ export async function getTechnologies() {
         .select(TECHNOLOGY_COLUMNS)
         .eq('site_id', SITE_ID)
         .is('deleted_at', null)
-        .order('created_at', ORDER_BY_NEWEST),
+        .order('created_at', ORDER_BY_NEWEST)
+        .range(0, 4999),
     ]);
     if (catError) throw catError;
     if (error) throw error;
@@ -2204,7 +2205,8 @@ export async function getToolItems() {
       .from('tool_items')
       .select(TOOL_ITEM_COLUMNS)
       .in('category_id', categoryIds)
-      .order('created_at', ORDER_BY_NEWEST);
+      .order('created_at', ORDER_BY_NEWEST)
+      .range(0, 4999);
     if (error) throw error;
 
     return (items || []).map((item) => toolItemFromDb(item, legacyById.get(item.category_id)));

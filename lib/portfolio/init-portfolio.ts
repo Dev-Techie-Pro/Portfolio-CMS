@@ -47,8 +47,27 @@ export function resetPortfolioForNavigation() {
     .forEach((el) => el.classList.remove("visible"));
 }
 
+function redirectPublicAuthLandingFromHash() {
+  if (typeof window === "undefined") return;
+  const url = new URL(window.location.href);
+  if (url.pathname.startsWith("/auth/callback")) return;
+  const hash = url.hash.replace(/^#/, "");
+  if (!hash) return;
+  const params = new URLSearchParams(hash);
+  if (
+    params.get("access_token")
+    || params.get("refresh_token")
+    || params.get("error")
+    || params.get("message")
+    || params.get("type")
+  ) {
+    window.location.replace(`/auth/callback${url.search}${url.hash}`);
+  }
+}
+
 export async function initPortfolioPage(route: PortfolioRoute) {
   if (typeof window === "undefined") return;
+  redirectPublicAuthLandingFromHash();
   const P = window.Portfolio;
   if (!P) return;
 

@@ -2772,6 +2772,7 @@ section {
   grid-template-columns: repeat(3, 1fr);
   gap: var(--card-gap-md);
   background: 0 0;
+  align-items: start;
 }
 #skills .skill-category {
   position: relative;
@@ -2780,7 +2781,7 @@ section {
     var(--bg-card);
   border: 1px solid var(--border);
   padding: 1.75rem 1.75rem 1.5rem;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: var(--sh1);
   transition:
     transform var(--transition-smooth),
@@ -2929,6 +2930,25 @@ section {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--card-gap-sm);
+}
+.contact-detail-phones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+}
+.contact-detail-phones .contact-phone-sep {
+  color: var(--gray-dim);
+  user-select: none;
+}
+.contact-detail-phones .contact-phone-line,
+.contact-detail-phones .contact-whatsapp-line {
+  color: inherit;
+  text-decoration: none;
+}
+.contact-detail-phones .contact-phone-line:hover,
+.contact-detail-phones .contact-whatsapp-line:hover {
+  color: var(--accent);
 }
 #skills .skill-item {
   padding: 0.55rem 0.7rem;

@@ -61,6 +61,26 @@ function isAuthPage(pathname: string) {
   return AUTH_ROUTES.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 }
 
+/** Supabase email links sometimes land on the site root instead of /auth/callback. */
+function redirectSupabaseAuthLanding(request: NextRequest): NextResponse | null {
+  const { pathname, searchParams } = request.nextUrl;
+  if (pathname.startsWith('/auth/callback')) return null;
+
+  const hasCode = searchParams.has('code');
+  const hasOtp = searchParams.has('token_hash') && searchParams.has('type');
+  const message = searchParams.get('message') || '';
+  const hasEmailNotice = /confirm|email|verification/i.test(message);
+
+  if (!hasCode && !hasOtp && !hasEmailNotice) return null;
+
+  const url = request.nextUrl.clone();
+  url.pathname = '/auth/callback';
+  if (hasEmailNotice && !url.searchParams.has('next')) {
+    url.searchParams.set('next', `${ADMIN_BASE}/settings/profile`);
+  }
+  return NextResponse.redirect(url, 303);
+}
+
 function withCsp(request: NextRequest, response: NextResponse, nonce: string) {
   if (request.nextUrl.pathname.startsWith('/api/')) return response;
   if (!request.nextUrl.pathname.startsWith(ADMIN_BASE)) return response;
@@ -71,6 +91,11 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const nonce = createNonce();
   const nonceNextInit = nextWithNonceHeaders(request, nonce);
+
+  const authLanding = redirectSupabaseAuthLanding(request);
+  if (authLanding) {
+    return withCsp(request, authLanding, nonce);
+  }
 
   if (isAuthPage(pathname)) {
     const cleanUrl = request.nextUrl.clone();

@@ -30,14 +30,30 @@ export default function AuthCallbackPage() {
     async function run() {
       const supabase = createClient();
       const url = new URL(window.location.href);
+      const hashParams = new URLSearchParams(url.hash.replace(/^#/, ''));
       const code = url.searchParams.get('code');
       const tokenHash = url.searchParams.get('token_hash');
       const otpType = url.searchParams.get('type');
-      const next = url.searchParams.get('next') || '/';
-
-      const hashParams = new URLSearchParams(url.hash.replace(/^#/, ''));
       const accessToken = hashParams.get('access_token');
       const refreshToken = hashParams.get('refresh_token');
+      const hashMessage = hashParams.get('message') || hashParams.get('error_description');
+      const queryMessage = url.searchParams.get('message');
+      const noticeMessage = queryMessage || hashMessage;
+
+      if (
+        noticeMessage
+        && !code
+        && !tokenHash
+        && !accessToken
+        && !refreshToken
+      ) {
+        router.replace(
+          `/admin/settings/profile?email_notice=${encodeURIComponent(noticeMessage)}`,
+        );
+        return;
+      }
+
+      const next = url.searchParams.get('next') || '/';
       const hashType = hashParams.get('type');
       const hashError = hashParams.get('error') || hashParams.get('error_code');
       const hashErrorDesc = hashParams.get('error_description') || '';

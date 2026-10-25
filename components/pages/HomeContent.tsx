@@ -599,12 +599,28 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                     >
                   </div>
                 </div>
-                <div class="contact-detail">
+                <div class="contact-detail" data-cms-contact-phone-row>
                   <div class="contact-detail-icon" aria-hidden="true">
                     <span class="icon" data-icon="siPhone"></span>
                   </div>
-                  <div class="contact-detail-text">
-                    <span>+92 303-8464315 &nbsp;|&nbsp; +92 317-9227811</span>
+                  <div class="contact-detail-text contact-detail-phones">
+                    <a
+                      href="tel:+923038464315"
+                      class="contact-phone-line"
+                      data-cms-profile-contact="phone"
+                      data-cms-profile-mode="tel"
+                      >+92 303-8464315</a
+                    >
+                    <span class="contact-phone-sep" aria-hidden="true">|</span>
+                    <a
+                      href="https://wa.me/923179227811"
+                      class="contact-whatsapp-line"
+                      data-cms-profile-contact="whatsapp"
+                      data-cms-profile-mode="wa"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >+92 317-9227811</a
+                    >
                   </div>
                 </div>
                 <div class="contact-detail">
