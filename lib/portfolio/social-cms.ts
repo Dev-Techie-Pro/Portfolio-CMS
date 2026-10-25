@@ -46,13 +46,6 @@ const PLATFORM_META: Record<
   other: { label: "Link", icon: "siGlobe", external: true },
 };
 
-const VARIANT_PLATFORMS: Record<PortfolioSocialVariant, SocialPlatform[]> = {
-  hero: ["github", "linkedin", "x", "instagram", "facebook", "youtube", "tiktok", "other"],
-  contact: ["github", "linkedin", "website", "email"],
-  footer: ["github", "linkedin", "website", "email"],
-  author: ["github", "linkedin", "x", "email"],
-};
-
 function normalizeHref(raw: string): string {
   const trimmed = String(raw || "").trim();
   if (!trimmed) return "";
@@ -112,40 +105,15 @@ function normalizeStoredSocialLinks(raw: unknown): unknown[] {
   });
 }
 
-function buildAllEntries(sources: {
-  socialLinks: unknown[];
-  website: string;
-  email: string;
-}): PortfolioSocialLink[] {
+function buildAllEntries(socialLinks: unknown[]): PortfolioSocialLink[] {
   const entries: PortfolioSocialLink[] = [];
 
-  for (const raw of sources.socialLinks) {
+  for (const raw of socialLinks) {
     const stored = parseProfileSocialLink(raw);
     const href = stored?.url || (typeof raw === "string" ? raw : "");
     const platformOverride = stored?.platform ? mapStoredPlatform(stored.platform) : undefined;
     const entry = entryFromHref(href, platformOverride);
     if (entry) entries.push(entry);
-  }
-
-  const websiteHref = normalizeHref(sources.website);
-  if (websiteHref && !websiteHref.startsWith("mailto:")) {
-    const hasWebsite = entries.some(
-      (e) => e.platform === "website" || e.href.toLowerCase() === websiteHref.toLowerCase(),
-    );
-    if (!hasWebsite) {
-      const websiteEntry = entryFromHref(websiteHref, "website");
-      if (websiteEntry) entries.push(websiteEntry);
-    }
-  }
-
-  const emailRaw = String(sources.email || "").trim();
-  if (emailRaw) {
-    const mailHref = emailRaw.startsWith("mailto:") ? emailRaw : `mailto:${emailRaw}`;
-    const hasEmail = entries.some((e) => e.platform === "email");
-    if (!hasEmail) {
-      const emailEntry = entryFromHref(mailHref, "email");
-      if (emailEntry) entries.push(emailEntry);
-    }
   }
 
   return dedupeEntries(entries);
@@ -155,28 +123,10 @@ function pickVariant(entries: PortfolioSocialLink[], variant: PortfolioSocialVar
   if (variant === "hero") {
     return entries.filter((e) => e.platform !== "email" && e.platform !== "website");
   }
-
-  const order = VARIANT_PLATFORMS[variant] || VARIANT_PLATFORMS.footer;
-  const byPlatform = new Map<SocialPlatform, PortfolioSocialLink>();
-  for (const entry of entries) {
-    if (!byPlatform.has(entry.platform)) byPlatform.set(entry.platform, entry);
+  if (variant === "author") {
+    return entries.filter((e) => e.platform !== "instagram" && e.platform !== "facebook");
   }
-
-  const picked: PortfolioSocialLink[] = [];
-  for (const platform of order) {
-    const entry = byPlatform.get(platform);
-    if (entry) picked.push(entry);
-  }
-
-  for (const entry of entries) {
-    if (picked.some((p) => p.href === entry.href)) continue;
-    if (variant === "author" && (entry.platform === "instagram" || entry.platform === "facebook")) {
-      continue;
-    }
-    picked.push(entry);
-  }
-
-  return picked;
+  return entries;
 }
 
 async function portfolioOwnerProfileFallback() {
@@ -214,8 +164,7 @@ async function resolveSocialSources() {
 
 export async function fetchPortfolioSocial() {
   const sources = await resolveSocialSources();
-
-  const all = buildAllEntries(sources);
+  const all = buildAllEntries(sources.socialLinks);
 
   return {
     hero: pickVariant(all, "hero"),
@@ -235,6 +184,7 @@ export async function syncPortfolioProfileToSiteSettings(profile: {
   bio?: string | null;
   location?: string | null;
   website?: string | null;
+  whatsapp?: string | null;
   email?: string | null;
   socialLinks?: unknown[] | null;
 }) {
@@ -246,7 +196,11 @@ export async function syncPortfolioProfileToSiteSettings(profile: {
   if (profile.dob !== undefined) patch.dob = profile.dob;
   if (profile.bio !== undefined) patch.bio = profile.bio;
   if (profile.location !== undefined) patch.location = profile.location;
-  if (profile.website !== undefined) patch.website = profile.website;
+  if (profile.website !== undefined) {
+    patch.website = profile.website;
+    patch.siteUrl = profile.website;
+  }
+  if (profile.whatsapp !== undefined) patch.whatsapp = profile.whatsapp;
   if (profile.email !== undefined) patch.adminEmail = profile.email;
   if (profile.socialLinks !== undefined) {
     patch.socialLinks = Array.isArray(profile.socialLinks) ? profile.socialLinks : [];

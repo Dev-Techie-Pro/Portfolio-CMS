@@ -24,7 +24,7 @@ import {
 } from "./chunks/chunk-IIC4VDHS.js";
 import {
   authService
-} from "./chunks/chunk-IRZPJAKT.js";
+} from "./chunks/chunk-XU4QYWK7.js";
 import {
   debounce
 } from "./chunks/chunk-NGJCAR7D.js";
@@ -7576,17 +7576,17 @@ async function loadPageModuleClass(page) {
     case "access-requests":
       return (await import("./chunks/AccessRequestsModule-AYEILZV7.js")).AccessRequestsModule;
     case "users":
-      return (await import("./chunks/UsersModule-F6NEVXW7.js")).UsersModule;
+      return (await import("./chunks/UsersModule-EWXHVEYD.js")).UsersModule;
     case "recent-activities":
       return (await import("./chunks/RecentActivitiesModule-FDQOMHQ4.js")).RecentActivitiesModule;
     case "settings":
-      return (await import("./chunks/SettingsModule-SHTEJ2DX.js")).SettingsModule;
+      return (await import("./chunks/SettingsModule-HSIQHA2T.js")).SettingsModule;
     case "login":
-      return (await import("./chunks/LoginModule-PRLJ5ATZ.js")).LoginModule;
+      return (await import("./chunks/LoginModule-YWWIVG5M.js")).LoginModule;
     case "forgot-password":
-      return (await import("./chunks/ForgotPasswordModule-QI6EVZY5.js")).ForgotPasswordModule;
+      return (await import("./chunks/ForgotPasswordModule-JZJVWUQD.js")).ForgotPasswordModule;
     case "reset-password":
-      return (await import("./chunks/ResetPasswordModule-D3LBEUWC.js")).ResetPasswordModule;
+      return (await import("./chunks/ResetPasswordModule-4PI3IUSQ.js")).ResetPasswordModule;
     default:
       return null;
   }

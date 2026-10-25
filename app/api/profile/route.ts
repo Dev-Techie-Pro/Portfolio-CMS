@@ -25,6 +25,9 @@ export async function PUT(request) {
 
     const current = await getProfileForUser(auth.user);
     const body = await request.json();
+    if ('email' in body) {
+      delete body.email;
+    }
     const canEditRole = STAFF_ROLES.includes(current.role) && current.role === 'super_admin';
 
     const profile = await updateProfileByUserId(auth.user.id, body, { canEditRole });
@@ -47,6 +50,7 @@ export async function PUT(request) {
         bio: profile.bio,
         location: profile.location,
         website: profile.website,
+        whatsapp: profile.whatsapp,
         email: profile.email,
         socialLinks: profile.socialLinks,
       });

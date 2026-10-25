@@ -4,7 +4,7 @@ import {
 import "./chunk-HSBA7GYU.js";
 import {
   authService
-} from "./chunk-IRZPJAKT.js";
+} from "./chunk-XU4QYWK7.js";
 import "./chunk-7KTA4S5K.js";
 import "./chunk-FTMH3SUW.js";
 import "./chunk-HWSNCMVP.js";
@@ -106,4 +106,4 @@ var ResetPasswordModule = class extends AuthModule {
 export {
   ResetPasswordModule
 };
-//# sourceMappingURL=ResetPasswordModule-D3LBEUWC.js.map
+//# sourceMappingURL=ResetPasswordModule-4PI3IUSQ.js.map

@@ -14,7 +14,7 @@ import {
 } from "./chunk-HSBA7GYU.js";
 import {
   authService
-} from "./chunk-IRZPJAKT.js";
+} from "./chunk-XU4QYWK7.js";
 import {
   handleFileValidation,
   uploadCmsFileWithPreview
@@ -2548,11 +2548,18 @@ var SettingsModule = class extends Module {
     setVal("profileFullName", p.fullName || "");
     setVal("profileUsername", p.username || "");
     setVal("profileEmail", p.email || "");
+    const emailInput = $field("profileEmail");
+    if (emailInput) {
+      emailInput.readOnly = true;
+      emailInput.setAttribute("aria-readonly", "true");
+    }
     setVal("profilePhone", p.phone || "");
+    setVal("profileWhatsapp", p.whatsapp || "");
     setVal("profileDob", p.dob || "");
     setVal("profileBio", p.bio || "");
     setVal("profileLocation", p.location || "");
-    setVal("profileWebsite", p.website || "");
+    const siteDefault = p.website || this.store.get("settings")?.siteUrl || this.store.get("settings")?.url || "";
+    setVal("profileWebsite", siteDefault);
     const roleEl = $field("profileRole");
     if (roleEl) {
       roleEl.value = p.role || "viewer";
@@ -2753,6 +2760,7 @@ var SettingsModule = class extends Module {
         void this.saveProfile();
       });
     }
+    this.wireProfileChangeEmail();
     const fullNameInput = $id("profileFullName");
     if (fullNameInput) {
       this.on(fullNameInput, "input", (e) => {
@@ -3121,8 +3129,8 @@ var SettingsModule = class extends Module {
     const payload = {
       fullName: $field("profileFullName")?.value?.trim() || "",
       username: $field("profileUsername")?.value?.trim() || "",
-      email: $field("profileEmail")?.value?.trim() || "",
       phone: $field("profilePhone")?.value?.trim() || "",
+      whatsapp: $field("profileWhatsapp")?.value?.trim() || "",
       dob: $field("profileDob")?.value || null,
       bio: $field("profileBio")?.value?.trim() || "",
       location: $field("profileLocation")?.value?.trim() || "",
@@ -3214,10 +3222,68 @@ var SettingsModule = class extends Module {
         toastMessage: "Profile updated successfully!",
         notify: true
       });
+      const website = String(profile?.website || "").trim();
+      if (website) {
+        const settings = this.store.get("settings") || {};
+        this.store.set("settings", { ...settings, siteUrl: website, website });
+        const siteUrlInput = $field("siteUrl");
+        if (siteUrlInput) siteUrlInput.value = website;
+      }
     } catch (err) {
       showStatusToast(err?.message || "Could not save profile.", "danger");
     } finally {
       saveBtn?.removeAttribute("disabled");
+    }
+  }
+  wireProfileChangeEmail() {
+    const panel = $id("profileChangeEmailPanel");
+    const openBtn = $id("profileChangeEmailBtn");
+    const cancelBtn = $id("profileChangeEmailCancel");
+    const submitBtn = $id("profileChangeEmailSubmit");
+    const closePanel = () => {
+      if (!panel) return;
+      panel.hidden = true;
+      const newEmail = $field("profileNewEmail");
+      const pass = $field("profileChangeEmailPassword");
+      if (newEmail) newEmail.value = "";
+      if (pass) pass.value = "";
+    };
+    if (openBtn && panel) {
+      this.on(openBtn, "click", () => {
+        panel.hidden = false;
+        $field("profileNewEmail")?.focus();
+      });
+    }
+    if (cancelBtn) {
+      this.on(cancelBtn, "click", closePanel);
+    }
+    if (submitBtn) {
+      this.on(submitBtn, "click", () => {
+        void this.submitProfileEmailChange(closePanel);
+      });
+    }
+  }
+  async submitProfileEmailChange(closePanel) {
+    const newEmail = $field("profileNewEmail")?.value?.trim() || "";
+    const currentPassword = $field("profileChangeEmailPassword")?.value || "";
+    const submitBtn = asHtmlButton($id("profileChangeEmailSubmit"));
+    if (!newEmail) {
+      showToast("Enter your new email address", "danger");
+      return;
+    }
+    if (!currentPassword) {
+      showToast("Enter your current password to continue", "danger");
+      return;
+    }
+    if (submitBtn) submitBtn.disabled = true;
+    try {
+      const data = await authService.changeEmail(newEmail, currentPassword);
+      showToast(data?.message || "Check your inbox to confirm the email change.", "success");
+      closePanel?.();
+    } catch (err) {
+      showToast(err?.message || "Could not start email change.", "danger");
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
     }
   }
   async addSocialLink() {
@@ -3355,4 +3421,4 @@ var SettingsModule = class extends Module {
 export {
   SettingsModule
 };
-//# sourceMappingURL=SettingsModule-SHTEJ2DX.js.map
+//# sourceMappingURL=SettingsModule-HSIQHA2T.js.map

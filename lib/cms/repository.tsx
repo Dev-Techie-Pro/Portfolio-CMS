@@ -55,7 +55,7 @@ const CONTACT_MESSAGE_COLUMNS = 'id, legacy_id, sender_name, sender_email, subje
 const CONTACT_REPLY_COLUMNS = 'id, message_id, body, subject, cc, attachment_url, attachment_name, attachment_mime, attachment_size, sent_at, created_at, updated_at';
 const RECENT_ACTIVITY_COLUMNS = 'id, user_id, action_title, action_description, type, status, metadata, created_at';
 const CATEGORY_COLUMNS = 'key, label, description, is_builtin, created_at';
-const SITE_SETTINGS_COLUMNS = 'site_title, site_tagline, site_url, admin_email, site_description, date_format, time_format, timezone, items_per_page, default_view, language, maintenance_mode, profile_full_name, profile_username, profile_role, profile_phone, profile_dob, profile_bio, profile_location, profile_website, profile_social_links, contact_message_columns';
+const SITE_SETTINGS_COLUMNS = 'site_title, site_tagline, site_url, admin_email, site_description, date_format, time_format, timezone, items_per_page, default_view, language, maintenance_mode, profile_full_name, profile_username, profile_role, profile_phone, profile_whatsapp, profile_dob, profile_bio, profile_location, profile_website, profile_social_links, contact_message_columns';
 const TOOL_ITEM_COLUMNS = 'legacy_id, category_id, name, icon_class, icon_url, sort_order, created_at';
 const BLOG_CATEGORY_COLUMNS = 'legacy_id, key, label, description, proficiency_pct, icon_class, color, sort_order, created_at';
 const TOOL_CATEGORY_COLUMNS = 'legacy_id, key, label, description, proficiency_pct, icon_class, color, sort_order, created_at';
@@ -1869,6 +1869,7 @@ export async function getSettings() {
     username: data.profile_username || '',
     role: data.profile_role || '',
     phone: data.profile_phone || '',
+    whatsapp: data.profile_whatsapp || '',
     dob: data.profile_dob || '',
     bio: data.profile_bio || '',
     location: data.profile_location || '',
@@ -1922,6 +1923,7 @@ export async function saveSettings(settings) {
     profile_username: settings.username ?? existing?.profile_username ?? null,
     profile_role: settings.role ?? existing?.profile_role ?? null,
     profile_phone: settings.phone ?? existing?.profile_phone ?? null,
+    profile_whatsapp: settings.whatsapp ?? existing?.profile_whatsapp ?? null,
     profile_dob: nullableDateForDb(settings.dob, existing?.profile_dob),
     profile_bio: settings.bio ?? existing?.profile_bio ?? null,
     profile_location: settings.location ?? existing?.profile_location ?? null,

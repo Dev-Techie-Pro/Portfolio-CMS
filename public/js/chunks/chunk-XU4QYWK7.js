@@ -61,6 +61,12 @@ var authService = {
       body: JSON.stringify({ currentPassword, newPassword })
     });
   },
+  changeEmail(newEmail, currentPassword) {
+    return authRequest("/change-email", {
+      method: "POST",
+      body: JSON.stringify({ newEmail, currentPassword })
+    });
+  },
   getLoginActivity(limit = 25) {
     return authRequest(`/login-activity?limit=${limit}`, { method: "GET" });
   },
@@ -152,4 +158,4 @@ var authService = {
 export {
   authService
 };
-//# sourceMappingURL=chunk-IRZPJAKT.js.map
+//# sourceMappingURL=chunk-XU4QYWK7.js.map

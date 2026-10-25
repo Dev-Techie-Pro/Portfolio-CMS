@@ -100,6 +100,7 @@ export function profileFromDb(row) {
     email: row.email || '',
     role: row.role || 'viewer',
     phone: row.phone || '',
+    whatsapp: row.whatsapp || '',
     dob: formatDob(row.date_of_birth),
     bio: row.bio || '',
     location: row.location || '',
@@ -185,6 +186,7 @@ export async function updateProfileByUserId(userId, payload, options = {}) {
   }
 
   if ('phone' in payload) updates.phone = (payload.phone || '').trim() || null;
+  if ('whatsapp' in payload) updates.whatsapp = (payload.whatsapp || '').trim() || null;
   if ('dob' in payload) updates.date_of_birth = payload.dob || null;
   if ('bio' in payload) updates.bio = (payload.bio || '').trim() || null;
   if ('location' in payload) updates.location = (payload.location || '').trim() || null;

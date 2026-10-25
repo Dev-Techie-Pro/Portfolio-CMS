@@ -6,7 +6,7 @@ import {
 } from "./chunk-IIC4VDHS.js";
 import {
   authService
-} from "./chunk-IRZPJAKT.js";
+} from "./chunk-XU4QYWK7.js";
 import {
   renderPaCatCard,
   renderPaCatListRow
@@ -743,4 +743,4 @@ var UsersModule = class extends CrudCardModule {
 export {
   UsersModule
 };
-//# sourceMappingURL=UsersModule-F6NEVXW7.js.map
+//# sourceMappingURL=UsersModule-EWXHVEYD.js.map

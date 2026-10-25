@@ -115,6 +115,11 @@ export async function initPortfolioPage(route: PortfolioRoute) {
     await socialCms.hydrateAll();
   }
 
+  const contactCms = (P as { CONTACT_CMS?: { hydrateAll?: () => Promise<void> } }).CONTACT_CMS;
+  if (contactCms?.hydrateAll) {
+    await contactCms.hydrateAll();
+  }
+
   P.CAROUSEL?.init?.();
   (window as unknown as { Portfolio?: { TICKER?: { initTickers?: () => void } } }).Portfolio?.TICKER?.initTickers?.();
 

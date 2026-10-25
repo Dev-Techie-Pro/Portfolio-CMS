@@ -4,7 +4,7 @@ import {
 import "./chunk-HSBA7GYU.js";
 import {
   authService
-} from "./chunk-IRZPJAKT.js";
+} from "./chunk-XU4QYWK7.js";
 import {
   ADMIN_BASE,
   resolveStaffAppHref
@@ -299,4 +299,4 @@ var LoginModule = class extends AuthModule {
 export {
   LoginModule
 };
-//# sourceMappingURL=LoginModule-PRLJ5ATZ.js.map
+//# sourceMappingURL=LoginModule-YWWIVG5M.js.map

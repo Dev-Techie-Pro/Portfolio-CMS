@@ -40,9 +40,11 @@ const BASE_CLASSIC: ScriptEntry[] = [
   { type: "classic", src: "/assets/js/app.js", defer: true },
 ];
 
-const SOCIAL_CMS: ScriptEntry[] = [
+const PUBLIC_PROFILE_CMS: ScriptEntry[] = [
   { type: "classic", src: "/assets/js/data/social-loader.js", defer: true },
   { type: "classic", src: "/assets/js/features/social-cms.js", defer: true },
+  { type: "classic", src: "/assets/js/data/contact-loader.js", defer: true },
+  { type: "classic", src: "/assets/js/features/contact-cms.js", defer: true },
 ];
 
 const SWIPER: ScriptEntry[] = [
@@ -134,7 +136,7 @@ export const PAGE_EXTRA_SCRIPTS: Record<PortfolioRoute, ScriptEntry[]> = {
 };
 
 export function getScriptsForRoute(route: PortfolioRoute): ScriptEntry[] {
-  return [...BASE_MODULE, ...BASE_CLASSIC, ...SOCIAL_CMS, ...(PAGE_EXTRA_SCRIPTS[route] || [])];
+  return [...BASE_MODULE, ...BASE_CLASSIC, ...PUBLIC_PROFILE_CMS, ...(PAGE_EXTRA_SCRIPTS[route] || [])];
 }
 
 export const PAGE_STYLES: Partial<Record<PortfolioRoute, string[]>> = {

@@ -70,6 +70,13 @@ export const authService = {
     });
   },
 
+  changeEmail(newEmail, currentPassword) {
+    return authRequest('/change-email', {
+      method: 'POST',
+      body: JSON.stringify({ newEmail, currentPassword }),
+    });
+  },
+
   getLoginActivity(limit = 25) {
     return authRequest(`/login-activity?limit=${limit}`, { method: 'GET' });
   },
