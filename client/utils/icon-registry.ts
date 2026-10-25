@@ -1,4 +1,6 @@
 // @ts-nocheck
+import { TECH_BRAND_ICONS } from "@/lib/portfolio/tech-brand-icons";
+
 export const ICONS = {
   siArrowUp:
     '<svg width="16" height="16" viewBox="0 0 16 16" fill="none">\n        <path d="M8 12V4M4 8l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />\n      </svg>',
@@ -322,4 +324,5 @@ siFlag:
   <line x1="9" y1="10" x2="15" y2="10"/>
   <line x1="9" y1="14" x2="13" y2="14"/>
   </svg>`,
+  ...TECH_BRAND_ICONS,
 };

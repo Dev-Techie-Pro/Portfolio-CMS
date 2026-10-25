@@ -59,7 +59,28 @@
     ["midjourney", "Midjourney"],
     ["perplexity", "Perplexity"],
     ["codeium", "Codeium"],
+    ["adobe premiere", "Adobe Premiere"],
+    ["premiere pro", "Adobe Premiere"],
+    ["wp bakery", "WPBakery"],
+    ["wpbakery", "WPBakery"],
+    ["pagefly", "PageFly"],
+    ["livecharts", "LiveCharts"],
+    ["mariadb", "MariaDB"],
+    ["jwt", "JWT"],
+    ["eclipse", "Eclipse IDE"],
+    ["crystal reports", "Crystal Reports"],
+    ["barcode", "Barcode Scanner"],
+    ["mongoose", "Mongoose"],
+    ["restful api", "RESTful API"],
+    ["itextsharp", "iTextSharp"],
+    ["closedxml", "ClosedXML"],
+    ["acf", "ACF"],
+    ["advanced custom fields", "ACF"],
   ];
+
+  function siteIconsRegistry() {
+    return Portfolio.CONSTANTS && Portfolio.CONSTANTS.ICONS;
+  }
 
   function lookupBrandSvg(name) {
     const registry = Portfolio.TICKER && Portfolio.TICKER.icons;
@@ -98,6 +119,13 @@
       return `<img src="${url}" alt="" loading="lazy" />`;
     }
     const si = item.portfolioIcon || "siCode";
+    if (si !== "siCode") {
+      const icons = siteIconsRegistry();
+      const svg = icons && icons[si];
+      if (svg && String(svg).trim().startsWith("<svg")) {
+        return `<span class="skill-brand-svg" aria-hidden="true">${svg}</span>`;
+      }
+    }
     if (si === "siCode") {
       const brandSvg = lookupBrandSvg(item.name);
       if (brandSvg) {

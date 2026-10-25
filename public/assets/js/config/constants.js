@@ -1,6 +1,9 @@
 "use strict";
 
-import { ICONS } from "../data/icon-registry.js";
+import { ICONS as BASE_ICONS } from "../data/icon-registry.js";
+import { TECH_BRAND_ICONS } from "../data/tech-brand-icons.js";
+
+const ICONS = { ...BASE_ICONS, ...TECH_BRAND_ICONS };
 
 const BREAKPOINTS = {
   MOBILE: 768,
