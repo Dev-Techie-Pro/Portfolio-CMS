@@ -41,13 +41,18 @@
 
   const MAX_SKILLS_PER_CARD = 8;
 
-  function renderCategory(cat, index) {
+  function maxItemsForRoot(root) {
+    if (root.getAttribute("data-cms-skills-layout") === "explorer") return 0;
+    return MAX_SKILLS_PER_CARD;
+  }
+
+  function renderCategory(cat, index, maxItems) {
     const pct = Math.min(100, Math.max(0, Number(cat.proficiencyPct) || 0));
     const desc = cat.description
       ? escapeHtml(cat.description)
       : "Technologies and tools in this area";
-    const items = (cat.items || [])
-      .slice(0, MAX_SKILLS_PER_CARD)
+    const list = cat.items || [];
+    const items = (maxItems > 0 ? list.slice(0, maxItems) : list)
       .map(
         (item) =>
           `<li class="skill-item">
@@ -76,13 +81,13 @@
     </div>`;
   }
 
-  function renderGrid(categories, limit) {
+  function renderGrid(categories, limit, maxItems) {
     const list = Array.isArray(categories) ? categories : [];
     const slice = limit > 0 ? list.slice(0, limit) : list;
     if (!slice.length) {
       return `<p class="exp-cms-placeholder">No skills published yet.</p>`;
     }
-    return slice.map((cat, i) => renderCategory(cat, i + 1)).join("");
+    return slice.map((cat, i) => renderCategory(cat, i + 1, maxItems)).join("");
   }
 
   function lookupTickerSvg(label, registry) {
@@ -122,11 +127,26 @@
     }
   }
 
+  async function hydrateExplorer(root) {
+    const data = await Portfolio.ensurePortfolioSkills();
+    const categories = (data.categories || []).filter(
+      (cat) => (cat.items && cat.items.length) || cat.label,
+    );
+    Portfolio.SKILLS_EXPLORER?.mount?.(root, categories);
+    root.classList.add("visible");
+    Portfolio.ANIMATIONS?.initScrollReveal?.();
+  }
+
   async function hydrateGrid(root) {
+    const layout = root.getAttribute("data-cms-skills-layout");
+    if (layout === "explorer") {
+      return hydrateExplorer(root);
+    }
     const limitAttr = root.getAttribute("data-cms-skills-limit");
     const limit = limitAttr ? parseInt(limitAttr, 10) : 0;
+    const maxItems = maxItemsForRoot(root);
     const data = await Portfolio.ensurePortfolioSkills();
-    root.innerHTML = renderGrid(data.categories, limit);
+    root.innerHTML = renderGrid(data.categories, limit, maxItems);
     Portfolio.ICONS?.hydrateAll?.(root);
     Portfolio.TICKER?.hydrateSkillIcons?.();
     if (data.tickers) mountTickers(data.tickers);

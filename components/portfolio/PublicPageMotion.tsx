@@ -5,6 +5,7 @@ import { fadeSlide, fadeUp } from '@/lib/motion/presets';
 import { isNarrowViewport, motionDuration } from '@/lib/motion/duration';
 import { usePageEnter } from '@/components/motion/usePageEnter';
 import { useExpHscrollGsapBridge } from './useExpHscrollGsapBridge';
+import { useSkillsExplorerGsapBridge } from './useSkillsExplorerGsapBridge';
 
 type PublicPageMotionProps = {
   children: React.ReactNode;
@@ -17,6 +18,7 @@ type PublicPageMotionProps = {
  */
 export function PublicPageMotion({ children, routeKey }: PublicPageMotionProps) {
   useExpHscrollGsapBridge();
+  useSkillsExplorerGsapBridge();
 
   const rootRef = usePageEnter(
     (root) => {

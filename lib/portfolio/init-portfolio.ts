@@ -34,6 +34,14 @@ export function resetPortfolioForNavigation() {
   if (typeof window === "undefined") return;
 
   window.Portfolio?.__nextReset?.();
+  (window as Window & { __paTeardownSkillsExplorerGsap?: (root?: HTMLElement | null) => void })
+    .__paTeardownSkillsExplorerGsap?.();
+  const skillsExplorerEl = document.querySelector<HTMLElement>('[data-cms-skills-layout="explorer"]');
+  if (skillsExplorerEl) {
+    (window.Portfolio as { SKILLS_EXPLORER?: { teardown?: (el: HTMLElement) => void } })?.SKILLS_EXPLORER?.teardown?.(
+      skillsExplorerEl,
+    );
+  }
   (window.Portfolio as { resetExperience?: () => void })?.resetExperience?.();
   (window.Portfolio as { EXP_CARDS?: { teardown?: (el?: Element) => void } })?.EXP_CARDS?.teardown?.();
   window.Portfolio?.COMPONENT_LOADER?.reset?.();
