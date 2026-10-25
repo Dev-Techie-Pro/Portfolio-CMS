@@ -1,5 +1,6 @@
 'use client';
 
+import { useLayoutEffect, useRef } from 'react';
 
 /** Stable key so React remounts legacy markup on client-side route changes. */
 export function legacyPageKey(html: string): string {
@@ -15,17 +16,21 @@ export function legacyPageKey(html: string): string {
   return panel?.[1] ?? `legacy-${html.length}`;
 }
 
-/** Injects legacy page HTML. Route key forces a clean swap on client navigation. */
+/**
+ * Legacy admin HTML is injected client-side only so React does not hydrate
+ * large HTML strings (avoids minified error #418).
+ */
 type LegacyHtmlProps = { html: string };
 
 export default function LegacyHtml({ html }: LegacyHtmlProps) {
   const pageKey = legacyPageKey(html);
+  const hostRef = useRef<HTMLDivElement | null>(null);
 
-  return (
-    <div
-      key={pageKey}
-      suppressHydrationWarning
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
+  useLayoutEffect(() => {
+    const el = hostRef.current;
+    if (!el) return;
+    el.innerHTML = html;
+  }, [html, pageKey]);
+
+  return <div ref={hostRef} key={pageKey} suppressHydrationWarning />;
 }

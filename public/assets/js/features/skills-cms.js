@@ -39,12 +39,15 @@
     return `<span class="icon" data-icon="${escapeHtml(si)}"></span>`;
   }
 
+  const MAX_SKILLS_PER_CARD = 8;
+
   function renderCategory(cat, index) {
     const pct = Math.min(100, Math.max(0, Number(cat.proficiencyPct) || 0));
     const desc = cat.description
       ? escapeHtml(cat.description)
       : "Technologies and tools in this area";
     const items = (cat.items || [])
+      .slice(0, MAX_SKILLS_PER_CARD)
       .map(
         (item) =>
           `<li class="skill-item">

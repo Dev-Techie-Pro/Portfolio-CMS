@@ -3236,63 +3236,84 @@ var SettingsModule = class extends Module {
       saveBtn?.removeAttribute("disabled");
     }
   }
+  profileChangeEmailOverlay() {
+    return $id("profileChangeEmailOverlay");
+  }
+  openProfileChangeEmailModal() {
+    const overlay = this.profileChangeEmailOverlay();
+    if (!overlay) return;
+    this.setProfileChangeEmailModalNotice("");
+    overlay.classList.add("visible");
+    overlay.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    window.setTimeout(() => $field("profileNewEmail")?.focus(), 80);
+  }
+  closeProfileChangeEmailModal() {
+    const overlay = this.profileChangeEmailOverlay();
+    overlay?.classList.remove("visible");
+    overlay?.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    const newEmail = $field("profileNewEmail");
+    const pass = $field("profileChangeEmailPassword");
+    if (newEmail) newEmail.value = "";
+    if (pass) pass.value = "";
+    this.setProfileChangeEmailModalNotice("");
+  }
+  setProfileChangeEmailModalNotice(message, tone = "muted") {
+    const el = $id("profileChangeEmailStatus");
+    if (!el) return;
+    if (!message) {
+      el.style.display = "none";
+      el.textContent = "";
+      el.classList.remove("is-success", "is-danger");
+      return;
+    }
+    el.style.display = "";
+    el.textContent = String(message);
+    el.classList.remove("is-success", "is-danger");
+    if (tone === "success") el.classList.add("is-success");
+    if (tone === "danger") el.classList.add("is-danger");
+  }
   wireProfileChangeEmail() {
-    const panel = $id("profileChangeEmailPanel");
     const openBtn = $id("profileChangeEmailBtn");
     const cancelBtn = $id("profileChangeEmailCancel");
+    const closeBtn = $id("profileChangeEmailClose");
     const submitBtn = $id("profileChangeEmailSubmit");
-    const closePanel = () => {
-      if (!panel) return;
-      panel.style.display = "none";
-      const newEmail = $field("profileNewEmail");
-      const pass = $field("profileChangeEmailPassword");
-      if (newEmail) newEmail.value = "";
-      if (pass) pass.value = "";
-    };
-    if (openBtn && panel) {
-      this.on(openBtn, "click", () => {
-        panel.style.display = "";
-        $field("profileNewEmail")?.focus();
-      });
+    const overlay = this.profileChangeEmailOverlay();
+    if (openBtn) {
+      this.on(openBtn, "click", () => this.openProfileChangeEmailModal());
     }
     if (cancelBtn) {
-      this.on(cancelBtn, "click", closePanel);
+      this.on(cancelBtn, "click", () => this.closeProfileChangeEmailModal());
+    }
+    if (closeBtn) {
+      this.on(closeBtn, "click", () => this.closeProfileChangeEmailModal());
+    }
+    if (overlay) {
+      this.on(overlay, "click", (e) => {
+        if (e.target === overlay) this.closeProfileChangeEmailModal();
+      });
     }
     if (submitBtn) {
       this.on(submitBtn, "click", () => {
-        void this.submitProfileEmailChange(closePanel);
+        void this.submitProfileEmailChange();
       });
     }
-    this.applyProfileEmailUrlState(panel);
+    this.applyProfileEmailUrlState();
   }
-  showProfileEmailInlineNotice(text, tone = "info") {
-    const panel = $id("profileChangeEmailPanel");
-    if (!panel || !text) return;
-    let box = $id("profileChangeEmailStatus");
-    if (!box) {
-      box = document.createElement("div");
-      box.id = "profileChangeEmailStatus";
-      box.className = "pa-form-hint fs-sm mt-8";
-      box.setAttribute("role", "status");
-      panel.insertBefore(box, panel.firstChild);
-    }
-    box.style.display = "";
-    box.textContent = String(text);
-    box.dataset.tone = tone;
-  }
-  applyProfileEmailUrlState(panel = $id("profileChangeEmailPanel")) {
+  applyProfileEmailUrlState() {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const notice = params.get("email_notice");
     const emailChange = params.get("email_change");
     if (!notice && emailChange !== "1") return;
-    if (panel) panel.style.display = "";
+    this.openProfileChangeEmailModal();
     if (notice) {
-      this.showProfileEmailInlineNotice(notice.replace(/\+/g, " "), "info");
+      this.setProfileChangeEmailModalNotice(notice.replace(/\+/g, " "), "success");
     } else {
-      this.showProfileEmailInlineNotice(
-        "Check both inboxes (current and new email) and confirm each link. Your login email updates after both confirmations.",
-        "info"
+      this.setProfileChangeEmailModalNotice(
+        "Check both inboxes and confirm each link. Your login email updates after both confirmations.",
+        "success"
       );
     }
     params.delete("email_notice");
@@ -3301,7 +3322,7 @@ var SettingsModule = class extends Module {
     const path = `${window.location.pathname}${q ? `?${q}` : ""}`;
     window.history.replaceState(null, "", path);
   }
-  async submitProfileEmailChange(closePanel) {
+  async submitProfileEmailChange() {
     const newEmail = $field("profileNewEmail")?.value?.trim() || "";
     const currentPassword = $field("profileChangeEmailPassword")?.value || "";
     const submitBtn = asHtmlButton($id("profileChangeEmailSubmit"));
@@ -3316,18 +3337,15 @@ var SettingsModule = class extends Module {
     if (submitBtn) submitBtn.disabled = true;
     try {
       const data = await authService.changeEmail(newEmail, currentPassword);
-      const panel = $id("profileChangeEmailPanel");
-      if (panel) panel.style.display = "";
-      this.showProfileEmailInlineNotice(
+      this.openProfileChangeEmailModal();
+      this.setProfileChangeEmailModalNotice(
         data?.message || "We sent confirmation links to your current and new email. Confirm both to finish the change.",
         "success"
       );
-      const newEmailField = $field("profileNewEmail");
       const passField = $field("profileChangeEmailPassword");
-      if (newEmailField) newEmailField.value = "";
       if (passField) passField.value = "";
     } catch (err) {
-      this.showProfileEmailInlineNotice(err?.message || "Could not start email change.", "danger");
+      this.setProfileChangeEmailModalNotice(err?.message || "Could not start email change.", "danger");
       showToast(err?.message || "Could not start email change.", "danger");
     } finally {
       if (submitBtn) submitBtn.disabled = false;
@@ -3468,4 +3486,4 @@ var SettingsModule = class extends Module {
 export {
   SettingsModule
 };
-//# sourceMappingURL=SettingsModule-QCJTAEXW.js.map
+//# sourceMappingURL=SettingsModule-FMFLCHOK.js.map

@@ -64,6 +64,13 @@ export function getRequestPublicOrigin(request: Request): string {
   return readOriginFromHeaders(request.headers) ?? getSiteUrlFromEnv();
 }
 
+/** Auth email links should use the host that served the admin request, not the public portfolio env URL. */
+export function getStaffAuthBaseUrl(request: Request): string {
+  const fromHeaders = readOriginFromHeaders(request.headers);
+  if (fromHeaders) return fromHeaders;
+  return getSiteUrl(request);
+}
+
 /**
  * Admin “View Public Portfolio” href.
  * Unified deploy: `/` (browser resolves to current host — localhost, Vercel, custom domain).

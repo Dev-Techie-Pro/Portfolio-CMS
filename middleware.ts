@@ -92,6 +92,12 @@ export async function middleware(request: NextRequest) {
   const nonce = createNonce();
   const nonceNextInit = nextWithNonceHeaders(request, nonce);
 
+  if (pathname === '/favicon.ico') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/images/favicon.svg';
+    return NextResponse.redirect(url, 308);
+  }
+
   const authLanding = redirectSupabaseAuthLanding(request);
   if (authLanding) {
     return withCsp(request, authLanding, nonce);

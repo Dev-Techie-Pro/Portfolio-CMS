@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { guardAal2 } from '@/lib/auth/guard';
 import { jsonInternalError } from '@/lib/api/api-error';
-import { getSiteUrl } from '@/lib/site-url';
+import { getStaffAuthBaseUrl } from '@/lib/site-url';
 import { buildAuthCallbackUrl } from '@/lib/auth/callback-url';
 import { adminPath } from '@/lib/admin-paths';
 
@@ -40,7 +40,7 @@ export async function POST(request) {
     }
 
     const emailRedirectTo = buildAuthCallbackUrl(
-      getSiteUrl(request),
+      getStaffAuthBaseUrl(request),
       `${adminPath('/settings/profile')}?email_change=1`,
     );
     const { error } = await auth.supabase.auth.updateUser(
