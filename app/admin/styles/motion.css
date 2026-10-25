@@ -180,8 +180,7 @@
   background: var(--pa-orange);
   opacity: 0;
   z-index: 0;
-  /* Initial frame; segment-pill.ts sets inline clip-path per active tab */
-  clip-path: inset(3px 41px 3px 3px round var(--pa-radius));
+  clip-path: inset(3px 41px 3px 3px round var(--pa-radius)) !important;
 }
 
 .pa-view-toggle.seg .pa-view-btn {

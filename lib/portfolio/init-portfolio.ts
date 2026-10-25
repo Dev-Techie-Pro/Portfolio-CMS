@@ -105,6 +105,16 @@ export async function initPortfolioPage(route: PortfolioRoute) {
     await experienceCms.hydrateAll();
   }
 
+  const skillsCms = (P as { SKILLS_CMS?: { hydrateAll?: () => Promise<void> } }).SKILLS_CMS;
+  if (document.querySelector("[data-cms-skills-grid]") && skillsCms?.hydrateAll) {
+    await skillsCms.hydrateAll();
+  }
+
+  const socialCms = (P as { SOCIAL_CMS?: { hydrateAll?: () => Promise<void> } }).SOCIAL_CMS;
+  if (document.querySelector(".footer-social-list") && socialCms?.hydrateAll) {
+    await socialCms.hydrateAll();
+  }
+
   P.CAROUSEL?.init?.();
   (window as unknown as { Portfolio?: { TICKER?: { initTickers?: () => void } } }).Portfolio?.TICKER?.initTickers?.();
 

@@ -4,6 +4,7 @@ import { guardAuthenticated } from '@/lib/auth/guard';
 import { getProfileForUser, updateProfileByUserId } from '@/lib/auth/profile';
 import { STAFF_ROLES } from '@/lib/auth/constants';
 import { logProfileChanges } from '@/lib/cms/activity-events';
+import { syncPortfolioProfileToSiteSettings } from '@/lib/portfolio/social-cms';
 
 export async function GET() {
   try {
@@ -35,6 +36,23 @@ export async function PUT(request) {
       after: profile,
       payload: body,
     });
+
+    try {
+      await syncPortfolioProfileToSiteSettings({
+        fullName: profile.fullName,
+        username: profile.username,
+        role: profile.role,
+        phone: profile.phone,
+        dob: profile.dob,
+        bio: profile.bio,
+        location: profile.location,
+        website: profile.website,
+        email: profile.email,
+        socialLinks: profile.socialLinks,
+      });
+    } catch (syncErr) {
+      console.warn('[profile] public profile sync failed:', syncErr);
+    }
 
     return NextResponse.json({ ok: true, profile });
   } catch (error) {

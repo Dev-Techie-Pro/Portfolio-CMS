@@ -6659,7 +6659,7 @@ html.theme-light .back-top:hover .back-top-progress-fill {
   line-height: 1.65;
   margin-bottom: 0.9rem;
   flex: 1;
-  max-height: 3rem;
+  max-height: 5rem;
   overflow: hidden;
   position: relative;
 }
@@ -6705,6 +6705,7 @@ html.theme-light .back-top:hover .back-top-progress-fill {
 .pg-link:hover {
   gap: var(--card-gap-md);
 }
+
 .load-more-wrap {
   text-align: center;
   margin-top: 3rem;

@@ -642,30 +642,41 @@
         e
       );
     }
-    function i(e, t) {
-      if (!e) return;
-      const l = document.createDocumentFragment();
-      (t.forEach((e, i) => {
-        (l.appendChild(o(e)), i < t.length - 1 && l.appendChild(s()));
-      }),
-        l.appendChild(s()),
-        t.forEach((e, i) => {
-          (l.appendChild(o(e)), i < t.length - 1 && l.appendChild(s()));
-        }),
-        l.appendChild(s()),
-        e.appendChild(l));
+    function mountTickerRow(el, items) {
+      if (!el || !items || !items.length) return;
+      el.replaceChildren();
+      const frag = document.createDocumentFragment();
+      items.forEach((item, idx) => {
+        frag.appendChild(o(item));
+        if (idx < items.length - 1) frag.appendChild(s());
+      });
+      frag.appendChild(s());
+      items.forEach((item, idx) => {
+        frag.appendChild(o(item));
+        if (idx < items.length - 1) frag.appendChild(s());
+      });
+      frag.appendChild(s());
+      el.appendChild(frag);
+    }
+    function shouldUseStaticTickers() {
+      return !document.querySelector("[data-cms-skills-grid]");
     }
     return {
       initTickers: function () {
-        (i(document.getElementById("ticker-tools"), e),
-          i(document.getElementById("ticker-technologies"), t),
-          i(document.getElementById("ticker-ai"), l),
-          hydrateSkillIcons());
+        if (!shouldUseStaticTickers()) {
+          hydrateSkillIcons();
+          return;
+        }
+        mountTickerRow(document.getElementById("ticker-tools"), e);
+        mountTickerRow(document.getElementById("ticker-technologies"), t);
+        mountTickerRow(document.getElementById("ticker-ai"), l);
+        hydrateSkillIcons();
       },
+      mountTickerRow,
       icons: iconRegistry,
       hydrateSkillIcons,
     };
   })()),
   document.addEventListener("DOMContentLoaded", () => {
-    window.Portfolio.TICKER.initTickers();
+    if (window.Portfolio?.TICKER?.initTickers) window.Portfolio.TICKER.initTickers();
   }));

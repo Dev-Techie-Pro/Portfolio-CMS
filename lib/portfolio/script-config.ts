@@ -40,6 +40,11 @@ const BASE_CLASSIC: ScriptEntry[] = [
   { type: "classic", src: "/assets/js/app.js", defer: true },
 ];
 
+const SOCIAL_CMS: ScriptEntry[] = [
+  { type: "classic", src: "/assets/js/data/social-loader.js", defer: true },
+  { type: "classic", src: "/assets/js/features/social-cms.js", defer: true },
+];
+
 const SWIPER: ScriptEntry[] = [
   {
     type: "external",
@@ -78,11 +83,17 @@ export const PAGE_EXTRA_SCRIPTS: Record<PortfolioRoute, ScriptEntry[]> = {
     { type: "classic", src: "/assets/js/features/home-faqs.js", defer: true },
     { type: "classic", src: "/assets/js/data/testimonials-loader.js", defer: true },
     { type: "classic", src: "/assets/js/features/testimonials-cms.js", defer: true },
+    { type: "classic", src: "/assets/js/data/skills-loader.js", defer: true },
+    { type: "classic", src: "/assets/js/features/skills-cms.js", defer: true },
     { type: "classic", src: "/assets/js/features/blog-faq.js", defer: true },
     ...SWIPER,
   ],
   about: [],
-  skills: [...SWIPER],
+  skills: [
+    { type: "classic", src: "/assets/js/data/skills-loader.js", defer: true },
+    { type: "classic", src: "/assets/js/features/skills-cms.js", defer: true },
+    ...SWIPER,
+  ],
   experience: [
     { type: "classic", src: "/assets/js/data/experience-loader.js", defer: true },
     { type: "classic", src: "/assets/js/features/experience-cards.js", defer: true },
@@ -123,7 +134,7 @@ export const PAGE_EXTRA_SCRIPTS: Record<PortfolioRoute, ScriptEntry[]> = {
 };
 
 export function getScriptsForRoute(route: PortfolioRoute): ScriptEntry[] {
-  return [...BASE_MODULE, ...BASE_CLASSIC, ...(PAGE_EXTRA_SCRIPTS[route] || [])];
+  return [...BASE_MODULE, ...BASE_CLASSIC, ...SOCIAL_CMS, ...(PAGE_EXTRA_SCRIPTS[route] || [])];
 }
 
 export const PAGE_STYLES: Partial<Record<PortfolioRoute, string[]>> = {
