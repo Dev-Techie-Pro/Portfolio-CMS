@@ -111,18 +111,12 @@
     return svg && String(svg).trim().startsWith("<svg") ? svg : null;
   }
 
-  function brandSvgForSkill(item) {
-    let key = item.portfolioIcon || "siCode";
+  function resolveSkillIconKey(item) {
     const fromName = resolveIconKeyFromName(item.name);
-    if (fromName !== "siCode") key = fromName;
-    if (key === "siMsSqlBrand" && !svgFromIconKey(key)) key = "siSql";
-    let svg = svgFromIconKey(key);
-    if (svg) return svg;
-    if (key === "siCode") {
-      const tickerSvg = lookupBrandSvg(item.name);
-      if (tickerSvg) return tickerSvg;
-    }
-    return null;
+    let si = item.portfolioIcon || "siCode";
+    if (fromName !== "siCode") si = fromName;
+    if (si === "siMsSqlBrand" && !svgFromIconKey(si)) si = "siSql";
+    return si;
   }
 
   function lookupBrandSvg(name) {
@@ -161,12 +155,15 @@
       const url = escapeHtml(item.iconUrl);
       return `<img src="${url}" alt="" loading="lazy" />`;
     }
-    const brandSvg = brandSvgForSkill(item);
+    const si = resolveSkillIconKey(item);
+    const icons = siteIconsRegistry();
+    if (icons && icons[si]) {
+      return `<span class="icon" data-icon="${escapeHtml(si)}"></span>`;
+    }
+    const brandSvg = lookupBrandSvg(item.name);
     if (brandSvg) {
       return `<span class="skill-brand-svg" aria-hidden="true">${brandSvg}</span>`;
     }
-    const resolvedKey = resolveIconKeyFromName(item.name);
-    const si = resolvedKey !== "siCode" ? resolvedKey : item.portfolioIcon || "siCode";
     return `<span class="icon" data-icon="${escapeHtml(si)}"></span>`;
   }
 
