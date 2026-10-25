@@ -1994,46 +1994,95 @@ function socialLinkIconClass(platform, iconClass) {
 }
 
 // client/utils/profileSocialLinks.ts
-var PICKER_ID = "paSocialPlatformPicker";
-function ensurePlatformPicker() {
-  let overlay = document.getElementById(PICKER_ID);
-  if (overlay) return overlay;
-  const optionsHtml = PROFILE_SOCIAL_PLATFORM_OPTIONS.map(
-    (opt) => `<button type="button" class="pa-social-platform-option" data-platform="${escapeHtml(opt.id)}" title="${escapeHtml(opt.label)}">
+var OVERLAY_ID = "paSocialPlatformPicker";
+var MODAL_ID = "paSocialPlatformPickerModal";
+var GRID_ID = "paSocialPlatformPickerGrid";
+var gridPopulated = false;
+function mountOverlayOnBody(overlay) {
+  if (!overlay) return;
+  if (overlay.parentElement !== document.body) {
+    document.body.appendChild(overlay);
+  }
+}
+function populatePlatformGrid() {
+  if (gridPopulated) return;
+  const grid = document.getElementById(GRID_ID);
+  if (!grid) return;
+  grid.innerHTML = PROFILE_SOCIAL_PLATFORM_OPTIONS.map(
+    (opt) => `<button type="button" class="pa-social-platform-option" data-platform="${escapeHtml(opt.id)}" title="${escapeHtml(opt.label)}" role="option">
       <i class="${escapeHtml(opt.iconClass)}" aria-hidden="true"></i>
       <span>${escapeHtml(opt.label)}</span>
     </button>`
   ).join("");
-  overlay = document.createElement("div");
-  overlay.id = PICKER_ID;
-  overlay.className = "pa-modal-overlay";
-  overlay.hidden = true;
-  overlay.innerHTML = `<div class="pa-modal pa-social-platform-modal" role="dialog" aria-modal="true" aria-labelledby="paSocialPlatformPickerTitle">
-    <div class="pa-modal-header">
-      <h3 class="pa-modal-title" id="paSocialPlatformPickerTitle">Choose social icon</h3>
-      <button type="button" class="pa-modal-close" data-close aria-label="Close"><i class="ri-close-line"></i></button>
+  gridPopulated = true;
+}
+function buildFallbackOverlay() {
+  const overlay = document.createElement("div");
+  overlay.id = OVERLAY_ID;
+  overlay.className = "pa-icon-picker-overlay";
+  overlay.setAttribute("inert", "");
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.innerHTML = `<div class="pa-icon-picker-modal pa-social-platform-picker-modal" id="${MODAL_ID}" role="dialog" aria-modal="true" aria-labelledby="paSocialPlatformPickerTitle">
+    <div class="pa-icon-picker-head">
+      <h3 class="pa-icon-picker-title" id="paSocialPlatformPickerTitle">Choose social icon</h3>
+      <button type="button" class="pa-icon-picker-close" data-close aria-label="Close"><i class="ri-close-line"></i></button>
     </div>
-    <div class="pa-social-platform-grid">${optionsHtml}</div>
+    <div class="pa-icon-picker-body pa-social-platform-picker-body">
+      <div class="pa-social-platform-grid" id="${GRID_ID}" role="listbox" aria-label="Social platforms"></div>
+    </div>
+    <div class="pa-icon-picker-foot pa-icon-picker-footer">
+      <button type="button" class="pa-btn pa-btn-cancel" data-close>Cancel</button>
+    </div>
   </div>`;
   document.body.appendChild(overlay);
+  gridPopulated = false;
   return overlay;
 }
+function getOverlay() {
+  let overlay = document.getElementById(OVERLAY_ID);
+  if (!overlay) overlay = buildFallbackOverlay();
+  mountOverlayOnBody(overlay);
+  populatePlatformGrid();
+  return overlay;
+}
+function openOverlay(overlay) {
+  overlay.removeAttribute("inert");
+  overlay.setAttribute("aria-hidden", "false");
+  overlay.classList.add("visible");
+}
+function closeOverlay(overlay) {
+  overlay.classList.remove("visible");
+  overlay.setAttribute("aria-hidden", "true");
+  requestAnimationFrame(() => {
+    if (!overlay.classList.contains("visible")) {
+      overlay.setAttribute("inert", "");
+    }
+  });
+}
 function openSocialPlatformPicker({ returnFocus } = {}) {
-  const overlay = ensurePlatformPicker();
-  const modal = overlay.querySelector(".pa-modal");
+  const overlay = getOverlay();
+  const modal = document.getElementById(MODAL_ID) || overlay.querySelector(".pa-icon-picker-modal");
   return new Promise((resolve) => {
+    let settled = false;
     const finish = (value) => {
-      overlay.hidden = true;
+      if (settled) return;
+      settled = true;
+      closeOverlay(overlay);
       overlay.removeEventListener("click", onOverlayClick);
       document.removeEventListener("keydown", onKeydown);
       resolve(value);
       if (returnFocus && typeof returnFocus.focus === "function") {
-        returnFocus.focus();
+        requestAnimationFrame(() => returnFocus.focus());
       }
     };
     const onOverlayClick = (e) => {
-      if (e.target === overlay || e.target.closest("[data-close]")) {
+      if (e.target.closest("[data-close]")) {
         finish(null);
+        return;
+      }
+      if (e.target === overlay) {
+        finish(null);
+        return;
       }
       const btn = e.target.closest(".pa-social-platform-option");
       if (!btn) return;
@@ -2050,12 +2099,15 @@ function openSocialPlatformPicker({ returnFocus } = {}) {
       finish({ platform });
     };
     const onKeydown = (e) => {
-      if (e.key === "Escape") finish(null);
+      if (e.key === "Escape") {
+        e.preventDefault();
+        finish(null);
+      }
     };
-    overlay.hidden = false;
+    openOverlay(overlay);
     overlay.addEventListener("click", onOverlayClick);
     document.addEventListener("keydown", onKeydown);
-    modal?.querySelector("[data-close]")?.focus();
+    overlay.querySelector("[data-close]")?.focus();
   });
 }
 function ensureSocialIconButton(group) {
@@ -3303,4 +3355,4 @@ var SettingsModule = class extends Module {
 export {
   SettingsModule
 };
-//# sourceMappingURL=SettingsModule-TKBE5TZT.js.map
+//# sourceMappingURL=SettingsModule-SHTEJ2DX.js.map

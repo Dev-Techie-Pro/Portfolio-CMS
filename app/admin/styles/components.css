@@ -6491,14 +6491,21 @@ body.light .custom-theme-card.active {
   color: var(--pa-orange);
   background: var(--pa-bg-elevated);
 }
-.pa-social-platform-modal {
-  width: min(520px, calc(100vw - 32px));
+.pa-icon-picker-modal.pa-social-platform-picker-modal {
+  width: min(92vw, 560px);
+  max-height: min(85vh, 640px);
+  height: auto;
+  min-height: 0;
+}
+.pa-social-platform-picker-body {
+  padding: 16px 18px 8px;
+  overflow: auto;
+  flex: 0 1 auto;
 }
 .pa-social-platform-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
   gap: 10px;
-  padding: 0 20px 20px;
 }
 .pa-social-platform-option {
   display: flex;

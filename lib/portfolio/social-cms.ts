@@ -98,8 +98,22 @@ function dedupeEntries(entries: PortfolioSocialLink[]): PortfolioSocialLink[] {
   return out;
 }
 
+function isUsableSocialUrl(url: string): boolean {
+  const trimmed = String(url || "").trim();
+  if (!trimmed || trimmed === "[object Object]") return false;
+  return true;
+}
+
+function normalizeStoredSocialLinks(raw: unknown): unknown[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.filter((item) => {
+    const parsed = parseProfileSocialLink(item);
+    return Boolean(parsed?.url && isUsableSocialUrl(parsed.url));
+  });
+}
+
 function buildAllEntries(sources: {
-  socialLinks: string[];
+  socialLinks: unknown[];
   website: string;
   email: string;
 }): PortfolioSocialLink[] {
@@ -138,6 +152,10 @@ function buildAllEntries(sources: {
 }
 
 function pickVariant(entries: PortfolioSocialLink[], variant: PortfolioSocialVariant): PortfolioSocialLink[] {
+  if (variant === "hero") {
+    return entries.filter((e) => e.platform !== "email" && e.platform !== "website");
+  }
+
   const order = VARIANT_PLATFORMS[variant] || VARIANT_PLATFORMS.footer;
   const byPlatform = new Map<SocialPlatform, PortfolioSocialLink>();
   for (const entry of entries) {
@@ -150,12 +168,12 @@ function pickVariant(entries: PortfolioSocialLink[], variant: PortfolioSocialVar
     if (entry) picked.push(entry);
   }
 
-  if (variant === "hero") {
-    for (const entry of entries) {
-      if (entry.platform === "email" || entry.platform === "website") continue;
-      if (picked.some((p) => p.href === entry.href)) continue;
-      if (!order.includes(entry.platform)) picked.push(entry);
+  for (const entry of entries) {
+    if (picked.some((p) => p.href === entry.href)) continue;
+    if (variant === "author" && (entry.platform === "instagram" || entry.platform === "facebook")) {
+      continue;
     }
+    picked.push(entry);
   }
 
   return picked;
@@ -174,30 +192,28 @@ async function portfolioOwnerProfileFallback() {
   return profileFromDb(data);
 }
 
-export async function fetchPortfolioSocial() {
+async function resolveSocialSources() {
   const settings = await getSettings();
-  let socialLinks = Array.isArray(settings.socialLinks)
-    ? settings.socialLinks.map((u) => String(u || "").trim()).filter(Boolean)
-    : [];
+  let socialLinks = normalizeStoredSocialLinks(settings.socialLinks);
   let website = String(settings.website || settings.siteUrl || "").trim();
   let email = String(settings.email || settings.adminEmail || "").trim();
 
-  if (!socialLinks.length && !website && !email) {
-    const profile = await portfolioOwnerProfileFallback();
-    if (profile) {
-      socialLinks = Array.isArray(profile.socialLinks)
-        ? profile.socialLinks.map((u: string) => String(u || "").trim()).filter(Boolean)
-        : [];
-      website = String(profile.website || "").trim();
-      email = String(profile.email || "").trim();
+  const profile = await portfolioOwnerProfileFallback();
+  if (profile) {
+    const profileLinks = normalizeStoredSocialLinks(profile.socialLinks);
+    // Profile tab is the source of truth for Social Links in the admin UI.
+    if (profileLinks.length) {
+      socialLinks = profileLinks;
     }
+    if (!website) website = String(profile.website || "").trim();
+    if (!email) email = String(profile.email || "").trim();
   }
 
-  const sources = {
-    socialLinks,
-    website,
-    email,
-  };
+  return { socialLinks, website, email };
+}
+
+export async function fetchPortfolioSocial() {
+  const sources = await resolveSocialSources();
 
   const all = buildAllEntries(sources);
 
@@ -220,7 +236,7 @@ export async function syncPortfolioProfileToSiteSettings(profile: {
   location?: string | null;
   website?: string | null;
   email?: string | null;
-  socialLinks?: string[] | null;
+  socialLinks?: unknown[] | null;
 }) {
   const patch: Record<string, unknown> = {};
   if (profile.fullName !== undefined) patch.fullName = profile.fullName;

@@ -35,7 +35,7 @@
   }
 
   function hydrateList(ul, links) {
-    if (!ul || !Array.isArray(links)) return;
+    if (!ul || !Array.isArray(links) || !links.length) return;
     ul.innerHTML = links.map(renderLink).join("");
     ul.setAttribute("data-cms-social-hydrated", "true");
     Portfolio.ICONS?.hydrateAll?.(ul);

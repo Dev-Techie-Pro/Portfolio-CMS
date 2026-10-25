@@ -2,6 +2,7 @@
 import StaffLegacyBody from '@/components/StaffLegacyBody';
 import SettingsHydration from '@/components/settings/SettingsHydration';
 import { buildSettingsBodyHtml } from '../buildBodyHtml';
+import { SOCIAL_PLATFORM_PICKER_HTML } from '../socialPlatformPickerHtml';
 import { getSettingsPageMeta, resolveSettingsTab, SETTINGS_TABS } from '@/lib/settings/page-meta';
 
 export async function generateMetadata({ params }) {
@@ -18,7 +19,7 @@ export function generateStaticParams() {
 export default async function SettingsTabPage({ params }) {
   const resolved = await params;
   const tab = resolveSettingsTab(resolved?.tab);
-  const html = buildSettingsBodyHtml(tab);
+  const html = buildSettingsBodyHtml(tab) + SOCIAL_PLATFORM_PICKER_HTML;
 
   return (
     <>
