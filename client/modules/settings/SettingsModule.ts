@@ -32,6 +32,14 @@ import {
   normalizeViewMode,
   persistSiteDefaultView,
 } from '../../utils/listGridView.js';
+import {
+  applySocialLinkToGroup,
+  ensureSocialIconButton,
+  openSocialPlatformPicker,
+  parseStoredSocialLinks,
+  readSocialLinkFromGroup,
+  syncSocialIconFromUrl,
+} from '../../utils/profileSocialLinks.js';
 
 type LoginActivityScope = 'all' | 'self';
 
@@ -493,16 +501,38 @@ export class SettingsModule extends Module {
       const first = container.querySelector('.pa-social-group');
       if (first) {
         container.innerHTML = '';
-        p.socialLinks.forEach((link, i) => {
+        const parsedLinks = parseStoredSocialLinks(p.socialLinks);
+        parsedLinks.forEach((link, i) => {
           const group = first.cloneNode(true) as HTMLElement;
-          const input = asFormField(group.querySelector('.pa-form-input'));
-          if (input) input.value = link;
+          applySocialLinkToGroup(group, link);
           const removeBtn = group.querySelector<HTMLElement>('.pa-social-remove');
-          if (removeBtn) removeBtn.style.display = i === 0 && p.socialLinks.length === 1 ? 'none' : '';
+          if (removeBtn) removeBtn.style.display = i === 0 && parsedLinks.length === 1 ? 'none' : '';
           container.appendChild(group);
         });
       }
     }
+    this.upgradeSocialLinkGroups();
+  }
+
+  upgradeSocialLinkGroups() {
+    const container = $id('socialLinksContainer');
+    if (!container) return;
+    container.querySelectorAll('.pa-social-group').forEach((group) => {
+      ensureSocialIconButton(group);
+    });
+  }
+
+  async pickSocialPlatformForGroup(group, returnFocus) {
+    const choice = await openSocialPlatformPicker({ returnFocus });
+    if (!choice) return;
+    group.dataset.socialPlatform = choice.platform;
+    if (choice.iconClass) group.dataset.socialIcon = choice.iconClass;
+    else delete group.dataset.socialIcon;
+    applySocialLinkToGroup(group, readSocialLinkFromGroup(group) || {
+      url: group.querySelector('.pa-form-input')?.value?.trim() || '',
+      platform: choice.platform,
+      iconClass: choice.iconClass,
+    });
   }
 
   formatActivityDate(iso) {
@@ -784,7 +814,14 @@ export class SettingsModule extends Module {
 
     const container = $id('socialLinksContainer');
     if (container) {
+      this.upgradeSocialLinkGroups();
       this.on(container, 'click', (e) => {
+        const iconBtn = (e.target as Element).closest('.pa-social-icon-btn, .pa-social-icon');
+        if (iconBtn) {
+          const group = iconBtn.closest('.pa-social-group');
+          if (group) void this.pickSocialPlatformForGroup(group, iconBtn as HTMLElement);
+          return;
+        }
         const removeBtn = (e.target as Element).closest('.pa-social-remove');
         if (removeBtn) {
           const group = removeBtn.closest('.pa-social-group');
@@ -795,6 +832,12 @@ export class SettingsModule extends Module {
             showToast('You need at least one social link', 'info');
           }
         }
+      });
+      this.on(container, 'input', (e) => {
+        const input = (e.target as Element).closest('.pa-form-input');
+        if (!input) return;
+        const group = input.closest('.pa-social-group');
+        if (group) syncSocialIconFromUrl(group);
       });
     }
 
@@ -1050,10 +1093,8 @@ export class SettingsModule extends Module {
     const current = this.store.get('profile') || {};
     const socialLinks = [];
     document.querySelectorAll('.pa-social-group').forEach((group) => {
-      const input = asFormField(group.querySelector('.pa-form-input'));
-      if (input?.value.trim()) {
-        socialLinks.push(input.value.trim());
-      }
+      const record = readSocialLinkFromGroup(group);
+      if (record?.url) socialLinks.push(record);
     });
 
     const payload: Record<string, unknown> = {
@@ -1171,30 +1212,29 @@ export class SettingsModule extends Module {
     }
   }
 
-  addSocialLink() {
+  async addSocialLink() {
     const container = $id('socialLinksContainer');
     if (!container) return;
 
+    const choice = await openSocialPlatformPicker({ returnFocus: $id('addSocialBtn') });
+    if (!choice) return;
+
     const lastGroup = container.querySelector('.pa-social-group:last-child');
-    if (lastGroup) {
-      const newGroup = lastGroup.cloneNode(true) as HTMLElement;
-      const input = asFormField(newGroup.querySelector('.pa-form-input'));
-      if (input) input.value = '';
-      const removeBtn = newGroup.querySelector<HTMLElement>('.pa-social-remove');
-      if (removeBtn) {
-        removeBtn.style.display = '';
-        this.on(removeBtn, 'click', () => {
-          if (container.children.length > 1) {
-            newGroup.remove();
-            showToast('Social link removed', 'info');
-          } else {
-            showToast('You need at least one social link', 'info');
-          }
-        });
-      }
-      container.appendChild(newGroup);
-      showToast('New social link added', 'info');
-    }
+    if (!lastGroup) return;
+
+    const newGroup = lastGroup.cloneNode(true) as HTMLElement;
+    const input = asFormField(newGroup.querySelector('.pa-form-input'));
+    if (input) input.value = '';
+    applySocialLinkToGroup(newGroup, {
+      url: '',
+      platform: choice.platform,
+      iconClass: choice.iconClass,
+    });
+    const removeBtn = newGroup.querySelector<HTMLElement>('.pa-social-remove');
+    if (removeBtn) removeBtn.style.display = '';
+    container.appendChild(newGroup);
+    input?.focus();
+    showToast('New social link added — enter the URL', 'info');
   }
 
   validatePasswordStrength(password) {

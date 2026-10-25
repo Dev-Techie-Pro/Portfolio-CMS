@@ -1,4 +1,7 @@
 import {
+  open
+} from "./chunk-5WDJLHBU.js";
+import {
   applyRoleBasedAccess,
   applyUserDisplay,
   renderPreviewAvatar,
@@ -16,6 +19,7 @@ import {
   handleFileValidation,
   uploadCmsFileWithPreview
 } from "./chunk-XZ5R2AN2.js";
+import "./chunk-Q6LT2MRI.js";
 import "./chunk-VXJMB3CY.js";
 import {
   SETTINGS_TABS,
@@ -1921,6 +1925,207 @@ async function initRoleRequestCard(role) {
   await refreshStatus();
 }
 
+// lib/profile/social-link-form.ts
+var PROFILE_SOCIAL_PLATFORM_OPTIONS = [
+  { id: "github", label: "GitHub", iconClass: "ri-github-fill" },
+  { id: "linkedin", label: "LinkedIn", iconClass: "ri-linkedin-fill" },
+  { id: "x", label: "X (Twitter)", iconClass: "ri-twitter-x-fill" },
+  { id: "instagram", label: "Instagram", iconClass: "ri-instagram-fill" },
+  { id: "facebook", label: "Facebook", iconClass: "ri-facebook-fill" },
+  { id: "youtube", label: "YouTube", iconClass: "ri-youtube-fill" },
+  { id: "tiktok", label: "TikTok", iconClass: "ri-tiktok-fill" },
+  { id: "discord", label: "Discord", iconClass: "ri-discord-fill" },
+  { id: "website", label: "Website", iconClass: "ri-global-line" },
+  { id: "email", label: "Email", iconClass: "ri-mail-line" },
+  { id: "custom", label: "Other icon\u2026", iconClass: "ri-link" }
+];
+function detectSocialPlatformFromUrl(href) {
+  const lower = String(href || "").trim().toLowerCase();
+  if (!lower) return "auto";
+  if (lower.startsWith("mailto:")) return "email";
+  if (lower.includes("github.com")) return "github";
+  if (lower.includes("linkedin.com")) return "linkedin";
+  if (lower.includes("twitter.com") || lower.includes("x.com")) return "x";
+  if (lower.includes("instagram.com")) return "instagram";
+  if (lower.includes("facebook.com") || lower.includes("fb.com")) return "facebook";
+  if (lower.includes("youtube.com") || lower.includes("youtu.be")) return "youtube";
+  if (lower.includes("tiktok.com")) return "tiktok";
+  if (lower.includes("discord.gg") || lower.includes("discord.com")) return "discord";
+  return "website";
+}
+function parseProfileSocialLink(raw) {
+  if (raw == null) return null;
+  if (typeof raw === "string") {
+    const url = raw.trim();
+    if (!url) return null;
+    return { url, platform: detectSocialPlatformFromUrl(url) };
+  }
+  if (typeof raw === "object") {
+    const row = raw;
+    const url = String(row.url || row.href || "").trim();
+    if (!url) return null;
+    const platform = row.platform || detectSocialPlatformFromUrl(url);
+    const iconClass = row.iconClass ? String(row.iconClass).trim() : "";
+    return {
+      url,
+      platform,
+      ...iconClass ? { iconClass } : {}
+    };
+  }
+  return null;
+}
+function serializeProfileSocialLink(record) {
+  const url = String(record.url || "").trim();
+  const platform = record.platform || detectSocialPlatformFromUrl(url);
+  const iconClass = record.iconClass ? String(record.iconClass).trim() : "";
+  if (platform === "custom" && iconClass) {
+    return { url, platform, iconClass };
+  }
+  if (platform && platform !== "auto" && platform !== detectSocialPlatformFromUrl(url)) {
+    return { url, platform };
+  }
+  return { url, platform: detectSocialPlatformFromUrl(url) };
+}
+function socialLinkIconClass(platform, iconClass) {
+  if (platform === "custom" && iconClass) return iconClass;
+  const match = PROFILE_SOCIAL_PLATFORM_OPTIONS.find((p) => p.id === platform);
+  if (match) return match.iconClass;
+  return "ri-link";
+}
+
+// client/utils/profileSocialLinks.ts
+var PICKER_ID = "paSocialPlatformPicker";
+function ensurePlatformPicker() {
+  let overlay = document.getElementById(PICKER_ID);
+  if (overlay) return overlay;
+  const optionsHtml = PROFILE_SOCIAL_PLATFORM_OPTIONS.map(
+    (opt) => `<button type="button" class="pa-social-platform-option" data-platform="${escapeHtml(opt.id)}" title="${escapeHtml(opt.label)}">
+      <i class="${escapeHtml(opt.iconClass)}" aria-hidden="true"></i>
+      <span>${escapeHtml(opt.label)}</span>
+    </button>`
+  ).join("");
+  overlay = document.createElement("div");
+  overlay.id = PICKER_ID;
+  overlay.className = "pa-modal-overlay";
+  overlay.hidden = true;
+  overlay.innerHTML = `<div class="pa-modal pa-social-platform-modal" role="dialog" aria-modal="true" aria-labelledby="paSocialPlatformPickerTitle">
+    <div class="pa-modal-header">
+      <h3 class="pa-modal-title" id="paSocialPlatformPickerTitle">Choose social icon</h3>
+      <button type="button" class="pa-modal-close" data-close aria-label="Close"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="pa-social-platform-grid">${optionsHtml}</div>
+  </div>`;
+  document.body.appendChild(overlay);
+  return overlay;
+}
+function openSocialPlatformPicker({ returnFocus } = {}) {
+  const overlay = ensurePlatformPicker();
+  const modal = overlay.querySelector(".pa-modal");
+  return new Promise((resolve) => {
+    const finish = (value) => {
+      overlay.hidden = true;
+      overlay.removeEventListener("click", onOverlayClick);
+      document.removeEventListener("keydown", onKeydown);
+      resolve(value);
+      if (returnFocus && typeof returnFocus.focus === "function") {
+        returnFocus.focus();
+      }
+    };
+    const onOverlayClick = (e) => {
+      if (e.target === overlay || e.target.closest("[data-close]")) {
+        finish(null);
+      }
+      const btn = e.target.closest(".pa-social-platform-option");
+      if (!btn) return;
+      const platform = btn.getAttribute("data-platform");
+      if (platform === "custom") {
+        open({
+          current: "ri-link",
+          defaultIcon: "ri-link",
+          returnFocus: btn,
+          onSelect: (iconClass) => finish({ platform: "custom", iconClass })
+        });
+        return;
+      }
+      finish({ platform });
+    };
+    const onKeydown = (e) => {
+      if (e.key === "Escape") finish(null);
+    };
+    overlay.hidden = false;
+    overlay.addEventListener("click", onOverlayClick);
+    document.addEventListener("keydown", onKeydown);
+    modal?.querySelector("[data-close]")?.focus();
+  });
+}
+function ensureSocialIconButton(group) {
+  if (!group) return null;
+  let btn = group.querySelector(".pa-social-icon-btn");
+  if (btn) return btn;
+  const legacy = group.querySelector(".pa-social-icon");
+  btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "pa-social-icon pa-social-icon-btn";
+  btn.setAttribute("aria-label", "Choose social icon");
+  if (legacy) {
+    btn.innerHTML = legacy.innerHTML || '<i class="ri-link" aria-hidden="true"></i>';
+    legacy.replaceWith(btn);
+  } else {
+    btn.innerHTML = '<i class="ri-link" aria-hidden="true"></i>';
+    const input = group.querySelector(".pa-form-input");
+    group.insertBefore(btn, input || group.firstChild);
+  }
+  return btn;
+}
+function applySocialLinkToGroup(group, record) {
+  if (!group) return;
+  const parsed = record ? serializeProfileSocialLink(record) : null;
+  const input = group.querySelector(".pa-form-input");
+  const platform = parsed?.platform || "auto";
+  const iconClass = socialLinkIconClass(
+    platform,
+    parsed?.iconClass
+  );
+  group.dataset.socialPlatform = platform;
+  if (parsed?.iconClass) group.dataset.socialIcon = parsed.iconClass;
+  else delete group.dataset.socialIcon;
+  if (input && parsed?.url) input.value = parsed.url;
+  const btn = ensureSocialIconButton(group);
+  if (btn) btn.innerHTML = `<i class="${escapeHtml(iconClass)}" aria-hidden="true"></i>`;
+}
+function readSocialLinkFromGroup(group) {
+  const input = group.querySelector(".pa-form-input");
+  const url = input?.value?.trim() || "";
+  if (!url) return null;
+  let platform = group.dataset.socialPlatform || "auto";
+  let iconClass = group.dataset.socialIcon || "";
+  if (platform === "auto") {
+    platform = detectSocialPlatformFromUrl(url);
+  }
+  return serializeProfileSocialLink({
+    url,
+    platform,
+    ...iconClass ? { iconClass } : {}
+  });
+}
+function syncSocialIconFromUrl(group) {
+  if (!group) return;
+  const platform = group.dataset.socialPlatform || "auto";
+  if (platform !== "auto") return;
+  const input = group.querySelector(".pa-form-input");
+  const url = input?.value?.trim() || "";
+  const detected = detectSocialPlatformFromUrl(url);
+  group.dataset.socialPlatform = detected;
+  const btn = ensureSocialIconButton(group);
+  if (btn) {
+    btn.innerHTML = `<i class="${escapeHtml(socialLinkIconClass(detected))}" aria-hidden="true"></i>`;
+  }
+}
+function parseStoredSocialLinks(links) {
+  if (!Array.isArray(links)) return [];
+  return links.map((raw) => parseProfileSocialLink(raw)).filter(Boolean);
+}
+
 // client/modules/settings/SettingsModule.ts
 var SettingsModule = class extends Module {
   constructor() {
@@ -2320,16 +2525,36 @@ var SettingsModule = class extends Module {
       const first = container.querySelector(".pa-social-group");
       if (first) {
         container.innerHTML = "";
-        p.socialLinks.forEach((link, i) => {
+        const parsedLinks = parseStoredSocialLinks(p.socialLinks);
+        parsedLinks.forEach((link, i) => {
           const group = first.cloneNode(true);
-          const input = asFormField(group.querySelector(".pa-form-input"));
-          if (input) input.value = link;
+          applySocialLinkToGroup(group, link);
           const removeBtn = group.querySelector(".pa-social-remove");
-          if (removeBtn) removeBtn.style.display = i === 0 && p.socialLinks.length === 1 ? "none" : "";
+          if (removeBtn) removeBtn.style.display = i === 0 && parsedLinks.length === 1 ? "none" : "";
           container.appendChild(group);
         });
       }
     }
+    this.upgradeSocialLinkGroups();
+  }
+  upgradeSocialLinkGroups() {
+    const container = $id("socialLinksContainer");
+    if (!container) return;
+    container.querySelectorAll(".pa-social-group").forEach((group) => {
+      ensureSocialIconButton(group);
+    });
+  }
+  async pickSocialPlatformForGroup(group, returnFocus) {
+    const choice = await openSocialPlatformPicker({ returnFocus });
+    if (!choice) return;
+    group.dataset.socialPlatform = choice.platform;
+    if (choice.iconClass) group.dataset.socialIcon = choice.iconClass;
+    else delete group.dataset.socialIcon;
+    applySocialLinkToGroup(group, readSocialLinkFromGroup(group) || {
+      url: group.querySelector(".pa-form-input")?.value?.trim() || "",
+      platform: choice.platform,
+      iconClass: choice.iconClass
+    });
   }
   formatActivityDate(iso) {
     const d = new Date(iso);
@@ -2576,7 +2801,14 @@ var SettingsModule = class extends Module {
     }
     const container = $id("socialLinksContainer");
     if (container) {
+      this.upgradeSocialLinkGroups();
       this.on(container, "click", (e) => {
+        const iconBtn = e.target.closest(".pa-social-icon-btn, .pa-social-icon");
+        if (iconBtn) {
+          const group = iconBtn.closest(".pa-social-group");
+          if (group) void this.pickSocialPlatformForGroup(group, iconBtn);
+          return;
+        }
         const removeBtn = e.target.closest(".pa-social-remove");
         if (removeBtn) {
           const group = removeBtn.closest(".pa-social-group");
@@ -2587,6 +2819,12 @@ var SettingsModule = class extends Module {
             showToast("You need at least one social link", "info");
           }
         }
+      });
+      this.on(container, "input", (e) => {
+        const input = e.target.closest(".pa-form-input");
+        if (!input) return;
+        const group = input.closest(".pa-social-group");
+        if (group) syncSocialIconFromUrl(group);
       });
     }
     const updatePasswordBtn = $id("updatePasswordBtn");
@@ -2825,10 +3063,8 @@ var SettingsModule = class extends Module {
     const current = this.store.get("profile") || {};
     const socialLinks = [];
     document.querySelectorAll(".pa-social-group").forEach((group) => {
-      const input = asFormField(group.querySelector(".pa-form-input"));
-      if (input?.value.trim()) {
-        socialLinks.push(input.value.trim());
-      }
+      const record = readSocialLinkFromGroup(group);
+      if (record?.url) socialLinks.push(record);
     });
     const payload = {
       fullName: $field("profileFullName")?.value?.trim() || "",
@@ -2932,29 +3168,26 @@ var SettingsModule = class extends Module {
       saveBtn?.removeAttribute("disabled");
     }
   }
-  addSocialLink() {
+  async addSocialLink() {
     const container = $id("socialLinksContainer");
     if (!container) return;
+    const choice = await openSocialPlatformPicker({ returnFocus: $id("addSocialBtn") });
+    if (!choice) return;
     const lastGroup = container.querySelector(".pa-social-group:last-child");
-    if (lastGroup) {
-      const newGroup = lastGroup.cloneNode(true);
-      const input = asFormField(newGroup.querySelector(".pa-form-input"));
-      if (input) input.value = "";
-      const removeBtn = newGroup.querySelector(".pa-social-remove");
-      if (removeBtn) {
-        removeBtn.style.display = "";
-        this.on(removeBtn, "click", () => {
-          if (container.children.length > 1) {
-            newGroup.remove();
-            showToast("Social link removed", "info");
-          } else {
-            showToast("You need at least one social link", "info");
-          }
-        });
-      }
-      container.appendChild(newGroup);
-      showToast("New social link added", "info");
-    }
+    if (!lastGroup) return;
+    const newGroup = lastGroup.cloneNode(true);
+    const input = asFormField(newGroup.querySelector(".pa-form-input"));
+    if (input) input.value = "";
+    applySocialLinkToGroup(newGroup, {
+      url: "",
+      platform: choice.platform,
+      iconClass: choice.iconClass
+    });
+    const removeBtn = newGroup.querySelector(".pa-social-remove");
+    if (removeBtn) removeBtn.style.display = "";
+    container.appendChild(newGroup);
+    input?.focus();
+    showToast("New social link added \u2014 enter the URL", "info");
   }
   validatePasswordStrength(password) {
     const value = String(password || "");
@@ -3070,4 +3303,4 @@ var SettingsModule = class extends Module {
 export {
   SettingsModule
 };
-//# sourceMappingURL=SettingsModule-ORWTXQGO.js.map
+//# sourceMappingURL=SettingsModule-TKBE5TZT.js.map

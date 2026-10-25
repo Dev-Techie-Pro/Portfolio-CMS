@@ -2,6 +2,11 @@ import { getSettings, saveSettings } from "@/lib/cms/repository";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SITE_ID } from "@/lib/cms/constants";
 import { profileFromDb } from "@/lib/auth/profile";
+import {
+  detectSocialPlatformFromUrl,
+  parseProfileSocialLink,
+  type ProfileSocialPlatform,
+} from "@/lib/profile/social-link-form";
 
 export type SocialPlatform =
   | "github"
@@ -57,16 +62,14 @@ function normalizeHref(raw: string): string {
 }
 
 function detectPlatform(href: string): SocialPlatform {
-  const lower = href.toLowerCase();
-  if (lower.startsWith("mailto:")) return "email";
-  if (lower.includes("github.com")) return "github";
-  if (lower.includes("linkedin.com")) return "linkedin";
-  if (lower.includes("twitter.com") || lower.includes("x.com")) return "x";
-  if (lower.includes("instagram.com")) return "instagram";
-  if (lower.includes("facebook.com") || lower.includes("fb.com")) return "facebook";
-  if (lower.includes("youtube.com") || lower.includes("youtu.be")) return "youtube";
-  if (lower.includes("tiktok.com")) return "tiktok";
-  return "website";
+  const detected = detectSocialPlatformFromUrl(href);
+  if (detected === "auto" || detected === "custom" || detected === "discord") return "other";
+  return detected as SocialPlatform;
+}
+
+function mapStoredPlatform(platform: ProfileSocialPlatform): SocialPlatform {
+  if (platform === "discord" || platform === "custom" || platform === "auto") return "other";
+  return platform as SocialPlatform;
 }
 
 function entryFromHref(href: string, platformOverride?: SocialPlatform): PortfolioSocialLink | null {
@@ -103,7 +106,10 @@ function buildAllEntries(sources: {
   const entries: PortfolioSocialLink[] = [];
 
   for (const raw of sources.socialLinks) {
-    const entry = entryFromHref(raw);
+    const stored = parseProfileSocialLink(raw);
+    const href = stored?.url || (typeof raw === "string" ? raw : "");
+    const platformOverride = stored?.platform ? mapStoredPlatform(stored.platform) : undefined;
+    const entry = entryFromHref(href, platformOverride);
     if (entry) entries.push(entry);
   }
 

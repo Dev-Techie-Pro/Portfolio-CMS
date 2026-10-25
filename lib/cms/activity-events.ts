@@ -175,10 +175,15 @@ export async function logProfileChanges({ auth, request, before, after, payload 
   if ('socialLinks' in payload) {
     const prevLinks = Array.isArray(before.socialLinks) ? before.socialLinks : [];
     const nextLinks = Array.isArray(after.socialLinks) ? after.socialLinks : [];
-    const prevSet = new Set(prevLinks);
-    const nextSet = new Set(nextLinks);
-    const added = nextLinks.filter((l) => !prevSet.has(l));
-    const removed = prevLinks.filter((l) => !nextSet.has(l));
+    const linkKey = (l) => {
+      if (typeof l === 'string') return l;
+      if (l && typeof l === 'object') return String(l.url || l.href || JSON.stringify(l));
+      return String(l ?? '');
+    };
+    const prevSet = new Set(prevLinks.map(linkKey));
+    const nextSet = new Set(nextLinks.map(linkKey));
+    const added = nextLinks.filter((l) => !prevSet.has(linkKey(l)));
+    const removed = prevLinks.filter((l) => !nextSet.has(linkKey(l)));
 
     if (added.length || (nextLinks.length !== prevLinks.length && !removed.length)) {
       tasks.push(recordUserAction({

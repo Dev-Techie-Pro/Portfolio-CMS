@@ -6481,6 +6481,50 @@ body.light .custom-theme-card.active {
   font-size: var(--pa-fs-md);
   flex-shrink: 0;
 }
+.pa-social-group .pa-social-icon-btn {
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.pa-social-group .pa-social-icon-btn:hover {
+  border-color: var(--pa-border-hover);
+  color: var(--pa-orange);
+  background: var(--pa-bg-elevated);
+}
+.pa-social-platform-modal {
+  width: min(520px, calc(100vw - 32px));
+}
+.pa-social-platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  padding: 0 20px 20px;
+}
+.pa-social-platform-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 10px;
+  border-radius: var(--pa-radius);
+  border: 1px solid var(--pa-border-soft);
+  background: var(--pa-bg-chip);
+  color: var(--pa-text);
+  font-size: var(--pa-fs-sm);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.pa-social-platform-option i {
+  font-size: 22px;
+  color: var(--pa-text-dim);
+}
+.pa-social-platform-option:hover {
+  border-color: var(--pa-orange);
+  background: var(--pa-bg-elevated);
+}
+.pa-social-platform-option:hover i {
+  color: var(--pa-orange);
+}
 .pa-social-remove {
   color: var(--pa-text-faint);
   cursor: pointer;
