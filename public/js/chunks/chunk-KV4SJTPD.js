@@ -1,7 +1,7 @@
 import {
   renderIconPreviewHtml,
   resolveIconKey
-} from "./chunk-Q6LT2MRI.js";
+} from "./chunk-25Y4FLAP.js";
 import {
   $id,
   escapeHtml
@@ -394,4 +394,4 @@ export {
   open,
   updateIconTrigger
 };
-//# sourceMappingURL=chunk-5WDJLHBU.js.map
+//# sourceMappingURL=chunk-KV4SJTPD.js.map

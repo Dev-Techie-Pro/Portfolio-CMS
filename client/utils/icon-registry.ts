@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { TECH_BRAND_ICONS } from "@/lib/portfolio/tech-brand-icons";
+import { TECH_BRAND_ICONS } from "../../lib/portfolio/tech-brand-icons.js";
 
 export const ICONS = {
   siArrowUp:
