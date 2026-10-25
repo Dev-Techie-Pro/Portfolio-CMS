@@ -1,29 +1,102 @@
 /** Maps a technology name to portfolio site-icon registry keys (si*). */
+type IconRule = [RegExp, string];
+
+const ICON_RULES: IconRule[] = [
+  [/cursor\s*agent|^cursor\b/, "siCursor"],
+  [/\bclaude\b/, "siClaude"],
+  [/\bcodex\b/, "siCodex"],
+  [/\bchatgpt\b|openai/, "siChatGPT"],
+  [/\bgemini\b/, "siGemini"],
+  [/\bdeepseek\b/, "siDeepseek"],
+  [/\bkimi\b/, "siKimi"],
+  [/\blovable\b|loveable/, "siLoveable"],
+  [/\bnext\.?js\b|nextjs/, "siNextJs"],
+  [/\bvercel\b/, "siVercel"],
+  [/\bsupabase\b/, "siSupabase"],
+  [/\bfirebase\b/, "siFirebase"],
+  [/\bdocker\b/, "siDocker"],
+  [/\bcloudflare\b/, "siCloudflare"],
+  [/\bpostman\b/, "siPostman"],
+  [/\bxampp\b/, "siXampp"],
+  [/\bgithub\b/, "siGithub"],
+  [/\bgitlab\b/, "siGit"],
+  [/(?<![a-z])git(?![a-z])/, "siGit"],
+  [/\bfigma\b/, "siFigma"],
+  [/\bphotoshop\b/, "siPhotoshop"],
+  [/\billustrator\b/, "siIllustrator"],
+  [/\badobe xd\b|\bxd design\b/, "siUIUx"],
+  [/\bcanva\b/, "siCanva"],
+  [/\bsketch\b/, "siSketch"],
+  [/\bui\/?ux\b|user experience/, "siUIUx"],
+  [/\belementor\b/, "siElementor"],
+  [/\bwoocommerce\b|woo\s*commerce/, "siWoocom"],
+  [/\bwordpress\b/, "siWordpress"],
+  [/visual studio code|vscode|vs\s*code/, "siSublimeIDE"],
+  [/\bsublime\b/, "siSublimeIDE"],
+  [/\bvisual studio\b/, "siVisualStudio"],
+  [/\basp\.?net\b/, "siASPNet"],
+  [/\.net\s*core|asp\.?net\s*core/, "siDotNetCore"],
+  [/\bwinforms\b|windows forms/, "siDotNet"],
+  [/\bado\.?net\b/, "siDotNet"],
+  [/\.net\b|dotnet/, "siDotNet"],
+  [/\bc#\b|csharp/, "siCsharp"],
+  [/\bangular\b/, "siAngularJs"],
+  [/\breact\b/, "siReactJs"],
+  [/\bexpress\b/, "siExpressJs"],
+  [/\bnode\.?js\b|\bnode\b/, "siNodeJs"],
+  [/\bmongo(db)?\b/, "siMongodB"],
+  [/\bpostgres(ql)?\b/, "siPostgreSql"],
+  [/\bmysql\b|\bmariadb\b/, "siMySql"],
+  [/\bsql\s*server\b|\bmssql\b/, "siSql"],
+  [/\bsqlite\b/, "siSqlite"],
+  [/\bazure\b/, "siMicrosoftAzure"],
+  [/\btailwind\b/, "siTailwindcss"],
+  [/\bbootstrap\b/, "siBootstrap"],
+  [/\btypescript\b/, "siTypescript"],
+  [/\bjavascript\b/, "siJavascript"],
+  [/\bphpmyadmin\b/, "siPhpMyAdmin"],
+  [/\bphp\b/, "siPhpFill"],
+  [/\bjquery\b/, "siJquery"],
+  [/\bhtml\b/, "siHTML5"],
+  [/\bcss\b/, "siCss3"],
+  [/\brxjs\b/, "siRxJs"],
+  [/\bjson\b/, "siJson"],
+  [/\bstripe\b/, "siStripe"],
+  [/\bpaypal\b/, "siPaypal"],
+  [/\bmailchimp\b/, "siMailchimp"],
+  [/\bgraphql\b/, "siBackend"],
+  [/\brest\s*api\b/, "siServer"],
+  [/\bswagger\b/, "siFile"],
+  [/\bnginx\b/, "siServer"],
+  [/\bwebpack\b/, "siGrid"],
+  [/\bjira\b/, "siCheckSquare"],
+  [/\baws\b|amazon web services/, "siCloudflare"],
+  [/\bperplexity\b/, "siSearch"],
+  [/\bmidjourney\b/, "siSpark"],
+  [/\bnotion\b/, "siFile"],
+  [/\bcodeium\b/, "siSpark"],
+  [/\brunway\b/, "siPlay"],
+  [/\bcopilot\b/, "siGithub"],
+  [/\bantigravity\b/, "siGemini"],
+  [/\bstable diffusion\b/, "siAI"],
+  [/\bprimeng\b|prime ng/, "siAngularJs"],
+  [/\bprimereact\b/, "siReactJs"],
+  [/\bredux\b/, "siReactJs"],
+  [/\bnest\.?js\b/, "siNodeJs"],
+  [/\bprisma\b/, "siDatabase"],
+  [/\bredis\b/, "siDatabase"],
+  [/\bkubernetes\b|\bk8s\b/, "siDocker"],
+  [/\bterraform\b/, "siCloudflare"],
+  [/\bansible\b/, "siServer"],
+  [/\bjenkins\b/, "siServer"],
+];
+
 export function resolveTechIconName(name: string): string {
-  const n = String(name || "").toLowerCase();
-  if (n.includes("wordpress")) return "siWordpress";
-  if (n.includes("woocommerce")) return "siWoocom";
-  if (n.includes("angular")) return "siAngularJs";
-  if (n.includes("react")) return "siReactJs";
-  if (n.includes("node")) return "siNodeJs";
-  if (n.includes("express")) return "siExpressJs";
-  if (n.includes("mongo")) return "siMongodB";
-  if (n.includes("tailwind")) return "siTailwindcss";
-  if (n.includes("bootstrap")) return "siBootstrap";
-  if (n.includes("typescript")) return "siTypescript";
-  if (n.includes("javascript")) return "siJavascript";
-  if (n.includes("php")) return n.includes("admin") ? "siPhpMyAdmin" : "siPhpFill";
-  if (n.includes("mysql") || n.includes("mariadb")) return "siMySql";
-  if (n.includes("postgres")) return "siPostgreSql";
-  if (n.includes("sql server") || n === "sql") return "siSql";
-  if (n.includes(".net core") || n.includes("asp.net core")) return "siDotNetCore";
-  if (n.includes(".net") || n.includes("dotnet")) return "siDotNet";
-  if (n.includes("c#") || n.includes("csharp")) return "siCsharp";
-  if (n.includes("visual studio")) return "siVisualStudio";
-  if (n.includes("azure")) return "siMicrosoftAzure";
-  if (n.includes("elementor")) return "siElementor";
-  if (n.includes("jquery")) return "siJquery";
-  if (n.includes("html")) return "siHTML5";
-  if (n.includes("css")) return "siCss3";
+  const n = String(name || "").toLowerCase().trim();
+  if (!n) return "siCode";
+  for (const [pattern, icon] of ICON_RULES) {
+    if (pattern.test(n)) return icon;
+  }
+  if (n === "sql") return "siSql";
   return "siCode";
 }

@@ -17,6 +17,69 @@
     return String(index).padStart(2, "0");
   }
 
+  function normalizeTechLabel(value) {
+    return String(value || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+  }
+
+  const BRAND_LABEL_ALIASES = [
+    ["vs code", "VS Code"],
+    ["vscode", "VS Code"],
+    ["visual studio code", "VS Code"],
+    ["claude ai", "Claude AI"],
+    ["claude", "Claude AI"],
+    ["cursor ai", "Cursor AI"],
+    ["cursor", "Cursor AI"],
+    ["github copilot", "GitHub Copilot"],
+    ["copilot", "GitHub Copilot"],
+    ["google antigravity", "Google Antigravity"],
+    ["antigravity", "Google Antigravity"],
+    ["stable diffusion", "Stable Diffusion"],
+    ["runway", "Runway ML"],
+    ["notion", "Notion AI"],
+    ["express.js", "Express.js"],
+    ["expressjs", "Express.js"],
+    ["next.js", "Next.js"],
+    ["nextjs", "Next.js"],
+    ["next js", "Next.js"],
+    ["node.js", "Node.js"],
+    ["nodejs", "Node.js"],
+    [".net core", ".NET Core"],
+    ["dotnet core", ".NET Core"],
+    ["asp.net", ".NET Core"],
+    ["sql server", "SQL Server"],
+    ["mssql", "SQL Server"],
+    ["adobe xd", "Adobe XD"],
+    ["webpack", "Webpack"],
+    ["swagger", "Swagger"],
+    ["nginx", "Nginx"],
+    ["jira", "Jira"],
+    ["midjourney", "Midjourney"],
+    ["perplexity", "Perplexity"],
+    ["codeium", "Codeium"],
+  ];
+
+  function lookupBrandSvg(name) {
+    const registry = Portfolio.TICKER && Portfolio.TICKER.icons;
+    if (!registry || !name) return null;
+    if (registry[name]) return registry[name];
+    const norm = normalizeTechLabel(name);
+    const exactKey = Object.keys(registry).find(
+      (key) => normalizeTechLabel(key) === norm,
+    );
+    if (exactKey) return registry[exactKey];
+    for (const [needle, label] of BRAND_LABEL_ALIASES) {
+      if (norm.includes(needle) && registry[label]) return registry[label];
+    }
+    const partial = Object.keys(registry).find((key) => {
+      const kn = normalizeTechLabel(key);
+      return kn.length > 2 && (norm.includes(kn) || kn.includes(norm));
+    });
+    return partial ? registry[partial] : null;
+  }
+
   function categoryIconHtml(cat) {
     const iconClass = (cat.iconClass || "").trim();
     if (iconClass.startsWith("<svg") || iconClass.startsWith("&lt;svg")) {
@@ -32,10 +95,15 @@
   function itemIconHtml(item) {
     if (item.iconUrl && String(item.iconUrl).trim()) {
       const url = escapeHtml(item.iconUrl);
-      const alt = escapeHtml(item.name);
       return `<img src="${url}" alt="" loading="lazy" />`;
     }
     const si = item.portfolioIcon || "siCode";
+    if (si === "siCode") {
+      const brandSvg = lookupBrandSvg(item.name);
+      if (brandSvg) {
+        return `<span class="skill-brand-svg" aria-hidden="true">${brandSvg}</span>`;
+      }
+    }
     return `<span class="icon" data-icon="${escapeHtml(si)}"></span>`;
   }
 
@@ -172,5 +240,7 @@
   Portfolio.SKILLS_CMS = {
     hydrateAll,
     renderGrid,
+    categoryIconHtml,
+    itemIconHtml,
   };
 })();

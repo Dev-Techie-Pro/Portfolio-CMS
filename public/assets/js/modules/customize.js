@@ -45,6 +45,10 @@
     function x(e) {
       document.documentElement.classList.toggle("theme-light", !e);
     }
+    function B() {
+      var f = window.Portfolio && window.Portfolio.FAVICON;
+      f && f.updateFavicon && f.updateFavicon(g.accent);
+    }
     function k(e) {
       var t = document.documentElement;
       (y && (v.removeEventListener("change", y), (y = null)),
@@ -56,9 +60,10 @@
             : "system" === e &&
               (x(v.matches),
               (y = function (e) {
-                x(e.matches);
+                (x(e.matches), B());
               }),
-              v.addEventListener("change", y)));
+              v.addEventListener("change", y)),
+        B());
     }
     function E(e) {
       var t = document.documentElement;
@@ -85,16 +90,7 @@
           "--accent-dimmer",
           "rgba(" + n.r + ", " + n.g + ", " + n.b + ", 0.44)",
         ));
-      var o =
-          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='" +
-          e.replace("#", "%23") +
-          "'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='14' fill='%23000'%3ESI%3C/text%3E%3C/svg%3E",
-        a = document.querySelector("link[rel='icon']");
-      (a ||
-        (((a = document.createElement("link")).rel = "icon"),
-        (a.type = "image/svg+xml"),
-        document.head.appendChild(a)),
-        (a.href = o),
+      (B(),
         document.dispatchEvent(
           new CustomEvent("si:accentChanged", { detail: { colour: e } }),
         ));

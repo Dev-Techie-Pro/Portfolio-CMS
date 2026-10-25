@@ -16,6 +16,8 @@
   }
 
   function itemIconHtml(item) {
+    const fn = Portfolio.SKILLS_CMS?.itemIconHtml;
+    if (fn) return fn(item);
     if (item.iconUrl && String(item.iconUrl).trim()) {
       const url = escapeHtml(item.iconUrl);
       return `<img src="${url}" alt="" loading="lazy" />`;
@@ -65,10 +67,9 @@
     const num = root.querySelector("[data-skills-num]");
     const ring = root.querySelector("[data-skills-ring]");
     const chips = root.querySelector("[data-skills-chips]");
-    const count = root.querySelector("[data-skills-count]");
-    const step = root.querySelector("[data-skills-step]");
+    const catIcon = root.querySelector("[data-skills-cat-icon]");
 
-    if (!rail || !panel || !title || !desc || !chips || !count || !step || !arc || !num || !ring) {
+    if (!rail || !panel || !title || !desc || !chips || !arc || !num || !ring) {
       console.error("[skills-explorer] missing shell nodes");
       return;
     }
@@ -107,14 +108,17 @@
         )
         .join("");
       Portfolio.ICONS?.hydrateAll?.(chips);
-      count.textContent = `${items.length} tool${items.length === 1 ? "" : "s"} in this area`;
-      step.textContent = i < N - 1 ? `${i + 1} of ${N} · keep scrolling` : `${N} of ${N}`;
       paintRing(arc, pct);
       num.textContent = `${pct}%`;
       ring.setAttribute("aria-label", `${pct} percent proficiency`);
+      if (catIcon) {
+        const iconFn = Portfolio.SKILLS_CMS?.categoryIconHtml;
+        catIcon.innerHTML = iconFn ? iconFn(cat) : "";
+        Portfolio.ICONS?.hydrateAll?.(catIcon);
+      }
     }
 
-    const pinEl = root.classList.contains("skills-explorer--pin") ? root : root;
+    const pinEl = root.querySelector("[data-skills-pin]") || root;
     const prefersReduced = () =>
       typeof window.matchMedia === "function" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -131,8 +135,6 @@
       num,
       ring,
       chips,
-      count,
-      step,
       categoryCount: N,
       prefersReduced,
       show: populateCategory,

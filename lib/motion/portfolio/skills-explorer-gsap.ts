@@ -18,8 +18,6 @@ export type SkillsExplorerGsapApi = {
   num: HTMLElement;
   ring: HTMLElement;
   chips: HTMLElement;
-  count: HTMLElement;
-  step: HTMLElement;
   categoryCount: number;
   prefersReduced: () => boolean;
   show: (index: number) => void;
@@ -47,6 +45,7 @@ export function mountSkillsExplorerGsap(api: SkillsExplorerGsapApi): Driver | nu
   if (!N) return null;
 
   const triggers: ScrollTrigger[] = [];
+
   const kill = () => {
     triggers.forEach((t) => t.kill());
     triggers.length = 0;
@@ -79,7 +78,6 @@ export function mountSkillsExplorerGsap(api: SkillsExplorerGsapApi): Driver | nu
       t.tabIndex = j === i ? 0 : -1;
     });
     api.panel.setAttribute('aria-labelledby', api.tabs[i]?.id || '');
-    api.tabs[i]?.scrollIntoView?.({ inline: 'nearest', block: 'nearest', behavior: 'smooth' });
 
     const pct = Number(api.tabs[i]?.dataset.pct || 0);
     api.ring.setAttribute('aria-label', `${pct} percent proficiency`);
@@ -149,6 +147,7 @@ export function mountSkillsExplorerGsap(api: SkillsExplorerGsapApi): Driver | nu
     }
     jump = i;
     show(i);
+    api.tabs[i]?.scrollIntoView?.({ inline: 'nearest', block: 'nearest' });
     gsap.to(window, {
       scrollTo: {
         y: st.start + ((i + 0.5) / N) * (st.end - st.start),
@@ -195,13 +194,24 @@ export function mountSkillsExplorerGsap(api: SkillsExplorerGsapApi): Driver | nu
     return driver;
   }
 
-  const end = () => `+=${Math.round(window.innerHeight * N * (window.innerWidth < 821 ? 0.7 : 0.85))}`;
+  const pinStart = () => {
+    const nav = document.querySelector('.navbar');
+    const h = nav ? nav.getBoundingClientRect().height : 0;
+    const fromVar = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--nav-h'),
+    );
+    return Math.round((h || fromVar || 70) + 8);
+  };
+
+  const end = () =>
+    `+=${Math.round(window.innerHeight * N * (window.innerWidth < 821 ? 0.65 : 0.8))}`;
 
   st = ScrollTrigger.create({
     trigger: api.pinEl,
-    start: 'top top',
+    start: () => `top ${pinStart()}px`,
     end,
     pin: true,
+    pinSpacing: true,
     anticipatePin: 1,
     invalidateOnRefresh: true,
     onUpdate: (self) => {
@@ -216,7 +226,7 @@ export function mountSkillsExplorerGsap(api: SkillsExplorerGsapApi): Driver | nu
     ease: 'none',
     scrollTrigger: {
       trigger: api.pinEl,
-      start: 'top top',
+      start: () => `top ${pinStart()}px`,
       end,
       scrub: 0.4,
       invalidateOnRefresh: true,
@@ -252,6 +262,11 @@ export function mountSkillsExplorerGsap(api: SkillsExplorerGsapApi): Driver | nu
 
   const driver: Driver = { kill, goTo };
   drivers.set(api.root, driver);
+  const refreshPin = () => ScrollTrigger.refresh();
+  requestAnimationFrame(() => {
+    refreshPin();
+    requestAnimationFrame(refreshPin);
+  });
   return driver;
 }
 
