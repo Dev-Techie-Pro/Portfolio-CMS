@@ -7554,11 +7554,11 @@ async function loadPageModuleClass(page) {
     case "technologies":
       return (await import("./chunks/TechnologiesModule-XC3RVYZQ.js")).TechnologiesModule;
     case "tool-categories":
-      return (await import("./chunks/ToolCategoriesModule-RXFQTG2J.js")).ToolCategoriesModule;
+      return (await import("./chunks/ToolCategoriesModule-XXSS3OIZ.js")).ToolCategoriesModule;
     case "blog-categories":
       return (await import("./chunks/BlogCategoriesModule-IQA7BAMF.js")).BlogCategoriesModule;
     case "tools":
-      return (await import("./chunks/ToolsModule-4DI2QI4B.js")).ToolsModule;
+      return (await import("./chunks/ToolsModule-SPBTLQZQ.js")).ToolsModule;
     case "media":
       return (await import("./chunks/MediaModule-C3SP4BKX.js")).MediaModule;
     case "testimonials":

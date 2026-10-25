@@ -1,13 +1,12 @@
 // @ts-nocheck
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
 import { withStaffGet } from '@/lib/api/with-staff-get';
+import { loadRemixIconNames } from '@/lib/remix-icon-glyph';
 
 const TAGS_URL = 'https://raw.githubusercontent.com/Remix-Design/RemixIcon/master/tags.json';
-const GLYPH_PATH = path.join(process.cwd(), 'node_modules/remixicon/fonts/remixicon.glyph.json');
 
 let tagsCache: Record<string, unknown> | null = null;
 let tagsLoadPromise: Promise<Record<string, unknown>> | null = null;
+let iconNamesCache: string[] | null = null;
 
 async function loadTags(): Promise<Record<string, unknown>> {
   if (tagsCache) return tagsCache;
@@ -23,10 +22,15 @@ async function loadTags(): Promise<Record<string, unknown>> {
   return tagsLoadPromise;
 }
 
+async function loadIcons(): Promise<string[]> {
+  if (iconNamesCache) return iconNamesCache;
+  iconNamesCache = await loadRemixIconNames();
+  return iconNamesCache;
+}
+
 export async function GET() {
   return withStaffGet(async () => {
-    const glyphs = JSON.parse(await readFile(GLYPH_PATH, 'utf8'));
-    const tags = await loadTags();
-    return { glyphs, tags };
+    const [icons, tags] = await Promise.all([loadIcons(), loadTags()]);
+    return { icons, tags };
   }, { maxAgeSec: 86400 });
 }

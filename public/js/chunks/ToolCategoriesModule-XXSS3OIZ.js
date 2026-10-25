@@ -1,7 +1,7 @@
 import {
   open,
   updateIconTrigger
-} from "./chunk-OXBYMDTC.js";
+} from "./chunk-5WDJLHBU.js";
 import {
   DEFAULT_CATEGORY_ICON,
   renderIconHtml
@@ -436,4 +436,4 @@ var ToolCategoriesModule = class extends CrudCardModule {
 export {
   ToolCategoriesModule
 };
-//# sourceMappingURL=ToolCategoriesModule-RXFQTG2J.js.map
+//# sourceMappingURL=ToolCategoriesModule-XXSS3OIZ.js.map

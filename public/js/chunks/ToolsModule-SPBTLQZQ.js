@@ -1,7 +1,7 @@
 import {
   open,
   updateIconTrigger
-} from "./chunk-OXBYMDTC.js";
+} from "./chunk-5WDJLHBU.js";
 import {
   addStackCatalogItem,
   convertStackCatalogItem
@@ -500,4 +500,4 @@ var ToolsModule = class extends CrudCardModule {
 export {
   ToolsModule
 };
-//# sourceMappingURL=ToolsModule-4DI2QI4B.js.map
+//# sourceMappingURL=ToolsModule-SPBTLQZQ.js.map

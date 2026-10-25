@@ -34,9 +34,14 @@ function buildCategoryMap(tags) {
   return map;
 }
 
-function normalizeRegistry(glyphs, tags) {
+function iconNameList(glyphsOrIcons) {
+  if (Array.isArray(glyphsOrIcons)) return glyphsOrIcons;
+  return Object.keys(glyphsOrIcons || {});
+}
+
+function normalizeRegistry(glyphsOrIcons, tags) {
   const categoryMap = buildCategoryMap(tags);
-  return Object.keys(glyphs || {})
+  return iconNameList(glyphsOrIcons)
     .map((name) => {
       const base = baseIconName(name);
       const meta = categoryMap.get(base) || categoryMap.get(name);
@@ -77,8 +82,9 @@ function writeSessionCache(icons) {
 async function fetchRegistry() {
   const res = await fetch(REGISTRY_URL);
   if (!res.ok) throw new Error(`Remix icon registry fetch failed (${res.status})`);
-  const { glyphs, tags } = await res.json();
-  return normalizeRegistry(glyphs, tags || {});
+  const data = await res.json();
+  const names = data.icons ?? data.glyphs;
+  return normalizeRegistry(names, data.tags || {});
 }
 
 export async function loadRegistry() {

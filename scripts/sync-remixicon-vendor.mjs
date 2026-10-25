@@ -8,7 +8,7 @@ const root = process.cwd();
 const srcDir = path.join(root, 'node_modules/remixicon/fonts');
 const destDir = path.join(root, 'public/vendor/remixicon');
 
-const fontExt = /\.(css|woff2?|ttf|eot|svg)$/i;
+const fontExt = /\.(css|woff2?|ttf|eot|svg|json)$/i;
 
 if (!fs.existsSync(srcDir)) {
   console.warn('sync-remixicon-vendor: node_modules/remixicon/fonts missing — run npm install');
