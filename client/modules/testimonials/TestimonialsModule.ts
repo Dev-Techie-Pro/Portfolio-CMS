@@ -7,6 +7,7 @@ import { uploadCmsFileWithPreview } from '../../utils/media-upload.js';
 import { renderPaCatCard, renderPaCatListRow } from '../../utils/paCatCard.js';
 import { categoryKeyFromAccentHex } from '../../utils/categoryClassOptions.js';
 import { setStatTrend, setStatValue } from '../../utils/pageStats.js';
+import { buildTitleListColumns } from '../../utils/listDataTable.js';
 
 export const SEED_TESTIMONIALS = [];
 
@@ -72,6 +73,10 @@ export class TestimonialsModule extends CrudCardModule {
     setStatTrend('paTestiStatHighRatedTrend', records, (t) => (t.rating || 0) >= 4);
   }
 
+  getListTableColumns() {
+    return buildTitleListColumns('Company');
+  }
+
   renderCardMenu(t) {
     const id = escapeHtml(String(t.id));
     const name = escapeHtml(t.name);
@@ -87,13 +92,14 @@ export class TestimonialsModule extends CrudCardModule {
       ? `<img src="${escapeHtml(t.imageUrl)}" alt="" class="pa-lv-img" loading="lazy" />`
       : `<span class="pa-lv-avatar-initials">${escapeHtml(initials)}</span>`;
     const roleLine = [t.role, t.company].filter(Boolean).join(' · ') || 'Client';
+    const companyCell = t.company || t.role || '—';
     return renderPaCatListRow({
       rowIndex,
       idAttr: 'data-testi-id',
       id: t.id,
       iconHtml: avatar,
       title: t.name,
-      category: roleLine,
+      category: companyCell,
       status: t.featured ? 'Featured' : 'Active',
       created: formatDate(t.createdAt),
       cardClass: this.bulkSelect?.cardClass(t.id) || '',
@@ -119,8 +125,8 @@ export class TestimonialsModule extends CrudCardModule {
       iconHtml: `<div class="pa-avatar" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">${avatar}</div>`,
       badge,
       title: t.name,
-      slug: roleLine,
-      desc: t.quote || '',
+      slug: t.company || t.role || '—',
+      desc: t.quote || t.role || '',
       countIcon: 'ri-star-fill',
       countLabel: `${t.rating || 0} star${t.rating === 1 ? '' : 's'}`,
       status: t.featured ? 'Featured' : 'Active',

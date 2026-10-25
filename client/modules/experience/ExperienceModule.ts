@@ -19,6 +19,7 @@ import {
   EXP_HIGHLIGHT_MAX_IMPACT,
 } from '../../utils/expHighlightsForm.js';
 import { suggestExperienceHighlights } from '../../utils/expHighlightsSuggest.js';
+import { buildTitleListColumns } from '../../utils/listDataTable.js';
 
 export const EXP_TYPE_META = {
   'full-time': { label: 'Full-time', icon: 'ri-briefcase-line', color: '#60a5fa' },
@@ -140,6 +141,10 @@ export class ExperienceModule extends CrudCardModule {
     setStatTrend('paExpStatCurrentTrend', records, (e) => e.current);
     setStatTrend('paExpStatFullTimeTrend', records, (e) => e.type === 'full-time');
     setStatTrend('paExpStatOtherTrend', records, (e) => e.type && e.type !== 'full-time');
+  }
+
+  getListTableColumns() {
+    return buildTitleListColumns('Company');
   }
 
   renderCardMenu(e) {

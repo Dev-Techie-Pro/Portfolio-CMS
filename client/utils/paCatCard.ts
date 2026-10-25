@@ -130,6 +130,7 @@ export function renderPaCatListRow(opts) {
     iconHtml,
     title,
     category = '—',
+    showCategory = true,
     status = 'Active',
     created = '—',
     cardClass = '',
@@ -138,7 +139,7 @@ export function renderPaCatListRow(opts) {
   return `${renderListRowStart(cardClass)}
     ${renderListIndexCell(rowIndex)}
     ${renderListIconProjectCell(title, iconHtml)}
-    ${renderListTextCell(category)}
+    ${showCategory ? renderListTextCell(category) : ''}
     ${renderListStatusCell(status)}
     ${renderListDateCell(created)}
     ${renderListEditDeleteActions({ idAttr, id, title, extraHtml: viewBtnHtml })}

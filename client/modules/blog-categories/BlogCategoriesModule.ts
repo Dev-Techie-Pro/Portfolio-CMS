@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { CrudCardModule } from '../../core/CrudCardModule.js';
 import { effectiveViewMode } from '../../utils/listGridView.js';
-import { sortByNewestFirst } from '../../utils/format.js';
+import { formatDate, sortByNewestFirst } from '../../utils/format.js';
 import { renderPaCatListRow } from '../../utils/paCatCard.js';
 import {
   applyListGridClasses,
@@ -229,7 +229,7 @@ export class BlogCategoriesModule extends CrudCardModule {
       title: record.label,
       category: `${count} post${count === 1 ? '' : 's'}`,
       status: 'Active',
-      created: '—',
+      created: formatDate(record.createdAt),
       cardClass: this.bulkSelect?.cardClass(record.id) || '',
       viewBtnHtml,
     });
@@ -246,6 +246,7 @@ export class BlogCategoriesModule extends CrudCardModule {
       ? escapeHtml(desc)
       : '<em class="pa-cat-card__desc-empty">No description</em>';
     const countLabel = `${escapeHtml(String(count))} post${count === 1 ? '' : 's'}`;
+    const createdLabel = escapeHtml(formatDate(record.createdAt));
     const bulkCheckbox = this.bulkSelect?.checkboxHtml(record.id, `Select ${label}`) || '';
     const menu = this.renderCardMenu(record);
     const delay = Math.min(index, 12) * 40;
@@ -282,6 +283,13 @@ export class BlogCategoriesModule extends CrudCardModule {
         </div>
         <div class="pa-cat-card__count"><i class="ri-article-line"></i><span>${countLabel}</span></div>
         <div class="pa-cat-card__status">Active</div>
+        <div class="pa-cat-card__date">
+          <i class="ri-calendar-line"></i>
+          <div class="pa-cat-card__date-copy">
+            <span class="pa-cat-card__date-label">Created</span>
+            <span class="pa-cat-card__date-value">${createdLabel}</span>
+          </div>
+        </div>
         <div class="pa-cat-card__list-actions">
           <button type="button" class="pa-action-btn pa-action-edit" data-blog-cat-id="${id}" title="Edit category" aria-label="Edit ${label}"><i class="ri-pencil-line"></i></button>
           <button type="button" class="pa-action-btn pa-action-delete" data-blog-cat-id="${id}" title="Delete category" aria-label="Delete ${label}"><i class="ri-delete-bin-line"></i></button>

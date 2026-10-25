@@ -7,7 +7,7 @@ import * as svgIconPicker from '../../utils/SvgIconPicker.js';
 import { DEFAULT_CATEGORY_ICON, renderIconHtml } from '../../utils/icon-utils.js';
 import { storage } from '../../core/StorageService.js';
 import { renderPaCatCard, renderPaCatListRow, attachPaCatCardViewListeners } from '../../utils/paCatCard.js';
-import { listActionBtn } from '../../utils/listDataTable.js';
+import { buildTitleListColumns, listActionBtn } from '../../utils/listDataTable.js';
 import { categoryKeyFromAccentHex } from '../../utils/categoryClassOptions.js';
 import { setStatTrend, setStatValue } from '../../utils/pageStats.js';
 
@@ -201,6 +201,10 @@ export class ToolCategoriesModule extends CrudCardModule {
     const toolCount = this._toolCounts?.[key] ?? 0;
     const techCount = this._techCounts?.[key] ?? 0;
     return { toolCount, techCount, label: formatToolTechCountLabel(toolCount, techCount) };
+  }
+
+  getListTableColumns() {
+    return buildTitleListColumns('Linked Items');
   }
 
   async render() {

@@ -2295,6 +2295,10 @@ export type Database = {
         Args: { p_max_per_user?: number }
         Returns: number
       }
+      pa_prune_api_rate_limits: {
+        Args: { p_keep_days?: number }
+        Returns: number
+      }
       pa_prune_user_sessions: {
         Args: { p_keep_days?: number }
         Returns: number

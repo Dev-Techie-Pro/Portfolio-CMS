@@ -68,6 +68,24 @@ export const UI_ENV_DEFINITIONS = [
     defaultValue: '90 days',
   },
   {
+    key: 'API_RATE_LIMITS_PRUNE_KEEP_DAYS',
+    label: 'API rate-limit bucket retention',
+    required: false,
+    secret: false,
+    type: 'number',
+    fullWidth: true,
+    placeholder: '7',
+    unitSuffix: 'days',
+    description:
+      'How long to keep expired rows in <code>api_rate_limits</code> after their time window ends.',
+    details: [
+      'Only deletes past windows; active rate limiting is unchanged.',
+      'Pruned daily via the prune-sessions cron when <code>CRON_SECRET</code> is set.',
+      'Seven days is enough for debugging without growing the table indefinitely.',
+    ],
+    defaultValue: '7 days',
+  },
+  {
     key: 'LOGIN_ACTIVITY_PER_USER_CAP',
     label: 'Login activity per-user cap',
     required: false,
@@ -507,7 +525,11 @@ export const UI_ENV_GROUPS = [
     sections: [
       {
         title: 'Retention',
-        keys: ['SESSION_PRUNE_KEEP_DAYS', 'LOGIN_ACTIVITY_RETENTION_DAYS'],
+        keys: [
+          'SESSION_PRUNE_KEEP_DAYS',
+          'LOGIN_ACTIVITY_RETENTION_DAYS',
+          'API_RATE_LIMITS_PRUNE_KEEP_DAYS',
+        ],
       },
       {
         title: 'Rate limits',

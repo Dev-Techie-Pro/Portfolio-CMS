@@ -6,6 +6,7 @@ import { openPanel } from '../../modules/shell/panels.js';
 import { renderPaCatCard, renderPaCatListRow } from '../../utils/paCatCard.js';
 import { categoryKeyFromAccentHex } from '../../utils/categoryClassOptions.js';
 import { setStatTrend, setStatValue } from '../../utils/pageStats.js';
+import { buildTitleListColumns } from '../../utils/listDataTable.js';
 
 const FAQ_ACCENT = '#38bdf8';
 
@@ -96,6 +97,10 @@ export class FaqsModule extends CrudCardModule {
     setStatTrend('paFaqStatOrderedTrend', records, (f) => (f.sortOrder ?? 0) > 0);
   }
 
+  getListTableColumns() {
+    return buildTitleListColumns('Category', { omitSecond: true });
+  }
+
   renderCardMenu(f) {
     const id = escapeHtml(String(f.id));
     const question = escapeHtml(f.question);
@@ -113,7 +118,7 @@ export class FaqsModule extends CrudCardModule {
       id: f.id,
       iconHtml: '<i class="ri-question-answer-line"></i>',
       title: f.question,
-      category: status,
+      showCategory: false,
       status,
       created: formatDate(f.createdAt),
       cardClass: this.bulkSelect?.cardClass(f.id) || '',

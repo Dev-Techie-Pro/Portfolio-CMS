@@ -15,6 +15,26 @@ export const DEFAULT_LIST_COLUMNS: ListTableColumn[] = [
   { label: 'Actions', className: 'pa-lv-col-actions' },
 ];
 
+/** Standard CRUD list headers with a “Title” primary column (optional second data column). */
+export function buildTitleListColumns(
+  secondColumnLabel = 'Category',
+  options?: { omitSecond?: boolean },
+): ListTableColumn[] {
+  const columns: ListTableColumn[] = [
+    { label: '#', className: 'pa-lv-col-num' },
+    { label: 'Title', className: 'pa-lv-col-project' },
+  ];
+  if (!options?.omitSecond) {
+    columns.push({ label: secondColumnLabel });
+  }
+  columns.push(
+    { label: 'Status', className: 'pa-lv-col-status' },
+    { label: 'Created', className: 'pa-lv-col-date' },
+    { label: 'Actions', className: 'pa-lv-col-actions' },
+  );
+  return columns;
+}
+
 export function listStatusVariant(label: string): string {
   const l = (label || '').trim().toLowerCase();
   if (l === 'active' || l === 'published' || l === 'in progress') return 'active';

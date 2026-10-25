@@ -4,7 +4,7 @@ import { effectiveViewMode } from '../../utils/listGridView.js';
 import { escapeHtml, $id, $all, $field, $input, $select } from '../../utils/dom.js';
 import { storage } from '../../core/StorageService.js';
 import { setStatTrend, setStatValue } from '../../utils/pageStats.js';
-import { sortByNewestFirst } from '../../utils/format.js';
+import { formatDate, sortByNewestFirst } from '../../utils/format.js';
 import { slugify } from '../../utils/strings.js';
 import { renderGroupedCards } from '../../utils/groupLayout.js';
 import { closePanels, openPanel, activateTab } from '../../modules/shell/panels.js';
@@ -286,7 +286,7 @@ export class TagsModule extends CrudCardModule {
       ${renderListIconProjectCell(tag, '<i class="ri-price-tag-3-line"></i>')}
       ${renderListTextCell(projectTitle)}
       ${renderListStatusCell('Active')}
-      ${renderListDateCell('—')}
+      ${renderListDateCell(formatDate(record.createdAt))}
       ${renderListEditDeleteActions({
         idAttr: 'data-tag-id',
         id,
@@ -302,6 +302,7 @@ export class TagsModule extends CrudCardModule {
     const projectTitle = escapeHtml((record.projectTitles || []).join(', ') || L.noLinked);
     const slug = escapeHtml(record.slug || '');
     const projectCount = Number(record.projectCount ?? (record.projectLegacyIds || []).length) || 0;
+    const createdLabel = escapeHtml(formatDate(record.createdAt));
     const firstProjectId = (record.projectLegacyIds || [])[0];
     const projectLegacyId = escapeHtml(String(firstProjectId ?? ''));
     const bulkCheckbox = this.bulkSelect?.checkboxHtml(record.id, `Select ${record.tag}`) || '';
@@ -340,6 +341,13 @@ export class TagsModule extends CrudCardModule {
         </div>
         <div class="pa-cat-card__count"><i class="ri-apps-line"></i><span>${this.entityCountLabel(projectCount)}</span></div>
         <div class="pa-cat-card__status">Active</div>
+        <div class="pa-cat-card__date">
+          <i class="ri-calendar-line"></i>
+          <div class="pa-cat-card__date-copy">
+            <span class="pa-cat-card__date-label">Created</span>
+            <span class="pa-cat-card__date-value">${createdLabel}</span>
+          </div>
+        </div>
         <div class="pa-cat-card__list-actions">
           <button type="button" class="pa-action-btn pa-action-edit" data-tag-id="${id}" title="Edit tag" aria-label="Edit ${tag}"><i class="ri-pencil-line"></i></button>
           <button type="button" class="pa-action-btn pa-action-delete" data-tag-id="${id}" title="Delete tag" aria-label="Delete ${tag}"><i class="ri-delete-bin-line"></i></button>

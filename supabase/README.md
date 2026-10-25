@@ -300,6 +300,7 @@ Store the public URL in `media_assets.url` and the bucket object path in `media_
 | `pa_prune_login_activity(days)` | Delete `login_activity` older than retention window |
 | `pa_prune_login_activity_user_cap(n)` | Keep newest *n* `login_activity` rows per user |
 | `pa_prune_user_sessions(days)` | Delete ended `user_sessions` older than retention |
+| `pa_prune_api_rate_limits(days)` | Delete expired `api_rate_limits` windows older than retention (default 7 days) |
 | `pa_admin_public_tables()` | List public tables for SQL export UI |
 | `pa_admin_public_table_stats()` | Row counts and on-disk size per table |
 | `pa_admin_foreign_key_edges()` | FK graph for ordered SQL dumps |

@@ -6,7 +6,7 @@ import { formatDate, parseYearsInput, parseSortInput, sortByNewestFirst } from '
 import { storage } from '../../core/StorageService.js';
 import { renderIconHtml } from '../../utils/icon-utils.js';
 import { renderPaCatCard, renderPaCatListRow, attachPaCatCardViewListeners } from '../../utils/paCatCard.js';
-import { listActionBtn } from '../../utils/listDataTable.js';
+import { buildTitleListColumns, listActionBtn } from '../../utils/listDataTable.js';
 import { categoryKeyFromAccentHex } from '../../utils/categoryClassOptions.js';
 import { setStatTrend, setStatValue } from '../../utils/pageStats.js';
 import { addStackCatalogItem } from '../../utils/stackCatalogAdd.js';
@@ -198,6 +198,10 @@ export class TechnologiesModule extends CrudCardModule {
     setStatTrend('paTechStatFrontendTrend', records, (t) => t.categoryId != null);
     setStatTrend('paTechStatExpertTrend', records, (t) => t.level === 'expert');
     setStatTrend('paTechStatFeaturedTrend', records, (t) => t.featured);
+  }
+
+  getListTableColumns() {
+    return buildTitleListColumns('Category');
   }
 
   renderCardMenu(tech) {
