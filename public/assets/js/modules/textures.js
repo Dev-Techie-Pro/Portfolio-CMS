@@ -241,16 +241,6 @@
           o || y(n, t, 0, i));
       }
     }
-    function g(t, e, n) {
-      const o = 0.62 * n,
-        r = a(
-          `\n      position:absolute;inset:0;pointer-events:none;z-index:0;\n      background-image:radial-gradient(circle,${h(e)} 1px,transparent 1px);\n      background-size:${n}px ${n}px;\n      animation:siDotPan ${o.toFixed(0)}s linear infinite;`,
-        );
-      (r.classList.add("si-texture-layer"),
-        (r.dataset.siBaseDur = o.toFixed(0)),
-        (r.dataset.siAnimName = "siDotPan"),
-        t.insertBefore(r, t.firstChild));
-    }
     function M(t) {
       [
         { w: 420, top: "-90px", left: "-70px", delay: "0s" },
@@ -325,8 +315,7 @@
       ((t.dataset.siAnim = "1"),
         (t.style.position = "relative"),
         (t.style.overflow = "hidden"),
-        m(t, !1),
-        g(t, 0.055, 36));
+        m(t, !1));
       const e = a(
         "position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden;",
       );

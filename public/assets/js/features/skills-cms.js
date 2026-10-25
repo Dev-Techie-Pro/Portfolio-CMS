@@ -217,7 +217,6 @@
     root.innerHTML = renderGrid(data.categories, limit, maxItems);
     Portfolio.ICONS?.hydrateAll?.(root);
     Portfolio.TICKER?.hydrateSkillIcons?.();
-    if (data.tickers) mountTickers(data.tickers);
     root.classList.add("visible");
     Portfolio.ANIMATIONS?.initSkillBars?.();
     Portfolio.ANIMATIONS?.initScrollReveal?.();
@@ -225,8 +224,7 @@
 
   async function hydrateAll() {
     const grids = document.querySelectorAll("[data-cms-skills-grid]");
-    if (!grids.length) return;
-    await Portfolio.ensurePortfolioSkills();
+    const data = await Portfolio.ensurePortfolioSkills();
     for (const grid of grids) {
       try {
         await hydrateGrid(grid);
@@ -235,6 +233,8 @@
         grid.innerHTML = `<p class="exp-cms-placeholder">Could not load skills.</p>`;
       }
     }
+    mountTickers(data.tickers);
+    Portfolio.TICKER?.hydrateSkillIcons?.();
   }
 
   Portfolio.SKILLS_CMS = {
