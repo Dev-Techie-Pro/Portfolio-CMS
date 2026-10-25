@@ -852,7 +852,7 @@
         spawnGlow: x,
         makeSymbolInteractive: y,
         spawnSymbols: b,
-        addDotGrid: g,
+        addDotGrid: function () {},
         addGlowBlobs: M,
         addScanLine: v,
         addBrackets: w,
