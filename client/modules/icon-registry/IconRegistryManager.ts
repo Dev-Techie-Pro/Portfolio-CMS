@@ -7,6 +7,8 @@ import { renderIconHtml } from '../../utils/icon-utils.js';
 import { ICONS } from '../../utils/icon-registry.js';
 import * as svgIconPicker from '../../utils/SvgIconPicker.js';
 import * as mediaPicker from '../../utils/MediaPicker.js';
+import { uploadCmsFile } from '../../utils/media-upload.js';
+import { handleFileValidation } from '../../utils/files.js';
 import {
   decodeIconOverride,
   encodeIconOverride,
@@ -131,9 +133,11 @@ export class IconRegistryManager {
               <div class="pa-icon-registry-pick-row">
                 <span class="pa-icon-registry-pick-value pa-icon-registry-image-path" id="paIconRegistryImageValue">No image selected</span>
                 <button type="button" class="pa-btn pa-btn-secondary" id="paIconRegistryPickImageBtn"><i class="ri-image-line"></i> Media library</button>
+                <button type="button" class="pa-btn pa-btn-secondary" id="paIconRegistryUploadImageBtn"><i class="ri-upload-2-line"></i> Upload</button>
+                <input type="file" id="paIconRegistryImageFile" accept="image/png,image/jpeg,image/webp,image/svg+xml,.svg" hidden />
               </div>
               <input class="pa-form-input" type="url" id="paIconRegistryImageUrl" placeholder="https://… or /path/to/image.png" aria-label="Image URL" />
-              <p class="pa-form-hint">PNG, SVG, or WebP from your media library or any public URL.</p>
+              <p class="pa-form-hint">PNG, SVG, or WebP from your device, media library, or any public URL.</p>
             </div>
           </div>
         </div>
@@ -159,6 +163,12 @@ export class IconRegistryManager {
     });
     $id('paIconRegistryPickRemixBtn')?.addEventListener('click', () => this.openRemixPicker());
     $id('paIconRegistryPickImageBtn')?.addEventListener('click', () => this.openImagePicker());
+    $id('paIconRegistryUploadImageBtn')?.addEventListener('click', () => {
+      $id('paIconRegistryImageFile')?.click();
+    });
+    $id('paIconRegistryImageFile')?.addEventListener('change', (e) => {
+      void this.handleImageFileUpload(e.target?.files?.[0]);
+    });
     $id('paIconRegistryEditSvg')?.addEventListener('input', () => this.syncEditPreview());
     $id('paIconRegistryImageUrl')?.addEventListener('input', (e) => {
       this._editImageUrl = e.target.value || '';
@@ -233,10 +243,41 @@ export class IconRegistryManager {
     this.setEditSourceKind(this._editKind);
   }
 
+  async handleImageFileUpload(file) {
+    const input = $id('paIconRegistryImageFile');
+    if (input) input.value = '';
+    if (!file || !handleFileValidation(file)) return;
+    const btn = $id('paIconRegistryUploadImageBtn');
+    btn?.setAttribute('disabled', 'disabled');
+    try {
+      const uploaded = await uploadCmsFile(file, {
+        folder: 'icons',
+        page: 'icon-registry',
+        purpose: 'icon-registry-image',
+      });
+      const url = String(uploaded?.url || '').trim();
+      if (!url) {
+        showToast('Upload succeeded but no URL was returned.', 'danger');
+        return;
+      }
+      this._editImageUrl = url;
+      if ($id('paIconRegistryImageUrl')) $id('paIconRegistryImageUrl').value = url;
+      const label = $id('paIconRegistryImageValue');
+      if (label) label.textContent = url;
+      this.syncEditPreview();
+      showToast('Image uploaded to media library', 'success');
+    } catch {
+      showToast('Could not upload image', 'danger');
+    } finally {
+      btn?.removeAttribute('disabled');
+    }
+  }
+
   openRemixPicker() {
     svgIconPicker.open({
       current: this._editRemix || 'ri-palette-line',
       defaultIcon: 'ri-palette-line',
+      remixOnly: true,
       returnFocus: $id('paIconRegistryPickRemixBtn'),
       onSelect: (icon) => {
         if (!/^ri-[a-z0-9][a-z0-9-]*$/.test(icon)) {

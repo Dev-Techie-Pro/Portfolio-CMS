@@ -191,11 +191,23 @@
       </article>`;
   }
 
+  function hydrateSectionIcons(section) {
+    const icons = Portfolio.ICONS;
+    if (!icons) return Promise.resolve();
+    if (typeof icons.init === "function") {
+      return icons.init(section).catch(() => {
+        icons.hydrateAll?.(section);
+      });
+    }
+    icons.hydrateAll?.(section);
+    return Promise.resolve();
+  }
+
   function reinitScroll(section) {
     const run = () => {
       Portfolio.EXP_CARDS?.teardown?.(section);
       Portfolio.EXP_CARDS?.init?.();
-      Portfolio.ICONS?.hydrateAll?.(section);
+      void hydrateSectionIcons(section);
       if (Portfolio.ANIMATIONS?.initScrollReveal) {
         Portfolio.ANIMATIONS.initScrollReveal();
       }

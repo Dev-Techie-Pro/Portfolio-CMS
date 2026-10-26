@@ -23,7 +23,10 @@ function builtInRegistryIcons() {
     }));
 }
 
-export async function loadRegistry() {
+export async function loadRegistry(options?: { remixOnly?: boolean }) {
+  if (options?.remixOnly) {
+    return loadRemixRegistry();
+  }
   const [remix, builtIn] = await Promise.all([
     loadRemixRegistry(),
     Promise.resolve(builtInRegistryIcons()),

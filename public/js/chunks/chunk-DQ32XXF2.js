@@ -195,7 +195,10 @@ function builtInRegistryIcons() {
     categories: ["Built-in SVG"]
   }));
 }
-async function loadRegistry2() {
+async function loadRegistry2(options) {
+  if (options?.remixOnly) {
+    return loadRegistry();
+  }
   const [remix, builtIn] = await Promise.all([
     loadRegistry(),
     Promise.resolve(builtInRegistryIcons())
@@ -226,6 +229,7 @@ var filteredIcons = [];
 var renderedCount = 0;
 var scrollBound = false;
 var returnFocusEl = null;
+var registryRemixOnly = false;
 function setLoading(loading) {
   loadingEl?.classList.toggle("visible", loading);
 }
@@ -414,7 +418,7 @@ async function loadIcons() {
   setLoading(true);
   setError("");
   try {
-    allIcons = await loadRegistry2();
+    allIcons = await loadRegistry2({ remixOnly: registryRemixOnly });
     populateCategoryFilter();
     resetGrid();
   } catch {
@@ -434,8 +438,13 @@ function close() {
   closeModal();
   onSelectCb = null;
 }
-function open({ current, defaultIcon: fallback, onSelect, returnFocus } = {}) {
+function open({ current, defaultIcon: fallback, onSelect, returnFocus, remixOnly } = {}) {
   ensureModal();
+  const wantRemixOnly = !!remixOnly;
+  if (wantRemixOnly !== registryRemixOnly) {
+    registryRemixOnly = wantRemixOnly;
+    allIcons = [];
+  }
   defaultIcon = fallback || "ri-tools-line";
   currentIcon = resolveIconKey(current, defaultIcon);
   onSelectCb = onSelect;
@@ -469,4 +478,4 @@ export {
   open,
   updateIconTrigger
 };
-//# sourceMappingURL=chunk-FOOLVRWH.js.map
+//# sourceMappingURL=chunk-DQ32XXF2.js.map

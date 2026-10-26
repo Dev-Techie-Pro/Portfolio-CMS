@@ -30,6 +30,7 @@ let filteredIcons = [];
 let renderedCount = 0;
 let scrollBound = false;
 let returnFocusEl = null;
+let registryRemixOnly = false;
 
 function setLoading(loading) {
   loadingEl?.classList.toggle('visible', loading);
@@ -249,7 +250,7 @@ async function loadIcons() {
   setLoading(true);
   setError('');
   try {
-    allIcons = await loadRegistry();
+    allIcons = await loadRegistry({ remixOnly: registryRemixOnly });
     populateCategoryFilter();
     resetGrid();
   } catch {
@@ -272,8 +273,13 @@ export function close() {
   onSelectCb = null;
 }
 
-export function open({ current, defaultIcon: fallback, onSelect, returnFocus } = {}) {
+export function open({ current, defaultIcon: fallback, onSelect, returnFocus, remixOnly } = {}) {
   ensureModal();
+  const wantRemixOnly = !!remixOnly;
+  if (wantRemixOnly !== registryRemixOnly) {
+    registryRemixOnly = wantRemixOnly;
+    allIcons = [];
+  }
   defaultIcon = fallback || 'ri-tools-line';
   currentIcon = resolveIconKey(current, defaultIcon);
   onSelectCb = onSelect;

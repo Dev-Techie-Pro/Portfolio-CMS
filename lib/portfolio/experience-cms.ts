@@ -72,15 +72,19 @@ export async function fetchPortfolioExperience(): Promise<PortfolioExperienceEnt
   const techById = new Map<number, { name: string; icon: string }>();
   for (const t of techRows || []) {
     if (t.legacy_id == null) continue;
+    const legacyId = Number(t.legacy_id);
+    if (!Number.isFinite(legacyId)) continue;
     const name = String(t.name || "").trim();
-    techById.set(t.legacy_id, { name, icon: resolveTechIconName(name) });
+    techById.set(legacyId, { name, icon: resolveTechIconName(name) });
   }
 
   return (rows || []).map((row, index) => {
     const ids = Array.isArray(row.technology_ids) ? row.technology_ids : [];
     const seenNames = new Set<string>();
     const technologies: PortfolioExperienceTechnology[] = [];
-    for (const id of ids) {
+    for (const rawId of ids) {
+      const id = typeof rawId === "number" ? rawId : Number(rawId);
+      if (!Number.isFinite(id)) continue;
       const tech = techById.get(id);
       if (!tech) continue;
       const norm = tech.name.trim().toLowerCase();
