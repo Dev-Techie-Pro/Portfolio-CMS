@@ -90,17 +90,11 @@
       .trim();
   }
 
-  /** Client fallback when API icon key is missing or stale (mirrors resolve-tech-icon.ts). */
   function resolveIconKeyFromName(name) {
-    const n = skillNameForIcon(name);
-    if (!n) return "ri-code-line";
-    if (/\brestful\s*apis?\b/.test(n) || /\brest\s*apis?\b/.test(n)) {
-      return "siRestfulApi";
+    const label = skillNameForIcon(name);
+    if (typeof Portfolio.resolveTechIconFromName === "function") {
+      return Portfolio.resolveTechIconFromName(label);
     }
-    if (/\bms\s*sql\b/.test(n) || /\bmssql\b/.test(n) || /\bsql\s*server\b/.test(n)) {
-      return "siMsSqlBrand";
-    }
-    if (n === "sql") return "siSql";
     return "ri-code-line";
   }
 
@@ -119,18 +113,17 @@
   }
 
   function resolveSkillIconKey(item) {
-    const fromApi = normalizeIconKey(String(item.portfolioIcon || "").trim());
-    if (fromApi && fromApi !== "siCode") {
-      if (fromApi === "siMsSqlBrand" && !svgFromIconKey(fromApi) && !fromApi.startsWith("ri-")) {
-        return "siSql";
-      }
-      return fromApi;
-    }
     const fromName = normalizeIconKey(resolveIconKeyFromName(item.name));
-    if (fromName === "siMsSqlBrand" && !svgFromIconKey(fromName) && !fromName.startsWith("ri-")) {
-      return "siSql";
+    const fromApi = normalizeIconKey(String(item.portfolioIcon || "").trim());
+    const apiWeak =
+      !fromApi ||
+      fromApi === "siCode" ||
+      fromApi === "ri-code-line";
+    const resolved = apiWeak ? fromName : fromApi;
+    if (resolved === "ri-code-line" && fromName !== "ri-code-line") {
+      return fromName;
     }
-    return fromName;
+    return resolved;
   }
 
   function lookupBrandSvg(name) {
@@ -170,7 +163,7 @@
       return `<img src="${url}" alt="" loading="lazy" />`;
     }
     const si = resolveSkillIconKey(item);
-    if (si.startsWith("ri-")) {
+    if (si.startsWith("ri-") || /^si[A-Za-z0-9]+$/.test(si)) {
       return `<span class="icon" data-icon="${escapeHtml(si)}"></span>`;
     }
     const icons = siteIconsRegistry();

@@ -91,7 +91,14 @@
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
     const extraClass = slug.includes("express") ? " express-js" : "";
-    const iconKey = normalizeTechIcon(tech.icon || "ri-code-line");
+    let iconKey = normalizeTechIcon(tech.icon || "ri-code-line");
+    if (
+      (iconKey === "ri-code-line" || !iconKey) &&
+      typeof Portfolio.resolveTechIconFromName === "function" &&
+      tech.name
+    ) {
+      iconKey = normalizeTechIcon(Portfolio.resolveTechIconFromName(tech.name));
+    }
     return `<span class="exp-tech-chip${extraClass}" title="${escapeHtml(tech.name)}"><span class="icon" data-icon="${escapeHtml(iconKey)}"></span></span>`;
   }
 

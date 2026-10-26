@@ -1,5 +1,19 @@
+import { normalizeTechNameForIcon } from "@/lib/portfolio/normalize-tech-name";
+
 /** Maps a technology name to portfolio site-icon registry keys (si*). */
 type IconRule = [RegExp, string];
+
+/** Exact normalized names → icon keys (after normalizeTechNameForIcon). */
+const EXACT_TECH_ICON: Record<string, string> = {
+  csharp: "siCsharp",
+  css: "ri-css3-fill",
+  css3: "ri-css3-fill",
+  sass: "ri-css3-fill",
+  scss: "ri-css3-fill",
+  nextjs: "siNextJs",
+  sql: "siMsSqlBrand",
+  "sql server": "siMsSqlBrand",
+};
 
 /** Legacy or mistyped registry keys → canonical keys used on the public site. */
 const PORTFOLIO_ICON_KEY_ALIASES: Record<string, string> = {
@@ -38,7 +52,7 @@ const ICON_RULES: IconRule[] = [
   [/\bdeepseek\b/, "siDeepseek"],
   [/\bkimi\b/, "siKimi"],
   [/\blovable\b|loveable/, "siLoveable"],
-  [/\bnext\.?js\b|nextjs/, "siNextJs"],
+  [/\bnext\s*js\b|\bnext\.?js\b|nextjs/, "siNextJs"],
   [/\bvercel\b/, "siVercel"],
   [/\bsupabase\b/, "siSupabase"],
   [/\bfirebase\b/, "siFirebase"],
@@ -85,7 +99,7 @@ const ICON_RULES: IconRule[] = [
   [/\bwinforms\b|windows forms/, "siWindowsForms"],
   [/\bado\.?net\b/, "siAdoNet"],
   [/\.net\b|dotnet/, "siDotNet"],
-  [/\bc#\b|csharp/, "siCsharp"],
+  [/\bcsharp\b|c\s*sharp|c-sharp/, "siCsharp"],
   [/\bangular\b/, "siAngularJs"],
   [/\breact\b/, "siReactJs"],
   [/\bexpress\b/, "siExpressJs"],
@@ -105,6 +119,8 @@ const ICON_RULES: IconRule[] = [
   [/\bphp\b/, "siPhpFill"],
   [/\bjquery\b/, "siJavascript"],
   [/\bhtml\b/, "siHTML5"],
+  [/\bsass\b|\bscss\b/, "ri-css3-fill"],
+  [/\bcss\s*3\b|\bcss3\b/, "ri-css3-fill"],
   [/\bcss\b/, "ri-css3-fill"],
   [/\brxjs\b/, "siJavascript"],
   [/\bjson\b/, "ri-braces-line"],
@@ -139,11 +155,27 @@ const ICON_RULES: IconRule[] = [
 ];
 
 export function resolveTechIconName(name: string): string {
-  const n = String(name || "").toLowerCase().trim();
+  const n = normalizeTechNameForIcon(name);
   if (!n) return "ri-code-line";
+
+  if (EXACT_TECH_ICON[n]) {
+    return normalizePortfolioIconKey(EXACT_TECH_ICON[n]);
+  }
+
+  if (/\bsass\b|\bscss\b/.test(n)) {
+    return normalizePortfolioIconKey("ri-css3-fill");
+  }
+  if (/\bcss\s*3?\b/.test(n) && !/\bpostcss\b/.test(n)) {
+    return normalizePortfolioIconKey("ri-css3-fill");
+  }
+
   for (const [pattern, icon] of ICON_RULES) {
     if (pattern.test(n)) return normalizePortfolioIconKey(icon);
   }
-  if (n === "sql") return "siSql";
+
+  if (n === "sql" || n.includes("sql server") || n === "mssql") {
+    return normalizePortfolioIconKey("siMsSqlBrand");
+  }
+
   return "ri-code-line";
 }

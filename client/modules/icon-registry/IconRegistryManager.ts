@@ -348,7 +348,8 @@ export class IconRegistryManager {
       <div class="pa-card-menu-item" data-act="up" data-idx="${index}"><i class="ri-arrow-up-line"></i> Move up</div>
       <div class="pa-card-menu-item" data-act="down" data-idx="${index}"><i class="ri-arrow-down-line"></i> Move down</div>
       <div class="pa-card-menu-item" data-act="edit" data-key="${key}"><i class="ri-pencil-line"></i> Edit</div>
-      <div class="pa-card-menu-item danger" data-act="delete" data-key="${key}"><i class="ri-eye-off-line"></i> Hide</div>
+      <div class="pa-card-menu-item" data-act="hide" data-key="${key}"><i class="ri-eye-off-line"></i> Hide from site</div>
+      <div class="pa-card-menu-item danger" data-act="delete" data-key="${key}"><i class="ri-delete-bin-line"></i> Delete</div>
     </div>`;
   }
 
@@ -388,13 +389,14 @@ export class IconRegistryManager {
     const up = `<button type="button" class="pa-lv-action pa-action-btn" data-act="up" data-idx="${index}" title="Move up" aria-label="Move up"><i class="ri-arrow-up-line"></i></button>`;
     const down = `<button type="button" class="pa-lv-action pa-action-btn" data-act="down" data-idx="${index}" title="Move down" aria-label="Move down"><i class="ri-arrow-down-line"></i></button>`;
     const edit = listActionBtn('pa-action-edit', 'ri-pencil-line', 'Edit', 'data-icon-key', item.key, 'Edit');
-    const hide = listActionBtn('pa-action-delete', 'ri-eye-off-line', 'Hide', 'data-icon-key', item.key, 'Hide');
+    const hide = listActionBtn('pa-action-hide', 'ri-eye-off-line', 'Hide', 'data-icon-key', item.key, 'Hide from site');
+    const del = listActionBtn('pa-action-delete', 'ri-delete-bin-line', 'Delete', 'data-icon-key', item.key, 'Delete');
     return `${renderListRowStart()}
     ${renderListIndexCell(rowIndex)}
     ${renderListIconProjectCell(title, preview)}
     ${renderListTextCell(item.key)}
     ${renderListStatusCell(this.typeLabel(item), item.isCustom ? 'planning' : 'active')}
-    ${renderListActionsCell(`${up}${down}${edit}${hide}`)}
+    ${renderListActionsCell(`${up}${down}${edit}${hide}${del}`)}
   ${closeListRow()}`;
   }
 
@@ -435,11 +437,18 @@ export class IconRegistryManager {
         if (key) this.openEditor(key);
       });
     });
-    scope.querySelectorAll('.pa-action-delete').forEach((btn) => {
+    scope.querySelectorAll('.pa-action-hide').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const key = btn.getAttribute('data-icon-key');
         if (key) void this.hideIcon(key);
+      });
+    });
+    scope.querySelectorAll('.pa-action-delete').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const key = btn.getAttribute('data-icon-key');
+        if (key) void this.deleteIcon(key);
       });
     });
   }
@@ -589,7 +598,8 @@ export class IconRegistryManager {
     const key = btn.getAttribute('data-key') || btn.getAttribute('data-icon-key');
     const idx = parseInt(btn.getAttribute('data-idx'), 10);
     if (act === 'edit') return this.openEditor(key);
-    if (act === 'delete') return this.hideIcon(key);
+    if (act === 'hide') return this.hideIcon(key);
+    if (act === 'delete') return this.deleteIcon(key);
     if (act === 'up' || act === 'down') return this.moveIcon(idx, act === 'up' ? -1 : 1);
   }
 
@@ -621,16 +631,59 @@ export class IconRegistryManager {
     if (!key) return;
     const ok = await requestConfirm({
       title: 'Hide icon?',
-      text: `Remove "${key}" from the public registry (you can restore by re-adding SVG).`,
+      text: `"${key}" will be hidden on the public site. You can show it again by removing it from the hidden list (re-add the same key) or reset via Delete → restore built-in.`,
       confirmLabel: 'Hide',
     });
     if (!ok) return;
     this.state.removed = [...new Set([...(this.state.removed || []), key])];
-    delete this.state.overrides?.[key];
     this.items = this.items.filter((i) => i.key !== key);
     this.markDirty();
     this.renderList();
     void this.persistRegistry({ feedback: true });
+  }
+
+  async deleteIcon(key) {
+    if (!key) return;
+    const item = this.items.find((i) => i.key === key);
+    if (!item) return;
+
+    const isBuiltIn = !!item.isBuiltIn;
+    const hasOverride = !!(this.state.overrides && this.state.overrides[key]);
+
+    if (!isBuiltIn) {
+      const ok = await requestConfirm({
+        title: 'Delete custom icon?',
+        text: `Permanently remove "${key}" from the registry. This cannot be undone.`,
+        confirmLabel: 'Delete',
+      });
+      if (!ok) return;
+      delete this.state.overrides?.[key];
+      if (this.state.labels) delete this.state.labels[key];
+      this.state.sortOrder = (this.state.sortOrder || []).filter((k) => k !== key);
+      this.state.removed = (this.state.removed || []).filter((k) => k !== key);
+      this.items = this.items.filter((i) => i.key !== key);
+    } else if (hasOverride) {
+      const ok = await requestConfirm({
+        title: 'Reset icon?',
+        text: `Remove your custom artwork for "${key}" and restore the built-in SVG.`,
+        confirmLabel: 'Reset',
+      });
+      if (!ok) return;
+      delete this.state.overrides?.[key];
+      if (this.state.labels) delete this.state.labels[key];
+      this.state.removed = (this.state.removed || []).filter((k) => k !== key);
+    } else {
+      const ok = await requestConfirm({
+        title: 'Hide built-in icon?',
+        text: `"${key}" is a built-in icon and cannot be removed from the codebase. Hide it from the public site instead?`,
+        confirmLabel: 'Hide',
+      });
+      if (!ok) return;
+      return this.hideIcon(key);
+    }
+
+    this.markDirty();
+    void this.persistRegistry({ feedback: true, reloadAfter: true });
   }
 
   openEditor(key) {
