@@ -35,6 +35,22 @@ import {
 
 const PAGE_SIZE = 12;
 
+/** Shared confirm overlay — resolves true/false (uses `message` + `onConfirm`, not a return value). */
+function confirmIconAction(opts) {
+  return new Promise((resolve) => {
+    requestConfirm({
+      title: opts.title,
+      message: opts.message,
+      confirmLabel: opts.confirmLabel || 'Confirm',
+      danger: opts.danger !== false,
+      iconClass: opts.iconClass || 'ri-delete-bin-line',
+      iconTone: opts.iconTone || 'danger',
+      onConfirm: () => resolve(true),
+      onCancel: () => resolve(false),
+    });
+  });
+}
+
 export class IconRegistryManager {
   constructor() {
     this.state = { overrides: {}, removed: [], labels: {}, sortOrder: [] };
@@ -630,10 +646,11 @@ export class IconRegistryManager {
   async hideIcon(key, { skipConfirm = false } = {}) {
     if (!key) return;
     if (!skipConfirm) {
-      const ok = await requestConfirm({
+      const ok = await confirmIconAction({
         title: 'Hide icon?',
-        text: `"${key}" will be hidden on the public site. Re-add the same registry key later to show it again.`,
+        message: `"${escapeHtml(key)}" will be hidden on the public site. Re-add the same registry key later to show it again.`,
         confirmLabel: 'Hide',
+        iconClass: 'ri-eye-off-line',
       });
       if (!ok) return;
     }
@@ -653,9 +670,9 @@ export class IconRegistryManager {
     const hasOverride = !!(this.state.overrides && this.state.overrides[key]);
 
     if (!isBuiltIn) {
-      const ok = await requestConfirm({
+      const ok = await confirmIconAction({
         title: 'Delete custom icon?',
-        text: `Permanently remove "${key}" from the registry. This cannot be undone.`,
+        message: `Permanently remove <strong>${escapeHtml(key)}</strong> from the registry. This cannot be undone.`,
         confirmLabel: 'Delete',
       });
       if (!ok) return;
@@ -665,20 +682,26 @@ export class IconRegistryManager {
       this.state.removed = (this.state.removed || []).filter((k) => k !== key);
       this.items = this.items.filter((i) => i.key !== key);
     } else if (hasOverride) {
-      const ok = await requestConfirm({
+      const ok = await confirmIconAction({
         title: 'Reset icon?',
-        text: `Remove your custom artwork for "${key}" and restore the built-in SVG.`,
+        message: `Remove your custom artwork for <strong>${escapeHtml(key)}</strong> and restore the built-in SVG.`,
         confirmLabel: 'Reset',
+        danger: false,
+        iconClass: 'ri-refresh-line',
+        iconTone: 'warning',
       });
       if (!ok) return;
       delete this.state.overrides?.[key];
       if (this.state.labels) delete this.state.labels[key];
       this.state.removed = (this.state.removed || []).filter((k) => k !== key);
     } else {
-      const ok = await requestConfirm({
+      const ok = await confirmIconAction({
         title: 'Hide built-in icon?',
-        text: `"${key}" is a built-in icon and cannot be removed from the codebase. Hide it from the public site instead?`,
+        message: `<strong>${escapeHtml(key)}</strong> is built into the app and cannot be deleted. Hide it from the public site instead?`,
         confirmLabel: 'Hide',
+        iconClass: 'ri-eye-off-line',
+        danger: false,
+        iconTone: 'warning',
       });
       if (!ok) return;
       await this.hideIcon(key, { skipConfirm: true });

@@ -7523,7 +7523,7 @@ async function loadPageModuleClass(page) {
     case "settings":
       return (await import("./chunks/SettingsModule-IQUCSFXE.js")).SettingsModule;
     case "icon-registry":
-      return (await import("./chunks/IconRegistryModule-7LYDBFMO.js")).IconRegistryModule;
+      return (await import("./chunks/IconRegistryModule-5MQP6BDY.js")).IconRegistryModule;
     case "login":
       return (await import("./chunks/LoginModule-QCKE3QY7.js")).LoginModule;
     case "forgot-password":
