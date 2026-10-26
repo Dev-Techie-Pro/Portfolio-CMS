@@ -135,7 +135,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  serverExternalPackages: ["@opentelemetry/instrumentation", "thesvg", "@thesvg/icons"],
+  serverExternalPackages: ["@opentelemetry/instrumentation"],
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,

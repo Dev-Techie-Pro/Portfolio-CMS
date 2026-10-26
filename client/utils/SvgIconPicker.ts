@@ -5,8 +5,7 @@ import {
   filterRegistryIcons,
   getRegistryCategories,
 } from './icon-picker-registry.js';
-import { getSvgUrl } from './icon-registry-api.js';
-import { isRemixIconKey, resolveIconKey, renderIconPreviewHtml } from './icon-utils.js';
+import { resolveIconKey, renderIconPreviewHtml } from './icon-utils.js';
 
 const OVERLAY_ID = 'paIconPickerOverlay';
 const BATCH_SIZE = 120;
@@ -168,10 +167,7 @@ function createIconButton(icon) {
   btn.title = icon.title;
   btn.setAttribute('role', 'option');
   btn.setAttribute('aria-label', icon.title);
-  const preview = isRemixIconKey(icon.slug)
-    ? `<i class="${escapeHtml(icon.slug)}" aria-hidden="true"></i>`
-    : `<img class="pa-svg-icon-img" src="${escapeHtml(getSvgUrl(icon.slug))}" alt="" loading="lazy" decoding="async" />`;
-  btn.innerHTML = preview;
+  btn.innerHTML = renderIconPreviewHtml(icon.slug);
   btn.addEventListener('click', () => selectIcon(icon.slug));
   return btn;
 }

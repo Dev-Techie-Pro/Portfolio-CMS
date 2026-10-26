@@ -1,6 +1,6 @@
 import {
   DEFAULT_TOOL_ICON
-} from "./chunk-IZYA2EQN.js";
+} from "./chunk-QGBCGHWO.js";
 import {
   storage
 } from "./chunk-7KTA4S5K.js";
@@ -191,4 +191,4 @@ export {
   addStackCatalogItem,
   convertStackCatalogItem
 };
-//# sourceMappingURL=chunk-IDRXTQAW.js.map
+//# sourceMappingURL=chunk-RBFLRUQZ.js.map

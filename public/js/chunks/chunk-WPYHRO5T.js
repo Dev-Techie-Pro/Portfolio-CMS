@@ -1,15 +1,10 @@
 import {
-  filterRegistryIcons,
-  getRegistryCategories,
-  getSvgUrl,
-  isRemixIconKey,
-  loadRegistry,
+  ICONS,
   renderIconPreviewHtml,
   resolveIconKey
-} from "./chunk-IZYA2EQN.js";
+} from "./chunk-QGBCGHWO.js";
 import {
-  $id,
-  escapeHtml
+  $id
 } from "./chunk-HFEWIT3P.js";
 
 // client/utils/remix-icon-registry.ts
@@ -81,7 +76,7 @@ async function fetchRegistry() {
   const names = data.icons ?? data.glyphs;
   return normalizeRegistry(names, data.tags || {});
 }
-async function loadRegistry2() {
+async function loadRegistry() {
   if (cachedIcons) return cachedIcons;
   const sessionCached = readSessionCache();
   if (sessionCached?.length) {
@@ -100,11 +95,60 @@ async function loadRegistry2() {
   }
   return registryPromise;
 }
+function searchRegistryIcons(icons, query = "") {
+  const q = query.trim().toLowerCase();
+  if (!q) return icons;
+  return icons.filter((icon) => {
+    if (icon.slug.includes(q)) return true;
+    if (icon.name.includes(q)) return true;
+    if (icon.title.toLowerCase().includes(q)) return true;
+    if (icon.style.includes(q)) return true;
+    if (icon.aliases.some((alias) => alias.toLowerCase().includes(q))) return true;
+    if (icon.categories.some((cat) => cat.toLowerCase().includes(q))) return true;
+    return false;
+  });
+}
+function getRegistryCategories(icons) {
+  const counts = /* @__PURE__ */ new Map();
+  icons.forEach((icon) => {
+    icon.categories.forEach((cat) => {
+      counts.set(cat, (counts.get(cat) || 0) + 1);
+    });
+  });
+  return Array.from(counts.entries()).sort((a, b) => a[0].localeCompare(b[0])).map(([name, count]) => ({ name, count }));
+}
+function filterRegistryIcons(icons, { query = "", category = "all" } = {}) {
+  let result = icons;
+  if (category && category !== "all") {
+    result = result.filter((icon) => icon.categories.includes(category));
+  }
+  if (query.trim()) {
+    result = searchRegistryIcons(result, query);
+  }
+  return result;
+}
 
 // client/utils/icon-picker-registry.ts
-async function loadRegistry3() {
-  const [remix, brand] = await Promise.all([loadRegistry2(), loadRegistry()]);
-  return [...remix, ...brand];
+function humanizeLegacyKey(slug) {
+  const base = slug.replace(/^si/, "");
+  return base.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+function builtInRegistryIcons() {
+  return Object.keys(ICONS).sort((a, b) => a.localeCompare(b)).map((slug) => ({
+    slug,
+    name: slug,
+    title: humanizeLegacyKey(slug),
+    style: "",
+    aliases: [slug],
+    categories: ["Built-in SVG"]
+  }));
+}
+async function loadRegistry2() {
+  const [remix, builtIn] = await Promise.all([
+    loadRegistry(),
+    Promise.resolve(builtInRegistryIcons())
+  ]);
+  return [...builtIn, ...remix];
 }
 
 // client/utils/SvgIconPicker.ts
@@ -249,8 +293,7 @@ function createIconButton(icon) {
   btn.title = icon.title;
   btn.setAttribute("role", "option");
   btn.setAttribute("aria-label", icon.title);
-  const preview = isRemixIconKey(icon.slug) ? `<i class="${escapeHtml(icon.slug)}" aria-hidden="true"></i>` : `<img class="pa-svg-icon-img" src="${escapeHtml(getSvgUrl(icon.slug))}" alt="" loading="lazy" decoding="async" />`;
-  btn.innerHTML = preview;
+  btn.innerHTML = renderIconPreviewHtml(icon.slug);
   btn.addEventListener("click", () => selectIcon(icon.slug));
   return btn;
 }
@@ -319,7 +362,7 @@ async function loadIcons() {
   setLoading(true);
   setError("");
   try {
-    allIcons = await loadRegistry3();
+    allIcons = await loadRegistry2();
     populateCategoryFilter();
     resetGrid();
   } catch {
@@ -374,4 +417,4 @@ export {
   open,
   updateIconTrigger
 };
-//# sourceMappingURL=chunk-6JEF4FJ6.js.map
+//# sourceMappingURL=chunk-WPYHRO5T.js.map

@@ -1,16 +1,39 @@
 // @ts-nocheck
+import { ICONS } from './icon-registry.js';
 import {
-  loadRegistry as loadThesvgRegistry,
+  loadRegistry as loadRemixRegistry,
   filterRegistryIcons,
   searchRegistryIcons,
   getRegistryCategories,
-} from './icon-registry-api.js';
-import { loadRegistry as loadRemixRegistry } from './remix-icon-registry.js';
+} from './remix-icon-registry.js';
 
 export { filterRegistryIcons, searchRegistryIcons, getRegistryCategories };
 
-/** Remix Icon (`ri-*`) plus theSVG brand slugs for the admin icon picker. */
+function humanizeLegacyKey(slug) {
+  const base = slug.replace(/^si/, '');
+  return base
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function builtInRegistryIcons() {
+  return Object.keys(ICONS)
+    .sort((a, b) => a.localeCompare(b))
+    .map((slug) => ({
+      slug,
+      name: slug,
+      title: humanizeLegacyKey(slug),
+      style: '',
+      aliases: [slug],
+      categories: ['Built-in SVG'],
+    }));
+}
+
+/** Remix Icon (`ri-*`) plus built-in `icon-registry` keys for the admin icon picker. */
 export async function loadRegistry() {
-  const [remix, brand] = await Promise.all([loadRemixRegistry(), loadThesvgRegistry()]);
-  return [...remix, ...brand];
+  const [remix, builtIn] = await Promise.all([
+    loadRemixRegistry(),
+    Promise.resolve(builtInRegistryIcons()),
+  ]);
+  return [...builtIn, ...remix];
 }

@@ -192,131 +192,22 @@ var ICONS = {
   ...TECH_BRAND_ICONS
 };
 
-// client/utils/icon-registry-api.ts
-var REGISTRY_API_URL = "/api/thesvg-registry";
-var REGISTRY_URL = "https://thesvg.org/api/registry.json";
-var REGISTRY_CDN_URL = "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/src/data/icons.json";
-var SVG_API_BASE = "/api/public/thesvg";
-var SVG_CDN_BASE = "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons";
-var CACHE_KEY = "pa_thesvg_registry_v2";
-var registryPromise = null;
-var cachedIcons = null;
-function getSvgUrl(slug, variant = "default", preferLocal = true) {
-  const safe = String(slug || "").trim();
-  if (!safe) return "";
-  if (preferLocal) {
-    const params = variant && variant !== "default" ? `?variant=${encodeURIComponent(variant)}` : "";
-    return `${SVG_API_BASE}/${encodeURIComponent(safe)}${params}`;
-  }
-  const base = SVG_CDN_BASE;
-  return `${base}/${encodeURIComponent(safe)}/${encodeURIComponent(variant || "default")}.svg`;
-}
-function normalizeRegistry(data) {
-  const icons = Array.isArray(data?.icons) ? data.icons : [];
-  return icons.filter((icon) => icon?.slug).map((icon) => ({
-    slug: icon.slug,
-    title: icon.title || icon.slug,
-    aliases: Array.isArray(icon.aliases) ? icon.aliases : [],
-    categories: Array.isArray(icon.categories) ? icon.categories : [],
-    hex: icon.hex || ""
-  })).sort((a, b) => a.slug.localeCompare(b.slug));
-}
-function readSessionCache() {
-  try {
-    const raw = sessionStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return null;
-    return parsed;
-  } catch {
-    return null;
-  }
-}
-function writeSessionCache(icons) {
-  try {
-    sessionStorage.setItem(CACHE_KEY, JSON.stringify(icons));
-  } catch {
-  }
-}
-async function fetchRegistryJson(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Registry fetch failed (${res.status})`);
-  const data = await res.json();
-  return normalizeRegistry(data);
-}
-async function loadRegistry() {
-  if (cachedIcons) return cachedIcons;
-  const sessionCached = readSessionCache();
-  if (sessionCached?.length) {
-    cachedIcons = sessionCached;
-    return cachedIcons;
-  }
-  if (!registryPromise) {
-    registryPromise = fetch(REGISTRY_API_URL).then((res) => {
-      if (!res.ok) throw new Error(`Registry fetch failed (${res.status})`);
-      return res.json();
-    }).then((data) => normalizeRegistry(data)).catch(() => fetchRegistryJson(REGISTRY_URL)).catch(() => fetchRegistryJson(REGISTRY_CDN_URL)).then((icons) => {
-      cachedIcons = icons;
-      writeSessionCache(icons);
-      return icons;
-    }).catch((err) => {
-      registryPromise = null;
-      throw err;
-    });
-  }
-  return registryPromise;
-}
-function searchRegistryIcons(icons, query = "") {
-  const q = query.trim().toLowerCase();
-  if (!q) return icons;
-  return icons.filter((icon) => {
-    if (icon.slug.includes(q)) return true;
-    if (icon.title.toLowerCase().includes(q)) return true;
-    if (icon.aliases.some((alias) => alias.toLowerCase().includes(q))) return true;
-    if (icon.categories.some((cat) => cat.toLowerCase().includes(q))) return true;
-    return false;
-  });
-}
-function getRegistryCategories(icons) {
-  const counts = /* @__PURE__ */ new Map();
-  icons.forEach((icon) => {
-    icon.categories.forEach((cat) => {
-      counts.set(cat, (counts.get(cat) || 0) + 1);
-    });
-  });
-  return Array.from(counts.entries()).sort((a, b) => a[0].localeCompare(b[0])).map(([name, count]) => ({ name, count }));
-}
-function filterRegistryIcons(icons, { query = "", category = "all" } = {}) {
-  let result = icons;
-  if (category && category !== "all") {
-    result = result.filter((icon) => icon.categories.includes(category));
-  }
-  if (query.trim()) {
-    result = searchRegistryIcons(result, query);
-  }
-  return result;
-}
-
 // client/utils/icon-utils.ts
 var DEFAULT_TOOL_ICON = "ri-tools-line";
 var DEFAULT_CATEGORY_ICON = "ri-tools-line";
 var LEGACY_ICON_KEYS = Object.keys(ICONS).sort((a, b) => a.localeCompare(b));
 var REMIX_ICON_RE = /^ri-[a-z0-9][a-z0-9-]*$/;
-var LEGACY_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 function isRemixIconKey(key) {
   return !!(key && REMIX_ICON_RE.test(key));
 }
 function isLegacyIconKey(key) {
   return !!(key && ICONS[key]);
 }
-function isRegistryIconKey(key) {
-  return !!(key && LEGACY_SLUG_RE.test(key) && !isLegacyIconKey(key) && !isRemixIconKey(key));
-}
 function resolveIconKey(value, fallback = DEFAULT_TOOL_ICON) {
-  if (value && (isRemixIconKey(value) || isLegacyIconKey(value) || isRegistryIconKey(value))) {
+  if (value && (isRemixIconKey(value) || isLegacyIconKey(value))) {
     return value;
   }
-  if (fallback && (isRemixIconKey(fallback) || isLegacyIconKey(fallback) || isRegistryIconKey(fallback))) {
+  if (fallback && (isRemixIconKey(fallback) || isLegacyIconKey(fallback))) {
     return fallback;
   }
   return DEFAULT_TOOL_ICON;
@@ -328,30 +219,20 @@ function renderIconHtml(key, { color, className = "pa-svg-icon" } = {}) {
   if (isRemixIconKey(resolved)) {
     return `<span${cls}${style} aria-hidden="true"><i class="${resolved}"></i></span>`;
   }
-  if (isLegacyIconKey(resolved)) {
-    const svg = ICONS[resolved] || "";
-    if (!svg) return "";
-    return `<span${cls}${style} aria-hidden="true">${svg}</span>`;
-  }
-  const src = getSvgUrl(resolved);
-  if (!src) return "";
-  const imgStyle = color ? ` style="color:${color}"` : "";
-  return `<span${cls}${style} aria-hidden="true"><img class="pa-svg-icon-img" src="${src}" alt="" loading="lazy" decoding="async"${imgStyle} /></span>`;
+  const svg = ICONS[resolved] || "";
+  if (!svg) return "";
+  return `<span${cls}${style} aria-hidden="true">${svg}</span>`;
 }
 function renderIconPreviewHtml(key, fallback = DEFAULT_TOOL_ICON) {
   return renderIconHtml(resolveIconKey(key, fallback), { className: "pa-svg-icon pa-svg-icon--preview" });
 }
 
 export {
-  getSvgUrl,
-  loadRegistry,
-  getRegistryCategories,
-  filterRegistryIcons,
+  ICONS,
   DEFAULT_TOOL_ICON,
   DEFAULT_CATEGORY_ICON,
-  isRemixIconKey,
   resolveIconKey,
   renderIconHtml,
   renderIconPreviewHtml
 };
-//# sourceMappingURL=chunk-IZYA2EQN.js.map
+//# sourceMappingURL=chunk-QGBCGHWO.js.map

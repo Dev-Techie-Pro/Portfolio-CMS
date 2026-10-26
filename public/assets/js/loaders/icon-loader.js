@@ -4,11 +4,6 @@ import { ICONS } from "../config/constants.js";
   const Portfolio = (window.Portfolio = window.Portfolio || {});
   const SELECTOR =
     window.Portfolio?.ELEMENTS?.SELECTORS?.DATA_ICON || "[data-icon]";
-  const THESVG_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-  const THESVG_API = "/api/public/thesvg";
-
-  const isThesvgSlug = (name) =>
-    THESVG_SLUG_RE.test(name) && !name.startsWith("ri-");
 
   const isValidSvg = (markup) => {
     if (
@@ -82,30 +77,6 @@ import { ICONS } from "../config/constants.js";
     }
   };
 
-  const hydrateThesvg = async (element, slug) => {
-    if (!(element instanceof Element)) return false;
-    if (element.dataset.iconReady === "true" || element.dataset.iconLoading === "true") {
-      return false;
-    }
-    element.dataset.iconLoading = "true";
-    try {
-      const res = await fetch(
-        `${THESVG_API}/${encodeURIComponent(slug)}?variant=default`,
-      );
-      if (!res.ok) throw new Error(String(res.status));
-      const text = await res.text();
-      return mountSvgMarkup(element, slug, text);
-    } catch (error) {
-      if (!element.dataset.iconError) {
-        console.warn("[Portfolio.ICONS] theSVG icon failed: " + slug + ".", error);
-      }
-      element.dataset.iconError = "missing";
-      return false;
-    } finally {
-      delete element.dataset.iconLoading;
-    }
-  };
-
   const hydrate = (element) => {
     if (!(element instanceof Element) || element.dataset.iconReady === "true")
       return false;
@@ -119,11 +90,6 @@ import { ICONS } from "../config/constants.js";
     const raw = ICONS[name];
     if (raw) {
       return mountSvgMarkup(element, name, raw);
-    }
-
-    if (isThesvgSlug(name)) {
-      void hydrateThesvg(element, name);
-      return true;
     }
 
     if (!element.dataset.iconError) {
