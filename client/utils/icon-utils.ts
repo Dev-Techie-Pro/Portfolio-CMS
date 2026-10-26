@@ -1,24 +1,30 @@
 // @ts-nocheck
 import { ICONS } from './icon-registry.js';
-import { getSvgUrl } from './icon-registry-api.js';
+import {
+  DEFAULT_PUBLIC_REMIX_ICON,
+  getPublicThesvgUrl,
+  isLocalSvgIconKey,
+  isRemixIconClass,
+  resolvePublicIconKey,
+  resolvePublicSiteIcon,
+} from '../../lib/portfolio/public-icon-resolve.js';
 
-export const DEFAULT_TOOL_ICON = 'ri-tools-line';
-export const DEFAULT_CATEGORY_ICON = 'ri-tools-line';
+export const DEFAULT_TOOL_ICON = DEFAULT_PUBLIC_REMIX_ICON;
+export const DEFAULT_CATEGORY_ICON = DEFAULT_PUBLIC_REMIX_ICON;
 
 const LEGACY_ICON_KEYS = Object.keys(ICONS).sort((a, b) => a.localeCompare(b));
-const REMIX_ICON_RE = /^ri-[a-z0-9][a-z0-9-]*$/;
-const LEGACY_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export function isRemixIconKey(key) {
-  return !!(key && REMIX_ICON_RE.test(key));
+  return isRemixIconClass(key);
 }
 
 export function isLegacyIconKey(key) {
-  return !!(key && ICONS[key]);
+  return !!(key && isLocalSvgIconKey(key) && ICONS[key]);
 }
 
 export function isRegistryIconKey(key) {
-  return !!(key && LEGACY_SLUG_RE.test(key) && !isLegacyIconKey(key) && !isRemixIconKey(key));
+  const resolved = resolvePublicSiteIcon(key);
+  return resolved.kind === 'thesvg';
 }
 
 export function listLegacyIconKeys() {
@@ -26,44 +32,44 @@ export function listLegacyIconKeys() {
 }
 
 export function resolveIconKey(value, fallback = DEFAULT_TOOL_ICON) {
-  if (value && (isRemixIconKey(value) || isLegacyIconKey(value) || isRegistryIconKey(value))) {
-    return value;
-  }
-  if (fallback && (isRemixIconKey(fallback) || isLegacyIconKey(fallback) || isRegistryIconKey(fallback))) {
-    return fallback;
-  }
-  return DEFAULT_TOOL_ICON;
+  return resolvePublicIconKey(value, fallback);
 }
 
 export function getIconSvg(key, fallback = DEFAULT_TOOL_ICON) {
-  const resolved = resolveIconKey(key, fallback);
-  return ICONS[resolved] || '';
+  const resolved = resolvePublicSiteIcon(key, fallback);
+  if (resolved.kind === 'localSvg') {
+    return ICONS[resolved.key] || '';
+  }
+  return '';
 }
 
 export function getIconLabel(key, fallback = DEFAULT_TOOL_ICON) {
-  const resolved = resolveIconKey(key, fallback);
-  return resolved;
+  return resolveIconKey(key, fallback);
 }
 
 export function renderIconHtml(key, { color, className = 'pa-svg-icon' } = {}) {
-  const resolved = resolveIconKey(key);
+  const resolved = resolvePublicSiteIcon(key);
   const style = color ? ` style="color:${color}"` : '';
   const cls = className ? ` class="${className}"` : '';
 
-  if (isRemixIconKey(resolved)) {
-    return `<span${cls}${style} aria-hidden="true"><i class="${resolved}"></i></span>`;
+  if (resolved.kind === 'remix') {
+    return `<span${cls}${style} aria-hidden="true"><i class="${resolved.className}"></i></span>`;
   }
 
-  if (isLegacyIconKey(resolved)) {
-    const svg = ICONS[resolved] || '';
+  if (resolved.kind === 'localSvg') {
+    const svg = ICONS[resolved.key] || '';
     if (!svg) return '';
     return `<span${cls}${style} aria-hidden="true">${svg}</span>`;
   }
 
-  const src = getSvgUrl(resolved);
-  if (!src) return '';
-  const imgStyle = color ? ` style="color:${color}"` : '';
-  return `<span${cls}${style} aria-hidden="true"><img class="pa-svg-icon-img" src="${src}" alt="" loading="lazy" decoding="async"${imgStyle} /></span>`;
+  if (resolved.kind === 'thesvg') {
+    const src = getPublicThesvgUrl(resolved.slug);
+    if (!src) return '';
+    const imgStyle = color ? ` style="color:${color}"` : '';
+    return `<span${cls}${style} aria-hidden="true"><img class="pa-svg-icon-img pa-brand-icon-img" src="${src}" alt="" loading="lazy" decoding="async"${imgStyle} /></span>`;
+  }
+
+  return '';
 }
 
 export function renderIconPreviewHtml(key, fallback = DEFAULT_TOOL_ICON) {

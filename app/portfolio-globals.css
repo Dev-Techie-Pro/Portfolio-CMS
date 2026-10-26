@@ -33,6 +33,14 @@ html.js.is-ready .app {
   border-radius: var(--br-none);
 }
 
+/* Remix icons inside legacy `[data-icon]` hosts */
+.icon i[class^="ri-"],
+[data-icon] i[class^="ri-"] {
+  font-size: inherit;
+  line-height: 1;
+  vertical-align: middle;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

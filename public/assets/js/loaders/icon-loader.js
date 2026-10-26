@@ -1,14 +1,14 @@
 import { ICONS } from "../config/constants.js";
+import {
+  DEFAULT_PUBLIC_REMIX_ICON,
+  getPublicThesvgUrl,
+  resolvePublicSiteIcon,
+} from "../data/public-icon-resolve.js";
 
 (() => {
   const Portfolio = (window.Portfolio = window.Portfolio || {});
   const SELECTOR =
     window.Portfolio?.ELEMENTS?.SELECTORS?.DATA_ICON || "[data-icon]";
-  const THESVG_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-  const THESVG_API = "/api/public/thesvg";
-
-  const isThesvgSlug = (name) =>
-    THESVG_SLUG_RE.test(name) && !name.startsWith("ri-");
 
   const isValidSvg = (markup) => {
     if (
@@ -58,6 +58,25 @@ import { ICONS } from "../config/constants.js";
     return out;
   };
 
+  const mountRemixIcon = (element, className) => {
+    try {
+      const icon = document.createElement("i");
+      icon.className = className;
+      icon.setAttribute("aria-hidden", "true");
+      element.insertAdjacentElement("afterbegin", icon);
+      element.dataset.iconReady = "true";
+      element.removeAttribute("data-icon-error");
+      return true;
+    } catch (error) {
+      console.error(
+        "[Portfolio.ICONS] Unable to render Remix icon " + className + ".",
+        error,
+      );
+      element.dataset.iconError = "render";
+      return false;
+    }
+  };
+
   const mountSvgMarkup = (element, name, raw) => {
     const markup = uniquifySvgIds(raw);
     if (!isValidSvg(markup)) {
@@ -84,23 +103,28 @@ import { ICONS } from "../config/constants.js";
 
   const hydrateThesvg = async (element, slug) => {
     if (!(element instanceof Element)) return false;
-    if (element.dataset.iconReady === "true" || element.dataset.iconLoading === "true") {
+    if (
+      element.dataset.iconReady === "true" ||
+      element.dataset.iconLoading === "true"
+    ) {
       return false;
     }
     element.dataset.iconLoading = "true";
+    const url = getPublicThesvgUrl(slug);
     try {
-      const res = await fetch(
-        `${THESVG_API}/${encodeURIComponent(slug)}?variant=default`,
-      );
+      const res = await fetch(url);
       if (!res.ok) throw new Error(String(res.status));
       const text = await res.text();
       return mountSvgMarkup(element, slug, text);
     } catch (error) {
       if (!element.dataset.iconError) {
-        console.warn("[Portfolio.ICONS] theSVG icon failed: " + slug + ".", error);
+        console.warn(
+          "[Portfolio.ICONS] theSVG brand icon failed: " + slug + ".",
+          error,
+        );
       }
       element.dataset.iconError = "missing";
-      return false;
+      return mountRemixIcon(element, DEFAULT_PUBLIC_REMIX_ICON);
     } finally {
       delete element.dataset.iconLoading;
     }
@@ -116,20 +140,30 @@ import { ICONS } from "../config/constants.js";
       return false;
     }
 
-    const raw = ICONS[name];
-    if (raw) {
-      return mountSvgMarkup(element, name, raw);
+    const resolved = resolvePublicSiteIcon(name, DEFAULT_PUBLIC_REMIX_ICON);
+
+    if (resolved.kind === "remix") {
+      return mountRemixIcon(element, resolved.className);
     }
 
-    if (isThesvgSlug(name)) {
-      void hydrateThesvg(element, name);
+    if (resolved.kind === "localSvg") {
+      const raw = ICONS[resolved.key];
+      if (raw) {
+        return mountSvgMarkup(element, resolved.key, raw);
+      }
+      console.warn(
+        "[Portfolio.ICONS] Local SVG missing from bundle: " + resolved.key,
+      );
+      element.dataset.iconError = "missing";
+      return mountRemixIcon(element, DEFAULT_PUBLIC_REMIX_ICON);
+    }
+
+    if (resolved.kind === "thesvg") {
+      void hydrateThesvg(element, resolved.slug);
       return true;
     }
 
-    if (!element.dataset.iconError) {
-      console.warn("[Portfolio.ICONS] Unknown icon: " + name + ".");
-    }
-    element.dataset.iconError = "missing";
+    element.dataset.iconError = "empty";
     return false;
   };
 

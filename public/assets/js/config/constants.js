@@ -1,9 +1,10 @@
 "use strict";
 
-import { ICONS as BASE_ICONS } from "../data/icon-registry.js";
 import { TECH_BRAND_ICONS } from "../data/tech-brand-icons.js";
+import { DECORATIVE_ICONS } from "../data/decorative-icons.js";
 
-const ICONS = { ...BASE_ICONS, ...TECH_BRAND_ICONS };
+/** Public site: local custom brands + decorative SVGs only (UI → Remix, logos → theSVG). */
+const ICONS = { ...DECORATIVE_ICONS, ...TECH_BRAND_ICONS };
 
 const BREAKPOINTS = {
   MOBILE: 768,
