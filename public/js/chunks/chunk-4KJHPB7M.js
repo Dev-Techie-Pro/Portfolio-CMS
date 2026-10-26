@@ -2,7 +2,7 @@ import {
   ICONS,
   renderIconPreviewHtml,
   resolveIconKey
-} from "./chunk-HH7KV6ER.js";
+} from "./chunk-EM3TMBP5.js";
 import {
   $id
 } from "./chunk-HFEWIT3P.js";
@@ -469,4 +469,4 @@ export {
   open,
   updateIconTrigger
 };
-//# sourceMappingURL=chunk-TJQDDAWI.js.map
+//# sourceMappingURL=chunk-4KJHPB7M.js.map

@@ -78,6 +78,47 @@ import { resolvePublicIconKey } from "../data/legacy-icon-remix-map.js";
     }
   };
 
+  const mountImageIcon = (element, name, url) => {
+    const safe = String(url || "").trim();
+    if (!safe || /^javascript:/i.test(safe)) {
+      element.dataset.iconError = "invalid";
+      return false;
+    }
+    try {
+      element.insertAdjacentHTML(
+        "afterbegin",
+        `<img class="pa-site-icon-img" src="${safe.replace(/"/g, "&quot;")}" alt="" loading="lazy" decoding="async" />`,
+      );
+      element.dataset.iconReady = "true";
+      element.removeAttribute("data-icon-error");
+      return true;
+    } catch (error) {
+      console.error(
+        "[Portfolio.ICONS] Unable to render image icon " + name + ".",
+        error,
+      );
+      element.dataset.iconError = "render";
+      return false;
+    }
+  };
+
+  const mountRegistryOverride = (element, name, raw) => {
+    if (typeof raw !== "string") return false;
+    if (raw.startsWith("@remix:")) {
+      const cls = raw.slice(7).trim();
+      if (!/^ri-[a-z0-9][a-z0-9-]*$/.test(cls)) {
+        element.dataset.iconError = "invalid";
+        return false;
+      }
+      element.dataset.icon = cls;
+      return mountRemixIcon(element, cls);
+    }
+    if (raw.startsWith("@img:")) {
+      return mountImageIcon(element, name, raw.slice(5).trim());
+    }
+    return mountSvgMarkup(element, name, raw);
+  };
+
   const mountRemixIcon = (element, remixClass) => {
     try {
       element.insertAdjacentHTML(
@@ -115,7 +156,7 @@ import { resolvePublicIconKey } from "../data/legacy-icon-remix-map.js";
 
     const raw = ICONS[name];
     if (raw) {
-      return mountSvgMarkup(element, name, raw);
+      return mountRegistryOverride(element, name, raw);
     }
 
     if (!element.dataset.iconError) {

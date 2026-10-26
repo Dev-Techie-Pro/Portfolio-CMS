@@ -719,6 +719,55 @@ body.light .pa-body-loader__panel {
   text-align: center;
 }
 
+.pa-icon-registry-source-toggle {
+  width: 100%;
+  max-width: 420px;
+}
+
+.pa-icon-registry-edit-preview {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  margin-bottom: var(--pa-card-gap);
+  border: 1px dashed var(--pa-border-soft);
+  border-radius: var(--pa-radius);
+  background: var(--pa-bg-input);
+}
+
+.pa-icon-registry-edit-preview .pa-icon-registry-thumb {
+  width: 72px;
+  height: 72px;
+}
+
+.pa-icon-registry-pick-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.pa-icon-registry-pick-value {
+  flex: 1 1 160px;
+  font-size: var(--pa-fs-sm);
+  word-break: break-all;
+}
+
+.pa-icon-registry-image-path {
+  color: var(--pa-text-mute);
+}
+
+.pa-icon-registry-thumb img.pa-site-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+#paIconRegistryGrid .pa-lv-thumb img.pa-site-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .pa-form-group--full {
   grid-column: 1 / -1;
 }
@@ -952,6 +1001,10 @@ select.pa-filter-select:not(.pa-select-native):focus {
   color: var(--pa-text-mute);
 }
 
+#paIconRegistryGrid .pa-lv-thumb {
+  width: 40px;
+  height: 35px;
+}
 .pa-lv-avatar-initials {
   font-size: var(--pa-fs-sm);
   font-weight: var(--pa-fw-lg);

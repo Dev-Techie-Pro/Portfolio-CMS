@@ -1,6 +1,10 @@
 // @ts-nocheck
 import { ICONS } from "@/client/utils/icon-registry";
 import { getIconRegistryLabel } from "@/client/utils/icon-registry-labels";
+import {
+  decodeIconOverride,
+  overrideTypeLabel,
+} from "@/client/utils/icon-registry-override";
 
 export const EMPTY_ICON_REGISTRY_STATE = {
   overrides: {},
@@ -45,10 +49,13 @@ export function buildIconRegistryManifest(state) {
       const label =
         normalized.labels[key] ||
         getIconRegistryLabel(key);
+      const { kind: sourceKind } = decodeIconOverride(svg);
       return {
         key,
         label,
         svg,
+        sourceKind,
+        sourceLabel: overrideTypeLabel(svg),
         isCustom: !!normalized.overrides[key],
         isBuiltIn: !!ICONS[key],
       };

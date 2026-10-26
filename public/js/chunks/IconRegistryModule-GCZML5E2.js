@@ -1,10 +1,24 @@
 import {
-  renderIconHtml
-} from "./chunk-HH7KV6ER.js";
+  open as open2
+} from "./chunk-4KJHPB7M.js";
+import {
+  open
+} from "./chunk-NGM67PQZ.js";
+import "./chunk-HT4C2QOZ.js";
+import {
+  ICONS,
+  decodeIconOverride,
+  encodeIconOverride,
+  overrideTypeLabel,
+  renderIconHtml,
+  renderStoredIconMarkup,
+  validateIconOverride
+} from "./chunk-EM3TMBP5.js";
 import {
   renderPaCatCard
 } from "./chunk-GIH3II4S.js";
 import "./chunk-FRUJZYET.js";
+import "./chunk-JWEJ6YLS.js";
 import {
   applyListGridClasses,
   closeListRow,
@@ -59,6 +73,10 @@ var IconRegistryManager = class {
     this.viewMode = "list";
     this._bound = false;
     this._panelReady = false;
+    this._editHandlersBound = false;
+    this._editKind = "svg";
+    this._editRemix = "ri-palette-line";
+    this._editImageUrl = "";
   }
   bindPage(module) {
     if (this._bound || !$id("paIconRegistryGrid")) return;
@@ -105,14 +123,47 @@ var IconRegistryManager = class {
           <div class="pa-form-group">
             <label class="pa-form-label" for="paIconRegistryEditKey">Registry key</label>
             <input class="pa-form-input" id="paIconRegistryEditKey" placeholder="siMyBrand" />
+            <p class="pa-form-hint">Used as <code>data-icon</code> on the public site (e.g. siCloudflare).</p>
           </div>
           <div class="pa-form-group">
             <label class="pa-form-label" for="paIconRegistryEditLabel">Display name</label>
             <input class="pa-form-input" id="paIconRegistryEditLabel" placeholder="My Brand" />
           </div>
           <div class="pa-form-group">
-            <label class="pa-form-label" for="paIconRegistryEditSvg">SVG markup</label>
-            <textarea class="pa-form-textarea" id="paIconRegistryEditSvg" rows="12" placeholder="<svg \u2026></svg>"></textarea>
+            <span class="pa-form-label">Icon source</span>
+            <div class="pa-view-toggle pa-icon-registry-source-toggle" role="group" aria-label="Icon source type">
+              <button type="button" class="pa-view-btn active" data-icon-source-kind="svg">SVG markup</button>
+              <button type="button" class="pa-view-btn" data-icon-source-kind="remix">Remix icon</button>
+              <button type="button" class="pa-view-btn" data-icon-source-kind="image">Image</button>
+            </div>
+          </div>
+          <div class="pa-icon-registry-edit-preview" id="paIconRegistryEditPreview" aria-live="polite"></div>
+          <div id="paIconRegistrySourceSvg" class="pa-icon-registry-source-panel">
+            <div class="pa-form-group">
+              <label class="pa-form-label" for="paIconRegistryEditSvg">SVG markup</label>
+              <textarea class="pa-form-textarea" id="paIconRegistryEditSvg" rows="10" placeholder="<svg \u2026></svg>"></textarea>
+            </div>
+          </div>
+          <div id="paIconRegistrySourceRemix" class="pa-icon-registry-source-panel" hidden>
+            <div class="pa-form-group">
+              <label class="pa-form-label">Remix icon class</label>
+              <div class="pa-icon-registry-pick-row">
+                <code class="pa-icon-registry-pick-value" id="paIconRegistryRemixValue">ri-palette-line</code>
+                <button type="button" class="pa-btn pa-btn-secondary" id="paIconRegistryPickRemixBtn"><i class="ri-palette-line"></i> Choose icon</button>
+              </div>
+              <p class="pa-form-hint">Rendered with Remix Icon on the public site (same as admin UI icons).</p>
+            </div>
+          </div>
+          <div id="paIconRegistrySourceImage" class="pa-icon-registry-source-panel" hidden>
+            <div class="pa-form-group">
+              <label class="pa-form-label">Image URL</label>
+              <div class="pa-icon-registry-pick-row">
+                <span class="pa-icon-registry-pick-value pa-icon-registry-image-path" id="paIconRegistryImageValue">No image selected</span>
+                <button type="button" class="pa-btn pa-btn-secondary" id="paIconRegistryPickImageBtn"><i class="ri-image-line"></i> Media library</button>
+              </div>
+              <input class="pa-form-input" type="url" id="paIconRegistryImageUrl" placeholder="https://\u2026 or /path/to/image.png" aria-label="Image URL" />
+              <p class="pa-form-hint">PNG, SVG, or WebP from your media library or any public URL.</p>
+            </div>
           </div>
         </div>
         <div class="pa-panel-footer">
@@ -123,13 +174,125 @@ var IconRegistryManager = class {
     }
     registerPanel("paIconRegistryEditPanel");
     this._panelReady = true;
+    this.bindEditPanelHandlers();
+  }
+  bindEditPanelHandlers() {
+    if (this._editHandlersBound) return;
+    this._editHandlersBound = true;
+    const panel = $id("paIconRegistryEditPanel");
+    panel?.querySelectorAll("[data-icon-source-kind]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        this.setEditSourceKind(btn.getAttribute("data-icon-source-kind"));
+      });
+    });
+    $id("paIconRegistryPickRemixBtn")?.addEventListener("click", () => this.openRemixPicker());
+    $id("paIconRegistryPickImageBtn")?.addEventListener("click", () => this.openImagePicker());
+    $id("paIconRegistryEditSvg")?.addEventListener("input", () => this.syncEditPreview());
+    $id("paIconRegistryImageUrl")?.addEventListener("input", (e) => {
+      this._editImageUrl = e.target.value || "";
+      const label = $id("paIconRegistryImageValue");
+      if (label) label.textContent = this._editImageUrl || "No image selected";
+      this.syncEditPreview();
+    });
+  }
+  setEditSourceKind(kind) {
+    this._editKind = kind === "remix" || kind === "image" ? kind : "svg";
+    $id("paIconRegistryEditPanel")?.querySelectorAll("[data-icon-source-kind]").forEach((btn) => {
+      btn.classList.toggle("active", btn.getAttribute("data-icon-source-kind") === this._editKind);
+    });
+    const svgPanel = $id("paIconRegistrySourceSvg");
+    const remixPanel = $id("paIconRegistrySourceRemix");
+    const imagePanel = $id("paIconRegistrySourceImage");
+    if (svgPanel) svgPanel.hidden = this._editKind !== "svg";
+    if (remixPanel) remixPanel.hidden = this._editKind !== "remix";
+    if (imagePanel) imagePanel.hidden = this._editKind !== "image";
+    this.syncEditPreview();
+  }
+  syncEditPreview() {
+    const box = $id("paIconRegistryEditPreview");
+    if (!box) return;
+    const markup = renderStoredIconMarkup(this.readEditPayloadRaw());
+    box.innerHTML = markup ? `<div class="pa-icon-registry-thumb">${markup}</div>` : '<span class="pa-text-mute">Preview unavailable</span>';
+  }
+  readEditPayloadRaw() {
+    if (this._editKind === "remix") {
+      return encodeIconOverride("remix", this._editRemix || "ri-palette-line");
+    }
+    if (this._editKind === "image") {
+      const url = String($id("paIconRegistryImageUrl")?.value || this._editImageUrl || "").trim();
+      return encodeIconOverride("image", url);
+    }
+    return String($id("paIconRegistryEditSvg")?.value || "").trim();
+  }
+  readEditPayloadForSave() {
+    if (this._editKind === "remix") {
+      return { kind: "remix", value: this._editRemix || "" };
+    }
+    if (this._editKind === "image") {
+      const url = String($id("paIconRegistryImageUrl")?.value || this._editImageUrl || "").trim();
+      return { kind: "image", value: url };
+    }
+    return { kind: "svg", value: String($id("paIconRegistryEditSvg")?.value || "").trim() };
+  }
+  populateEditorFromItem(item) {
+    const stored = item?.svg || item?.key && ICONS[item.key] || "";
+    const { kind, value } = decodeIconOverride(stored);
+    this._editKind = kind;
+    this._editRemix = kind === "remix" ? value : "ri-palette-line";
+    this._editImageUrl = kind === "image" ? value : "";
+    const svgDefault = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"></svg>';
+    if ($id("paIconRegistryEditSvg")) {
+      $id("paIconRegistryEditSvg").value = kind === "svg" ? value || svgDefault : ICONS[item?.key] && decodeIconOverride(ICONS[item.key]).kind === "svg" ? decodeIconOverride(ICONS[item.key]).value : svgDefault;
+    }
+    const remixEl = $id("paIconRegistryRemixValue");
+    if (remixEl) remixEl.textContent = this._editRemix;
+    const imageLabel = $id("paIconRegistryImageValue");
+    if (imageLabel) imageLabel.textContent = this._editImageUrl || "No image selected";
+    if ($id("paIconRegistryImageUrl")) $id("paIconRegistryImageUrl").value = this._editImageUrl;
+    this.setEditSourceKind(this._editKind);
+  }
+  openRemixPicker() {
+    open2({
+      current: this._editRemix || "ri-palette-line",
+      defaultIcon: "ri-palette-line",
+      returnFocus: $id("paIconRegistryPickRemixBtn"),
+      onSelect: (icon) => {
+        if (!/^ri-[a-z0-9][a-z0-9-]*$/.test(icon)) {
+          showToast("Pick a Remix icon (class starts with ri-).", "danger");
+          return;
+        }
+        this._editRemix = icon;
+        const label = $id("paIconRegistryRemixValue");
+        if (label) label.textContent = icon;
+        this.syncEditPreview();
+      }
+    });
+  }
+  openImagePicker() {
+    open({
+      mode: "featured",
+      folder: "icons",
+      mediaFilter: "images",
+      returnFocus: $id("paIconRegistryPickImageBtn"),
+      onSelect: (item) => {
+        const url = String(item?.url || "").trim();
+        if (!url) return;
+        this._editImageUrl = url;
+        if ($id("paIconRegistryImageUrl")) $id("paIconRegistryImageUrl").value = url;
+        const label = $id("paIconRegistryImageValue");
+        if (label) label.textContent = url;
+        this.syncEditPreview();
+      }
+    });
   }
   previewHtml(item) {
-    const inner = item.svg ? item.svg : renderIconHtml(item.key, { className: "pa-svg-icon" });
+    const inner = item.svg ? renderStoredIconMarkup(item.svg) || renderIconHtml(item.key, { className: "pa-svg-icon" }) : renderIconHtml(item.key, { className: "pa-svg-icon" });
     return `<div class="pa-icon-registry-thumb">${inner}</div>`;
   }
   typeLabel(item) {
-    return item.isCustom ? "Custom" : "Built-in";
+    if (item.sourceLabel) return item.sourceLabel;
+    if (item.isCustom) return overrideTypeLabel(item.svg);
+    return "Built-in";
   }
   renderCardMenu(item, index) {
     const key = escapeHtml(item.key);
@@ -150,7 +313,7 @@ var IconRegistryManager = class {
       badge,
       title: item.label || item.key,
       slug: item.key,
-      desc: item.isCustom ? "Custom SVG override" : "Built-in portfolio icon",
+      desc: item.isCustom ? `Custom \xB7 ${overrideTypeLabel(item.svg)}` : "Built-in portfolio icon",
       countIcon: "ri-brush-line",
       countLabel: this.typeLabel(item),
       status: "Active",
@@ -393,7 +556,7 @@ var IconRegistryManager = class {
     $id("paIconRegistryEditKey").value = item?.key || "";
     $id("paIconRegistryEditKey").disabled = !isNew;
     $id("paIconRegistryEditLabel").value = item?.label || "";
-    $id("paIconRegistryEditSvg").value = item?.svg || '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"></svg>';
+    this.populateEditorFromItem(item);
     const close = () => closePanels();
     const closeBtn = $id("paIconRegistryEditClose");
     const cancelBtn = $id("paIconRegistryEditCancel");
@@ -404,23 +567,27 @@ var IconRegistryManager = class {
       saveBtn.onclick = () => {
         const k = String($id("paIconRegistryEditKey")?.value || "").trim();
         const label = String($id("paIconRegistryEditLabel")?.value || "").trim();
-        const svg = String($id("paIconRegistryEditSvg")?.value || "").trim();
+        const { kind, value } = this.readEditPayloadForSave();
         if (!k || !/^si[A-Za-z0-9]+$/.test(k)) {
           showToast("Key must start with si (e.g. siCloudflare).", "danger");
           return;
         }
-        if (!/^\s*<svg[\s\S]*<\/svg>\s*$/i.test(svg)) {
-          showToast("SVG must be a single <svg>\u2026</svg> element.", "danger");
+        const validationError = validateIconOverride(kind, value);
+        if (validationError) {
+          showToast(validationError, "danger");
           return;
         }
-        this.state.overrides = { ...this.state.overrides || {}, [k]: svg };
+        const stored = encodeIconOverride(kind, value);
+        this.state.overrides = { ...this.state.overrides || {}, [k]: stored };
         if (label) this.state.labels = { ...this.state.labels || {}, [k]: label };
         this.state.removed = (this.state.removed || []).filter((r) => r !== k);
         const existing = this.items.find((i) => i.key === k);
         const row = {
           key: k,
           label: label || k,
-          svg,
+          svg: stored,
+          sourceKind: kind,
+          sourceLabel: overrideTypeLabel(stored),
           isCustom: true,
           isBuiltIn: !!existing?.isBuiltIn
         };
@@ -513,4 +680,4 @@ var IconRegistryModule = class extends Module {
 export {
   IconRegistryModule
 };
-//# sourceMappingURL=IconRegistryModule-FSZATYLH.js.map
+//# sourceMappingURL=IconRegistryModule-GCZML5E2.js.map

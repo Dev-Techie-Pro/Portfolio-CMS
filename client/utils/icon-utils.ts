@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { ICONS } from './icon-registry.js';
 import { LEGACY_ICON_TO_REMIX } from './legacy-icon-remix-map.js';
+import { decodeIconOverride, renderStoredIconMarkup } from './icon-registry-override.js';
 
 export const DEFAULT_TOOL_ICON = 'ri-tools-line';
 export const DEFAULT_CATEGORY_ICON = 'ri-tools-line';
@@ -43,7 +44,9 @@ export function resolveIconKey(value, fallback = DEFAULT_TOOL_ICON) {
 
 export function getIconSvg(key, fallback = DEFAULT_TOOL_ICON) {
   const resolved = resolveIconKey(key, fallback);
-  return ICONS[resolved] || '';
+  const raw = ICONS[resolved] || '';
+  const { kind, value } = decodeIconOverride(raw);
+  return kind === 'svg' ? value : '';
 }
 
 export function getIconLabel(key, fallback = DEFAULT_TOOL_ICON) {
@@ -60,9 +63,16 @@ export function renderIconHtml(key, { color, className = 'pa-svg-icon' } = {}) {
     return `<span${cls}${style} aria-hidden="true"><i class="${resolved}"></i></span>`;
   }
 
-  const svg = ICONS[resolved] || '';
-  if (!svg) return '';
-  return `<span${cls}${style} aria-hidden="true">${svg}</span>`;
+  const raw = ICONS[resolved] || '';
+  if (!raw) return '';
+  const { kind } = decodeIconOverride(raw);
+  if (kind !== 'svg') {
+    const inner = renderStoredIconMarkup(raw, className);
+    if (!inner) return '';
+    if (color) return `<span${style} aria-hidden="true">${inner}</span>`;
+    return inner;
+  }
+  return `<span${cls}${style} aria-hidden="true">${raw}</span>`;
 }
 
 export function renderIconPreviewHtml(key, fallback = DEFAULT_TOOL_ICON) {

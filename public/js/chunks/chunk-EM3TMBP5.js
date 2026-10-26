@@ -1,3 +1,7 @@
+import {
+  escapeHtml
+} from "./chunk-HFEWIT3P.js";
+
 // client/utils/icon-registry.ts
 var TECH_BRAND_ICONS = {
   siAcf: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" ><defs><linearGradient id="siAcf_acfBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17C6D6"/><stop offset="1" stop-color="#0A6BDC"/></linearGradient></defs><path d="M60 0H256V256H0V60Q0 54 4 50L50 4Q54 0 60 0Z" fill="url(#siAcf_acfBg)"/><g fill="#ffffff"><path fill-rule="evenodd" d="M45 140L68 93H93L117 140H96L91.500 130H70.500L66 140ZM76 116H86L81 104Z"/><path d="M160 93H213V106H176V114H206V126H176V140H160Z"/></g><path d="M143.300 106.200A16 16 0 1 0 143.300 126.800" fill="none" stroke="#ffffff" stroke-width="15"/></svg>',
@@ -212,6 +216,67 @@ var LEGACY_ICON_TO_REMIX = {
   siReview: "ri-chat-quote-line"
 };
 
+// client/utils/icon-registry-override.ts
+var ICON_OVERRIDE_REMIX_PREFIX = "@remix:";
+var ICON_OVERRIDE_IMAGE_PREFIX = "@img:";
+var REMIX_RE = /^ri-[a-z0-9][a-z0-9-]*$/;
+var SVG_RE = /^\s*<svg[\s\S]*<\/svg>\s*$/i;
+function decodeIconOverride(stored) {
+  const s = String(stored ?? "").trim();
+  if (s.startsWith(ICON_OVERRIDE_REMIX_PREFIX)) {
+    return { kind: "remix", value: s.slice(ICON_OVERRIDE_REMIX_PREFIX.length).trim() };
+  }
+  if (s.startsWith(ICON_OVERRIDE_IMAGE_PREFIX)) {
+    return { kind: "image", value: s.slice(ICON_OVERRIDE_IMAGE_PREFIX.length).trim() };
+  }
+  return { kind: "svg", value: s };
+}
+function encodeIconOverride(kind, value) {
+  const v = String(value ?? "").trim();
+  if (kind === "remix") return `${ICON_OVERRIDE_REMIX_PREFIX}${v}`;
+  if (kind === "image") return `${ICON_OVERRIDE_IMAGE_PREFIX}${v}`;
+  return v;
+}
+function validateIconOverride(kind, value) {
+  const v = String(value ?? "").trim();
+  if (!v) return "Icon content is required.";
+  if (kind === "remix") {
+    if (!REMIX_RE.test(v)) return "Remix icon must be a class like ri-code-line.";
+    return null;
+  }
+  if (kind === "image") {
+    if (v.startsWith("javascript:") || v.startsWith("data:text/html")) return "Invalid image URL.";
+    if (!/^https?:\/\//i.test(v) && !v.startsWith("/")) {
+      return "Image URL must be absolute (https://\u2026) or a site path (/\u2026).";
+    }
+    return null;
+  }
+  if (!SVG_RE.test(v)) return "SVG must be a single <svg>\u2026</svg> element.";
+  return null;
+}
+function overrideTypeLabel(stored) {
+  const { kind } = decodeIconOverride(stored);
+  if (kind === "remix") return "Remix icon";
+  if (kind === "image") return "Image";
+  return "SVG";
+}
+function renderStoredIconMarkup(stored, className = "pa-svg-icon") {
+  const { kind, value } = decodeIconOverride(stored);
+  if (!value) return "";
+  const cls = className ? ` class="${escapeHtml(className)}"` : "";
+  if (kind === "remix") {
+    return `<span${cls} aria-hidden="true"><i class="${escapeHtml(value)}"></i></span>`;
+  }
+  if (kind === "image") {
+    const src = escapeHtml(value);
+    return `<img class="pa-site-icon-img ${escapeHtml(className)}" src="${src}" alt="" loading="lazy" decoding="async" />`;
+  }
+  if (SVG_RE.test(value)) {
+    return `<span${cls} aria-hidden="true">${value}</span>`;
+  }
+  return "";
+}
+
 // client/utils/icon-utils.ts
 var DEFAULT_TOOL_ICON = "ri-tools-line";
 var DEFAULT_CATEGORY_ICON = "ri-tools-line";
@@ -241,9 +306,16 @@ function renderIconHtml(key, { color, className = "pa-svg-icon" } = {}) {
   if (isRemixIconKey(resolved)) {
     return `<span${cls}${style} aria-hidden="true"><i class="${resolved}"></i></span>`;
   }
-  const svg = ICONS[resolved] || "";
-  if (!svg) return "";
-  return `<span${cls}${style} aria-hidden="true">${svg}</span>`;
+  const raw = ICONS[resolved] || "";
+  if (!raw) return "";
+  const { kind } = decodeIconOverride(raw);
+  if (kind !== "svg") {
+    const inner = renderStoredIconMarkup(raw, className);
+    if (!inner) return "";
+    if (color) return `<span${style} aria-hidden="true">${inner}</span>`;
+    return inner;
+  }
+  return `<span${cls}${style} aria-hidden="true">${raw}</span>`;
 }
 function renderIconPreviewHtml(key, fallback = DEFAULT_TOOL_ICON) {
   return renderIconHtml(resolveIconKey(key, fallback), { className: "pa-svg-icon pa-svg-icon--preview" });
@@ -251,10 +323,15 @@ function renderIconPreviewHtml(key, fallback = DEFAULT_TOOL_ICON) {
 
 export {
   ICONS,
+  decodeIconOverride,
+  encodeIconOverride,
+  validateIconOverride,
+  overrideTypeLabel,
+  renderStoredIconMarkup,
   DEFAULT_TOOL_ICON,
   DEFAULT_CATEGORY_ICON,
   resolveIconKey,
   renderIconHtml,
   renderIconPreviewHtml
 };
-//# sourceMappingURL=chunk-HH7KV6ER.js.map
+//# sourceMappingURL=chunk-EM3TMBP5.js.map
