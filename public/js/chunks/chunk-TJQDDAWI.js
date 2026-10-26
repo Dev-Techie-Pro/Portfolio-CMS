@@ -2,10 +2,66 @@ import {
   ICONS,
   renderIconPreviewHtml,
   resolveIconKey
-} from "./chunk-AI2H7JJQ.js";
+} from "./chunk-HH7KV6ER.js";
 import {
   $id
 } from "./chunk-HFEWIT3P.js";
+
+// client/utils/icon-registry-labels.ts
+var ICON_REGISTRY_LABELS = {
+  siMsSqlBrand: "MS SQL",
+  siSql: "SQL",
+  siCloudflare: "Cloudflare",
+  siAdoNet: "ADO.NET",
+  siNetFramework: ".NET Framework",
+  siEntityFramework: "Entity Framework",
+  siDotNet: ".NET",
+  siDotNetCore: ".NET Core",
+  siAspNetCore: "ASP.NET Core",
+  siASPNet: "ASP.NET",
+  siGit: "GitHub",
+  siGithub: "GitHub",
+  siAws: "AWS",
+  siReactJs: "React",
+  siNodeJs: "Node.js",
+  siNextJs: "Next.js",
+  siTypescript: "TypeScript",
+  siJavascript: "JavaScript",
+  siPhpFill: "PHP",
+  siWordpress: "WordPress",
+  siDocker: "Docker",
+  siKubernetes: "Kubernetes",
+  siStripe: "Stripe",
+  siPaypal: "PayPal",
+  siWindowsForms: "Windows Forms",
+  siWpf: "WPF",
+  siWebApiBrand: "Web API",
+  siXaml: "XAML",
+  siWebForms: "Web Forms",
+  siSelenium: "Selenium",
+  siAppium: "Appium",
+  siJMeter: "JMeter",
+  siSnowflake: "Snowflake",
+  siMariaDB: "MariaDB",
+  siPostgreSql: "PostgreSQL",
+  siMySql: "MySQL",
+  siMongodB: "MongoDB",
+  siTailwindcss: "Tailwind CSS",
+  siBootstrap: "Bootstrap",
+  siFirebase: "Firebase",
+  siSupabase: "Supabase",
+  siVercel: "Vercel",
+  siFigma: "Figma",
+  siVsCode: "VS Code",
+  siVisualStudio: "Visual Studio"
+};
+function getIconRegistryLabel(key) {
+  const k = String(key || "").trim();
+  if (!k) return "";
+  if (ICON_REGISTRY_LABELS[k]) return ICON_REGISTRY_LABELS[k];
+  const base = k.replace(/^si/, "");
+  return base.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 // client/utils/remix-icon-registry.ts
 var REGISTRY_URL = "/api/remix-icon-registry";
@@ -129,15 +185,11 @@ function filterRegistryIcons(icons, { query = "", category = "all" } = {}) {
 }
 
 // client/utils/icon-picker-registry.ts
-function humanizeLegacyKey(slug) {
-  const base = slug.replace(/^si/, "");
-  return base.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/\b\w/g, (c) => c.toUpperCase());
-}
 function builtInRegistryIcons() {
   return Object.keys(ICONS).sort((a, b) => a.localeCompare(b)).map((slug) => ({
     slug,
     name: slug,
-    title: humanizeLegacyKey(slug),
+    title: getIconRegistryLabel(slug),
     style: "",
     aliases: [slug],
     categories: ["Built-in SVG"]
@@ -417,4 +469,4 @@ export {
   open,
   updateIconTrigger
 };
-//# sourceMappingURL=chunk-3IJQVBKO.js.map
+//# sourceMappingURL=chunk-TJQDDAWI.js.map

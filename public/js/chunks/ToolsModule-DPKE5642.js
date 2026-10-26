@@ -1,15 +1,15 @@
 import {
   open,
   updateIconTrigger
-} from "./chunk-3IJQVBKO.js";
+} from "./chunk-TJQDDAWI.js";
 import {
   addStackCatalogItem,
   convertStackCatalogItem
-} from "./chunk-RGD5RJEX.js";
+} from "./chunk-4UGXQIO7.js";
 import {
   DEFAULT_TOOL_ICON,
   renderIconHtml
-} from "./chunk-AI2H7JJQ.js";
+} from "./chunk-HH7KV6ER.js";
 import {
   uniqueCopyName
 } from "./chunk-2XY7RIAB.js";
@@ -500,4 +500,4 @@ var ToolsModule = class extends CrudCardModule {
 export {
   ToolsModule
 };
-//# sourceMappingURL=ToolsModule-H42FZQAM.js.map
+//# sourceMappingURL=ToolsModule-DPKE5642.js.map

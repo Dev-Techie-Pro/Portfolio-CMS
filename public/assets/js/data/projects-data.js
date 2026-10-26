@@ -2802,7 +2802,8 @@ function _resolveTechIcon(item) {
   if (name.includes("stripe")) return "siStripe";
   if (name.includes("paypal")) return "siPaypal";
   if (name.includes("cloudflare")) return "siCloudflare";
-  if (name.includes("entity framework")) return "siDotNetCore";
+  if (name.includes("entity framework")) return "siEntityFramework";
+  if (name.includes(".net framework") || name.includes("net framework")) return "siNetFramework";
   if (name.includes("crystal")) return "siDocument";
   if (name.includes("visual studio")) return "siVisualStudio";
   if (name.includes("phpmyadmin")) return "siPhpMyAdmin";

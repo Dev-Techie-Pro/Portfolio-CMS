@@ -154,10 +154,29 @@ import { resolvePublicIconKey } from "../data/legacy-icon-remix-map.js";
     Portfolio.ICONS._observer.observe(root, { childList: true, subtree: true });
   };
 
+  async function applyRegistryOverrides() {
+    try {
+      const res = await fetch("/api/public/icon-registry-overrides");
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.overrides && typeof data.overrides === "object") {
+        Object.assign(ICONS, data.overrides);
+      }
+      if (Array.isArray(data.removed)) {
+        data.removed.forEach((key) => {
+          delete ICONS[key];
+        });
+      }
+    } catch {
+      /* static registry only */
+    }
+  }
+
   Portfolio.ICONS = {
     hydrate,
     hydrateAll,
-    init(root = document) {
+    async init(root = document) {
+      await applyRegistryOverrides();
       hydrateAll(root);
       observe(document.body);
     },
@@ -166,7 +185,9 @@ import { resolvePublicIconKey } from "../data/legacy-icon-remix-map.js";
   if (document.readyState === "loading")
     document.addEventListener(
       "DOMContentLoaded",
-      () => Portfolio.ICONS.init(),
+      () => {
+        Portfolio.ICONS.init();
+      },
       { once: true },
     );
   else Portfolio.ICONS.init();

@@ -151,7 +151,16 @@
       achievements || impacts
         ? `<div class="exp-role-achievements">${achievements}${impacts}</div>`
         : "";
-    const techs = (entry.technologies || []).map(renderTechChip).join("");
+    const seenTech = new Set();
+    const techs = (entry.technologies || [])
+      .filter((tech) => {
+        const norm = String(tech.name || "").trim().toLowerCase();
+        if (!norm || seenTech.has(norm)) return false;
+        seenTech.add(norm);
+        return true;
+      })
+      .map(renderTechChip)
+      .join("");
     const techBlock = techs
       ? `<div class="exp-role-tech">
                 <h4 class="exp-role-kicker">Technologies</h4>

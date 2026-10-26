@@ -197,4 +197,10 @@ export const SYSTEM_TAB_HTML = `
                     ${SYSTEM_ENV_FORM_HTML}
                 </section>
                 </div>
+
+                <div class="pa-tab-panel" data-panel="system-section" data-content="icons">
+                <section class="pa-icon-registry-section" id="systemIconRegistrySection">
+                    <div id="paIconRegistryRoot"></div>
+                </section>
+                </div>
             </div>`;

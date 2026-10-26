@@ -93,15 +93,15 @@
   /** Client fallback when API icon key is missing or stale (mirrors resolve-tech-icon.ts). */
   function resolveIconKeyFromName(name) {
     const n = skillNameForIcon(name);
-    if (!n) return "siCode";
+    if (!n) return "ri-code-line";
     if (/\brestful\s*apis?\b/.test(n) || /\brest\s*apis?\b/.test(n)) {
       return "siRestfulApi";
     }
     if (/\bms\s*sql\b/.test(n) || /\bmssql\b/.test(n) || /\bsql\s*server\b/.test(n)) {
-      return "siSql";
+      return "siMsSqlBrand";
     }
     if (n === "sql") return "siSql";
-    return "siCode";
+    return "ri-code-line";
   }
 
   function svgFromIconKey(key) {
@@ -112,11 +112,14 @@
   }
 
   function resolveSkillIconKey(item) {
+    const fromApi = String(item.portfolioIcon || "").trim();
+    if (fromApi && fromApi !== "siCode") {
+      if (fromApi === "siMsSqlBrand" && !svgFromIconKey(fromApi)) return "siSql";
+      return fromApi;
+    }
     const fromName = resolveIconKeyFromName(item.name);
-    let si = item.portfolioIcon || "siCode";
-    if (fromName !== "siCode") si = fromName;
-    if (si === "siMsSqlBrand" && !svgFromIconKey(si)) si = "siSql";
-    return si;
+    if (fromName === "siMsSqlBrand" && !svgFromIconKey(fromName)) return "siSql";
+    return fromName;
   }
 
   function lookupBrandSvg(name) {

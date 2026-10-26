@@ -6,5 +6,6 @@ export const SYSTEM_SECTION_TOOLBAR_HTML = `
                         <button type="button" class="pa-view-btn active" data-panel="system-section" data-tab="database" role="tab" aria-selected="true"><i class="ri-database-2-line"></i> Database</button>
                         <button type="button" class="pa-view-btn" data-panel="system-section" data-tab="ops" role="tab" aria-selected="false"><i class="ri-shield-check-line"></i> Deployment</button>
                         <button type="button" class="pa-view-btn" data-panel="system-section" data-tab="env" role="tab" aria-selected="false"><i class="ri-terminal-box-line"></i> Environment</button>
+                        <button type="button" class="pa-view-btn" data-panel="system-section" data-tab="icons" role="tab" aria-selected="false"><i class="ri-palette-line"></i> Icons</button>
                     </div>
                 </div>`;

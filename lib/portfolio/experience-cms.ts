@@ -78,13 +78,16 @@ export async function fetchPortfolioExperience(): Promise<PortfolioExperienceEnt
 
   return (rows || []).map((row, index) => {
     const ids = Array.isArray(row.technology_ids) ? row.technology_ids : [];
-    const technologies = ids
-      .map((id: number) => {
-        const tech = techById.get(id);
-        if (!tech) return null;
-        return { id, name: tech.name, icon: tech.icon };
-      })
-      .filter(Boolean) as PortfolioExperienceTechnology[];
+    const seenNames = new Set<string>();
+    const technologies: PortfolioExperienceTechnology[] = [];
+    for (const id of ids) {
+      const tech = techById.get(id);
+      if (!tech) continue;
+      const norm = tech.name.trim().toLowerCase();
+      if (!norm || seenNames.has(norm)) continue;
+      seenNames.add(norm);
+      technologies.push({ id, name: tech.name, icon: tech.icon });
+    }
 
     return {
       id: typeof row.legacy_id === "number" ? row.legacy_id : index + 1,
