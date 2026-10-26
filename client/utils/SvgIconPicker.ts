@@ -4,8 +4,9 @@ import {
   loadRegistry,
   filterRegistryIcons,
   getRegistryCategories,
-} from './remix-icon-registry.js';
-import { resolveIconKey, renderIconPreviewHtml } from './icon-utils.js';
+} from './icon-picker-registry.js';
+import { getSvgUrl } from './icon-registry-api.js';
+import { isRemixIconKey, resolveIconKey, renderIconPreviewHtml } from './icon-utils.js';
 
 const OVERLAY_ID = 'paIconPickerOverlay';
 const BATCH_SIZE = 120;
@@ -167,7 +168,10 @@ function createIconButton(icon) {
   btn.title = icon.title;
   btn.setAttribute('role', 'option');
   btn.setAttribute('aria-label', icon.title);
-  btn.innerHTML = `<i class="${escapeHtml(icon.slug)}" aria-hidden="true"></i>`;
+  const preview = isRemixIconKey(icon.slug)
+    ? `<i class="${escapeHtml(icon.slug)}" aria-hidden="true"></i>`
+    : `<img class="pa-svg-icon-img" src="${escapeHtml(getSvgUrl(icon.slug))}" alt="" loading="lazy" decoding="async" />`;
+  btn.innerHTML = preview;
   btn.addEventListener('click', () => selectIcon(icon.slug));
   return btn;
 }
@@ -253,7 +257,7 @@ async function loadIcons() {
     populateCategoryFilter();
     resetGrid();
   } catch {
-    setError('Could not load Remix Icon library. Check your connection and try again.');
+    setError('Could not load icon libraries. Check your connection and try again.');
     if (countEl) countEl.textContent = '';
   } finally {
     setLoading(false);

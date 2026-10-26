@@ -1,18 +1,31 @@
 // @ts-nocheck
+const REGISTRY_API_URL = '/api/thesvg-registry';
 const REGISTRY_URL = 'https://thesvg.org/api/registry.json';
 const REGISTRY_CDN_URL = 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/src/data/icons.json';
+const SVG_API_BASE = '/api/public/thesvg';
 const SVG_CDN_BASE = 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons';
 const SVG_ORIGIN_BASE = 'https://thesvg.org/icons';
-const CACHE_KEY = 'pa_thesvg_registry_v1';
+const CACHE_KEY = 'pa_thesvg_registry_v2';
 
 let registryPromise = null;
 let cachedIcons = null;
 
-export function getSvgUrl(slug, variant = 'default', preferCdn = true) {
+export function getSvgUrl(slug, variant = 'default', preferLocal = true) {
+  const safe = String(slug || '').trim();
+  if (!safe) return '';
+  if (preferLocal) {
+    const params = variant && variant !== 'default' ? `?variant=${encodeURIComponent(variant)}` : '';
+    return `${SVG_API_BASE}/${encodeURIComponent(safe)}${params}`;
+  }
+  const base = SVG_CDN_BASE;
+  return `${base}/${encodeURIComponent(safe)}/${encodeURIComponent(variant || 'default')}.svg`;
+}
+
+export function getSvgCdnUrl(slug, variant = 'default', preferCdn = true) {
   const safe = String(slug || '').trim();
   if (!safe) return '';
   const base = preferCdn ? SVG_CDN_BASE : SVG_ORIGIN_BASE;
-  return `${base}/${encodeURIComponent(safe)}/${variant}.svg`;
+  return `${base}/${encodeURIComponent(safe)}/${encodeURIComponent(variant || 'default')}.svg`;
 }
 
 function normalizeRegistry(data) {
@@ -65,7 +78,13 @@ export async function loadRegistry() {
   }
 
   if (!registryPromise) {
-    registryPromise = fetchRegistryJson(REGISTRY_URL)
+    registryPromise = fetch(REGISTRY_API_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Registry fetch failed (${res.status})`);
+        return res.json();
+      })
+      .then((data) => normalizeRegistry(data))
+      .catch(() => fetchRegistryJson(REGISTRY_URL))
       .catch(() => fetchRegistryJson(REGISTRY_CDN_URL))
       .then((icons) => {
         cachedIcons = icons;

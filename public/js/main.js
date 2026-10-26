@@ -7539,7 +7539,7 @@ var getPrefetchKeysForPage = PREFETCH_CONFIG.getKeysForPage || ((p) => PREFETCH_
 async function loadPageModuleClass(page) {
   switch (page) {
     case "dashboard":
-      return (await import("./chunks/DashboardModule-KOUX2SUY.js")).DashboardModule;
+      return (await import("./chunks/DashboardModule-ELE576TS.js")).DashboardModule;
     case "projects":
       return (await import("./chunks/ProjectsModule-ODSTJW4W.js")).ProjectsModule;
     case "categories":
@@ -7552,13 +7552,13 @@ async function loadPageModuleClass(page) {
     case "blog-tags":
       return (await import("./chunks/BlogTagsModule-IO7AHERW.js")).BlogTagsModule;
     case "technologies":
-      return (await import("./chunks/TechnologiesModule-ABHHNDHV.js")).TechnologiesModule;
+      return (await import("./chunks/TechnologiesModule-PIRKX5QH.js")).TechnologiesModule;
     case "tool-categories":
-      return (await import("./chunks/ToolCategoriesModule-DCAFA2HD.js")).ToolCategoriesModule;
+      return (await import("./chunks/ToolCategoriesModule-QVT6ASAT.js")).ToolCategoriesModule;
     case "blog-categories":
       return (await import("./chunks/BlogCategoriesModule-CCPRTX3P.js")).BlogCategoriesModule;
     case "tools":
-      return (await import("./chunks/ToolsModule-TEWKA7BC.js")).ToolsModule;
+      return (await import("./chunks/ToolsModule-6NOIRS2F.js")).ToolsModule;
     case "media":
       return (await import("./chunks/MediaModule-BURG27N6.js")).MediaModule;
     case "testimonials":
@@ -7580,7 +7580,7 @@ async function loadPageModuleClass(page) {
     case "recent-activities":
       return (await import("./chunks/RecentActivitiesModule-FDQOMHQ4.js")).RecentActivitiesModule;
     case "settings":
-      return (await import("./chunks/SettingsModule-JWNGAJWB.js")).SettingsModule;
+      return (await import("./chunks/SettingsModule-A7QPKTSS.js")).SettingsModule;
     case "login":
       return (await import("./chunks/LoginModule-YWWIVG5M.js")).LoginModule;
     case "forgot-password":

@@ -1,7 +1,12 @@
 import {
+  filterRegistryIcons,
+  getRegistryCategories,
+  getSvgUrl,
+  isRemixIconKey,
+  loadRegistry,
   renderIconPreviewHtml,
   resolveIconKey
-} from "./chunk-25Y4FLAP.js";
+} from "./chunk-IZYA2EQN.js";
 import {
   $id,
   escapeHtml
@@ -76,7 +81,7 @@ async function fetchRegistry() {
   const names = data.icons ?? data.glyphs;
   return normalizeRegistry(names, data.tags || {});
 }
-async function loadRegistry() {
+async function loadRegistry2() {
   if (cachedIcons) return cachedIcons;
   const sessionCached = readSessionCache();
   if (sessionCached?.length) {
@@ -95,37 +100,11 @@ async function loadRegistry() {
   }
   return registryPromise;
 }
-function searchRegistryIcons(icons, query = "") {
-  const q = query.trim().toLowerCase();
-  if (!q) return icons;
-  return icons.filter((icon) => {
-    if (icon.slug.includes(q)) return true;
-    if (icon.name.includes(q)) return true;
-    if (icon.title.toLowerCase().includes(q)) return true;
-    if (icon.style.includes(q)) return true;
-    if (icon.aliases.some((alias) => alias.toLowerCase().includes(q))) return true;
-    if (icon.categories.some((cat) => cat.toLowerCase().includes(q))) return true;
-    return false;
-  });
-}
-function getRegistryCategories(icons) {
-  const counts = /* @__PURE__ */ new Map();
-  icons.forEach((icon) => {
-    icon.categories.forEach((cat) => {
-      counts.set(cat, (counts.get(cat) || 0) + 1);
-    });
-  });
-  return Array.from(counts.entries()).sort((a, b) => a[0].localeCompare(b[0])).map(([name, count]) => ({ name, count }));
-}
-function filterRegistryIcons(icons, { query = "", category = "all" } = {}) {
-  let result = icons;
-  if (category && category !== "all") {
-    result = result.filter((icon) => icon.categories.includes(category));
-  }
-  if (query.trim()) {
-    result = searchRegistryIcons(result, query);
-  }
-  return result;
+
+// client/utils/icon-picker-registry.ts
+async function loadRegistry3() {
+  const [remix, brand] = await Promise.all([loadRegistry2(), loadRegistry()]);
+  return [...remix, ...brand];
 }
 
 // client/utils/SvgIconPicker.ts
@@ -270,7 +249,8 @@ function createIconButton(icon) {
   btn.title = icon.title;
   btn.setAttribute("role", "option");
   btn.setAttribute("aria-label", icon.title);
-  btn.innerHTML = `<i class="${escapeHtml(icon.slug)}" aria-hidden="true"></i>`;
+  const preview = isRemixIconKey(icon.slug) ? `<i class="${escapeHtml(icon.slug)}" aria-hidden="true"></i>` : `<img class="pa-svg-icon-img" src="${escapeHtml(getSvgUrl(icon.slug))}" alt="" loading="lazy" decoding="async" />`;
+  btn.innerHTML = preview;
   btn.addEventListener("click", () => selectIcon(icon.slug));
   return btn;
 }
@@ -339,11 +319,11 @@ async function loadIcons() {
   setLoading(true);
   setError("");
   try {
-    allIcons = await loadRegistry();
+    allIcons = await loadRegistry3();
     populateCategoryFilter();
     resetGrid();
   } catch {
-    setError("Could not load Remix Icon library. Check your connection and try again.");
+    setError("Could not load icon libraries. Check your connection and try again.");
     if (countEl) countEl.textContent = "";
   } finally {
     setLoading(false);
@@ -394,4 +374,4 @@ export {
   open,
   updateIconTrigger
 };
-//# sourceMappingURL=chunk-KV4SJTPD.js.map
+//# sourceMappingURL=chunk-6JEF4FJ6.js.map
