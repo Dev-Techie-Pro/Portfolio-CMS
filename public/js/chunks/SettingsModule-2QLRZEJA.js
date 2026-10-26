@@ -55,8 +55,11 @@ import {
 import {
   activateTab,
   canAccessSettingsTab,
+  closePanels,
   eventBus,
   getAccessCapabilities,
+  openPanel,
+  registerPanel,
   requestConfirm
 } from "./chunk-FTMH3SUW.js";
 import {
@@ -486,6 +489,7 @@ var SecurityManager = class {
 };
 
 // client/modules/settings/IconRegistryManager.ts
+var VIEW_LS_KEY = "pa_icon_registry_view";
 var IconRegistryManager = class {
   constructor() {
     this.state = { overrides: {}, removed: [], labels: {}, sortOrder: [] };
@@ -493,13 +497,30 @@ var IconRegistryManager = class {
     this.filtered = [];
     this.sortMode = "label";
     this.search = "";
+    this.viewMode = this.readViewMode();
     this._bound = false;
+    this._panelReady = false;
+  }
+  readViewMode() {
+    try {
+      const v = localStorage.getItem(VIEW_LS_KEY);
+      return v === "list" ? "list" : "grid";
+    } catch {
+      return "grid";
+    }
+  }
+  persistViewMode() {
+    try {
+      localStorage.setItem(VIEW_LS_KEY, this.viewMode);
+    } catch {
+    }
   }
   mount() {
     const root = $id("paIconRegistryRoot");
     if (!root || this._bound) return;
     this._bound = true;
     root.innerHTML = this.shellHtml();
+    this.ensureEditPanel();
     $id("paIconRegistrySearch")?.addEventListener("input", (e) => {
       this.search = e.target.value || "";
       this.renderList();
@@ -510,7 +531,64 @@ var IconRegistryManager = class {
     });
     $id("paIconRegistrySaveBtn")?.addEventListener("click", () => this.save());
     $id("paIconRegistryAddBtn")?.addEventListener("click", () => this.openEditor(null));
+    $id("paIconRegistryListViewBtn")?.addEventListener("click", () => this.setViewMode("list"));
+    $id("paIconRegistryGridViewBtn")?.addEventListener("click", () => this.setViewMode("grid"));
+    this.syncViewToggle();
     this.load();
+  }
+  setViewMode(mode) {
+    this.viewMode = mode === "list" ? "list" : "grid";
+    this.persistViewMode();
+    this.syncViewToggle();
+    this.renderList();
+  }
+  syncViewToggle() {
+    const listBtn = $id("paIconRegistryListViewBtn");
+    const gridBtn = $id("paIconRegistryGridViewBtn");
+    listBtn?.classList.toggle("active", this.viewMode === "list");
+    gridBtn?.classList.toggle("active", this.viewMode === "grid");
+    const grid = $id("paIconRegistryGrid");
+    if (grid) {
+      grid.classList.toggle("list-view", this.viewMode === "list");
+      grid.classList.toggle("pa-grid", this.viewMode === "grid");
+    }
+  }
+  ensureEditPanel() {
+    if (this._panelReady) return;
+    let panel = $id("paIconRegistryEditPanel");
+    if (!panel) {
+      panel = document.createElement("div");
+      panel.id = "paIconRegistryEditPanel";
+      panel.className = "pa-panel";
+      panel.setAttribute("role", "dialog");
+      panel.setAttribute("aria-modal", "true");
+      panel.innerHTML = `
+        <div class="pa-panel-head">
+          <span class="pa-panel-title" id="paIconRegistryEditTitle">Edit icon</span>
+          <button class="pa-panel-close" type="button" id="paIconRegistryEditClose" aria-label="Close"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="pa-panel-body">
+          <div class="pa-form-group">
+            <label class="pa-form-label" for="paIconRegistryEditKey">Registry key</label>
+            <input class="pa-form-input" id="paIconRegistryEditKey" placeholder="siMyBrand" />
+          </div>
+          <div class="pa-form-group">
+            <label class="pa-form-label" for="paIconRegistryEditLabel">Display name</label>
+            <input class="pa-form-input" id="paIconRegistryEditLabel" placeholder="My Brand" />
+          </div>
+          <div class="pa-form-group">
+            <label class="pa-form-label" for="paIconRegistryEditSvg">SVG markup</label>
+            <textarea class="pa-form-textarea" id="paIconRegistryEditSvg" rows="12" placeholder="<svg \u2026></svg>"></textarea>
+          </div>
+        </div>
+        <div class="pa-panel-footer">
+          <button class="pa-btn pa-btn-cancel" type="button" id="paIconRegistryEditCancel">Cancel</button>
+          <button class="pa-btn pa-btn-primary" type="button" id="paIconRegistryEditSave">Apply</button>
+        </div>`;
+      document.body.appendChild(panel);
+    }
+    registerPanel("paIconRegistryEditPanel");
+    this._panelReady = true;
   }
   shellHtml() {
     return `
@@ -527,8 +605,15 @@ var IconRegistryManager = class {
           <button class="pa-btn pa-btn-secondary" type="button" id="paIconRegistryAddBtn"><i class="ri-add-line"></i> Add icon</button>
         </div>
       </div>
-      <div class="pa-toolbar mb-16">
-        <input class="pa-form-input" type="search" id="paIconRegistrySearch" placeholder="Search by label or key\u2026" style="max-width:320px" />
+      <div class="pa-toolbar pa-cat-toolbar mb-16">
+        <div class="pa-view-toggle pa-cat-view-toggle" role="group" aria-label="View mode">
+          <button class="pa-view-btn active" type="button" id="paIconRegistryGridViewBtn" title="Grid view" aria-label="Grid view"><i class="ri-layout-grid-fill"></i></button>
+          <button class="pa-view-btn" type="button" id="paIconRegistryListViewBtn" title="List view" aria-label="List view"><i class="ri-list-unordered"></i></button>
+        </div>
+        <div class="pa-search pa-icon-registry-search">
+          <i class="ri-search-line" aria-hidden="true"></i>
+          <input type="search" id="paIconRegistrySearch" placeholder="Search by label or key\u2026" aria-label="Search icons" autocomplete="off" />
+        </div>
         <select class="pa-filter-select" id="paIconRegistrySort" aria-label="Sort icons">
           <option value="label">Sort: Label A\u2013Z</option>
           <option value="key">Sort: Key A\u2013Z</option>
@@ -537,31 +622,23 @@ var IconRegistryManager = class {
         <div class="pa-toolbar-spacer"></div>
         <span class="pa-result-count" id="paIconRegistryCount"></span>
       </div>
-      <div class="pa-grid pa-cat-grid" id="paIconRegistryGrid" aria-live="polite"></div>
-      <div class="pa-panel" id="paIconRegistryEditPanel" role="dialog" aria-modal="true" hidden>
-        <div class="pa-panel-head">
-          <span class="pa-panel-title" id="paIconRegistryEditTitle">Edit icon</span>
-          <button class="pa-panel-close" type="button" id="paIconRegistryEditClose" aria-label="Close"><i class="ri-close-line"></i></button>
-        </div>
-        <div class="pa-panel-body">
-          <div class="pa-form-group">
-            <label class="pa-form-label" for="paIconRegistryEditKey">Registry key</label>
-            <input class="pa-form-input" id="paIconRegistryEditKey" placeholder="siMyBrand" />
-          </div>
-          <div class="pa-form-group">
-            <label class="pa-form-label" for="paIconRegistryEditLabel">Display name</label>
-            <input class="pa-form-input" id="paIconRegistryEditLabel" placeholder="My Brand" />
-          </div>
-          <div class="pa-form-group">
-            <label class="pa-form-label" for="paIconRegistryEditSvg">SVG markup</label>
-            <textarea class="pa-form-textarea" id="paIconRegistryEditSvg" rows="10" placeholder="<svg \u2026></svg>"></textarea>
-          </div>
-        </div>
-        <div class="pa-panel-footer">
-          <button class="pa-btn pa-btn-cancel" type="button" id="paIconRegistryEditCancel">Cancel</button>
-          <button class="pa-btn pa-btn-primary" type="button" id="paIconRegistryEditSave">Apply</button>
-        </div>
-      </div>`;
+      <div class="pa-icon-registry-grid pa-grid" id="paIconRegistryGrid" aria-live="polite"></div>`;
+  }
+  previewHtml(item) {
+    const inner = item.svg ? item.svg : renderIconHtml(item.key, { className: "pa-svg-icon" });
+    return `<div class="pa-icon-registry-thumb">${inner}</div>`;
+  }
+  normalizeThumbs(root) {
+    root?.querySelectorAll(".pa-icon-registry-thumb svg").forEach((svg) => {
+      svg.removeAttribute("width");
+      svg.removeAttribute("height");
+      if (!svg.getAttribute("viewBox")) {
+        const w = svg.getAttribute("width");
+        const h = svg.getAttribute("height");
+        if (w && h) svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      }
+      svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    });
   }
   async load() {
     const grid = $id("paIconRegistryGrid");
@@ -572,6 +649,7 @@ var IconRegistryManager = class {
       const data = await res.json();
       this.state = data.state || this.state;
       this.items = data.items || [];
+      this.syncViewToggle();
       this.renderList();
     } catch {
       if (grid) grid.innerHTML = '<p class="pa-text-mute">Could not load icon registry.</p>';
@@ -603,21 +681,43 @@ var IconRegistryManager = class {
     const count = $id("paIconRegistryCount");
     if (count) count.textContent = `${this.filtered.length} icon${this.filtered.length === 1 ? "" : "s"}`;
     if (!grid) return;
+    this.syncViewToggle();
     if (!this.filtered.length) {
-      grid.innerHTML = '<p class="pa-text-mute">No icons match your search.</p>';
+      grid.innerHTML = '<p class="pa-text-mute pa-icon-registry-empty">No icons match your search.</p>';
       return;
     }
+    const listMode = this.viewMode === "list";
     grid.innerHTML = this.filtered.map((item, index) => {
-      const preview = item.svg ? `<span class="pa-icon-registry-preview">${item.svg}</span>` : renderIconHtml(item.key, { className: "icon" });
-      return `<article class="pa-cat-card" data-icon-key="${escapeHtml(item.key)}">
-          <div class="pa-cat-card-top">
-            <span class="pa-cat-card-icon" aria-hidden="true">${preview}</span>
-            <div class="pa-cat-card-text">
-              <h3 class="pa-cat-card-title">${escapeHtml(item.label || item.key)}</h3>
-              <p class="pa-cat-card-meta"><code>${escapeHtml(item.key)}</code>${item.isCustom ? " \xB7 customized" : ""}</p>
+      const preview = this.previewHtml(item);
+      const badge = item.isCustom ? '<span class="pa-tag pa-icon-registry-tag">Custom</span>' : "";
+      if (listMode) {
+        return `<article class="pa-icon-registry-card pa-icon-registry-card--list" data-icon-key="${escapeHtml(item.key)}">
+            ${preview}
+            <div class="pa-icon-registry-card__main">
+              <div class="pa-icon-registry-card__title-row">
+                <h3 class="pa-icon-registry-card__title">${escapeHtml(item.label || item.key)}</h3>
+                ${badge}
+              </div>
+              <p class="pa-icon-registry-card__key"><code>${escapeHtml(item.key)}</code></p>
             </div>
+            <div class="pa-icon-registry-card__actions">
+              <button type="button" class="pa-btn pa-btn-secondary pa-btn-sm" data-act="up" data-idx="${index}" title="Move up"><i class="ri-arrow-up-line"></i></button>
+              <button type="button" class="pa-btn pa-btn-secondary pa-btn-sm" data-act="down" data-idx="${index}" title="Move down"><i class="ri-arrow-down-line"></i></button>
+              <button type="button" class="pa-btn pa-btn-secondary pa-btn-sm" data-act="edit" data-key="${escapeHtml(item.key)}">Edit</button>
+              <button type="button" class="pa-btn pa-btn-danger pa-btn-sm" data-act="delete" data-key="${escapeHtml(item.key)}">Hide</button>
+            </div>
+          </article>`;
+      }
+      return `<article class="pa-icon-registry-card" data-icon-key="${escapeHtml(item.key)}">
+          <div class="pa-icon-registry-card__preview-wrap">${preview}</div>
+          <div class="pa-icon-registry-card__body">
+            <div class="pa-icon-registry-card__title-row">
+              <h3 class="pa-icon-registry-card__title">${escapeHtml(item.label || item.key)}</h3>
+              ${badge}
+            </div>
+            <p class="pa-icon-registry-card__key"><code>${escapeHtml(item.key)}</code></p>
           </div>
-          <div class="pa-cat-card-actions">
+          <div class="pa-icon-registry-card__actions pa-icon-registry-card__actions--grid">
             <button type="button" class="pa-btn pa-btn-secondary pa-btn-sm" data-act="up" data-idx="${index}" title="Move up"><i class="ri-arrow-up-line"></i></button>
             <button type="button" class="pa-btn pa-btn-secondary pa-btn-sm" data-act="down" data-idx="${index}" title="Move down"><i class="ri-arrow-down-line"></i></button>
             <button type="button" class="pa-btn pa-btn-secondary pa-btn-sm" data-act="edit" data-key="${escapeHtml(item.key)}">Edit</button>
@@ -625,6 +725,7 @@ var IconRegistryManager = class {
           </div>
         </article>`;
     }).join("");
+    this.normalizeThumbs(grid);
     grid.querySelectorAll("button[data-act]").forEach((btn) => {
       btn.addEventListener("click", () => this.onCardAction(btn));
     });
@@ -672,8 +773,7 @@ var IconRegistryManager = class {
     this.renderList();
   }
   openEditor(key) {
-    const panel = $id("paIconRegistryEditPanel");
-    if (!panel) return;
+    this.ensureEditPanel();
     const isNew = !key;
     const item = isNew ? null : this.items.find((i) => i.key === key);
     $id("paIconRegistryEditTitle").textContent = isNew ? "Add icon" : "Edit icon";
@@ -681,43 +781,43 @@ var IconRegistryManager = class {
     $id("paIconRegistryEditKey").disabled = !isNew;
     $id("paIconRegistryEditLabel").value = item?.label || "";
     $id("paIconRegistryEditSvg").value = item?.svg || '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"></svg>';
-    panel.hidden = false;
-    const close = () => {
-      panel.hidden = true;
-    };
+    const close = () => closePanels();
     const closeBtn = $id("paIconRegistryEditClose");
     const cancelBtn = $id("paIconRegistryEditCancel");
     const saveBtn = $id("paIconRegistryEditSave");
     if (closeBtn) closeBtn.onclick = close;
     if (cancelBtn) cancelBtn.onclick = close;
-    if (saveBtn) saveBtn.onclick = () => {
-      const k = String($id("paIconRegistryEditKey")?.value || "").trim();
-      const label = String($id("paIconRegistryEditLabel")?.value || "").trim();
-      const svg = String($id("paIconRegistryEditSvg")?.value || "").trim();
-      if (!k || !/^si[A-Za-z0-9]+$/.test(k)) {
-        showToast("Key must start with si (e.g. siCloudflare).", "danger");
-        return;
-      }
-      if (!/^\s*<svg[\s\S]*<\/svg>\s*$/i.test(svg)) {
-        showToast("SVG must be a single <svg>\u2026</svg> element.", "danger");
-        return;
-      }
-      this.state.overrides = { ...this.state.overrides || {}, [k]: svg };
-      if (label) this.state.labels = { ...this.state.labels || {}, [k]: label };
-      this.state.removed = (this.state.removed || []).filter((r) => r !== k);
-      const existing = this.items.find((i) => i.key === k);
-      const row = {
-        key: k,
-        label: label || k,
-        svg,
-        isCustom: true,
-        isBuiltIn: !!existing?.isBuiltIn
+    if (saveBtn) {
+      saveBtn.onclick = () => {
+        const k = String($id("paIconRegistryEditKey")?.value || "").trim();
+        const label = String($id("paIconRegistryEditLabel")?.value || "").trim();
+        const svg = String($id("paIconRegistryEditSvg")?.value || "").trim();
+        if (!k || !/^si[A-Za-z0-9]+$/.test(k)) {
+          showToast("Key must start with si (e.g. siCloudflare).", "danger");
+          return;
+        }
+        if (!/^\s*<svg[\s\S]*<\/svg>\s*$/i.test(svg)) {
+          showToast("SVG must be a single <svg>\u2026</svg> element.", "danger");
+          return;
+        }
+        this.state.overrides = { ...this.state.overrides || {}, [k]: svg };
+        if (label) this.state.labels = { ...this.state.labels || {}, [k]: label };
+        this.state.removed = (this.state.removed || []).filter((r) => r !== k);
+        const existing = this.items.find((i) => i.key === k);
+        const row = {
+          key: k,
+          label: label || k,
+          svg,
+          isCustom: true,
+          isBuiltIn: !!existing?.isBuiltIn
+        };
+        if (existing) Object.assign(existing, row);
+        else this.items.push(row);
+        close();
+        this.renderList();
       };
-      if (existing) Object.assign(existing, row);
-      else this.items.push(row);
-      close();
-      this.renderList();
-    };
+    }
+    openPanel("paIconRegistryEditPanel");
   }
   async save() {
     showStatusToast("Saving icon registry\u2026", "info", 6e4);
@@ -3745,4 +3845,4 @@ var SettingsModule = class extends Module {
 export {
   SettingsModule
 };
-//# sourceMappingURL=SettingsModule-AH5KMIS4.js.map
+//# sourceMappingURL=SettingsModule-2QLRZEJA.js.map

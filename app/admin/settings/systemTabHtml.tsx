@@ -1,10 +1,12 @@
 // @ts-nocheck
 import { buildSystemEnvFormHtml } from './buildSystemEnvFormHtml';
+import { SYSTEM_SECTION_TOOLBAR_HTML } from './systemSectionToolbarHtml';
 
 const SYSTEM_ENV_FORM_HTML = buildSystemEnvFormHtml();
 
 export const SYSTEM_TAB_HTML = `
             <div class="pa-tab-panel" data-panel="settings" data-content="system">
+                <div class="pa-system-section-toolbar-wrap">${SYSTEM_SECTION_TOOLBAR_HTML}</div>
                 <div class="pa-tab-panel active" data-panel="system-section" data-content="database">
                 <section class="pa-bkp-section" id="systemBackupSection">
                     <div class="pa-bkp-layout">
