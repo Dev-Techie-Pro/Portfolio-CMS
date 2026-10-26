@@ -1,7 +1,3 @@
-import {
-  escapeHtml
-} from "./chunk-HFEWIT3P.js";
-
 // client/utils/icon-registry.ts
 var TECH_BRAND_ICONS = {
   siAcf: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" ><defs><linearGradient id="siAcf_acfBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17C6D6"/><stop offset="1" stop-color="#0A6BDC"/></linearGradient></defs><path d="M60 0H256V256H0V60Q0 54 4 50L50 4Q54 0 60 0Z" fill="url(#siAcf_acfBg)"/><g fill="#ffffff"><path fill-rule="evenodd" d="M45 140L68 93H93L117 140H96L91.500 130H70.500L66 140ZM76 116H86L81 104Z"/><path d="M160 93H213V106H176V114H206V126H176V140H160Z"/></g><path d="M143.300 106.200A16 16 0 1 0 143.300 126.800" fill="none" stroke="#ffffff" stroke-width="15"/></svg>',
@@ -217,6 +213,9 @@ var LEGACY_ICON_TO_REMIX = {
 };
 
 // client/utils/icon-registry-override.ts
+function escapeHtml(value) {
+  return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
 var ICON_OVERRIDE_REMIX_PREFIX = "@remix:";
 var ICON_OVERRIDE_IMAGE_PREFIX = "@img:";
 var REMIX_RE = /^ri-[a-z0-9][a-z0-9-]*$/;
@@ -334,4 +333,4 @@ export {
   renderIconHtml,
   renderIconPreviewHtml
 };
-//# sourceMappingURL=chunk-EM3TMBP5.js.map
+//# sourceMappingURL=chunk-M5TQFLRT.js.map

@@ -1,6 +1,6 @@
 import {
   open as open2
-} from "./chunk-4KJHPB7M.js";
+} from "./chunk-FOOLVRWH.js";
 import {
   open
 } from "./chunk-NGM67PQZ.js";
@@ -13,7 +13,7 @@ import {
   renderIconHtml,
   renderStoredIconMarkup,
   validateIconOverride
-} from "./chunk-EM3TMBP5.js";
+} from "./chunk-M5TQFLRT.js";
 import {
   renderPaCatCard
 } from "./chunk-GIH3II4S.js";
@@ -680,4 +680,4 @@ var IconRegistryModule = class extends Module {
 export {
   IconRegistryModule
 };
-//# sourceMappingURL=IconRegistryModule-GCZML5E2.js.map
+//# sourceMappingURL=IconRegistryModule-NAF4T26R.js.map

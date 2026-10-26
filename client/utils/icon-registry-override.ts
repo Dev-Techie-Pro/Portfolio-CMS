@@ -1,5 +1,12 @@
 // @ts-nocheck
-import { escapeHtml } from './dom.js';
+/** Server-safe (no dom.ts) — also imported from Next.js API routes via icon-registry-store. */
+function escapeHtml(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
 export const ICON_OVERRIDE_REMIX_PREFIX = '@remix:';
 export const ICON_OVERRIDE_IMAGE_PREFIX = '@img:';
