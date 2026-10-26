@@ -39,7 +39,25 @@ export function resolveActiveNav(path = window.location.pathname) {
   return null;
 }
 
+function syncSettingsSubNavActive(tab: string) {
+  document.querySelectorAll('.pa-nav-subitem[data-settings-tab]').forEach((item) => {
+    item.classList.toggle('active', item.dataset.settingsTab === tab);
+  });
+}
+
 export function syncSidebarActiveNav() {
+  const path = window.location.pathname;
+
+  if (path.includes('/admin/icon-registry')) {
+    document.querySelectorAll('.pa-nav-subitem[data-nav]').forEach((item) => {
+      item.classList.remove('active');
+    });
+    syncSettingsSubNavActive('icon-registry');
+    syncSidebarGroupNav();
+    syncSidebarRailActive();
+    return;
+  }
+
   const active = resolveActiveNav();
   if (!active) return;
 
@@ -47,11 +65,8 @@ export function syncSidebarActiveNav() {
     item.classList.toggle('active', item.dataset.nav === active);
   });
 
-  if (active === 'Settings' && window.location.pathname.includes('/admin/settings')) {
-    const tab = getSettingsTabFromPath();
-    document.querySelectorAll('.pa-nav-subitem[data-settings-tab]').forEach((item) => {
-      item.classList.toggle('active', item.dataset.settingsTab === tab);
-    });
+  if (active === 'Settings' && path.includes('/admin/settings')) {
+    syncSettingsSubNavActive(getSettingsTabFromPath());
   } else {
     document.querySelectorAll('.pa-nav-subitem[data-settings-tab]').forEach((item) => {
       item.classList.remove('active');

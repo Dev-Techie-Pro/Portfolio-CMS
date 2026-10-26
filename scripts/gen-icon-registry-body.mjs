@@ -57,10 +57,9 @@ const newToolbar = `<div class="pa-toolbar pa-cat-toolbar">
 html = html.slice(0, toolStart) + newToolbar + html.slice(toolEnd);
 html = html.replace('id="paProjTechGrid"', 'id="paIconRegistryGrid"');
 html = html.replace(/aria-label="Project technologies"/, 'aria-label="Icon registry"');
-html = html.replace(
-  /      <div class="pa-pagination" id="paProjTechPagination">[\s\S]*?      <\/div>\n    <\/div>\n  <\/div>\n<\/div>`;/,
-  '    </div>\n  </div>\n</div>`;',
-);
+html = html.replace('id="paProjTechPagination"', 'id="paIconRegistryPagination"');
+html = html.replace(/paProjTechPaginationBtns/g, 'paIconRegistryPaginationBtns');
+html = html.replace(/paProjTechPaginationInfo/g, 'paIconRegistryPaginationInfo');
 
 const outDir = path.join(root, 'app/admin/icon-registry');
 fs.mkdirSync(outDir, { recursive: true });

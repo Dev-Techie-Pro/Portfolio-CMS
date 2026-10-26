@@ -9,7 +9,7 @@ export class IconRegistryModule extends Module {
     super({
       name: 'Icon Manager',
       storageKey: 'pa_icon_registry_ui',
-      initialState: { viewMode: 'list' },
+      initialState: { viewMode: 'list', page: 1 },
     });
     this.manager = new IconRegistryManager();
   }
@@ -49,6 +49,7 @@ export class IconRegistryModule extends Module {
     if (searchInput) {
       this.on(searchInput, 'input', () => {
         this.manager.search = searchInput.value || '';
+        this.store.set('page', 1);
         $id('paSearchWrap')?.classList.toggle('has-value', !!searchInput.value);
         this.manager.renderList();
       });
@@ -57,6 +58,7 @@ export class IconRegistryModule extends Module {
       if (!searchInput) return;
       searchInput.value = '';
       this.manager.search = '';
+      this.store.set('page', 1);
       $id('paSearchWrap')?.classList.remove('has-value');
       this.manager.renderList();
     });

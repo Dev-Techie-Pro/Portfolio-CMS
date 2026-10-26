@@ -115,6 +115,10 @@ export const BODY_HTML = `<div class="pa-toast-wrap" id="paToastWrap" role="stat
       </div>
 
       <div class="pa-grid pa-cat-grid" id="paIconRegistryGrid" aria-live="polite" aria-label="Icon registry"></div>
+      <div class="pa-pagination" id="paIconRegistryPagination">
+        <div class="pa-pagination-btns" id="paIconRegistryPaginationBtns"></div>
+        <div class="pa-pagination-info" id="paIconRegistryPaginationInfo"></div>
+      </div>
     </div>
   </div>
 </div>`;

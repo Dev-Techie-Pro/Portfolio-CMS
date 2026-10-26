@@ -2146,6 +2146,7 @@ var ShellModule = class extends Module {
 
 // client/modules/shell/sidebarRailNav.ts
 var ROUTE_RAIL = [
+  ["/admin/icon-registry", "settings"],
   ["/admin/settings", "settings"],
   ["/admin/tool-categories", "tools"],
   ["/admin/technologies", "tools"],
@@ -2261,17 +2262,29 @@ function resolveActiveNav(path = window.location.pathname) {
   }
   return null;
 }
+function syncSettingsSubNavActive(tab) {
+  document.querySelectorAll(".pa-nav-subitem[data-settings-tab]").forEach((item) => {
+    item.classList.toggle("active", item.dataset.settingsTab === tab);
+  });
+}
 function syncSidebarActiveNav() {
+  const path = window.location.pathname;
+  if (path.includes("/admin/icon-registry")) {
+    document.querySelectorAll(".pa-nav-subitem[data-nav]").forEach((item) => {
+      item.classList.remove("active");
+    });
+    syncSettingsSubNavActive("icon-registry");
+    syncSidebarGroupNav();
+    syncSidebarRailActive();
+    return;
+  }
   const active = resolveActiveNav();
   if (!active) return;
   document.querySelectorAll(".pa-nav-subitem[data-nav]").forEach((item) => {
     item.classList.toggle("active", item.dataset.nav === active);
   });
-  if (active === "Settings" && window.location.pathname.includes("/admin/settings")) {
-    const tab = getSettingsTabFromPath();
-    document.querySelectorAll(".pa-nav-subitem[data-settings-tab]").forEach((item) => {
-      item.classList.toggle("active", item.dataset.settingsTab === tab);
-    });
+  if (active === "Settings" && path.includes("/admin/settings")) {
+    syncSettingsSubNavActive(getSettingsTabFromPath());
   } else {
     document.querySelectorAll(".pa-nav-subitem[data-settings-tab]").forEach((item) => {
       item.classList.remove("active");
@@ -7584,7 +7597,7 @@ async function loadPageModuleClass(page) {
     case "settings":
       return (await import("./chunks/SettingsModule-EFUZ7PDM.js")).SettingsModule;
     case "icon-registry":
-      return (await import("./chunks/IconRegistryModule-ZJQTKKFC.js")).IconRegistryModule;
+      return (await import("./chunks/IconRegistryModule-FSZATYLH.js")).IconRegistryModule;
     case "login":
       return (await import("./chunks/LoginModule-QCKE3QY7.js")).LoginModule;
     case "forgot-password":

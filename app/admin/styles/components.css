@@ -680,8 +680,8 @@ body.light .pa-body-loader__panel {
 }
 
 .pa-icon-registry-thumb {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -697,17 +697,17 @@ body.light .pa-body-loader__panel {
 .pa-icon-registry-thumb svg,
 .pa-icon-registry-thumb .pa-svg-icon svg,
 .pa-icon-registry-thumb .icon svg {
-  width: 60px !important;
-  height: 60px !important;
-  max-width: 60px !important;
-  max-height: 60px !important;
+  width: 40px !important;
+  height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
   display: block;
 }
 
 .pa-icon-registry-thumb .icon,
 .pa-icon-registry-thumb .pa-svg-icon {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;

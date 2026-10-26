@@ -15,7 +15,8 @@ import {
   renderListRowStart,
   renderListStatusCell,
   renderListTableShell,
-  renderListTextCell
+  renderListTextCell,
+  syncListPaginationChrome
 } from "./chunk-5C5ORR3Y.js";
 import {
   closeAllCardMenus,
@@ -47,6 +48,7 @@ import {
 import "./chunk-MTDZJ6X7.js";
 
 // client/modules/icon-registry/IconRegistryManager.ts
+var PAGE_SIZE = 12;
 var IconRegistryManager = class {
   constructor() {
     this.state = { overrides: {}, removed: [], labels: {}, sortOrder: [] };
@@ -65,6 +67,7 @@ var IconRegistryManager = class {
     this.ensureEditPanel();
     module.on($id("paIconRegistrySort"), "change", (e) => {
       this.sortMode = e.target.value || "label";
+      module.store.set("page", 1);
       this.renderList();
     });
     module.on($id("paIconRegistrySaveBtn"), "click", () => {
@@ -254,6 +257,63 @@ var IconRegistryManager = class {
       return (a.label || a.key).localeCompare(b.label || b.key);
     });
   }
+  getPageState() {
+    const totalItems = this.filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+    let page = this._module?.store?.get("page") ?? 1;
+    if (page > totalPages) page = totalPages;
+    if (page < 1) page = 1;
+    if (this._module && page !== this._module.store.get("page")) {
+      this._module.store.set("page", page);
+    }
+    const start = (page - 1) * PAGE_SIZE;
+    return { page, totalPages, totalItems, start, pageItems: this.filtered.slice(start, start + PAGE_SIZE) };
+  }
+  renderPagination(totalItems, totalPages, page) {
+    const btnsWrap = $id("paIconRegistryPaginationBtns");
+    const info = $id("paIconRegistryPaginationInfo");
+    const pagRoot = $id("paIconRegistryPagination");
+    if (!btnsWrap || !info) return;
+    syncListPaginationChrome(this.viewMode === "list" && totalItems > 0, pagRoot);
+    if (totalItems === 0) {
+      btnsWrap.innerHTML = "";
+      info.textContent = "Showing 0 of 0";
+      return;
+    }
+    let html = `<div class="pa-page-nav ${page === 1 ? "disabled" : ""}" id="paIconRegistryPagePrev" role="button" aria-label="Previous page"><i class="ri-arrow-left-s-line"></i></div>`;
+    let lastShown = 0;
+    for (let p = 1; p <= totalPages; p += 1) {
+      const show = p === 1 || p === totalPages || Math.abs(p - page) <= 1;
+      if (!show) continue;
+      if (p - lastShown > 1) {
+        html += '<span style="color:var(--pa-text-faint); padding:0 4px; font-size:12px;">\u2026</span>';
+      }
+      html += `<button class="pa-page-btn ${p === page ? "active" : ""}" data-page="${p}">${p}</button>`;
+      lastShown = p;
+    }
+    html += `<div class="pa-page-nav ${page === totalPages ? "disabled" : ""}" id="paIconRegistryPageNext" role="button" aria-label="Next page"><i class="ri-arrow-right-s-line"></i></div>`;
+    btnsWrap.innerHTML = html;
+    const startN = (page - 1) * PAGE_SIZE + 1;
+    const endN = Math.min(page * PAGE_SIZE, totalItems);
+    info.textContent = `Showing ${startN} to ${endN} of ${totalItems}`;
+    const goPage = (nextPage) => {
+      if (!this._module) return;
+      this._module.store.set("page", nextPage);
+      this.renderList();
+      $id("paIconRegistryBody")?.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    btnsWrap.querySelectorAll(".pa-page-btn").forEach((btn) => {
+      btn.addEventListener("click", () => goPage(parseInt(btn.getAttribute("data-page") ?? "", 10)));
+    });
+    const prevBtn = $id("paIconRegistryPagePrev");
+    const nextBtn = $id("paIconRegistryPageNext");
+    if (prevBtn && !prevBtn.classList.contains("disabled")) {
+      prevBtn.addEventListener("click", () => goPage(page - 1));
+    }
+    if (nextBtn && !nextBtn.classList.contains("disabled")) {
+      nextBtn.addEventListener("click", () => goPage(page + 1));
+    }
+  }
   renderList() {
     const q = this.search.trim().toLowerCase();
     this.filtered = this.sortItems(
@@ -266,19 +326,22 @@ var IconRegistryManager = class {
     if (count) count.textContent = `${this.filtered.length} icon${this.filtered.length === 1 ? "" : "s"}`;
     if (!grid) return;
     this.syncViewToggle();
+    const { page, totalPages, totalItems, start, pageItems } = this.getPageState();
     if (!this.filtered.length) {
       grid.innerHTML = '<p class="pa-text-mute pa-icon-registry-empty">No icons match your search.</p>';
+      this.renderPagination(0, 1, 1);
       return;
     }
     const listMode = this.viewMode === "list";
     if (listMode) {
-      const rows = this.filtered.map((item, index) => this.renderListRow(item, index + 1, index)).join("");
+      const rows = pageItems.map((item, i) => this.renderListRow(item, start + i + 1, start + i)).join("");
       grid.innerHTML = renderListTableShell(this.getListTableColumns(), rows);
     } else {
-      grid.innerHTML = this.filtered.map((item, index) => this.renderGridCard(item, index)).join("");
+      grid.innerHTML = pageItems.map((item, i) => this.renderGridCard(item, start + i)).join("");
     }
     this.normalizeThumbs(grid);
     this.attachActionListeners(grid);
+    this.renderPagination(totalItems, totalPages, page);
   }
   onCardAction(btn) {
     const act = btn.getAttribute("data-act");
@@ -396,7 +459,7 @@ var IconRegistryModule = class extends Module {
     super({
       name: "Icon Manager",
       storageKey: "pa_icon_registry_ui",
-      initialState: { viewMode: "list" }
+      initialState: { viewMode: "list", page: 1 }
     });
     this.manager = new IconRegistryManager();
   }
@@ -432,6 +495,7 @@ var IconRegistryModule = class extends Module {
     if (searchInput) {
       this.on(searchInput, "input", () => {
         this.manager.search = searchInput.value || "";
+        this.store.set("page", 1);
         $id("paSearchWrap")?.classList.toggle("has-value", !!searchInput.value);
         this.manager.renderList();
       });
@@ -440,6 +504,7 @@ var IconRegistryModule = class extends Module {
       if (!searchInput) return;
       searchInput.value = "";
       this.manager.search = "";
+      this.store.set("page", 1);
       $id("paSearchWrap")?.classList.remove("has-value");
       this.manager.renderList();
     });
@@ -448,4 +513,4 @@ var IconRegistryModule = class extends Module {
 export {
   IconRegistryModule
 };
-//# sourceMappingURL=IconRegistryModule-ZJQTKKFC.js.map
+//# sourceMappingURL=IconRegistryModule-FSZATYLH.js.map

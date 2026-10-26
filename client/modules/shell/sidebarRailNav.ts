@@ -2,6 +2,7 @@
 import { hideNavFlyout, isSidebarCollapsedDesktop, showNavFlyout } from './sidebarCollapse.js';
 
 const ROUTE_RAIL: [string, string][] = [
+  ['/admin/icon-registry', 'settings'],
   ['/admin/settings', 'settings'],
   ['/admin/tool-categories', 'tools'],
   ['/admin/technologies', 'tools'],
