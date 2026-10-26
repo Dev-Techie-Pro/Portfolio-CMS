@@ -25,10 +25,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <a href="/testimonials" class="nav-link">Testimonials</a>
           </nav>
           <div class="nav-right-btns">
-            <a href="/contact" class="nav-cta"> Hire Me <span class="icon" data-icon="siArrowTilt"></span>
+            <a href="/contact" class="nav-cta"> Hire Me <span class="icon" data-icon="ri-arrow-right-up-line"></span>
             </a>
             <a href="#0" class="btn btn-outline" id="customizeBtn" aria-label="Customize" aria-expanded="false" aria-controls="customizePanel">
-              <span class="icon" data-icon="siTheme"></span>
+              <span class="icon" data-icon="ri-palette-line"></span>
             </a>
           </div>
         </div>
@@ -59,7 +59,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </div>
             <div class="stat-item">
               <div class="stat-icon pink">
-                <span class="icon" data-icon="siRocket"></span>
+                <span class="icon" data-icon="ri-rocket-line"></span>
               </div>
               <div>
                 <div class="stat-num">50+</div>
@@ -68,7 +68,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </div>
             <div class="stat-item">
               <div class="stat-icon blue">
-                <span class="icon" data-icon="siUsers"></span>
+                <span class="icon" data-icon="ri-group-line"></span>
               </div>
               <div>
                 <div class="stat-num">100+</div>
@@ -77,7 +77,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </div>
             <div class="stat-item">
               <div class="stat-icon green">
-                <span class="icon" data-icon="siCode"></span>
+                <span class="icon" data-icon="ri-code-line"></span>
               </div>
               <div>
                 <div class="stat-num">3+</div>
@@ -88,11 +88,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="exp-hero-cta-row">
             <a href="#gallery" class="si-btn si-btn-primary">
               Explore All Projects
-              <span class="icon" data-icon="siArrowRight"></span>
+              <span class="icon" data-icon="ri-arrow-right-line"></span>
             </a>
             <a href="/contact" class="btn btn-outline" >
               Hire Me
-              <span class="icon" data-icon="siArrowRight"></span>
+              <span class="icon" data-icon="ri-arrow-right-line"></span>
             </a>
           </div>
         </div>
@@ -111,11 +111,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <img src="https://res.cloudinary.com/dpx3gst4q/image/upload/f_auto,q_auto,w_800/v1782254073/al-tahaluf-banner_p0ltyp.png" alt="Al Tahaluf preview" loading="lazy">
               </div>
               <div class="tech-tags"><span>MySQL</span><span>Chart.js</span><span>ACF</span><span>WordPress</span></div>
-              <div class="case-link">View Case Study <span class="arrow-circle"><span class="icon" data-icon="siArrowRight"></span></span></div>
+              <div class="case-link">View Case Study <span class="arrow-circle"><span class="icon" data-icon="ri-arrow-right-line"></span></span></div>
             </div>
             <div class="proj-card" data-tilt>
               <span class="badge">
-                <span class="icon" data-icon="siStarfill"></span>
+                <span class="icon" data-icon="ri-star-fill"></span>
                 Featured Project
               </span>
               <h4>Portfolio Dashboard</h4>
@@ -124,7 +124,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <img src="https://res.cloudinary.com/dpx3gst4q/image/upload/f_auto,q_auto,w_800/v1783687024/portfolio-dashboard-banner_vaesjk.png" alt="Portfolio dashboard preview" loading="lazy">
               </div>
               <div class="tech-tags"><span>Next.js</span><span>TypeScript</span><span>MongoDB</span></div>
-              <div class="case-link">View Case Study <span class="arrow-circle"><span class="icon" data-icon="siArrowRight"></span></span></div>
+              <div class="case-link">View Case Study <span class="arrow-circle"><span class="icon" data-icon="ri-arrow-right-line"></span></span></div>
             </div>
             <div class="proj-card" data-tilt>
               <span class="badge">Project</span>
@@ -134,7 +134,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <img src="https://res.cloudinary.com/dpx3gst4q/image/upload/f_auto,q_auto,w_800/v1782254092/simplicity-banner_warjhz.png" alt="Simplicity Trading preview" loading="lazy">
               </div>
               <div class="tech-tags"><span>WordPress</span><span>WooCommerce</span><span>PHP</span><span>MySQL</span></div>
-              <div class="case-link">View Case Study <span class="arrow-circle"><span class="icon" data-icon="siArrowRight"></span></span></div>
+              <div class="case-link">View Case Study <span class="arrow-circle"><span class="icon" data-icon="ri-arrow-right-line"></span></span></div>
             </div>
           </div>
           <div class="scroll-cue">
@@ -148,7 +148,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
       <div class="container">
         <div class="pf-topbar">
           <div class="pf-search">
-            <span class="icon" data-icon="siSearch"></span>
+            <span class="icon" data-icon="ri-search-line"></span>
             <input type="text" id="pfSearchInput" class="pf-search-input" placeholder="Search projects..." aria-label="Search projects" />
             <kbd class="pf-kbd">Ctrl K</kbd>
           </div>
@@ -156,7 +156,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="pf-dropdown" data-dropdown="category">
             <button class="pf-dropdown-btn" type="button" id="pfDropdownBtnCategory" aria-haspopup="listbox" aria-expanded="false" aria-controls="pfDropdownMenuCategory">
               <span class="pf-dropdown-label" id="pfDropdownLabelCategory">All Categories</span>
-              <span class="icon" data-icon="siChevronDown"></span>
+              <span class="icon" data-icon="ri-arrow-down-s-line"></span>
             </button>
             <ul class="pf-dropdown-menu" id="pfDropdownMenuCategory" role="listbox" aria-label="Filter by category">
               <li role="option" data-value="all" aria-selected="true">All Categories</li>
@@ -173,7 +173,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="pf-dropdown" data-dropdown="technology">
             <button class="pf-dropdown-btn" type="button" id="pfDropdownBtnTechnology" aria-haspopup="listbox" aria-expanded="false" aria-controls="pfDropdownMenuTechnology">
               <span class="pf-dropdown-label" id="pfDropdownLabelTechnology">All Technologies</span>
-              <span class="icon" data-icon="siChevronDown"></span>
+              <span class="icon" data-icon="ri-arrow-down-s-line"></span>
             </button>
             <ul class="pf-dropdown-menu" id="pfDropdownMenuTechnology" role="listbox" aria-label="Filter by technology">
               <li role="option" data-value="all" aria-selected="true">All Technologies</li>
@@ -198,7 +198,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="pf-dropdown" data-dropdown="industry">
             <button class="pf-dropdown-btn" type="button" id="pfDropdownBtnIndustry" aria-haspopup="listbox" aria-expanded="false" aria-controls="pfDropdownMenuIndustry">
               <span class="pf-dropdown-label" id="pfDropdownLabelIndustry">All Industries</span>
-              <span class="icon" data-icon="siChevronDown"></span>
+              <span class="icon" data-icon="ri-arrow-down-s-line"></span>
             </button>
             <ul class="pf-dropdown-menu" id="pfDropdownMenuIndustry" role="listbox" aria-label="Filter by industry">
               <li role="option" data-value="all" aria-selected="true">All Industries</li>
@@ -213,7 +213,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="pf-dropdown" data-dropdown="platform">
             <button class="pf-dropdown-btn" type="button" id="pfDropdownBtnPlatform" aria-haspopup="listbox" aria-expanded="false" aria-controls="pfDropdownMenuPlatform">
               <span class="pf-dropdown-label" id="pfDropdownLabelPlatform">All Platforms</span>
-              <span class="icon" data-icon="siChevronDown"></span>
+              <span class="icon" data-icon="ri-arrow-down-s-line"></span>
             </button>
             <ul class="pf-dropdown-menu" id="pfDropdownMenuPlatform" role="listbox" aria-label="Filter by platform">
               <li role="option" data-value="all" aria-selected="true">All Platforms</li>
@@ -224,7 +224,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
 
           <button class="pf-more-filters" type="button" id="pfMoreFiltersBtn" aria-label="More filters" aria-pressed="false">
-            <span class="icon" data-icon="siFilters"></span>
+            <span class="icon" data-icon="ri-filter-3-line"></span>
             More Filters
           </button>
         </div>
@@ -238,13 +238,13 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <div class="pf-panel-head">
                 <span class="pf-panel-title">Filters</span>
                 <button class="pf-clear-all" type="button" id="pfClearAll">Clear All
-                  <span class="icon" data-icon="siRefresh"></span>
+                  <span class="icon" data-icon="ri-refresh-line"></span>
                 </button>
               </div>
               <div class="pf-group">
                 <button class="pf-group-head" type="button" aria-expanded="true" data-collapse-target="pfCategoryList">
                   <span>Category</span>
-                  <span class="icon" data-icon="siChevronDown"></span>
+                  <span class="icon" data-icon="ri-arrow-down-s-line"></span>
                 </button>
                 <div class="pf-group-body" id="pfCategoryList">
                   <label class="pf-check">
@@ -299,7 +299,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <div class="pf-group">
                 <button class="pf-group-head" type="button" aria-expanded="true" data-collapse-target="pfTechList">
                   <span>Technologies</span>
-                  <span class="icon" data-icon="siChevronDown"></span>
+                  <span class="icon" data-icon="ri-arrow-down-s-line"></span>
                 </button>
                 <div class="pf-group-body" id="pfTechList">
                   <label class="pf-check">
@@ -400,7 +400,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <div class="pf-group">
                 <button class="pf-group-head" type="button" aria-expanded="false" data-collapse-target="pfIndustryList">
                   <span>Industry</span>
-                  <span class="icon" data-icon="siChevronDown"></span>
+                  <span class="icon" data-icon="ri-arrow-down-s-line"></span>
                 </button>
                 <div class="pf-group-body pf-collapsed" id="pfIndustryList">
                   <label class="pf-check">
@@ -432,7 +432,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <div class="pf-group">
                 <button class="pf-group-head" type="button" aria-expanded="true" data-collapse-target="pfStatusList">
                   <span>Project Status</span>
-                  <span class="icon" data-icon="siChevronDown"></span>
+                  <span class="icon" data-icon="ri-arrow-down-s-line"></span>
                 </button>
                 <div class="pf-group-body" id="pfStatusList">
                   <label class="pf-check">
@@ -458,7 +458,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <div class="pf-group">
                 <button class="pf-group-head" type="button" aria-expanded="true" data-collapse-target="pfClientList">
                   <span>Client Type</span>
-                  <span class="icon" data-icon="siChevronDown"></span>
+                  <span class="icon" data-icon="ri-arrow-down-s-line"></span>
                 </button>
                 <div class="pf-group-body" id="pfClientList">
                   <label class="pf-check">
@@ -484,7 +484,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <div class="pf-group">
                 <button class="pf-group-head" type="button" aria-expanded="true" data-collapse-target="pfYearRange">
                   <span>Year</span>
-                  <span class="icon" data-icon="siChevronDown"></span>
+                  <span class="icon" data-icon="ri-arrow-down-s-line"></span>
                 </button>
                 <div class="pf-group-body" id="pfYearRange">
                   <div class="pf-year-labels">
@@ -496,7 +496,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
 
               <button class="pf-reset-btn" type="button" id="pfResetFilters">
-                <span class="icon" data-icon="siRefresh"></span>
+                <span class="icon" data-icon="ri-refresh-line"></span>
                 Reset Filters
               </button>
             </div>
@@ -530,24 +530,24 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pf-panel-title">Quick Links</span>
               <nav class="pf-quicklinks" aria-label="Quick links">
                 <a href="#gallery" class="pf-quicklink" data-quick-filter="featured">
-                  <span class="icon" data-icon="siStar"></span>
+                  <span class="icon" data-icon="ri-star-line"></span>
                   Featured Projects
-                  <span class="icon" data-icon="siArrowRight"></span>
+                  <span class="icon" data-icon="ri-arrow-right-line"></span>
                 </a>
                 <a href="#gallery" class="pf-quicklink" data-quick-filter="case-studies">
-                  <span class="icon" data-icon="siFile"></span>
+                  <span class="icon" data-icon="ri-file-line"></span>
                   Case Studies
-                  <span class="icon" data-icon="siArrowRight"></span>
+                  <span class="icon" data-icon="ri-arrow-right-line"></span>
                 </a>
                 <a href="#gallery" class="pf-quicklink" data-quick-filter="all">
-                  <span class="icon" data-icon="siApps"></span>
+                  <span class="icon" data-icon="ri-apps-line"></span>
                   All Projects
-                  <span class="icon" data-icon="siArrowRight"></span>
+                  <span class="icon" data-icon="ri-arrow-right-line"></span>
                 </a>
                 <a href="/testimonials" class="pf-quicklink">
-                  <span class="icon" data-icon="siUser"></span>
+                  <span class="icon" data-icon="ri-user-line"></span>
                   Client Reviews
-                  <span class="icon" data-icon="siArrowRight"></span>
+                  <span class="icon" data-icon="ri-arrow-right-line"></span>
                 </a>
               </nav>
             </div>
@@ -561,15 +561,15 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <div class="pg-toolbar-right">
                 <div class="pg-view-toggle" role="group" aria-label="Gallery view mode">
                   <button class="pg-view-btn active" type="button" data-view="grid" aria-pressed="true">
-                    <span class="icon" data-icon="siApps"></span>
+                    <span class="icon" data-icon="ri-apps-line"></span>
                     Grid
                   </button>
                   <button class="pg-view-btn" type="button" data-view="list" aria-pressed="false">
-                    <span class="icon" data-icon="siBars"></span>
+                    <span class="icon" data-icon="ri-menu-line"></span>
                     List
                   </button>
                   <button class="pg-view-btn" type="button" data-view="masonry" aria-pressed="false">
-                    <span class="icon" data-icon="siMansnory"></span>
+                    <span class="icon" data-icon="ri-layout-masonry-line"></span>
                     Masonry
                   </button>
                 </div>
@@ -583,10 +583,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                   </select>
                 </div>
                 <button class="pg-icon-btn" type="button" id="pfRefreshBtn" aria-label="Refresh results">
-                  <span class="icon" data-icon="siRefresh"></span>
+                  <span class="icon" data-icon="ri-refresh-line"></span>
                 </button>
                 <button class="pg-icon-btn" type="button" id="pfExportBtn" aria-label="Export results">
-                  <span class="icon" data-icon="siDownload"></span>
+                  <span class="icon" data-icon="ri-download-line"></span>
                 </button>
               </div>
             </div>
@@ -598,7 +598,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">01</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -612,7 +612,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">SQL Server</span>
                 <span class="pg-tag">Entity Framework</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -623,7 +623,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">02</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -637,7 +637,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">JavaScript</span>
                 <span class="pg-tag">MySQL</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -648,7 +648,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">03</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -662,7 +662,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">SQL Server</span>
                 <span class="pg-tag">C#</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -673,7 +673,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">04</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -687,7 +687,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">Bootstrap</span>
                 <span class="pg-tag">JavaScript</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -698,7 +698,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">05</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -712,7 +712,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">PHP</span>
                 <span class="pg-tag">WooCommerce</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -723,7 +723,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">06</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -737,7 +737,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">MongoDB</span>
                 <span class="pg-tag">REST API</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -748,7 +748,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">07</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -762,7 +762,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">SQL Server</span>
                 <span class="pg-tag">Admin Panel</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -773,7 +773,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">08</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -787,7 +787,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">PHP</span>
                 <span class="pg-tag">MySQL</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -798,7 +798,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">09</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -814,7 +814,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">JavaScript</span>
                 <span class="pg-tag">MySQL</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -825,7 +825,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">10</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -841,7 +841,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">JavaScript</span>
                 <span class="pg-tag">MySQL</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -852,7 +852,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">11</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -867,7 +867,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">JSON</span>
                 <span class="pg-tag">Responsive</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -878,7 +878,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">12</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -893,7 +893,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">Page Builders</span>
                 <span class="pg-tag">Custom Development</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -904,7 +904,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">13</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -920,7 +920,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">REST API</span>
                 <span class="pg-tag">Security</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -931,7 +931,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">14</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -947,7 +947,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">REST API</span>
                 <span class="pg-tag">Database</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -958,7 +958,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">15</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -974,7 +974,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">Crystal Reports</span>
                 <span class="pg-tag">Visual Studio</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -985,7 +985,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">16</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -1003,7 +1003,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">POS</span>
                 <span class="pg-tag">Inventory Management</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -1014,7 +1014,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-num">17</span>
               <div class="pg-overlay" aria-hidden="true">
                 <div class="pg-overlay-icon">
-                  <span class="icon" data-icon="siExternalLink"></span>
+                  <span class="icon" data-icon="ri-external-link-line"></span>
                 </div>
               </div>
             </div>
@@ -1030,7 +1030,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 <span class="pg-tag">Reports</span>
                 <span class="pg-tag">Transaction Control</span>
               </div>
-              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/project-details" class="pg-link"> View Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </article>
@@ -1041,11 +1041,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <span class="pg-pagination-info" id="pfPaginationInfo">Showing 1 to 12 of 17 projects</span>
               <div class="pg-pagination-controls" id="pfPaginationControls">
                 <button class="pg-page-arrow" type="button" id="pfPagePrev" aria-label="Previous page">
-                  <span class="icon" data-icon="siAngleLeft"></span>
+                  <span class="icon" data-icon="ri-arrow-left-s-line"></span>
                 </button>
                 <button class="pg-page-num active" type="button" data-page="1" aria-current="page">1</button>
                 <button class="pg-page-arrow" type="button" id="pfPageNext" aria-label="Next page">
-                  <span class="icon" data-icon="siAngleRight"></span>
+                  <span class="icon" data-icon="ri-arrow-right-s-line"></span>
                 </button>
               </div>
               <div class="pg-pagination-show">
@@ -1082,7 +1082,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <p class="cta-sub">Let's collaborate and build something amazing together.</p>
             </div>
             <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:2.5rem;">
-              <a href="/contact" class="si-btn si-btn-primary"> Start a Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/contact" class="si-btn si-btn-primary"> Start a Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </div>
@@ -1113,11 +1113,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <div class="brand-rule" aria-hidden="true"></div>
             <div class="footer-cta-card">
               <div class="footer-cta-icon" aria-hidden="true">
-                <span class="icon" data-icon="siSend"></span>
+                <span class="icon" data-icon="ri-send-plane-line"></span>
               </div>
               <h3 class="footer-cta-title">Let's work together</h3>
               <p class="footer-cta-text">Have a project in mind or just want to say hi? I'd love to hear from you.</p>
-              <a href="/contact" class="footer-cta-button"> Get In Touch <span class="icon" data-icon="siArrowTilt"></span>
+              <a href="/contact" class="footer-cta-button"> Get In Touch <span class="icon" data-icon="ri-arrow-right-up-line"></span>
               </a>
             </div>
           </div>
@@ -1182,7 +1182,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-contact-list">
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siPhone"></span>
+                  <span class="icon" data-icon="ri-phone-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="tel:+15551234567">+92 3038464315</a>
@@ -1191,7 +1191,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siEnvelope"></span>
+                  <span class="icon" data-icon="ri-mail-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="mailto:engineer.sohaibishaque@gmail.com">engineer.sohaibishaque@gmail.com</a>
@@ -1200,7 +1200,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siLocationPin"></span>
+                  <span class="icon" data-icon="ri-map-pin-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <span class="contact-static">Rawalpindi, Pakistan</span>
@@ -1211,22 +1211,22 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-social-list" aria-label="Social media links">
               <li>
                 <a href="https://github.com/Sohaib-Ishaque" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siGithub"></span>
+                  <span class="icon" data-icon="ri-github-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siLinkedin"></span>
+                  <span class="icon" data-icon="ri-linkedin-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://twitter.com/" class="social-icon" aria-label="Twitter / X" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siXcom"></span>
+                <span class="icon" data-icon="ri-twitter-x-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://instagram.com/" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siInstagram"></span>
+                <span class="icon" data-icon="ri-instagram-line"></span>
                 </a>
               </li>
             </ul>
@@ -1241,7 +1241,7 @@ ${SITE_FOOTER_NEWSLETTER_HTML}
             <span class="code-icon" aria-hidden="true">&lt;/&gt;</span>
             <span>Designed &amp; Built by <span class="accent">M Sohaib Ishaque</span>
             </span>
-            <span class="icon" data-icon="siHeart"></span>
+            <span class="icon" data-icon="ri-heart-line"></span>
           </div>
           <div class="bottom-center"> &copy; 2025 <span class="accent">M Sohaib Ishaque</span>. All rights reserved. </div>
         </div>

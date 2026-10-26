@@ -4,7 +4,7 @@ export class BackToTop {
   static markup() {
     return `
       <button class="back-top" aria-label="Back to top">
-        <span class="icon" data-icon="siArrowUp"></span>
+        <span class="icon" data-icon="ri-arrow-up-line"></span>
       </button>`;
   }
 

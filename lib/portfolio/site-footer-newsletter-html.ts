@@ -3,7 +3,7 @@ export const SITE_FOOTER_NEWSLETTER_HTML = `
             <div class="footer-newsletter" id="footerNewsletter">
               <div class="footer-newsletter-head">
                 <span class="footer-newsletter-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siEnvelope"></span>
+                  <span class="icon" data-icon="ri-mail-line"></span>
                 </span>
                 <h4 class="footer-newsletter-title">Newsletter</h4>
               </div>

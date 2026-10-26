@@ -313,11 +313,11 @@
         });
         card.addEventListener("click", () => scrollToIndex(i));
         card.addEventListener("keydown", (e) => {
-          if (e.key === "siArrowRight" || e.key === "ArrowDown") {
+          if (e.key === "ArrowRight" || e.key === "ArrowDown") {
             e.preventDefault();
             scrollToIndex(Math.min(cards.length - 1, i + 1));
             cards[Math.min(cards.length - 1, i + 1)].focus();
-          } else if (e.key === "siAngleLeft" || e.key === "siArrowUp") {
+          } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
             e.preventDefault();
             scrollToIndex(Math.max(0, i - 1));
             cards[Math.max(0, i - 1)].focus();

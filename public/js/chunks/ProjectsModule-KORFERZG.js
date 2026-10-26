@@ -4,12 +4,12 @@ import {
   ProjectsModule,
   SEED_PROJECTS,
   pickSceneForCategory
-} from "./chunk-FUNGRKUP.js";
+} from "./chunk-B2JHSNKC.js";
 import "./chunk-ZSETD5SA.js";
 import "./chunk-RUYB3ZSS.js";
 import "./chunk-HT4C2QOZ.js";
 import "./chunk-HYF3MIUV.js";
-import "./chunk-XZ5R2AN2.js";
+import "./chunk-IIION6EB.js";
 import "./chunk-2XY7RIAB.js";
 import "./chunk-IBKEZKLB.js";
 import "./chunk-JFWNZ4BR.js";
@@ -35,4 +35,4 @@ export {
   SEED_PROJECTS,
   pickSceneForCategory
 };
-//# sourceMappingURL=ProjectsModule-ODSTJW4W.js.map
+//# sourceMappingURL=ProjectsModule-KORFERZG.js.map

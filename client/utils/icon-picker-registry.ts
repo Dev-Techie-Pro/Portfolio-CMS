@@ -29,7 +29,6 @@ function builtInRegistryIcons() {
     }));
 }
 
-/** Remix Icon (`ri-*`) plus built-in `icon-registry` keys for the admin icon picker. */
 export async function loadRegistry() {
   const [remix, builtIn] = await Promise.all([
     loadRemixRegistry(),

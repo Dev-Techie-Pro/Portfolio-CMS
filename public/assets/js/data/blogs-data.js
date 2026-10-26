@@ -125,10 +125,10 @@ function _renderHeroStatItem(item) {
 
 function _defaultHeroStats(post) {
   return [
-    { value: "5", label: "Key sections", icon: "siGrid" },
-    { value: post.readTime || "8 min", label: "Estimated read", icon: "siClock" },
-    { value: "100%", label: "Production ready", icon: "siShield" },
-    { value: "99.9%", label: "Reliability target", icon: "siTrending" },
+    { value: "5", label: "Key sections", icon: "ri-grid-line" },
+    { value: post.readTime || "8 min", label: "Estimated read", icon: "ri-time-line" },
+    { value: "100%", label: "Production ready", icon: "ri-shield-line" },
+    { value: "99.9%", label: "Reliability target", icon: "ri-trending-up-line" },
   ];
 }
 
@@ -331,7 +331,7 @@ function _renderCheckList(items, itemClass = "") {
     .map((item) => {
       const { text, className } = _checkListItemParts(item, itemClass);
       const cls = className ? ` class="${className}"` : "";
-      return `<li${cls}>${_iconHtml("siCheckmark")}${text}</li>`;
+      return `<li${cls}>${_iconHtml("ri-check-line")}${text}</li>`;
     })
     .join("")}</ul>`;
 }
@@ -584,23 +584,23 @@ function _renderArticleFooter(post) {
           aria-label="Like this article"
           hidden
         >
-          <span class="icon" data-icon="siHeart"></span>
+          <span class="icon" data-icon="ri-heart-line"></span>
           <span class="bd-like-count" id="bdLikeCount">0</span>
           <span class="bd-like-label">Like</span>
         </button>
       <div class="share-row">
         <span class="share-label">Share this article</span>
         <a href="#" class="share-btn" aria-label="Share on Twitter" data-share="twitter">
-          ${_iconHtml("siXcom")}
+          ${_iconHtml("ri-twitter-x-fill")}
         </a>
         <a href="#" class="share-btn" aria-label="Share on LinkedIn" data-share="linkedin">
-          ${_iconHtml("siLinkedin")}
+          ${_iconHtml("ri-linkedin-fill")}
         </a>
         <a href="#" class="share-btn" aria-label="Share on Facebook" data-share="facebook">
-          ${_iconHtml("siFacebook")}
+          ${_iconHtml("ri-facebook-fill")}
         </a>
         <a href="#" class="share-btn" aria-label="Copy link" data-share="copy">
-          ${_iconHtml("siLink")}
+          ${_iconHtml("ri-link")}
         </a>
       </div>
       </div>
@@ -731,7 +731,7 @@ function _renderGalleryCard(post) {
         />
         <div class="pg-overlay" aria-hidden="true">
           <div class="pg-overlay-icon">
-            ${_iconHtml("siExternalLink")}
+            ${_iconHtml("ri-external-link-line")}
           </div>
         </div>
       </div>
@@ -740,7 +740,7 @@ function _renderGalleryCard(post) {
         <p class="pg-category">${_categoryLabel(post.category)}</p>
         <p class="pg-desc">${post.excerpt}</p>
         <a href="${_blogUrl(post.id)}" class="pg-link">
-          Read article ${_iconHtml("siArrowRight")}
+          Read article ${_iconHtml("ri-arrow-right-line")}
         </a>
       </div>
     </article>`;
@@ -772,7 +772,7 @@ function _renderRecentItem(post) {
             <time datetime="${post.date}">${post.dateLabel}</time>
             <span>${post.readTime}</span>
           </div>
-          <span class="blog-feat-read">Read More ${_iconHtml("siArrowRight")}</span>
+          <span class="blog-feat-read">Read More ${_iconHtml("ri-arrow-right-line")}</span>
         </div>
       </div>
     </a>`;
@@ -832,7 +832,7 @@ function _renderHomeBlogCard(post) {
         <p class="blog-card-excerpt">${post.excerpt}</p>
         <a href="${_blogUrl(post.id)}" class="blog-card-read" aria-label="Read more: ${post.title}">
           Read More
-          ${_iconHtml("siArrowRight")}
+          ${_iconHtml("ri-arrow-right-line")}
         </a>
       </div>
     </article>`;
@@ -847,7 +847,7 @@ function _renderRelatedGridCard(post) {
       <span class="blog-post-category">${post.category}</span>
       <h3 class="bd-related-grid-title">${post.title}</h3>
       <span class="bd-related-grid-meta">${post.dateLabel}</span>
-      <span class="bd-related-grid-arrow" aria-hidden="true">${_iconHtml("siArrowRight")}</span>
+      <span class="bd-related-grid-arrow" aria-hidden="true">${_iconHtml("ri-arrow-right-line")}</span>
     </a>`;
 }
 
@@ -1133,7 +1133,7 @@ function _refreshSkeleton(root) {
               const p = window.Portfolio.BLOGS[post.prevBlog.id];
               return `
             <a href="${_blogUrl(post.prevBlog.id)}" class="bd-post-nav-card">
-              <div class="bd-post-nav-arrow" aria-hidden="true">${_iconHtml("siAngleLeft")}</div>
+              <div class="bd-post-nav-arrow" aria-hidden="true">${_iconHtml("ri-arrow-left-s-line")}</div>
               <div class="bd-post-nav-thumb"><img src="${_thumbUrl(p.image)}" alt="" loading="lazy" /></div>
               <div>
                 <span class="bd-post-nav-label">Previous Article</span>
@@ -1147,7 +1147,7 @@ function _refreshSkeleton(root) {
               const n = window.Portfolio.BLOGS[post.nextBlog.id];
               return `
             <a href="${_blogUrl(post.nextBlog.id)}" class="bd-post-nav-card bd-post-nav-card--next">
-              <div class="bd-post-nav-arrow" aria-hidden="true">${_iconHtml("siAngleRight")}</div>
+              <div class="bd-post-nav-arrow" aria-hidden="true">${_iconHtml("ri-arrow-right-s-line")}</div>
               <div class="bd-post-nav-thumb"><img src="${_thumbUrl(n.image)}" alt="" loading="lazy" /></div>
               <div>
                 <span class="bd-post-nav-label">Next Article</span>

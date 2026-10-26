@@ -25,10 +25,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <a href="/testimonials" class="nav-link">Testimonials</a>
           </nav>
           <div class="nav-right-btns">
-            <a href="/contact" class="nav-cta"> Hire Me <span class="icon" data-icon="siArrowTilt"></span>
+            <a href="/contact" class="nav-cta"> Hire Me <span class="icon" data-icon="ri-arrow-right-up-line"></span>
             </a>
             <a href="#0" class="btn btn-outline" id="customizeBtn" aria-label="Customize" aria-expanded="false" aria-controls="customizePanel">
-              <span class="icon" data-icon="siTheme"></span>
+              <span class="icon" data-icon="ri-palette-line"></span>
             </a>
            
           </div>
@@ -57,11 +57,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <div class="abt2-ctas">
               <a href="/projects"  class="si-btn si-btn-primary">
                 View My Work
-                <span class="icon" data-icon="siMinus"></span>
+                <span class="icon" data-icon="ri-subtract-line"></span>
               </a>
               <a href="/assets/Sohaib_Ishaque_CV.pdf" class="btn btn-outline" download>
                 Download CV
-                <span class="icon" data-icon="siDownload"></span>
+                <span class="icon" data-icon="ri-download-line"></span>
               </a>
             </div>
             <div class="abt2-social-proof">
@@ -90,7 +90,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </div>
             <div class="abt2-card abt2-card-projects">
               <div class="abt2-card-icon">
-                <span class="icon" data-icon="siBriefcaseA"></span>
+                <span class="icon" data-icon="ri-briefcase-2-line"></span>
               </div>
               <div>
                 <div class="abt2-card-num">35+</div>
@@ -100,7 +100,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
 
             <div class="abt2-card abt2-card-clients">
               <div class="abt2-card-icon">
-                <span class="icon" data-icon="siUsers"></span>
+                <span class="icon" data-icon="ri-group-line"></span>
               </div>
               <div>
                 <div class="abt2-card-num">20+</div>
@@ -110,7 +110,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
 
             <div class="abt2-card abt2-card-tech">
               <div class="abt2-card-icon">
-                <span class="icon" data-icon="siRocket"></span>
+                <span class="icon" data-icon="ri-rocket-line"></span>
               </div>
               <div>
                 <div class="abt2-card-num">10+</div>
@@ -120,7 +120,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
 
             <div class="abt2-card abt2-card-experience">
               <div class="abt2-card-icon">
-                <span class="icon" data-icon="siStar"></span>
+                <span class="icon" data-icon="ri-star-line"></span>
               </div>
               <div>
                 <div class="abt2-card-num">5+</div>
@@ -149,7 +149,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <p class="journey-body"> My journey into web development started with curiosity and a passion for creating things that live on the internet. Over time, that curiosity turned into a career where I get to solve problems, learn constantly and build meaningful digital experiences. </p>
               <p class="journey-body"> I believe in writing clean code, following best practices and always pushing myself to grow. From my early days as an intern at Oxygen Soft to leading full-stack projects at Media@Marsons Islamabad, every step has sharpened my craft and deepened my commitment to delivering quality software. </p>
-              <a href="/contact" class="btn btn-outline" style="margin-top:0.5rem"> Let's Work Together <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/contact" class="btn btn-outline" style="margin-top:0.5rem"> Let's Work Together <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
           </div>
@@ -196,7 +196,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
         <div class="beliefs-grid">
           <div class="belief-card reveal">
             <div class="belief-icon" aria-hidden="true">
-              <span class="icon" data-icon="siCode"></span>
+              <span class="icon" data-icon="ri-code-line"></span>
             </div>
             <h3 class="belief-title">Clean Code</h3>
             <p class="belief-desc">Writing maintainable, scalable and efficient code following best practices, design patterns and SOLID principles.</p>
@@ -210,14 +210,14 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="belief-card reveal">
             <div class="belief-icon" aria-hidden="true">
-              <span class="icon" data-icon="siUser"></span>
+              <span class="icon" data-icon="ri-user-line"></span>
             </div>
             <h3 class="belief-title">User First</h3>
             <p class="belief-desc">Building with the end user in mind to create seamless, valuable and intuitive experiences across all devices and platforms.</p>
           </div>
           <div class="belief-card reveal">
             <div class="belief-icon" aria-hidden="true">
-              <span class="icon" data-icon="siUsers"></span>
+              <span class="icon" data-icon="ri-group-line"></span>
             </div>
             <h3 class="belief-title">Collaboration</h3>
             <p class="belief-desc">I value teamwork and believe great results come from great collaboration. Clear communication and shared ownership drive excellence.</p>
@@ -259,7 +259,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </div>
             <div class="edu-card">
               <div class="edu-icon-wrap" aria-hidden="true">
-                <span class="icon" data-icon="siMonitor"></span>
+                <span class="icon" data-icon="ri-computer-line"></span>
               </div>
               <div>
                 <div class="edu-dates">Mar 2015 — Mar 2017</div>
@@ -269,7 +269,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </div>
             <div class="edu-card">
               <div class="edu-icon-wrap" aria-hidden="true">
-                <span class="icon" data-icon="siMonitor"></span>
+                <span class="icon" data-icon="ri-computer-line"></span>
               </div>
               <div>
                 <div class="edu-dates">Feb 2013 — Feb 2015</div>
@@ -284,7 +284,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <div class="cert-list">
               <div class="cert-item">
                 <div class="cert-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siAward"></span>
+                  <span class="icon" data-icon="ri-award-line"></span>
                 </div>
                 <div class="cert-name">
                   <strong>WordPress Development</strong> Digiskills — Aug 2018
@@ -292,7 +292,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="cert-item">
                 <div class="cert-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siAward"></span>
+                  <span class="icon" data-icon="ri-award-line"></span>
                 </div>
                 <div class="cert-name">
                   <strong>Freelancing</strong> Digiskills — Aug 2018
@@ -300,7 +300,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="cert-item">
                 <div class="cert-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siAward"></span>
+                  <span class="icon" data-icon="ri-award-line"></span>
                 </div>
                 <div class="cert-name">
                   <strong>Web Design &amp; Development</strong> Freelancing — 2018 – Present
@@ -308,7 +308,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="cert-item">
                 <div class="cert-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siCode"></span>
+                  <span class="icon" data-icon="ri-code-line"></span>
                 </div>
                 <div class="cert-name">
                   <strong>Full Stack Web Development</strong> Professional Practice — Web-Tech Sol, 2025-2026
@@ -316,7 +316,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="cert-item">
                 <div class="cert-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siCode"></span>
+                  <span class="icon" data-icon="ri-code-line"></span>
                 </div>
                 <div class="cert-name">
                   <strong>Angular &amp; .NET Core Development</strong> Professional Practice — Media@Marsons, 2023–2025
@@ -324,7 +324,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="cert-item">
                 <div class="cert-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siCode"></span>
+                  <span class="icon" data-icon="ri-code-line"></span>
                 </div>
                 <div class="cert-name">
                   <strong>Full Stack Web Development</strong> Professional Practice — Oxygen Soft, 2022–2023
@@ -351,9 +351,9 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </h2>
             <p class="cta-sub">Let's create something amazing together. Have a project in mind? I'd love to hear about it.</p>
             <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:2.5rem;">
-              <a href="/contact" class="si-btn si-btn-primary"> Start a Project <span class="icon" data-icon="siArrowRight"></span>
+              <a href="/contact" class="si-btn si-btn-primary"> Start a Project <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
-              <a href="#" class="btn btn-outline"> Download Case Study <span class="icon" data-icon="siDownload"></span>
+              <a href="#" class="btn btn-outline"> Download Case Study <span class="icon" data-icon="ri-download-line"></span>
               </a>
             </div>
           </div>
@@ -384,11 +384,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <div class="brand-rule" aria-hidden="true"></div>
             <div class="footer-cta-card">
               <div class="footer-cta-icon" aria-hidden="true">
-                <span class="icon" data-icon="siSend"></span>
+                <span class="icon" data-icon="ri-send-plane-line"></span>
               </div>
               <h3 class="footer-cta-title">Let's work together</h3>
               <p class="footer-cta-text">Have a project in mind or just want to say hi? I'd love to hear from you.</p>
-              <a href="/contact" class="footer-cta-button"> Get In Touch <span class="icon" data-icon="siArrowTilt"></span>
+              <a href="/contact" class="footer-cta-button"> Get In Touch <span class="icon" data-icon="ri-arrow-right-up-line"></span>
               </a>
             </div>
           </div>
@@ -453,7 +453,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-contact-list">
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siPhone"></span>
+                  <span class="icon" data-icon="ri-phone-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="tel:+15551234567">+92 3038464315</a>
@@ -462,7 +462,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siEnvelope"></span>
+                  <span class="icon" data-icon="ri-mail-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="mailto:engineer.sohaibishaque@gmail.com">engineer.sohaibishaque@gmail.com</a>
@@ -471,7 +471,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siLocationPin"></span>
+                  <span class="icon" data-icon="ri-map-pin-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <span class="contact-static">Rawalpindi, Pakistan</span>
@@ -482,22 +482,22 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-social-list" aria-label="Social media links">
               <li>
                 <a href="https://github.com/Sohaib-Ishaque" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siGithub"></span>
+                  <span class="icon" data-icon="ri-github-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siLinkedin"></span>
+                  <span class="icon" data-icon="ri-linkedin-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://twitter.com/" class="social-icon" aria-label="Twitter / X" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siXcom"></span>
+                <span class="icon" data-icon="ri-twitter-x-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://instagram.com/" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siInstagram"></span>
+                <span class="icon" data-icon="ri-instagram-line"></span>
                 </a>
               </li>
             </ul>
@@ -512,7 +512,7 @@ ${SITE_FOOTER_NEWSLETTER_HTML}
             <span class="code-icon" aria-hidden="true">&lt;/&gt;</span>
             <span>Designed &amp; Built by <span class="accent">M Sohaib Ishaque</span>
             </span>
-            <span class="icon" data-icon="siHeart"></span>
+            <span class="icon" data-icon="ri-heart-line"></span>
           </div>
           <div class="bottom-center"> &copy; 2025 <span class="accent">M Sohaib Ishaque</span>. All rights reserved. </div>
         </div>

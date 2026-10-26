@@ -27,10 +27,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="nav-right-btns">
             <a href="/contact" class="nav-cta">
               Hire Me
-              <span class="icon" data-icon="siArrowTilt"></span>
+              <span class="icon" data-icon="ri-arrow-right-up-line"></span>
             </a>
             <a href="#0" class="btn btn-outline" id="customizeBtn" aria-label="Customize" aria-expanded="false" aria-controls="customizePanel">
-              <span class="icon" data-icon="siSettings"></span>
+              <span class="icon" data-icon="ri-settings-3-line"></span>
             </a>
           </div>
         </div>
@@ -46,7 +46,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
         <div class="hero-copy reveal-left">
           <div class="reveal-left pdp-head">
                 <a href="/projects" class="pdh-breadcrumb" aria-label="Back to projects">
-                  <span class="icon" data-icon="siAngleLeft"></span>
+                  <span class="icon" data-icon="ri-arrow-left-s-line"></span>
                   Back to Projects
                 </a>
                 <h1 id="pd2-hero-title" class="about-hero-heading"></h1>
@@ -55,7 +55,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="stats-row">
             <div class="stat-item">
               <div class="stat-icon accent">
-                  <span class="icon" data-icon="siUser"></span>
+                  <span class="icon" data-icon="ri-user-line"></span>
               </div>
               <div>
                 <div class="stat-num">Client</div>
@@ -64,7 +64,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </div>
             <div class="stat-item">
               <div class="stat-icon accent">
-                  <span class="icon" data-icon="siCalendar"></span>
+                  <span class="icon" data-icon="ri-calendar-line"></span>
               </div>
               <div>
                 <div class="stat-num">Category</div>
@@ -81,7 +81,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </div> <div class="pdh-meta-row">
             <div class="pdh-meta-item">
               <span class="pdh-meta-icon">
-                <span class="icon" data-icon="siClock"></span>
+                <span class="icon" data-icon="ri-time-line"></span>
               </span>
               Timeline: <strong id="pd2-meta-timeline"></strong>
             </div>
@@ -89,11 +89,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="exp-hero-cta-row"><div class="pdh-btns">
               <a id="pd2-btn-live" href="#" class="si-btn si-btn-primary">
-                <span class="icon" data-icon="siPlay"></span>
+                <span class="icon" data-icon="ri-play-line"></span>
                 View Live
               </a>
               <a id="pd2-btn-github" href="https://github.com/Sohaib-Ishaque/" class="btn btn-outline" >
-                <span class="icon" data-icon="siCode"></span>
+                <span class="icon" data-icon="ri-code-line"></span>
                 View Code
               </a>
             </div>
@@ -109,10 +109,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <div class="card-stack pd-card-stack" id="cardStack">
                 <div class="proj-nav">
                   <div class="nav-pro-btn proj-prev" id="pd2-slider-prev" aria-label="Previous screenshot">
-                    <span class="icon" data-icon="siAngleLeft"></span>
+                    <span class="icon" data-icon="ri-arrow-left-s-line"></span>
                   </div>
                   <div class="nav-pro-btn proj-next" id="pd2-slider-next" aria-label="Next screenshot">
-                    <span class="icon" data-icon="siAngleRight"></span>
+                    <span class="icon" data-icon="ri-arrow-right-s-line"></span>
                   </div>
                 </div>
                 <div class="pro-paginations" id="pd2-slider-dots"></div>
@@ -150,7 +150,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="pd2-tech-card reveal" >
             <div class="pd2-tech-card-icon" >
-              <span class="icon" data-icon="siFlag"></span>
+              <span class="icon" data-icon="ri-flag-line"></span>
             </div>
             <div class="pd2-tech-card-name"></div>
             <div class="pd2-tech-card-sub"></div>
@@ -201,56 +201,56 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
         <div id="pd2-features-grid" class="pd2-features-grid">
           <div class="pd2-feature-card reveal">
             <div class="pd2-feature-icon">
-              <span class="icon" data-icon="siUser"></span>
+              <span class="icon" data-icon="ri-user-line"></span>
             </div>
             <div class="pd2-feature-title"></div>
             <p class="pd2-feature-desc"></p>
           </div>
           <div class="pd2-feature-card reveal">
             <div class="pd2-feature-icon">
-              <span class="icon" data-icon="siApps"></span>
+              <span class="icon" data-icon="ri-apps-line"></span>
             </div>
             <div class="pd2-feature-title"></div>
             <p class="pd2-feature-desc"></p>
           </div>
           <div class="pd2-feature-card reveal">
             <div class="pd2-feature-icon">
-              <span class="icon" data-icon="siFaceEmoji"></span>
+              <span class="icon" data-icon="ri-emoji-sticker-line"></span>
             </div>
             <div class="pd2-feature-title"></div>
             <p class="pd2-feature-desc"></p>
           </div>
           <div class="pd2-feature-card reveal">
             <div class="pd2-feature-icon">
-              <span class="icon" data-icon="siBarsChart"></span>
+              <span class="icon" data-icon="ri-bar-chart-line"></span>
             </div>
             <div class="pd2-feature-title"></div>
             <p class="pd2-feature-desc"></p>
           </div>
           <div class="pd2-feature-card reveal">
             <div class="pd2-feature-icon">
-              <span class="icon" data-icon="siLock"></span>
+              <span class="icon" data-icon="ri-lock-line"></span>
             </div>
             <div class="pd2-feature-title"></div>
             <p class="pd2-feature-desc"></p>
           </div>
           <div class="pd2-feature-card reveal">
             <div class="pd2-feature-icon">
-              <span class="icon" data-icon="siDocument"></span>
+              <span class="icon" data-icon="ri-file-text-line"></span>
             </div>
             <div class="pd2-feature-title"></div>
             <p class="pd2-feature-desc"></p>
           </div>
           <div class="pd2-feature-card reveal">
             <div class="pd2-feature-icon">
-              <span class="icon" data-icon="siPhoneScreen"></span>
+              <span class="icon" data-icon="ri-smartphone-line"></span>
             </div>
             <div class="pd2-feature-title"></div>
             <p class="pd2-feature-desc"></p>
           </div>
           <div class="pd2-feature-card reveal">
             <div class="pd2-feature-icon">
-              <span class="icon" data-icon="siBell"></span>
+              <span class="icon" data-icon="ri-notification-line"></span>
             </div>
             <div class="pd2-feature-title"></div>
             <p class="pd2-feature-desc"></p>
@@ -355,7 +355,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
         <div id="pd2-metrics-grid" class="pd2-metrics-grid">
           <div class="pd2-metric-item reveal">
             <div class="pd2-metric-icon">
-              <span class="icon" data-icon="siCalendar"></span>
+              <span class="icon" data-icon="ri-calendar-line"></span>
             </div>
             <div>
               <div class="pd2-metric-val">8 wk</div>
@@ -365,7 +365,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="pd2-metric-item reveal">
             <div class="pd2-metric-icon">
-              <span class="icon" data-icon="siClock"></span>
+              <span class="icon" data-icon="ri-time-line"></span>
             </div>
             <div>
               <div class="pd2-metric-val">97/100</div>
@@ -375,7 +375,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="pd2-metric-item reveal">
             <div class="pd2-metric-icon">
-              <span class="icon" data-icon="siApps"></span>
+              <span class="icon" data-icon="ri-apps-line"></span>
             </div>
             <div>
               <div class="pd2-metric-val">18+</div>
@@ -385,7 +385,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="pd2-metric-item reveal">
             <div class="pd2-metric-icon">
-              <span class="icon" data-icon="siSmile"></span>
+              <span class="icon" data-icon="ri-emotion-line"></span>
             </div>
             <div>
               <div class="pd2-metric-val">100%</div>
@@ -413,31 +413,31 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <ul id="pd2-outcomes-list" class="pd2-oc-list">
             <li class="pd2-oc-item">
               <span class="pd2-oc-item-icon">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </span>
               Streamlined operations and improved efficiency.
             </li>
             <li class="pd2-oc-item">
               <span class="pd2-oc-item-icon">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </span>
               Centralized management of users, roles, and modules.
             </li>
             <li class="pd2-oc-item">
               <span class="pd2-oc-item-icon">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </span>
               Real-time insights through advanced analytics.
             </li>
             <li class="pd2-oc-item">
               <span class="pd2-oc-item-icon">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </span>
               Scalable architecture for future enhancements.
             </li>
             <li class="pd2-oc-item">
               <span class="pd2-oc-item-icon">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </span>
               Enhanced security with role-based access control.
             </li>
@@ -446,7 +446,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
 
         <div class="pd2-oc-col">
           <div class="pd2-oc-geo" aria-hidden="true" style="opacity:0.3; right:2rem; bottom:2rem;">
-            <span class="icon" data-icon="siDoubleSquare"></span>
+            <span class="icon" data-icon="ri-copy-line"></span>
           </div>
           <div class="section-header">
             <div class="section-title-group reveal-left ">
@@ -459,7 +459,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <ul id="pd2-challenges-list" class="pd2-oc-list">
             <li class="pd2-oc-item">
               <span class="pd2-oc-item-icon" style="color: var(--gray-light);">
-                <span class="icon" data-icon="siMinus"></span>
+                <span class="icon" data-icon="ri-subtract-line"></span>
               </span>
               <div>
                 <div style="color:var(--white); font-size:0.88rem; font-weight:500; margin-bottom:0.2rem;">Complex business logic and workflows</div>
@@ -468,7 +468,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </li>
             <li class="pd2-oc-item">
               <span class="pd2-oc-item-icon" style="color: var(--gray-light);">
-                <span class="icon" data-icon="siMinus"></span>
+                <span class="icon" data-icon="ri-subtract-line"></span>
               </span>
               <div>
                 <div style="color:var(--white); font-size:0.88rem; font-weight:500; margin-bottom:0.2rem;">Performance optimization for large datasets</div>
@@ -477,7 +477,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </li>
             <li class="pd2-oc-item">
               <span class="pd2-oc-item-icon" style="color: var(--gray-light);">
-                <span class="icon" data-icon="siMinus"></span>
+                <span class="icon" data-icon="ri-subtract-line"></span>
               </span>
               <div>
                 <div style="color:var(--white); font-size:0.88rem; font-weight:500; margin-bottom:0.2rem;">Ensuring data security and access control</div>
@@ -493,7 +493,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
         <div class="pd2-proj-nav-inner">
           <a id="pd2-prev-link" href="#" class="pd2-proj-nav-side">
             <div class="pd2-proj-nav-arrow">
-              <span class="icon" data-icon="siAngleLeft"></span>
+              <span class="icon" data-icon="ri-arrow-left-s-line"></span>
             </div>
             <div class="pd2-proj-nav-thumb">
               <div class="pd2-proj-nav-thumb-inner" id="pd2-prev-project-img">
@@ -515,7 +515,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </a>
           <a id="pd2-next-link" href="#" class="pd2-proj-nav-side right">
             <div class="pd2-proj-nav-arrow">
-              <span class="icon" data-icon="siAngleRight"></span>
+              <span class="icon" data-icon="ri-arrow-right-s-line"></span>
             </div>
             <div class="pd2-proj-nav-thumb">
               <div class="pd2-proj-nav-thumb-inner" id="pd2-next-project-img">
@@ -555,13 +555,13 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <div class="brand-rule" aria-hidden="true"></div>
             <div class="footer-cta-card">
               <div class="footer-cta-icon" aria-hidden="true">
-                <span class="icon" data-icon="siSend"></span>
+                <span class="icon" data-icon="ri-send-plane-line"></span>
               </div>
               <h3 class="footer-cta-title">Let's work together</h3>
               <p class="footer-cta-text">Have a project in mind or just want to say hi? I'd love to hear from you.</p>
               <a href="/contact" class="footer-cta-button">
                 Get In Touch
-                <span class="icon" data-icon="siArrowTilt"></span>
+                <span class="icon" data-icon="ri-arrow-right-up-line"></span>
               </a>
             </div>
           </div>
@@ -593,7 +593,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-contact-list">
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siEnvelope"></span>
+                  <span class="icon" data-icon="ri-mail-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="mailto:engineer.sohaibishaque@gmail.com">engineer.sohaibishaque@gmail.com</a>
@@ -602,7 +602,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siLocationPin"></span>
+                  <span class="icon" data-icon="ri-map-pin-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <span class="contact-static">Rawalpindi, Pakistan</span>
@@ -613,22 +613,22 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-social-list" aria-label="Social media links">
               <li>
                 <a href="https://github.com/Sohaib-Ishaque" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siGithub"></span>
+                  <span class="icon" data-icon="ri-github-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siLinkedin"></span>
+                  <span class="icon" data-icon="ri-linkedin-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://twitter.com/" class="social-icon" aria-label="Twitter / X" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siXcom"></span>
+                <span class="icon" data-icon="ri-twitter-x-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://instagram.com/" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siInstagram"></span>
+                <span class="icon" data-icon="ri-instagram-line"></span>
                 </a>
               </li>
             </ul>
@@ -640,7 +640,7 @@ ${SITE_FOOTER_NEWSLETTER_HTML}
           <div class="bottom-left">
             <span class="code-icon" aria-hidden="true">&lt;/&gt;</span>
             <span>Designed &amp; Built by <span class="accent">M Sohaib Ishaque</span></span>
-            <span class="icon" data-icon="siHeart"></span>
+            <span class="icon" data-icon="ri-heart-line"></span>
           </div>
           <div class="bottom-center">&copy; 2025 <span class="accent">M Sohaib Ishaque</span>. All rights reserved.</div>
         </div>

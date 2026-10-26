@@ -4,13 +4,13 @@ import {
 
 // client/utils/image-compress.ts
 var PRESET_DEFAULTS = {
-  avatar: { maxWidth: 192, maxHeight: 192, quality: 0.82, maxBytes: 12e4 },
-  icon: { maxWidth: 256, maxHeight: 256, quality: 0.85, maxBytes: 16e4 },
-  thumbnail: { maxWidth: 512, maxHeight: 512, quality: 0.82, maxBytes: 22e4 },
-  cover: { maxWidth: 1200, maxHeight: 400, quality: 0.8, maxBytes: 38e4 },
-  hero: { maxWidth: 1600, maxHeight: 900, quality: 0.82, maxBytes: 65e4 },
-  gallery: { maxWidth: 1920, maxHeight: 1080, quality: 0.82, maxBytes: 9e5 },
-  general: { maxWidth: 1920, maxHeight: 1920, quality: 0.82, maxBytes: 95e4 }
+  avatar: { maxWidth: 192, maxHeight: 192, quality: 0.88, maxBytes: 18e4 },
+  icon: { maxWidth: 256, maxHeight: 256, quality: 0.85, maxBytes: 2e5 },
+  thumbnail: { maxWidth: 512, maxHeight: 512, quality: 0.9, maxBytes: 25e4 },
+  cover: { maxWidth: 1200, maxHeight: 400, quality: 0.95, maxBytes: 4e5 },
+  hero: { maxWidth: 1600, maxHeight: 900, quality: 0.98, maxBytes: 7e5 },
+  gallery: { maxWidth: 1920, maxHeight: 1080, quality: 0.99, maxBytes: 95e4 },
+  general: { maxWidth: 1920, maxHeight: 1920, quality: 0.95, maxBytes: 1e6 }
 };
 var MIN_QUALITY = 0.48;
 var SKIP_REENCODE_TYPES = /* @__PURE__ */ new Set(["image/gif", "image/svg+xml"]);
@@ -516,4 +516,4 @@ export {
   uploadContactAttachment,
   uploadCustomFontFile
 };
-//# sourceMappingURL=chunk-XZ5R2AN2.js.map
+//# sourceMappingURL=chunk-IIION6EB.js.map

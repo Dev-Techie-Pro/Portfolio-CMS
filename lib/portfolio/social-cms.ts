@@ -34,15 +34,15 @@ const PLATFORM_META: Record<
   SocialPlatform,
   { label: string; icon: string; external: boolean }
 > = {
-  github: { label: "GitHub", icon: "siGithub", external: true },
-  linkedin: { label: "LinkedIn", icon: "siLinkedin", external: true },
-  x: { label: "Twitter / X", icon: "siXcom", external: true },
-  instagram: { label: "Instagram", icon: "siInstagram", external: true },
-  facebook: { label: "Facebook", icon: "siFacebook", external: true },
+  github: { label: "GitHub", icon: "ri-github-fill", external: true },
+  linkedin: { label: "LinkedIn", icon: "ri-linkedin-fill", external: true },
+  x: { label: "Twitter / X", icon: "ri-twitter-x-fill", external: true },
+  instagram: { label: "Instagram", icon: "ri-instagram-line", external: true },
+  facebook: { label: "Facebook", icon: "ri-facebook-fill", external: true },
   youtube: { label: "YouTube", icon: "siGlobe", external: true },
   tiktok: { label: "TikTok", icon: "siGlobe", external: true },
   website: { label: "Website", icon: "siGlobe", external: true },
-  email: { label: "Email", icon: "siEnvelope", external: false },
+  email: { label: "Email", icon: "ri-mail-line", external: false },
   other: { label: "Link", icon: "siGlobe", external: true },
 };
 

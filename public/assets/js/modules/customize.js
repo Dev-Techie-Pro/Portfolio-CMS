@@ -321,11 +321,11 @@
             e.addEventListener("keydown", function (t) {
               var n = Array.from(document.querySelectorAll(".custom-cr-btn")),
                 o = n.indexOf(e);
-              if ("siArrowRight" === t.key || "ArrowDown" === t.key) {
+              if ("ArrowRight" === t.key || "ArrowDown" === t.key) {
                 t.preventDefault();
                 var a = n[(o + 1) % n.length];
                 a && a.focus();
-              } else if ("siAngleLeft" === t.key || "siArrowUp" === t.key) {
+              } else if ("ArrowLeft" === t.key || "ArrowUp" === t.key) {
                 t.preventDefault();
                 var s = n[(o - 1 + n.length) % n.length];
                 s && s.focus();

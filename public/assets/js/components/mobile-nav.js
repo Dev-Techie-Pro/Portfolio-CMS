@@ -3,32 +3,32 @@ export class MobileNav {
   static hostSelector = "[data-mobile-nav-root], #mobile-nav-root";
 
   static ITEMS = [
-    { where: "home", label: "Home", href: "/", icon: "siHome" },
-    { where: "about", label: "About", href: "/about", icon: "siUser" },
+    { where: "home", label: "Home", href: "/", icon: "ri-home-line" },
+    { where: "about", label: "About", href: "/about", icon: "ri-user-line" },
     { where: "skills", label: "Skills", href: "/skills", icon: "siGrowth" },
     {
       where: "expertise",
       label: "Expertise",
       href: "/experience",
-      icon: "siHome",
+      icon: "ri-home-line",
     },
     {
       where: "projects",
       label: "Projects",
       href: "/projects",
-      icon: "siApps",
+      icon: "ri-apps-line",
     },
     {
       where: "reviews",
       label: "Reviews",
       href: "/testimonials",
-      icon: "siReview",
+      icon: "ri-chat-quote-line",
     },
     {
       where: "contatc",
       label: "Contact",
       href: "/contact",
-      icon: "siPhone",
+      icon: "ri-phone-line",
     },
   ];
 

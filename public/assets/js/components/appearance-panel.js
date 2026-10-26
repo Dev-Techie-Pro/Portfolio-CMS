@@ -9,7 +9,7 @@ export class AppearancePanel {
       <div class="pa-panel-head">
         <span class="pa-panel-title" id="paCustomPanelTitle">Appearance Settings</span>
         <button class="pa-panel-close" id="paCustomPanelClose" aria-label="Close">
-          <span class="icon" data-icon="siColse"></span>
+          <span class="icon" data-icon="ri-close-line"></span>
         </button>
       </div>
       <div class="pa-panel-tabs">
@@ -47,22 +47,22 @@ export class AppearancePanel {
             <label class="pa-form-label">Accent Color</label>
             <div class="custom-color-row" role="radiogroup" aria-label="Accent color">
               <button class="custom-swatch pa-orange" data-color="#ff6600" aria-label="Orange" role="radio" aria-checked="false">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </button>
               <button class="custom-swatch pa-pink" data-color="#f0437e" aria-label="Pink" role="radio" aria-checked="false">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </button>
               <button class="custom-swatch pa-green" data-color="#22c55e" aria-label="Green" role="radio" aria-checked="false">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </button>
               <button class="custom-swatch pa-yellow" data-color="#ced11b" aria-label="Yellow" role="radio" aria-checked="false">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </button>
               <button class="custom-swatch pa-blue" data-color="#445deb" aria-label="Blue" role="radio" aria-checked="false">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </button>
               <button class="custom-swatch pa-purple" data-color="#dc12f7" aria-label="Purple" role="radio" aria-checked="false">
-                <span class="icon" data-icon="siCheckmark"></span>
+                <span class="icon" data-icon="ri-check-line"></span>
               </button>
             </div>
           </div>

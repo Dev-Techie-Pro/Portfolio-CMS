@@ -378,7 +378,7 @@
           desc: "Admin and standard user roles with permission-gated screens.",
         },
         {
-          icon: "siGrid",
+          icon: "ri-grid-line",
           title: "Reports",
           desc: "Crystal Reports integration with printable inventory and transaction reports.",
         },
@@ -997,7 +997,7 @@
           desc: "Normalised schema for quizzes, questions, answers, attempts and results.",
         },
         {
-          icon: "siGrid",
+          icon: "ri-grid-line",
           title: "Analytics",
           desc: "Score breakdown, leaderboard, pass/fail rates and performance trend charts.",
         },
@@ -1118,7 +1118,7 @@
       ],
       features: [
         {
-          icon: "siGrid",
+          icon: "ri-grid-line",
           title: "Product Catalogue",
           desc: "Hierarchical categories with filters, sorting, search and WooCommerce product galleries.",
         },
@@ -1272,7 +1272,7 @@
       ],
       features: [
         {
-          icon: "siGrid",
+          icon: "ri-grid-line",
           title: "Custom CPTs",
           desc: "ACF and CPT UI for news, campaigns, press releases and events with custom taxonomies.",
         },
@@ -1427,7 +1427,7 @@
       ],
       features: [
         {
-          icon: "siGrid",
+          icon: "ri-grid-line",
           title: "Custom WordPress Theme",
           desc: "Built from scratch with fully modular template parts, zero page-builder dependencies and pixel-perfect design.",
         },
@@ -1588,7 +1588,7 @@
       ],
       features: [
         {
-          icon: "siGrid",
+          icon: "ri-grid-line",
           title: "Standard & Scientific Modes",
           desc: "Toggle between basic arithmetic and advanced scientific functions with trigonometric and logarithmic operations.",
         },
@@ -1746,7 +1746,7 @@
       ],
       features: [
         {
-          icon: "siGrid",
+          icon: "ri-grid-line",
           title: "Custom Post Types",
           desc: "Registered CPTs for all content types with custom taxonomies for organised content structure.",
         },
@@ -2234,7 +2234,7 @@
           desc: "Robust database with optimised queries, stored procedures, and data integrity.",
         },
         {
-          icon: "siGrid",
+          icon: "ri-grid-line",
           title: "CRUD Operations",
           desc: "Complete create, read, update, delete functionality with data validation.",
         },
@@ -2600,7 +2600,7 @@
       ],
       features: [
         {
-          icon: "siGrid",
+          icon: "ri-grid-line",
           title: "Book Cataloging",
           desc: "Complete book management with author, publisher, ISBN, category, and multiple copies tracking.",
         },
@@ -2625,7 +2625,7 @@
           desc: "JSON-based APIs for data operations with extensibility for mobile/desktop clients.",
         },
         {
-          icon: "siGrid",
+          icon: "ri-grid-line",
           title: "Automated Reports",
           desc: "Circulation reports, popular books, member activity, and inventory status reports.",
         },
@@ -3060,10 +3060,10 @@ function _initProjectModules() {
           const a = e.prevProject ? _projectUrl(e.prevProject.id) : null,
             i = e.nextProject ? _projectUrl(e.nextProject.id) : null,
             n = e.prevProject
-              ? `\n      <a href="${a}" class="pd-nav-card pd-nav-card--prev reveal-left" aria-label="Previous: ${e.prevProject.name}">\n        <div class="pd-nav-arrow" aria-hidden="true">\n          ${_iconHtml("siAngleLeft")}\n        </div>\n        <div>\n          <div class="pd-nav-dir">Previous</div>\n          <div class="pd-nav-name main-heading-font">${e.prevProject.name}</div>\n          <div class="pd-nav-cat">${e.prevProject.cat}</div>\n        </div>\n      </a>`
+              ? `\n      <a href="${a}" class="pd-nav-card pd-nav-card--prev reveal-left" aria-label="Previous: ${e.prevProject.name}">\n        <div class="pd-nav-arrow" aria-hidden="true">\n          ${_iconHtml("ri-arrow-left-s-line")}\n        </div>\n        <div>\n          <div class="pd-nav-dir">Previous</div>\n          <div class="pd-nav-name main-heading-font">${e.prevProject.name}</div>\n          <div class="pd-nav-cat">${e.prevProject.cat}</div>\n        </div>\n      </a>`
               : "<div></div>",
             s = e.nextProject
-              ? `\n      <a href="${i}" class="pd-nav-card pd-nav-card--next reveal-right" aria-label="Next: ${e.nextProject.name}">\n        <div class="pd-nav-arrow" aria-hidden="true">\n          ${_iconHtml("siAngleRight")}\n        </div>\n        <div>\n          <div class="pd-nav-dir">Next</div>\n          <div class="pd-nav-name main-heading-font">${e.nextProject.name}</div>\n          <div class="pd-nav-cat">${e.nextProject.cat}</div>\n        </div>\n      </a>`
+              ? `\n      <a href="${i}" class="pd-nav-card pd-nav-card--next reveal-right" aria-label="Next: ${e.nextProject.name}">\n        <div class="pd-nav-arrow" aria-hidden="true">\n          ${_iconHtml("ri-arrow-right-s-line")}\n        </div>\n        <div>\n          <div class="pd-nav-dir">Next</div>\n          <div class="pd-nav-name main-heading-font">${e.nextProject.name}</div>\n          <div class="pd-nav-cat">${e.nextProject.cat}</div>\n        </div>\n      </a>`
               : "<div></div>";
           t.innerHTML = n + s;
         })(a),
@@ -3233,7 +3233,7 @@ function _initProjectModules() {
             t.innerHTML = a
               .map(
                 (e) =>
-                  `\n      <li class="pd2-oc-item">\n        <span class="pd2-oc-item-icon">\n          ${_iconHtml("siCheckmark")}\n        </span>\n        <div>\n          <div style="color:var(--white); font-size:0.88rem; font-weight:500; margin-bottom:0.2rem;">${e.title.replace(/^Outcome\s*[—–-]\s*/i, "")}</div>\n          <div style="color:var(--gray); font-size:0.78rem;">${e.desc}</div>\n        </div>\n      </li>`,
+                  `\n      <li class="pd2-oc-item">\n        <span class="pd2-oc-item-icon">\n          ${_iconHtml("ri-check-line")}\n        </span>\n        <div>\n          <div style="color:var(--white); font-size:0.88rem; font-weight:500; margin-bottom:0.2rem;">${e.title.replace(/^Outcome\s*[—–-]\s*/i, "")}</div>\n          <div style="color:var(--gray); font-size:0.78rem;">${e.desc}</div>\n        </div>\n      </li>`,
               )
               .join("");
           })(n),
@@ -3246,7 +3246,7 @@ function _initProjectModules() {
             t.innerHTML = a
               .map(
                 (e) =>
-                  `\n      <li class="pd2-oc-item">\n        <span class="pd2-oc-item-icon" style="color: var(--gray-light);">\n          ${_iconHtml("siMinus")}\n        </span>\n        <div>\n          <div style="color:var(--white); font-size:0.88rem; font-weight:500; margin-bottom:0.2rem;">${e.title.replace(/^Challenge\s*[—–-]\s*/i, "")}</div>\n          <div style="color:var(--gray); font-size:0.78rem;">${e.desc}</div>\n        </div>\n      </li>`,
+                  `\n      <li class="pd2-oc-item">\n        <span class="pd2-oc-item-icon" style="color: var(--gray-light);">\n          ${_iconHtml("ri-subtract-line")}\n        </span>\n        <div>\n          <div style="color:var(--white); font-size:0.88rem; font-weight:500; margin-bottom:0.2rem;">${e.title.replace(/^Challenge\s*[—–-]\s*/i, "")}</div>\n          <div style="color:var(--gray); font-size:0.78rem;">${e.desc}</div>\n        </div>\n      </li>`,
               )
               .join("");
           })(n),

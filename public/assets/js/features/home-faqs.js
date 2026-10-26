@@ -35,8 +35,8 @@
         >
           <span class="faq-question">${escapeHtml(faq.question)}</span>
           <span class="faq-toggle" aria-hidden="true">
-            <span class="icon faq-icon-plus" data-icon="siPlus"></span>
-            <span class="icon faq-icon-minus" data-icon="siMinus"></span>
+            <span class="icon faq-icon-plus" data-icon="ri-add-line"></span>
+            <span class="icon faq-icon-minus" data-icon="ri-subtract-line"></span>
           </span>
         </button>
         <div

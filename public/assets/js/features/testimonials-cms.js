@@ -47,7 +47,7 @@
 
   function renderHeroStars(rating) {
     const count = Math.max(0, Math.min(5, parseInt(rating, 10) || 5));
-    return Array.from({ length: count }, () => '<span class="icon" data-icon="siStarfill"></span>').join("");
+    return Array.from({ length: count }, () => '<span class="icon" data-icon="ri-star-fill"></span>').join("");
   }
 
   function setAvatar(el, name, imageUrl) {

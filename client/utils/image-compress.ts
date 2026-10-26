@@ -1,6 +1,4 @@
 // @ts-nocheck
-/** Browser-side image compression (WebP when supported, adaptive quality & dimensions). */
-
 export type ImageCompressPreset =
   | 'avatar'
   | 'icon'
@@ -14,7 +12,6 @@ export type ImageCompressOptions = {
   maxWidth?: number;
   maxHeight?: number;
   quality?: number;
-  /** Target max output size; encoder lowers quality / dimensions until met when possible. */
   maxBytes?: number;
   preset?: ImageCompressPreset;
 };
@@ -23,13 +20,13 @@ const PRESET_DEFAULTS: Record<
   ImageCompressPreset,
   { maxWidth: number; maxHeight: number; quality: number; maxBytes: number }
 > = {
-  avatar: { maxWidth: 192, maxHeight: 192, quality: 0.82, maxBytes: 120_000 },
-  icon: { maxWidth: 256, maxHeight: 256, quality: 0.85, maxBytes: 160_000 },
-  thumbnail: { maxWidth: 512, maxHeight: 512, quality: 0.82, maxBytes: 220_000 },
-  cover: { maxWidth: 1200, maxHeight: 400, quality: 0.8, maxBytes: 380_000 },
-  hero: { maxWidth: 1600, maxHeight: 900, quality: 0.82, maxBytes: 650_000 },
-  gallery: { maxWidth: 1920, maxHeight: 1080, quality: 0.82, maxBytes: 900_000 },
-  general: { maxWidth: 1920, maxHeight: 1920, quality: 0.82, maxBytes: 950_000 },
+  avatar: { maxWidth: 192, maxHeight: 192, quality: 0.88, maxBytes: 180_000 },
+  icon: { maxWidth: 256, maxHeight: 256, quality: 0.85, maxBytes: 200_000 },
+  thumbnail: { maxWidth: 512, maxHeight: 512, quality: 0.90, maxBytes: 250_000 },
+  cover: { maxWidth: 1200, maxHeight: 400, quality: 0.95, maxBytes: 400_000 },
+  hero: { maxWidth: 1600, maxHeight: 900, quality: 0.98, maxBytes: 700_000 },
+  gallery: { maxWidth: 1920, maxHeight: 1080, quality: 0.99, maxBytes: 950_000 },
+  general: { maxWidth: 1920, maxHeight: 1920, quality: 0.95, maxBytes: 1000_000 },
 };
 
 const MIN_QUALITY = 0.48;
@@ -211,10 +208,6 @@ async function encodeUnderBudget(
   }
   return blob;
 }
-
-/**
- * Compress a raster image file for upload. GIF/SVG are returned unchanged.
- */
 export async function compressImageFile(
   file: File,
   options: ImageCompressOptions = {},
@@ -239,7 +232,6 @@ export async function compressImageFile(
       srcHeight = bitmap.height;
       cleanup = () => bitmap.close();
     } catch {
-      /* fall through */
     }
   }
 

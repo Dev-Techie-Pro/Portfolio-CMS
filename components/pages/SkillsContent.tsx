@@ -26,10 +26,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <a href="/testimonials" class="nav-link">Testimonials</a>
           </nav>
           <div class="nav-right-btns">
-            <a href="/contact" class="nav-cta"> Hire Me <span class="icon" data-icon="siArrowTilt"></span>
+            <a href="/contact" class="nav-cta"> Hire Me <span class="icon" data-icon="ri-arrow-right-up-line"></span>
             </a>
             <a href="#0" class="btn btn-outline" id="customizeBtn" aria-label="Customize" aria-expanded="false" aria-controls="customizePanel">
-              <span class="icon" data-icon="siTheme"></span>
+              <span class="icon" data-icon="ri-palette-line"></span>
             </a>
            
           </div>
@@ -50,22 +50,22 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </p>
           <div class="exp-hero-stats">
             <div class="exp-hero-stat">
-              <span class="icon" data-icon="siCalendar"></span>
+              <span class="icon" data-icon="ri-calendar-line"></span>
               <span class="exp-hero-stat-num">20+</span>
               <span class="exp-hero-stat-label">Technologies</span>
             </div>
             <div class="exp-hero-stat">
-              <span class="icon" data-icon="siBuilding"></span>
+              <span class="icon" data-icon="ri-building-line"></span>
               <span class="exp-hero-stat-num">3+</span>
               <span class="exp-hero-stat-label">Years Experience</span>
             </div>
             <div class="exp-hero-stat">
-              <span class="icon" data-icon="siCode"></span>
+              <span class="icon" data-icon="ri-code-line"></span>
               <span class="exp-hero-stat-num">100+</span>
               <span class="exp-hero-stat-label">Projects Built</span>
             </div>
             <div class="exp-hero-stat">
-              <span class="icon" data-icon="siUsers"></span>
+              <span class="icon" data-icon="ri-group-line"></span>
               <span class="exp-hero-stat-num">100%</span>
               <span class="exp-hero-stat-label">Commitment</span>
             </div>
@@ -74,11 +74,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="exp-hero-cta-row">
             <a href="#technical-skills" class="si-btn si-btn-primary">
               Explore My Skills
-              <span class="icon" data-icon="siArrowRight"></span>
+              <span class="icon" data-icon="ri-arrow-right-line"></span>
             </a>
             <a href="/contact" class="btn btn-outline" >
               Hire Me
-              <span class="icon" data-icon="siArrowRight"></span>
+              <span class="icon" data-icon="ri-arrow-right-line"></span>
             </a>
           </div>
         </div>
@@ -96,7 +96,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <span class="icon" data-icon="siSpokes"></span>
 
             <div class="sh-core">
-              <span class="icon" data-icon="siCode"></span>
+              <span class="icon" data-icon="ri-code-line"></span>
             </div>
 
             <div class="sh-node sh-frontend">
@@ -153,7 +153,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
       </div>
 
       <div class="sh-mesh-wrap" aria-hidden="true">
-        <span class="icon" data-icon="siMeshWrap"></span>
+        <span class="icon" data-icon="ri-layout-grid-line"></span>
       </div>
     </section>
     <section id="skills" aria-label="Technical expertise">
@@ -186,35 +186,35 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
         <div class="other-skills-grid">
           <div class="other-skill-card reveal">
             <div class="other-skill-icon" aria-hidden="true">
-              <span class="icon" data-icon="siCode"></span>
+              <span class="icon" data-icon="ri-code-line"></span>
             </div>
             <div class="other-skill-title">Clean Code</div>
             <p class="other-skill-desc">Writing maintainable, scalable and efficient code following best practices.</p>
           </div>
           <div class="other-skill-card reveal">
             <div class="other-skill-icon" aria-hidden="true">
-              <span class="icon" data-icon="siSpark"></span>
+              <span class="icon" data-icon="ri-flashlight-line"></span>
             </div>
             <div class="other-skill-title">Performance</div>
             <p class="other-skill-desc">Building fast, optimized applications with great user experience.</p>
           </div>
           <div class="other-skill-card reveal">
             <div class="other-skill-icon" aria-hidden="true">
-              <span class="icon" data-icon="siMonitor"></span>
+              <span class="icon" data-icon="ri-computer-line"></span>
             </div>
             <div class="other-skill-title">Responsive Design</div>
             <p class="other-skill-desc">Creating seamless experiences across all devices and platforms.</p>
           </div>
           <div class="other-skill-card reveal">
             <div class="other-skill-icon" aria-hidden="true">
-              <span class="icon" data-icon="siExclamination"></span>
+              <span class="icon" data-icon="ri-error-warning-line"></span>
             </div>
             <div class="other-skill-title">Problem Solving</div>
             <p class="other-skill-desc">I love solving complex problems and turning ideas into real-world solutions.</p>
           </div>
           <div class="other-skill-card reveal">
             <div class="other-skill-icon" aria-hidden="true">
-              <span class="icon" data-icon="siUsers"></span>
+              <span class="icon" data-icon="ri-group-line"></span>
             </div>
             <div class="other-skill-title">Collaboration</div>
             <p class="other-skill-desc">Working effectively in teams and communicating ideas clearly.</p>
@@ -264,19 +264,19 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="learning-cards reveal">
             <div class="learning-card">
               <div class="learning-card-icon" aria-hidden="true">
-                <span class="icon" data-icon="siEye"></span>
+                <span class="icon" data-icon="ri-eye-line"></span>
               </div>
               <span class="learning-card-text">Explore modern frameworks and libraries</span>
             </div>
             <div class="learning-card">
               <div class="learning-card-icon" aria-hidden="true">
-                <span class="icon" data-icon="siCode"></span>
+                <span class="icon" data-icon="ri-code-line"></span>
               </div>
               <span class="learning-card-text">Build real-world projects and solve challenges</span>
             </div>
             <div class="learning-card">
               <div class="learning-card-icon" aria-hidden="true">
-                <span class="icon" data-icon="siBookOpen"></span>
+                <span class="icon" data-icon="ri-book-open-line"></span>
               </div>
               <span class="learning-card-text">Read, learn and grow everyday</span>
             </div>
@@ -308,11 +308,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <div class="brand-rule" aria-hidden="true"></div>
             <div class="footer-cta-card">
               <div class="footer-cta-icon" aria-hidden="true">
-                <span class="icon" data-icon="siSend"></span>
+                <span class="icon" data-icon="ri-send-plane-line"></span>
               </div>
               <h3 class="footer-cta-title">Let's work together</h3>
               <p class="footer-cta-text">Have a project in mind or just want to say hi? I'd love to hear from you.</p>
-              <a href="/contact" class="footer-cta-button"> Get In Touch <span class="icon" data-icon="siArrowTilt"></span>
+              <a href="/contact" class="footer-cta-button"> Get In Touch <span class="icon" data-icon="ri-arrow-right-up-line"></span>
               </a>
             </div>
           </div>
@@ -377,7 +377,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-contact-list">
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siPhone"></span>
+                  <span class="icon" data-icon="ri-phone-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="tel:+15551234567">+92 3038464315</a>
@@ -386,7 +386,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siEnvelope"></span>
+                  <span class="icon" data-icon="ri-mail-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="mailto:engineer.sohaibishaque@gmail.com">engineer.sohaibishaque@gmail.com</a>
@@ -395,7 +395,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siLocationPin"></span>
+                  <span class="icon" data-icon="ri-map-pin-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <span class="contact-static">Rawalpindi, Pakistan</span>
@@ -406,22 +406,22 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-social-list" aria-label="Social media links">
               <li>
                 <a href="https://github.com/Sohaib-Ishaque" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siGithub"></span>
+                  <span class="icon" data-icon="ri-github-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siLinkedin"></span>
+                  <span class="icon" data-icon="ri-linkedin-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://twitter.com/" class="social-icon" aria-label="Twitter / X" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siXcom"></span>
+                <span class="icon" data-icon="ri-twitter-x-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://instagram.com/" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siInstagram"></span>
+                <span class="icon" data-icon="ri-instagram-line"></span>
                 </a>
               </li>
             </ul>
@@ -436,7 +436,7 @@ ${SITE_FOOTER_NEWSLETTER_HTML}
             <span class="code-icon" aria-hidden="true">&lt;/&gt;</span>
             <span>Designed &amp; Built by <span class="accent">M Sohaib Ishaque</span>
             </span>
-            <span class="icon" data-icon="siHeart"></span>
+            <span class="icon" data-icon="ri-heart-line"></span>
           </div>
           <div class="bottom-center"> &copy; 2025 <span class="accent">M Sohaib Ishaque</span>. All rights reserved. </div>
         </div>

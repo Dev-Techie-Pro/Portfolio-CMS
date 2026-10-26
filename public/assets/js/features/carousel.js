@@ -353,7 +353,7 @@
             { passive: !0 },
           ),
           l(t, "keydown", (e) => {
-            ("siAngleLeft" === e.key && f(), "siArrowRight" === e.key && d());
+            ("ArrowLeft" === e.key && f(), "ArrowRight" === e.key && d());
           }),
           c());
       },

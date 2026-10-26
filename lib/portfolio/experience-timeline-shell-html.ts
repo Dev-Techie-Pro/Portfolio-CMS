@@ -26,28 +26,28 @@ export const EXPERIENCE_TIMELINE_SECTION_HTML = `<section class="exp-work exp-wo
 
         <div class="exp-skill-row">
           <div class="exp-skill-item">
-            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="siCode"></span></div>
+            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="ri-code-line"></span></div>
             <div>
               <h4>Full Stack Expertise</h4>
               <p>End-to-end delivery across UI, APIs, and databases.</p>
             </div>
           </div>
           <div class="exp-skill-item">
-            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="siUsers"></span></div>
+            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="ri-group-line"></span></div>
             <div>
               <h4>Agile Collaboration</h4>
               <p>Cross-functional teamwork with timely, quality releases.</p>
             </div>
           </div>
           <div class="exp-skill-item">
-            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="siSpark"></span></div>
+            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="ri-flashlight-line"></span></div>
             <div>
               <h4>Performance Focus</h4>
               <p>Faster queries, lighter frontends, measurable gains.</p>
             </div>
           </div>
           <div class="exp-skill-item">
-            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="siAward"></span></div>
+            <div class="exp-skill-icon" aria-hidden="true"><span class="icon" data-icon="ri-award-line"></span></div>
             <div>
               <h4>Client Satisfaction</h4>
               <p>Reliable handoffs and 100% client satisfaction.</p>

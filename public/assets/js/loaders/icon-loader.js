@@ -1,4 +1,5 @@
 import { ICONS } from "../config/constants.js";
+import { resolvePublicIconKey } from "../data/legacy-icon-remix-map.js";
 
 (() => {
   const Portfolio = (window.Portfolio = window.Portfolio || {});
@@ -77,6 +78,25 @@ import { ICONS } from "../config/constants.js";
     }
   };
 
+  const mountRemixIcon = (element, remixClass) => {
+    try {
+      element.insertAdjacentHTML(
+        "afterbegin",
+        `<i class="${remixClass}" aria-hidden="true"></i>`,
+      );
+      element.dataset.iconReady = "true";
+      element.removeAttribute("data-icon-error");
+      return true;
+    } catch (error) {
+      console.error(
+        "[Portfolio.ICONS] Unable to render remix icon " + remixClass + ".",
+        error,
+      );
+      element.dataset.iconError = "render";
+      return false;
+    }
+  };
+
   const hydrate = (element) => {
     if (!(element instanceof Element) || element.dataset.iconReady === "true")
       return false;
@@ -85,6 +105,12 @@ import { ICONS } from "../config/constants.js";
     if (!name) {
       element.dataset.iconError = "empty";
       return false;
+    }
+
+    const remixClass = resolvePublicIconKey(name);
+    if (remixClass.startsWith("ri-")) {
+      element.dataset.icon = remixClass;
+      return mountRemixIcon(element, remixClass);
     }
 
     const raw = ICONS[name];

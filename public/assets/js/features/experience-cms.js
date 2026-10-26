@@ -84,13 +84,13 @@
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
     const extraClass = slug.includes("express") ? " express-js" : "";
-    return `<span class="exp-tech-chip${extraClass}" title="${escapeHtml(tech.name)}"><span class="icon" data-icon="${escapeHtml(tech.icon || "siCode")}"></span></span>`;
+    return `<span class="exp-tech-chip${extraClass}" title="${escapeHtml(tech.name)}"><span class="icon" data-icon="${escapeHtml(tech.icon || "ri-code-line")}"></span></span>`;
   }
 
   function renderTimelineCard(entry, index, active) {
     const num = String(index + 1).padStart(2, "0");
     const loc = entry.location
-      ? `<p class="exp-tl-meta"><span class="icon" data-icon="siLocationPin"></span> ${escapeHtml(entry.location)}</p>`
+      ? `<p class="exp-tl-meta"><span class="icon" data-icon="ri-map-pin-line"></span> ${escapeHtml(entry.location)}</p>`
       : "";
     return `
       <button class="exp-tl-card${active ? " is-exp-active" : ""}" type="button" role="tab" id="exp-tab-${index}" aria-selected="${active ? "true" : "false"}" aria-controls="exp-panel-${index}" data-exp-index="${index}"${active ? "" : ' tabindex="-1"'}>
@@ -99,7 +99,7 @@
           <h3 class="exp-tl-role">${escapeHtml(entry.title)}</h3>
           <p class="exp-tl-company">${escapeHtml(entry.company)}</p>
           ${loc}
-          <p class="exp-tl-meta"><span class="icon" data-icon="siCalendar"></span> ${escapeHtml(formatDateRange(entry))}</p>
+          <p class="exp-tl-meta"><span class="icon" data-icon="ri-calendar-line"></span> ${escapeHtml(formatDateRange(entry))}</p>
         </div>
       </button>`;
   }
@@ -135,7 +135,7 @@
       ? `<p class="exp-role-desc">${escapeHtml(entry.description)}</p>`
       : "";
     const loc = entry.location
-      ? `<p class="exp-role-company-loc"><span class="icon" data-icon="siLocationPin"></span> ${escapeHtml(entry.location)}</p>`
+      ? `<p class="exp-role-company-loc"><span class="icon" data-icon="ri-map-pin-line"></span> ${escapeHtml(entry.location)}</p>`
       : "";
     const facts = [
       factRow("siBriefcase", "Type", employmentLabel(entry.type)),
@@ -177,7 +177,7 @@
         </div>
         <aside class="exp-role-aside">
           ${techBlock}
-          <a href="/projects" class="exp-role-cases">View Case Studies <span class="icon" data-icon="siArrowRight"></span></a>
+          <a href="/projects" class="exp-role-cases">View Case Studies <span class="icon" data-icon="ri-arrow-right-line"></span></a>
         </aside>
       </article>`;
   }

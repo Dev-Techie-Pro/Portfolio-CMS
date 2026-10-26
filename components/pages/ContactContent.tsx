@@ -25,10 +25,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <a href="/testimonials" class="nav-link">Testimonials</a>
           </nav>
           <div class="nav-right-btns">
-            <a href="/contact" class="nav-cta"> Hire Me <span class="icon" data-icon="siArrowTilt"></span>
+            <a href="/contact" class="nav-cta"> Hire Me <span class="icon" data-icon="ri-arrow-right-up-line"></span>
             </a>
             <a href="#0" class="btn btn-outline" id="customizeBtn" aria-label="Customize" aria-expanded="false" aria-controls="customizePanel">
-              <span class="icon" data-icon="siTheme"></span>
+              <span class="icon" data-icon="ri-palette-line"></span>
             </a>
            
           </div>
@@ -54,7 +54,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="ch-info-row">
             <a href="mailto:engineer.sohaibishaque@gmail.com" class="ch-info-card">
               <span class="ch-info-icon" aria-hidden="true">
-                <span class="icon" data-icon="siEmail"></span>
+                <span class="icon" data-icon="ri-mail-line"></span>
               </span>
               <span class="ch-info-text">
                 <strong>Email</strong>
@@ -64,7 +64,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
 
             <a href="tel:+923038464315" class="ch-info-card">
               <span class="ch-info-icon" aria-hidden="true">
-                <span class="icon" data-icon="siPhone"></span>
+                <span class="icon" data-icon="ri-phone-line"></span>
               </span>
               <span class="ch-info-text">
                 <strong>Phone</strong>
@@ -74,7 +74,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
 
             <div class="ch-info-card">
               <span class="ch-info-icon" aria-hidden="true">
-                <span class="icon" data-icon="siLocationPin"></span>
+                <span class="icon" data-icon="ri-map-pin-line"></span>
               </span>
               <span class="ch-info-text">
                 <strong>Location</strong>
@@ -84,10 +84,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="hero-btns">
             <a href="#send-message" class="si-btn si-btn-primary"> Send Message 
-              <span class="icon" data-icon="siArrowRight"></span>
+              <span class="icon" data-icon="ri-arrow-right-line"></span>
             </a>
             <a href="/about" class="btn btn-outline"> About Me 
-              <span class="icon" data-icon="siArrowRight"></span>
+              <span class="icon" data-icon="ri-arrow-right-line"></span>
             </a>
           </div>
         </div>
@@ -103,7 +103,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </div>
             <div class="ch-float ch-response-card">
               <span class="ch-response-icon" aria-hidden="true">
-                <span class="icon" data-icon="siClock"></span>
+                <span class="icon" data-icon="ri-time-line"></span>
               </span>
               <span class="ch-response-text">
                 <strong>Quick Response</strong>
@@ -132,7 +132,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <div class="ci-cards">
               <div class="ci-card reveal">
                 <div class="ci-card-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siEnvelope"></span>
+                  <span class="icon" data-icon="ri-mail-line"></span>
                 </div>
                 <div>
                   <div class="ci-card-label">Email</div>
@@ -142,7 +142,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="ci-card reveal">
                 <div class="ci-card-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siPhone"></span>
+                  <span class="icon" data-icon="ri-phone-line"></span>
                 </div>
                 <div>
                   <div class="ci-card-label">Phone</div>
@@ -152,7 +152,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="ci-card reveal">
                 <div class="ci-card-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siLocationPin"></span>
+                  <span class="icon" data-icon="ri-map-pin-line"></span>
                 </div>
                 <div>
                   <div class="ci-card-label">Location</div>
@@ -163,7 +163,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="ci-card reveal">
                 <div class="ci-card-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siSend"></span>
+                  <span class="icon" data-icon="ri-send-plane-line"></span>
                 </div>
                 <div>
                   <div class="ci-card-label">Freelance</div>
@@ -177,22 +177,22 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-social-list reveal" aria-label="Social media links">
               <li>
                 <a href="https://github.com/Sohaib-Ishaque" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siGithub"></span>
+                  <span class="icon" data-icon="ri-github-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siLinkedin"></span>
+                  <span class="icon" data-icon="ri-linkedin-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://twitter.com/" class="social-icon" aria-label="Twitter / X" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siXcom"></span>
+                <span class="icon" data-icon="ri-twitter-x-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://instagram.com/" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siInstagram"></span>
+                <span class="icon" data-icon="ri-instagram-line"></span>
                 </a>
               </li>
             </ul>
@@ -259,7 +259,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <div class="cf-submit-row reveal">
                 <button type="submit" class="cf-submit" aria-label="Send message">
                   <span>Submit</span>
-                  <span class="icon" data-icon="siMinus"></span>
+                  <span class="icon" data-icon="ri-subtract-line"></span>
                 </button>
                 <p class="cf-recaptcha">
                   Your information is 100% secure and will never be shared.
@@ -311,11 +311,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <div class="brand-rule" aria-hidden="true"></div>
             <div class="footer-cta-card">
               <div class="footer-cta-icon" aria-hidden="true">
-                <span class="icon" data-icon="siSend"></span>
+                <span class="icon" data-icon="ri-send-plane-line"></span>
               </div>
               <h3 class="footer-cta-title">Let's work together</h3>
               <p class="footer-cta-text">Have a project in mind or just want to say hi? I'd love to hear from you.</p>
-              <a href="/contact" class="footer-cta-button"> Get In Touch <span class="icon" data-icon="siArrowTilt"></span>
+              <a href="/contact" class="footer-cta-button"> Get In Touch <span class="icon" data-icon="ri-arrow-right-up-line"></span>
               </a>
             </div>
           </div>
@@ -380,7 +380,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-contact-list">
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siPhone"></span>
+                  <span class="icon" data-icon="ri-phone-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="tel:+15551234567">+92 3038464315</a>
@@ -389,7 +389,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siEnvelope"></span>
+                  <span class="icon" data-icon="ri-mail-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="mailto:engineer.sohaibishaque@gmail.com">engineer.sohaibishaque@gmail.com</a>
@@ -398,7 +398,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siLocationPin"></span>
+                  <span class="icon" data-icon="ri-map-pin-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <span class="contact-static">Rawalpindi, Pakistan</span>
@@ -409,22 +409,22 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-social-list" aria-label="Social media links">
               <li>
                 <a href="https://github.com/Sohaib-Ishaque" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siGithub"></span>
+                  <span class="icon" data-icon="ri-github-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-                  <span class="icon" data-icon="siLinkedin"></span>
+                  <span class="icon" data-icon="ri-linkedin-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://twitter.com/" class="social-icon" aria-label="Twitter / X" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siXcom"></span>
+                <span class="icon" data-icon="ri-twitter-x-fill"></span>
                 </a>
               </li>
               <li>
                 <a href="https://instagram.com/" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                <span class="icon" data-icon="siInstagram"></span>
+                <span class="icon" data-icon="ri-instagram-line"></span>
                 </a>
               </li>
             </ul>
@@ -439,7 +439,7 @@ ${SITE_FOOTER_NEWSLETTER_HTML}
             <span class="code-icon" aria-hidden="true">&lt;/&gt;</span>
             <span>Designed &amp; Built by <span class="accent">M Sohaib Ishaque</span>
             </span>
-            <span class="icon" data-icon="siHeart"></span>
+            <span class="icon" data-icon="ri-heart-line"></span>
           </div>
           <div class="bottom-center"> &copy; 2025 <span class="accent">M Sohaib Ishaque</span>. All rights reserved. </div>
         </div>

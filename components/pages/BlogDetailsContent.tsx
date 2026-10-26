@@ -27,10 +27,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="nav-right-btns">
             <a href="/contact" class="nav-cta">
               Hire Me
-              <span class="icon" data-icon="siArrowTilt"></span>
+              <span class="icon" data-icon="ri-arrow-right-up-line"></span>
             </a>
             <a href="#0" class="btn btn-outline" id="customizeBtn" aria-label="Customize" aria-expanded="false" aria-controls="customizePanel">
-              <span class="icon" data-icon="siSettings"></span>
+              <span class="icon" data-icon="ri-settings-3-line"></span>
             </a>
           </div>
         </div>
@@ -64,11 +64,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             </div>
             <div class="meta-divider" aria-hidden="true"></div>
             <div class="meta-item">
-              <span class="icon" data-icon="siCalendar"></span>
+              <span class="icon" data-icon="ri-calendar-line"></span>
               <time id="bdsiCalendar" datetime="">—</time>
             </div>
             <div class="meta-item">
-              <span class="icon" data-icon="siClock"></span>
+              <span class="icon" data-icon="ri-time-line"></span>
               <span id="bdReadTime">—</span>
             </div>
             <div class="meta-tags" id="bdHeroTags"></div>
@@ -91,8 +91,8 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <nav class="toc-list" id="tocNav" aria-label="Table of contents"></nav>
           </div>
           <div class="bd-sidebar-card bd-toc-meta" id="bdTocMeta" hidden>
-            <p class="bd-toc-meta-row"><span class="icon" data-icon="siClock"></span> <span id="bdTocReadTime">—</span></p>
-            <p class="bd-toc-meta-row"><span class="icon" data-icon="siCalendar"></span> Updated <span id="bdTocUpdated">—</span></p>
+            <p class="bd-toc-meta-row"><span class="icon" data-icon="ri-time-line"></span> <span id="bdTocReadTime">—</span></p>
+            <p class="bd-toc-meta-row"><span class="icon" data-icon="ri-calendar-line"></span> Updated <span id="bdTocUpdated">—</span></p>
           </div>
           <div class="bd-sidebar-card bd-sidebar-project-cta" id="bdSidebarLeftProjectCta" hidden>
             <div class="bd-sidebar-project-cta-icon" aria-hidden="true"><i class="ri-lightbulb-line"></i></div>
@@ -103,9 +103,9 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="bd-sidebar-card bd-quick-links" id="bdQuickLinksCard" hidden>
             <h2 class="card-title">Quick Links</h2>
             <ul class="bd-quick-links-list">
-              <li><a href="https://angular.dev" target="_blank" rel="noopener noreferrer">Angular Official Docs <span class="icon" data-icon="siArrowRight"></span></a></li>
-              <li><a href="https://angular.dev/cli" target="_blank" rel="noopener noreferrer">Angular CLI <span class="icon" data-icon="siArrowRight"></span></a></li>
-              <li><a href="https://rxjs.dev" target="_blank" rel="noopener noreferrer">RxJS Documentation <span class="icon" data-icon="siArrowRight"></span></a></li>
+              <li><a href="https://angular.dev" target="_blank" rel="noopener noreferrer">Angular Official Docs <span class="icon" data-icon="ri-arrow-right-line"></span></a></li>
+              <li><a href="https://angular.dev/cli" target="_blank" rel="noopener noreferrer">Angular CLI <span class="icon" data-icon="ri-arrow-right-line"></span></a></li>
+              <li><a href="https://rxjs.dev" target="_blank" rel="noopener noreferrer">RxJS Documentation <span class="icon" data-icon="ri-arrow-right-line"></span></a></li>
             </ul>
           </div>
           <div class="bd-sidebar-card cta-card" id="bdSidebarCta">
@@ -233,10 +233,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <h3 class="bd-sidebar-title">M Sohaib Ishaque</h3>
             <p class="bd-sidebar-text">Full Stack Web Developer building scalable web apps with Angular, .NET Core, and modern JavaScript.</p>
             <ul class="footer-social-list bd-author-social" aria-label="Author social links">
-              <li><a href="https://github.com/Sohaib-Ishaque" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="siGithub"></span></a></li>
-              <li><a href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="siLinkedin"></span></a></li>
-              <li><a href="https://twitter.com/" class="social-icon" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="siXcom"></span></a></li>
-              <li><a href="mailto:engineer.sohaibishaque@gmail.com" class="social-icon" aria-label="siEmail"><span class="icon" data-icon="siEnvelope"></span></a></li>
+              <li><a href="https://github.com/Sohaib-Ishaque" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="ri-github-fill"></span></a></li>
+              <li><a href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="ri-linkedin-fill"></span></a></li>
+              <li><a href="https://twitter.com/" class="social-icon" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="ri-twitter-x-fill"></span></a></li>
+              <li><a href="mailto:engineer.sohaibishaque@gmail.com" class="social-icon" aria-label="siEmail"><span class="icon" data-icon="ri-mail-line"></span></a></li>
             </ul>
           </div>
           <div class="bd-sidebar-card reveal">
@@ -256,7 +256,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="bd-sidebar-card bd-newsletter-card reveal" id="bdNewsletterCard">
             <div class="bd-newsletter-icon" aria-hidden="true">
-              <span class="icon" data-icon="siEnvelope"></span>
+              <span class="icon" data-icon="ri-mail-line"></span>
             </div>
             <h3 class="bd-sidebar-title">Stay Updated</h3>
             <p class="bd-sidebar-text">Subscribe for new articles on web development and architecture.</p>
@@ -292,13 +292,13 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
       <div class="container">
         <div class="bd-inline-cta reveal">
           <div class="bd-inline-cta-icon" aria-hidden="true">
-            <span class="icon" data-icon="siArrowRight"></span>
+            <span class="icon" data-icon="ri-arrow-right-line"></span>
           </div>
           <div>
             <h2 class="bd-inline-cta-title">Let's create something amazing together</h2>
             <p class="bd-inline-cta-text">Have a project in mind? I'd love to help you build it.</p>
           </div>
-          <a href="/contact" class="si-btn si-btn-primary">Start Project <span class="icon" data-icon="siArrowRight"></span></a>
+          <a href="/contact" class="si-btn si-btn-primary">Start Project <span class="icon" data-icon="ri-arrow-right-line"></span></a>
         </div>
       </div>
     </section>
@@ -324,10 +324,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <p class="brand-tagline">Building digital experiences that make an impact. Clean code, modern design, scalable solutions.</p>
             <div class="brand-rule" aria-hidden="true"></div>
             <div class="footer-cta-card">
-              <div class="footer-cta-icon" aria-hidden="true"><span class="icon" data-icon="siSend"></span></div>
+              <div class="footer-cta-icon" aria-hidden="true"><span class="icon" data-icon="ri-send-plane-line"></span></div>
               <h3 class="footer-cta-title">Let's work together</h3>
               <p class="footer-cta-text">Have a project in mind or just want to say hi? I'd love to hear from you.</p>
-              <a href="/contact" class="footer-cta-button">Get In Touch <span class="icon" data-icon="siArrowTilt"></span></a>
+              <a href="/contact" class="footer-cta-button">Get In Touch <span class="icon" data-icon="ri-arrow-right-up-line"></span></a>
             </div>
           </div>
           <nav class="footer-col footer-col--nav" aria-labelledby="bd-footer-nav-heading">
@@ -356,14 +356,14 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <h3 class="footer-col-heading"><span class="dot" aria-hidden="true"></span>Let's Connect</h3>
             <ul class="footer-contact-list">
               <li class="footer-contact-item">
-                <span class="footer-contact-icon" aria-hidden="true"><span class="icon" data-icon="siEnvelope"></span></span>
+                <span class="footer-contact-icon" aria-hidden="true"><span class="icon" data-icon="ri-mail-line"></span></span>
                 <span class="footer-contact-text">
                   <a href="mailto:engineer.sohaibishaque@gmail.com">engineer.sohaibishaque@gmail.com</a>
                   <span class="footer-contact-sub">I'll get back to you soon</span>
                 </span>
               </li>
               <li class="footer-contact-item">
-                <span class="footer-contact-icon" aria-hidden="true"><span class="icon" data-icon="siLocationPin"></span></span>
+                <span class="footer-contact-icon" aria-hidden="true"><span class="icon" data-icon="ri-map-pin-line"></span></span>
                 <span class="footer-contact-text">
                   <span class="contact-static">Rawalpindi, Pakistan</span>
                   <span class="footer-contact-sub">Available for remote work</span>
@@ -371,10 +371,10 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
             </ul>
             <ul class="footer-social-list" aria-label="Social media links">
-              <li><a href="https://github.com/Sohaib-Ishaque" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="siGithub"></span></a></li>
-              <li><a href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="siLinkedin"></span></a></li>
-              <li><a href="https://twitter.com/" class="social-icon" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="siXcom"></span></a></li>
-              <li><a href="https://instagram.com/" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="siInstagram"></span></a></li>
+              <li><a href="https://github.com/Sohaib-Ishaque" class="social-icon" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="ri-github-fill"></span></a></li>
+              <li><a href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/" class="social-icon" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="ri-linkedin-fill"></span></a></li>
+              <li><a href="https://twitter.com/" class="social-icon" aria-label="Twitter" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="ri-twitter-x-fill"></span></a></li>
+              <li><a href="https://instagram.com/" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><span class="icon" data-icon="ri-instagram-line"></span></a></li>
             </ul>
             <p class="freelance-note"><strong>Available</strong> for freelance work<br />and exciting opportunities.</p>
 ${SITE_FOOTER_NEWSLETTER_HTML}
@@ -384,7 +384,7 @@ ${SITE_FOOTER_NEWSLETTER_HTML}
           <div class="bottom-left">
             <span class="code-icon" aria-hidden="true">&lt;/&gt;</span>
             <span>Designed &amp; Built by <span class="accent">M Sohaib Ishaque</span></span>
-            <span class="icon" data-icon="siHeart"></span>
+            <span class="icon" data-icon="ri-heart-line"></span>
           </div>
           <div class="bottom-center">&copy; 2025 <span class="accent">M Sohaib Ishaque</span>. All rights reserved.</div>
         </div>

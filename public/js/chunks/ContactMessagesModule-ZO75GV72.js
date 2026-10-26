@@ -899,7 +899,7 @@ var ContactMessagesModule = class extends Module {
         const file = fileInput.files?.[0];
         if (!file) return;
         try {
-          const { uploadContactAttachment } = await import("./media-upload-SWWSZNEP.js");
+          const { uploadContactAttachment } = await import("./media-upload-VZVR64D6.js");
           const uploaded = await uploadContactAttachment(file);
           this.setReplyAttachmentFromMedia({
             url: uploaded.url,
@@ -952,4 +952,4 @@ var ContactMessagesModule = class extends Module {
 export {
   ContactMessagesModule
 };
-//# sourceMappingURL=ContactMessagesModule-CJHT63GG.js.map
+//# sourceMappingURL=ContactMessagesModule-ZO75GV72.js.map

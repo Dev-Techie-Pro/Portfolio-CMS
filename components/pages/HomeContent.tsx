@@ -32,7 +32,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </nav>
           <div class="nav-right-btns">
             <a href="/contact" class="nav-cta">
-              Hire Me <span class="icon" data-icon="siArrowTilt"></span>
+              Hire Me <span class="icon" data-icon="ri-arrow-right-up-line"></span>
             </a>
             <a
               href="#0"
@@ -42,7 +42,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               aria-expanded="false"
               aria-controls="paCustomPanel"
             >
-              <span class="icon" data-icon="siTheme"></span>
+              <span class="icon" data-icon="ri-palette-line"></span>
             </a>
           </div>
         </div>
@@ -71,7 +71,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <div class="hv2-ctas">
               <a href="/projects" class="si-btn si-btn-primary">
                 View My Work
-                <span class="icon" data-icon="siArrowRight"></span>
+                <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
               <a
                 href="/assets/Sohaib_Ishaque_CV.pdf"
@@ -79,14 +79,14 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 download
               >
                 Download CV
-                <span class="icon" data-icon="siDownload"></span>
+                <span class="icon" data-icon="ri-download-line"></span>
               </a>
             </div>
 
             <div class="hv2-stats">
               <div class="hv2-stat">
                 <span class="hv2-stat-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siBriefcaseA"></span>
+                  <span class="icon" data-icon="ri-briefcase-2-line"></span>
                 </span>
                 <span class="hv2-dir">
                   <span class="hv2-stat-num" data-count="65" data-suffix="+"
@@ -97,7 +97,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="hv2-stat">
                 <span class="hv2-stat-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siUsers"></span>
+                  <span class="icon" data-icon="ri-group-line"></span>
                 </span>
                 <span class="hv2-dir">
                   <span class="hv2-stat-num" data-count="20" data-suffix="+"
@@ -108,7 +108,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="hv2-stat">
                 <span class="hv2-stat-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siStar"></span>
+                  <span class="icon" data-icon="ri-star-line"></span>
                 </span>
                 <span class="hv2-dir">
                   <span class="hv2-stat-num" data-count="3" data-suffix="+"
@@ -163,7 +163,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 </div>
                 <div class="hv2-service-card">
                   <span class="hv2-service-icon" aria-hidden="true">
-                    <span class="icon" data-icon="siPen"></span>
+                    <span class="icon" data-icon="ri-edit-line"></span>
                   </span>
                   <span>
                     <span class="hv2-service-title">UI/UX Design</span>
@@ -171,7 +171,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 </div>
                 <div class="hv2-service-card span-2">
                   <span class="hv2-service-icon" aria-hidden="true">
-                    <span class="icon" data-icon="siCode"></span>
+                    <span class="icon" data-icon="ri-code-line"></span>
                   </span>
                   <span>
                     <span class="hv2-service-title">Web Development</span>
@@ -179,7 +179,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 </div>
                 <div class="hv2-service-card span-2">
                   <span class="hv2-service-icon" aria-hidden="true">
-                    <span class="icon" data-icon="siDownload"></span>
+                    <span class="icon" data-icon="ri-download-line"></span>
                   </span>
                   <span>
                     <span class="hv2-service-title">API Development</span>
@@ -195,7 +195,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 </div>
                 <div class="hv2-service-card">
                   <span class="hv2-service-icon" aria-hidden="true">
-                    <span class="icon" data-icon="siSpark"></span>
+                    <span class="icon" data-icon="ri-flashlight-line"></span>
                   </span>
                   <span>
                     <span class="hv2-service-title">Performance</span>
@@ -208,7 +208,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <p class="hv2-eyebrow">Available For</p>
               <a href="/contact" class="hv2-available">
                 <span class="hv2-available-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siSend"></span>
+                  <span class="icon" data-icon="ri-send-plane-line"></span>
                 </span>
                 <span>
                   <span class="hv2-available-title">Freelance Projects</span>
@@ -217,7 +217,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                   >
                   <span class="hv2-available-link">
                     Let's Talk
-                    <span class="icon" data-icon="siArrowRight"></span>
+                    <span class="icon" data-icon="ri-arrow-right-line"></span>
                   </span>
                 </span>
               </a>
@@ -234,7 +234,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span class="icon" data-icon="siGithub"></span>
+                    <span class="icon" data-icon="ri-github-fill"></span>
                   </a>
                 </li>
                 <li>
@@ -245,7 +245,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span class="icon" data-icon="siLinkedin"></span>
+                    <span class="icon" data-icon="ri-linkedin-fill"></span>
                   </a>
                 </li>
                 <li>
@@ -256,7 +256,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span class="icon" data-icon="siXcom"></span>
+                    <span class="icon" data-icon="ri-twitter-x-fill"></span>
                   </a>
                 </li>
                 <li>
@@ -267,7 +267,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span class="icon" data-icon="siInstagram"></span>
+                    <span class="icon" data-icon="ri-instagram-line"></span>
                   </a>
                 </li>
               </ul>
@@ -281,7 +281,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
         <div class="metrics-grid">
           <div class="metric-item reveal">
             <div class="metric-icon u-flex-center" aria-hidden="true">
-              <span class="icon" data-icon="siCode"></span>
+              <span class="icon" data-icon="ri-code-line"></span>
             </div>
             <div>
               <div class="metric-num">
@@ -292,7 +292,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="metric-item reveal">
             <div class="metric-icon u-flex-center" aria-hidden="true">
-              <span class="icon" data-icon="siBriefcase"></span>
+              <span class="icon" data-icon="ri-briefcase-line"></span>
             </div>
             <div>
               <div class="metric-num">
@@ -303,7 +303,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="metric-item reveal">
             <div class="metric-icon u-flex-center" aria-hidden="true">
-              <span class="icon" data-icon="siStar"></span>
+              <span class="icon" data-icon="ri-star-line"></span>
             </div>
             <div>
               <div class="metric-num">
@@ -314,7 +314,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           </div>
           <div class="metric-item reveal">
             <div class="metric-icon u-flex-center" aria-hidden="true">
-              <span class="icon" data-icon="siPhone"></span>
+              <span class="icon" data-icon="ri-phone-line"></span>
             </div>
             <div>
               <div class="metric-num">24/7</div>
@@ -352,13 +352,13 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 class="si-btn si-btn-primary"
                 style="margin-top: 0.5rem"
               >
-                More About Me <span class="icon" data-icon="siArrowRight"></span>
+                More About Me <span class="icon" data-icon="ri-arrow-right-line"></span>
               </a>
             </div>
             <div class="about-values reveal-right">
               <div class="value-card">
                 <div class="value-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siCode"></span>
+                  <span class="icon" data-icon="ri-code-line"></span>
                 </div>
                 <h3 class="value-title">Clean Code</h3>
                 <p class="value-desc">
@@ -368,7 +368,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="value-card">
                 <div class="value-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siSpark"></span>
+                  <span class="icon" data-icon="ri-flashlight-line"></span>
                 </div>
                 <h3 class="value-title">Performance</h3>
                 <p class="value-desc">
@@ -379,7 +379,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="value-card">
                 <div class="value-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siMonitor"></span>
+                  <span class="icon" data-icon="ri-computer-line"></span>
                 </div>
                 <h3 class="value-title">Responsive</h3>
                 <p class="value-desc">
@@ -389,7 +389,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="value-card">
                 <div class="value-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siExclamination"></span>
+                  <span class="icon" data-icon="ri-error-warning-line"></span>
                 </div>
                 <h3 class="value-title">Problem Solver</h3>
                 <p class="value-desc">
@@ -499,7 +499,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
           <div class="blogs-footer reveal">
             <a href="/blogs" class="si-btn si-btn-primary">
               View All Posts
-              <span class="icon" data-icon="siArrowRight"></span>
+              <span class="icon" data-icon="ri-arrow-right-line"></span>
             </a>
           </div>
         </div>
@@ -532,7 +532,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <aside class="faq-sidebar" aria-label="Get in touch">
               <div class="faq-cta-card reveal">
                 <div class="faq-cta-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siFaqChat"></span>
+                  <span class="icon" data-icon="ri-question-answer-line"></span>
                 </div>
                 <h3 class="faq-cta-title">
                   You have different questions?<br />
@@ -546,7 +546,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </div>
               <div class="faq-contact-card reveal">
                 <div class="faq-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siPhone"></span>
+                  <span class="icon" data-icon="ri-phone-line"></span>
                 </div>
                 <div class="faq-contact-text">
                   <p class="faq-contact-tag">Your Vision, My Craft</p>
@@ -591,7 +591,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               <div class="contact-details">
                 <div class="contact-detail">
                   <div class="contact-detail-icon" aria-hidden="true">
-                    <span class="icon" data-icon="siEnvelope"></span>
+                    <span class="icon" data-icon="ri-mail-line"></span>
                   </div>
                   <div class="contact-detail-text">
                     <a href="mailto:engineer.sohaibishaque@gmail.com"
@@ -601,7 +601,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 </div>
                 <div class="contact-detail" data-cms-contact-phone-row>
                   <div class="contact-detail-icon" aria-hidden="true">
-                    <span class="icon" data-icon="siPhone"></span>
+                    <span class="icon" data-icon="ri-phone-line"></span>
                   </div>
                   <div class="contact-detail-text contact-detail-phones">
                     <a
@@ -625,7 +625,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 </div>
                 <div class="contact-detail">
                   <div class="contact-detail-icon" aria-hidden="true">
-                    <span class="icon" data-icon="siLocationPin"></span>
+                    <span class="icon" data-icon="ri-map-pin-line"></span>
                   </div>
                   <div class="contact-detail-text">
                     <span>Block B, Satellite Town, Rawalpindi, Pakistan</span>
@@ -641,7 +641,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span class="icon" data-icon="siGithub"></span>
+                    <span class="icon" data-icon="ri-github-fill"></span>
                   </a>
                 </li>
                 <li>
@@ -652,7 +652,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span class="icon" data-icon="siLinkedin"></span>
+                    <span class="icon" data-icon="ri-linkedin-fill"></span>
                   </a>
                 </li>
                 <li>
@@ -672,7 +672,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                     class="social-icon"
                     aria-label="siEmail"
                   >
-                    <span class="icon" data-icon="siEnvelope"></span>
+                    <span class="icon" data-icon="ri-mail-line"></span>
                   </a>
                 </li>
               </ul>
@@ -870,7 +870,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                       aria-label="Send message"
                     >
                       <span>Submit</span>
-                      <span class="icon" data-icon="siArrowRight"></span>
+                      <span class="icon" data-icon="ri-arrow-right-line"></span>
                     </button>
                     <p class="cf-recaptcha">
                       Your information is 100% secure and will never be shared.
@@ -914,7 +914,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <div class="brand-rule" aria-hidden="true"></div>
             <div class="footer-cta-card">
               <div class="footer-cta-icon" aria-hidden="true">
-                <span class="icon" data-icon="siSend"></span>
+                <span class="icon" data-icon="ri-send-plane-line"></span>
               </div>
               <h3 class="footer-cta-title">Let's work together</h3>
               <p class="footer-cta-text">
@@ -922,7 +922,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                 from you.
               </p>
               <a href="/contact" class="footer-cta-button">
-                Get In Touch <span class="icon" data-icon="siArrowTilt"></span>
+                Get In Touch <span class="icon" data-icon="ri-arrow-right-up-line"></span>
               </a>
             </div>
           </div>
@@ -994,7 +994,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
             <ul class="footer-contact-list">
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siPhone"></span>
+                  <span class="icon" data-icon="ri-phone-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="tel:+15551234567">+92 3038464315</a>
@@ -1005,7 +1005,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siEnvelope"></span>
+                  <span class="icon" data-icon="ri-mail-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <a href="mailto:engineer.sohaibishaque@gmail.com"
@@ -1018,7 +1018,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               </li>
               <li class="footer-contact-item">
                 <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="siLocationPin"></span>
+                  <span class="icon" data-icon="ri-map-pin-line"></span>
                 </span>
                 <span class="footer-contact-text">
                   <span class="contact-static">Rawalpindi, Pakistan</span>
@@ -1037,7 +1037,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span class="icon" data-icon="siGithub"></span>
+                  <span class="icon" data-icon="ri-github-fill"></span>
                 </a>
               </li>
               <li>
@@ -1048,7 +1048,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span class="icon" data-icon="siLinkedin"></span>
+                  <span class="icon" data-icon="ri-linkedin-fill"></span>
                 </a>
               </li>
               <li>
@@ -1068,7 +1068,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                   class="social-icon"
                   aria-label="siEmail"
                 >
-                  <span class="icon" data-icon="siEnvelope"></span>
+                  <span class="icon" data-icon="ri-mail-line"></span>
                 </a>
               </li>
             </ul>
@@ -1086,7 +1086,7 @@ ${SITE_FOOTER_NEWSLETTER_HTML}
               >Designed &amp; Built by
               <span class="accent">M Sohaib Ishaque</span>
             </span>
-            <span class="icon" data-icon="siHeart"></span>
+            <span class="icon" data-icon="ri-heart-line"></span>
           </div>
           <div class="bottom-center">
             &copy; 2025 <span class="accent">M Sohaib Ishaque</span>. All rights

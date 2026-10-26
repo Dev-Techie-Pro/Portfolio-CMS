@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { ICONS } from './icon-registry.js';
+import { LEGACY_ICON_TO_REMIX } from './legacy-icon-remix-map.js';
 
 export const DEFAULT_TOOL_ICON = 'ri-tools-line';
 export const DEFAULT_CATEGORY_ICON = 'ri-tools-line';
@@ -25,11 +26,17 @@ export function listLegacyIconKeys() {
 }
 
 export function resolveIconKey(value, fallback = DEFAULT_TOOL_ICON) {
-  if (value && (isRemixIconKey(value) || isLegacyIconKey(value))) {
-    return value;
+  const mapped = value && LEGACY_ICON_TO_REMIX[value] ? LEGACY_ICON_TO_REMIX[value] : value;
+  const mappedFallback =
+    fallback && LEGACY_ICON_TO_REMIX[fallback] ? LEGACY_ICON_TO_REMIX[fallback] : fallback;
+  if (mapped && (isRemixIconKey(mapped) || isLegacyIconKey(mapped))) {
+    return mapped;
   }
-  if (fallback && (isRemixIconKey(fallback) || isLegacyIconKey(fallback))) {
-    return fallback;
+  if (
+    mappedFallback &&
+    (isRemixIconKey(mappedFallback) || isLegacyIconKey(mappedFallback))
+  ) {
+    return mappedFallback;
   }
   return DEFAULT_TOOL_ICON;
 }

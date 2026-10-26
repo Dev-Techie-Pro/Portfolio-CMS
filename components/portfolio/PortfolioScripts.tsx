@@ -190,7 +190,7 @@ function initContactLeafletMap() {
       <div class="lf-popup-name">M Sohaib Ishaque</div>
       <div class="lf-popup-role">Full Stack Web Developer</div>
       <div class="lf-popup-loc">
-        <span class="icon" data-icon="siLocationPin"></span>
+        <span class="icon" data-icon="ri-map-pin-line"></span>
         Rawalpindi, Punjab, Pakistan
       </div>
       <div class="lf-popup-avail">&#x25CF; Available for remote &amp; on-site work</div>

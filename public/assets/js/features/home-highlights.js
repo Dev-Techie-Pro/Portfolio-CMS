@@ -36,7 +36,7 @@
 
     const badge = item.featured
       ? `<span class="ph-featured-badge" aria-label="Featured project">
-          <span class="icon" data-icon="siStarfill"></span>
+          <span class="icon" data-icon="ri-star-fill"></span>
           Featured
         </span>`
       : "";
@@ -75,7 +75,7 @@
               class="ph-cta"
               aria-label="View ${escapeHtml(item.title)} project"
             >
-              <span class="icon" data-icon="siArrowRight"></span>
+              <span class="icon" data-icon="ri-arrow-right-line"></span>
             </a>
           </div>
         </div>
