@@ -3,7 +3,7 @@
 
 export const ICON_REGISTRY_LABELS: Record<string, string> = {
   siMsSqlBrand: "MS SQL",
-  siSql: "SQL",
+  siSql: "SQL Server",
   siCloudflare: "Cloudflare",
   siAdoNet: "ADO.NET",
   siNetFramework: ".NET Framework",

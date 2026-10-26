@@ -10,9 +10,10 @@
     sicss: "siCss3",
     "siC#": "siCsharp",
     siCSharp: "siCsharp",
-    siSQLServer: "siMsSqlBrand",
-    siSqlServer: "siMsSqlBrand",
+    siSQLServer: "siSql",
+    siSqlServer: "siSql",
     siMssql: "siMsSqlBrand",
+    siMsSQL: "siMsSqlBrand",
     siADO: "siAdoNet",
     siAdo: "siAdoNet",
     siNETFramework: "siNetFramework",
@@ -26,15 +27,18 @@
     sass: "siCss3",
     scss: "siCss3",
     nextjs: "siNextJs",
-    sql: "siMsSqlBrand",
-    "sql server": "siMsSqlBrand",
+    sql: "siSql",
+    "sql server": "siSql",
+    "ms sql": "siMsSqlBrand",
+    mssql: "siMsSqlBrand",
     "tailwind css": "siTailwindcss",
     tailwindcss: "siTailwindcss",
   };
 
   const ICON_RULES = [
     [/\bnext\s*js\b|\bnext\.?js\b|nextjs/, "siNextJs"],
-    [/\bms\s*sql\b|\bmssql\b|\bsql\s*server\b/, "siMsSqlBrand"],
+    [/\bms\s*sql\b|\bmssql\b/, "siMsSqlBrand"],
+    [/\bsql\s*server\b/, "siSql"],
     [/\basp\s+net(\s+mvc)?\b/, "siASPNet"],
     [/\basp\.?net(\s+mvc)?\b/, "siASPNet"],
     [/\bado\s+net\b/, "siAdoNet"],
@@ -76,7 +80,8 @@
       .replace(/\s+/g, " ")
       .trim();
     if (s === "next js" || s === "nextjs") return "nextjs";
-    if (s === "sql server" || s === "ms sql" || s === "mssql") return "sql server";
+    if (s === "ms sql" || s === "mssql") return "ms sql";
+    if (s === "sql server") return "sql server";
     if (s === "css 3" || s === "css3") return "css3";
     if (s === "sass" || s === "scss") return "sass";
     if (s === "tailwind css" || s === "tailwindcss") return "tailwindcss";
@@ -108,8 +113,11 @@
     for (const [pattern, icon] of ICON_RULES) {
       if (pattern.test(n)) return normalizePortfolioIconKey(icon);
     }
-    if (n === "sql" || n.includes("sql server") || n === "mssql") {
+    if (n === "ms sql" || n === "mssql") {
       return normalizePortfolioIconKey("siMsSqlBrand");
+    }
+    if (n === "sql" || n === "sql server" || n.includes("sql server")) {
+      return normalizePortfolioIconKey("siSql");
     }
     return "ri-code-line";
   }

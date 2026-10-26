@@ -31,7 +31,8 @@ export function normalizeTechNameForIcon(name: string): string {
     .trim();
 
   if (s === "next js" || s === "nextjs") return "nextjs";
-  if (s === "sql server" || s === "ms sql" || s === "mssql") return "sql server";
+  if (s === "ms sql" || s === "mssql") return "ms sql";
+  if (s === "sql server") return "sql server";
   if (s === "css 3" || s === "css3") return "css3";
   if (s === "sass" || s === "scss") return "sass";
 

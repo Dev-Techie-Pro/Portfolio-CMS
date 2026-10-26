@@ -13,8 +13,10 @@ const EXACT_TECH_ICON: Record<string, string> = {
   "tailwind css": "siTailwindcss",
   tailwindcss: "siTailwindcss",
   nextjs: "siNextJs",
-  sql: "siMsSqlBrand",
-  "sql server": "siMsSqlBrand",
+  sql: "siSql",
+  "sql server": "siSql",
+  "ms sql": "siMsSqlBrand",
+  mssql: "siMsSqlBrand",
 };
 
 /** Legacy or mistyped registry keys → canonical keys used on the public site. */
@@ -23,9 +25,10 @@ const PORTFOLIO_ICON_KEY_ALIASES: Record<string, string> = {
   sicss: "siCss3",
   "siC#": "siCsharp",
   siCSharp: "siCsharp",
-  siSQLServer: "siMsSqlBrand",
-  siSqlServer: "siMsSqlBrand",
+  siSQLServer: "siSql",
+  siSqlServer: "siSql",
   siMssql: "siMsSqlBrand",
+  siMsSQL: "siMsSqlBrand",
   siADO: "siAdoNet",
   siAdo: "siAdoNet",
   siNETFramework: "siNetFramework",
@@ -112,7 +115,8 @@ const ICON_RULES: IconRule[] = [
   [/\bpostgres(ql)?\b/, "siPostgreSql"],
   [/\bmariadb\b/, "siMariaDbDolphin"],
   [/\bmysql\b/, "siMySql"],
-  [/\bms\s*sql\b|\bmssql\b|\bsql\s*server\b/, "siMsSqlBrand"],
+  [/\bms\s*sql\b|\bmssql\b/, "siMsSqlBrand"],
+  [/\bsql\s*server\b/, "siSql"],
   [/\bsqlite\b/, "siSqlite"],
   [/\bazure\b/, "siMicrosoftAzure"],
   [/\btailwind(\s*css)?\b/, "siTailwindcss"],
@@ -150,8 +154,8 @@ const ICON_RULES: IconRule[] = [
   [/\bprimereact\b/, "siReactJs"],
   [/\bredux\b/, "siReactJs"],
   [/\bnest\.?js\b/, "siNodeJs"],
-  [/\bprisma\b/, "siSql"],
-  [/\bredis\b/, "siSql"],
+  [/\bprisma\b/, "siPostgreSql"],
+  [/\bredis\b/, "ri-database-2-line"],
   [/\bkubernetes\b|\bk8s\b/, "siDocker"],
   [/\bterraform\b/, "siGlobe"],
   [/\bansible\b/, "siServer"],
@@ -180,8 +184,11 @@ export function resolveTechIconName(name: string): string {
     if (pattern.test(n)) return normalizePortfolioIconKey(icon);
   }
 
-  if (n === "sql" || n.includes("sql server") || n === "mssql") {
+  if (n === "ms sql" || n === "mssql") {
     return normalizePortfolioIconKey("siMsSqlBrand");
+  }
+  if (n === "sql" || n === "sql server" || n.includes("sql server")) {
+    return normalizePortfolioIconKey("siSql");
   }
 
   return "ri-code-line";
