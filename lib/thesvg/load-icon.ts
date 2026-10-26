@@ -1,7 +1,7 @@
 // @ts-nocheck
 import 'server-only';
 
-import { isThesvgSlug } from './slug.js';
+import { isThesvgSlug } from './slug';
 
 const VARIANT_RE = /^[a-z][a-z0-9]*$/;
 
