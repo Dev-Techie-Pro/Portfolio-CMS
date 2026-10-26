@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { BODY_HTML, SETTINGS_SHELL_SUFFIX_START } from './bodyHtml';
 import { getSettingsPageMeta, resolveSettingsTab } from '@/lib/settings/page-meta';
+import { SYSTEM_SECTION_TOOLBAR_HTML } from './systemSectionToolbarHtml';
 
 /** Settings routes with a `data-content` panel in BODY_HTML. */
 const SETTINGS_ROUTE_TABS = [
@@ -91,6 +92,13 @@ function injectPageHeaderMeta(shell: string, tab: string): string {
       /<div class="pa-page-subtitle" id="settingsPageSubtitle">[^<]*<\/div>/,
       `<div class="pa-page-subtitle" id="settingsPageSubtitle">${meta.subtitle}</div>`,
     );
+
+  if (tab === 'system') {
+    next = next.replace(
+      SETTINGS_HEADER_ACTIONS_SLOT,
+      `<div class="pa-header-page-right" id="settingsPageHeaderActions">${SYSTEM_SECTION_TOOLBAR_HTML}</div>`,
+    );
+  }
 
   return next;
 }

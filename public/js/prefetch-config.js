@@ -68,6 +68,7 @@
     if (path.includes("/admin/blog-post")) return "blogposts";
     if (path.includes("/admin/experience")) return "experience";
     if (path.includes("/admin/faqs")) return "faqs";
+    if (path.includes("/admin/icon-registry")) return "icon-registry";
     if (path.includes("/admin/contact-messages")) return "contact-messages";
     if (path.includes("/admin/recent-activities")) return "recent-activities";
     if (path.includes("/admin/settings")) return "settings";

@@ -12,7 +12,6 @@ import {
   hydratePageViewMode,
   setPageViewOverride,
 } from '../../utils/listGridView.js';
-import { IconRegistryManager } from './IconRegistryManager.js';
 
 const SYSTEM_TABLES_VIEW_PAGE_KEY = 'settings-system-tables';
 
@@ -233,8 +232,6 @@ export class SystemManager {
   getProfile?: ProfileGetter;
   state: SystemManagerState;
   _bound: boolean;
-  iconRegistry: IconRegistryManager;
-
   constructor({ on, onBus, getProfile }: SystemManagerOptions) {
     this.on = on;
     this.onBus = onBus;
@@ -256,7 +253,6 @@ export class SystemManager {
       envStepIndex: 0,
     };
     this._bound = false;
-    this.iconRegistry = new IconRegistryManager();
   }
 
   bindEvents() {
@@ -269,7 +265,6 @@ export class SystemManager {
         if (tab) {
           activateTab('system-section', tab);
           if (tab === 'env') this.initEnvTabMotion();
-          if (tab === 'icons') this.iconRegistry.mount();
         }
       });
     });

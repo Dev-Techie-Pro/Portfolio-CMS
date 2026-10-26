@@ -23,6 +23,7 @@ const ROUTES = [
   [`${ADMIN_BASE}/access-requests`, 'access-requests'],
   [`${ADMIN_BASE}/users`, 'users'],
   [`${ADMIN_BASE}/recent-activities`, 'recent-activities'],
+  [`${ADMIN_BASE}/icon-registry`, 'icon-registry'],
   [`${ADMIN_BASE}/settings`, 'settings'],
   [`${ADMIN_BASE}/login`, 'login'],
   [`${ADMIN_BASE}/forget-password`, 'forgot-password'],

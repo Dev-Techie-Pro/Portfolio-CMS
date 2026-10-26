@@ -42,6 +42,7 @@ export function resolvePage(path) {
   if (path.includes('/blog-post')) return 'blogposts';
   if (path.includes('/experience')) return 'experience';
   if (path.includes('/faqs')) return 'faqs';
+  if (path.includes('/icon-registry')) return 'icon-registry';
   if (path.includes('/contact-messages')) return 'contact-messages';
   if (path.includes('/recent-activities')) return 'recent-activities';
   if (path.includes('/settings')) return 'settings';

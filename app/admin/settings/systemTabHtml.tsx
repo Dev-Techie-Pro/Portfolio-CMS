@@ -1,12 +1,10 @@
 // @ts-nocheck
 import { buildSystemEnvFormHtml } from './buildSystemEnvFormHtml';
-import { SYSTEM_SECTION_TOOLBAR_HTML } from './systemSectionToolbarHtml';
 
 const SYSTEM_ENV_FORM_HTML = buildSystemEnvFormHtml();
 
 export const SYSTEM_TAB_HTML = `
             <div class="pa-tab-panel" data-panel="settings" data-content="system">
-                <div class="pa-system-section-toolbar-wrap">${SYSTEM_SECTION_TOOLBAR_HTML}</div>
                 <div class="pa-tab-panel active" data-panel="system-section" data-content="database">
                 <section class="pa-bkp-section" id="systemBackupSection">
                     <div class="pa-bkp-layout">
@@ -197,12 +195,6 @@ export const SYSTEM_TAB_HTML = `
                 <section class="pa-env-section" id="systemEnvSection">
                     <div class="pa-info-box mb-16" id="systemEnvMeta" hidden>Loading environment settings…</div>
                     ${SYSTEM_ENV_FORM_HTML}
-                </section>
-                </div>
-
-                <div class="pa-tab-panel" data-panel="system-section" data-content="icons">
-                <section class="pa-icon-registry-section" id="systemIconRegistrySection">
-                    <div id="paIconRegistryRoot"></div>
                 </section>
                 </div>
             </div>`;

@@ -236,6 +236,7 @@ export function buildSidebarInnerHtml(
           navSettingsSubItem('/admin/settings/profile', 'profile', 'ri-user-settings-line', 'Profile', '', capabilities),
           navSettingsSubItem('/admin/settings/security', 'security', 'ri-shield-keyhole-line', 'Security', '', capabilities),
           navSettingsSubItem('/admin/settings/notifications', 'notifications', 'ri-notification-3-line', 'Notifications', '', capabilities),
+          navSettingsSubItem('/admin/icon-registry', 'icon-registry', 'ri-palette-line', 'Icon Manager', 'pa-admin-only-item', capabilities),
           navSettingsSubItem('/admin/settings/system', 'system', 'ri-server-line', 'System', 'pa-admin-only-item', capabilities),
         ].join('\n            '), capabilities)}
       </nav>

@@ -9182,12 +9182,6 @@ html.theme-light .ht-watermark {
 .exp-hero-bg {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(
-    circle,
-    var(--accent-dim) 1px,
-    transparent 1px
-  );
-  background-size: 36px 36px;
   pointer-events: none;
   z-index: 0;
   animation: bgShift 20s linear infinite;

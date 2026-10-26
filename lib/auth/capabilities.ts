@@ -34,7 +34,7 @@ export type AccessCapabilities = {
   elevatedUntil: string | null;
 };
 
-const ADMIN_SETTINGS_TABS = ['system'] as const;
+const ADMIN_SETTINGS_TABS = ['icon-registry', 'system'] as const;
 
 /** Storage keys that persist via guardAdmin API routes. */
 export const SITE_SETTINGS_STORAGE_KEYS = new Set([

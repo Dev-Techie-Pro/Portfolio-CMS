@@ -24,6 +24,7 @@ export const STAFF_APP_FIRST_SEGMENTS = new Set([
   'access-requests',
   'users',
   'recent-activities',
+  'icon-registry',
   'login',
   'forget-password',
   'reset-password',

@@ -172,6 +172,10 @@ async function loadPageModuleClass(page: string): Promise<PageModuleClass | null
 
       return (await import('./modules/settings/SettingsModule.js')).SettingsModule;
 
+    case 'icon-registry':
+
+      return (await import('./modules/icon-registry/IconRegistryModule.js')).IconRegistryModule;
+
     case 'login':
 
       return (await import('./modules/auth/LoginModule.js')).LoginModule;

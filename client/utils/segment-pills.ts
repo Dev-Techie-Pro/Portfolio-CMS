@@ -44,5 +44,9 @@ function bindTrack(track: HTMLElement) {
 }
 
 export function initSegmentPills(root: ParentNode = document) {
-  root.querySelectorAll<HTMLElement>('.pa-view-toggle').forEach(bindTrack);
+  root
+    .querySelectorAll<HTMLElement>(
+      '.pa-view-toggle:not(.pa-system-section-toggle):not([data-pa-seg-pill="off"])',
+    )
+    .forEach(bindTrack);
 }
