@@ -7364,90 +7364,16 @@ function resetAppReady() {
   document.documentElement.classList.remove("is-ready");
 }
 
-// lib/motion/segment-pill.ts
-function segmentPillClipRound(track) {
-  const isAdmin = Boolean(
-    track.closest(".pa-shell, .pa-main, .pa-auth-page, .pa-auth-body")
-  );
-  return isAdmin ? "var(--pa-radius)" : "var(--br-none)";
-}
-var SEG_PILL_INSET_PAD = 3;
-function clipInset(top, right, bottom, left, round) {
-  return `inset(${top}px ${right}px ${bottom}px ${left}px round ${round})`;
-}
-function moveSegmentPill(pill, track, activeBtn, animate2 = true) {
-  const trackW = track.offsetWidth;
-  const trackH = track.offsetHeight;
-  const left = activeBtn.offsetLeft + SEG_PILL_INSET_PAD;
-  const right = trackW - (activeBtn.offsetLeft + activeBtn.offsetWidth) + SEG_PILL_INSET_PAD;
-  const top = activeBtn.offsetTop + SEG_PILL_INSET_PAD;
-  const bottom = trackH - (activeBtn.offsetTop + activeBtn.offsetHeight) + SEG_PILL_INSET_PAD;
-  const round = segmentPillClipRound(track);
-  const clip = (l, r) => clipInset(top, r, bottom, l, round);
-  const pillState = pill;
-  const prev = pillState.__lr;
-  pillState.__lr = [left, right];
-  if (!animate2 || prefersReducedMotion() || !prev) {
-    gsapWithCSS.set(pill, { clipPath: clip(left, right), opacity: 1 });
-    return;
-  }
-  const state = { l: prev[0], r: prev[1] };
-  const movingRight = left > prev[0];
-  gsapWithCSS.killTweensOf(state);
-  gsapWithCSS.to(state, {
-    l: left,
-    duration: motionDuration(movingRight ? 0.55 : 0.36),
-    ease: movingRight ? "power3.inOut" : "power3.out",
-    onUpdate: () => gsapWithCSS.set(pill, { clipPath: clip(state.l, state.r) })
-  });
-  gsapWithCSS.to(state, {
-    r: right,
-    duration: motionDuration(movingRight ? 0.36 : 0.55),
-    ease: movingRight ? "power3.out" : "power3.inOut",
-    onUpdate: () => gsapWithCSS.set(pill, { clipPath: clip(state.l, state.r) })
-  });
-}
-
 // client/utils/segment-pills.ts
-var BOUND2 = "data-pa-seg-pill-bound";
-function ensurePill(track) {
-  let pill = track.querySelector(".seg__pill");
-  if (!pill) {
-    pill = document.createElement("span");
-    pill.className = "seg__pill";
-    pill.setAttribute("aria-hidden", "true");
-    track.prepend(pill);
-  }
-  track.classList.add("seg");
-  return pill;
-}
-function activeButton(track) {
-  return track.querySelector(".pa-view-btn.active") ?? track.querySelector(".pa-view-btn");
-}
-function syncTrack(track, animate2 = false) {
-  const btn = activeButton(track);
-  if (!btn) return;
-  const pill = ensurePill(track);
-  moveSegmentPill(pill, track, btn, animate2);
-}
-function bindTrack(track) {
-  if (track.getAttribute(BOUND2) === "1") return;
-  track.setAttribute(BOUND2, "1");
-  syncTrack(track, false);
-  track.addEventListener("click", (e) => {
-    const target = e.target instanceof HTMLElement ? e.target.closest(".pa-view-btn") : null;
-    if (!target || !track.contains(target)) return;
-    requestAnimationFrame(() => syncTrack(track, true));
+function stripAdminSegmentPills(root = document) {
+  root.querySelectorAll(".pa-view-toggle .seg__pill").forEach((el) => el.remove());
+  root.querySelectorAll(".pa-view-toggle.seg").forEach((track) => {
+    track.classList.remove("seg");
+    track.removeAttribute("data-pa-seg-pill-bound");
+    track.querySelectorAll(".pa-view-btn").forEach((btn) => {
+      btn.style.removeProperty("clip-path");
+    });
   });
-  if (typeof ResizeObserver !== "undefined") {
-    const ro = new ResizeObserver(() => syncTrack(track, false));
-    ro.observe(track);
-  }
-}
-function initSegmentPills(root = document) {
-  root.querySelectorAll(
-    '.pa-view-toggle:not(.pa-system-section-toggle):not([data-pa-seg-pill="off"])'
-  ).forEach(bindTrack);
 }
 
 // lib/motion/micro.ts
@@ -7687,7 +7613,7 @@ async function bootAuthPage(ModuleClass, page) {
     pageModule.bindEvents();
   }
   runPageEnter(page);
-  initSegmentPills();
+  stripAdminSegmentPills();
   initMotionChrome();
   markAppReady();
   activePageModule = pageModule;
@@ -7720,7 +7646,7 @@ async function bootAppPage(ModuleClass, page) {
   if (page === "dashboard") void bindQuickAddButton(pageModule);
   initAppChrome();
   runPageEnter(page);
-  initSegmentPills();
+  stripAdminSegmentPills();
   initMotionChrome();
   markAppReady();
   activePageModule = pageModule;

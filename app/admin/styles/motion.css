@@ -168,32 +168,6 @@
   display: inline-block;
 }
 
-/* Segment / view-toggle pill (clip-path driven) */
-.pa-view-toggle.seg {
-  position: relative;
-}
-
-.pa-view-toggle.seg .seg__pill {
-  position: absolute;
-  inset: 3px;
-  pointer-events: none;
-  background: var(--pa-orange);
-  opacity: 0;
-  z-index: 0;
-  clip-path: inset(3px 41px 3px 3px round var(--pa-radius)) !important;
-}
-
-.pa-view-toggle.seg .pa-view-btn {
-  position: relative;
-  z-index: 1;
-  background: transparent;
-}
-
-.pa-view-toggle.seg .pa-view-btn.active {
-  background: transparent;
-  color: var(--pa-light);
-}
-
 .meter__fill {
   transform-origin: 0 50%;
   transform: scaleX(0);

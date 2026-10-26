@@ -39,7 +39,7 @@ import { initAllPaSelects } from './utils/paSelect.js';
 import { initCollapseMotion } from './utils/collapse-motion.js';
 import { markAppReady, resetAppReady } from './utils/app-ready.js';
 import { killPageMotion, runPageEnter } from './utils/page-motion.js';
-import { initSegmentPills } from './utils/segment-pills.js';
+import { stripAdminSegmentPills } from './utils/segment-pills.js';
 import { initMotionChrome } from './utils/motion-chrome.js';
 
 import { initPasswordToggles } from './utils/password-toggle.js';
@@ -373,7 +373,7 @@ async function bootAuthPage(ModuleClass: PageModuleClass, page: string) {
 
 
   runPageEnter(page);
-  initSegmentPills();
+  stripAdminSegmentPills();
   initMotionChrome();
   markAppReady();
 
@@ -440,7 +440,7 @@ async function bootAppPage(ModuleClass: PageModuleClass, page: string) {
   initAppChrome();
 
   runPageEnter(page);
-  initSegmentPills();
+  stripAdminSegmentPills();
   initMotionChrome();
   markAppReady();
 
