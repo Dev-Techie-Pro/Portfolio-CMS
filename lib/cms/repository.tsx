@@ -28,6 +28,10 @@ import {
 import { saveProjectsBatch, saveBlogPostsBatch } from './batch-writes';
 import { getOrCreateLabelIds, resolveTechnologyUuidsByLegacyId, resolveToolUuidsByLegacyId } from './label-catalog';
 import { CMS_CACHE_TTL, getCached, invalidateCache, invalidateCachePrefix, invalidateCmsReadCaches } from './server-cache';
+import {
+  EMPTY_ICON_REGISTRY_STATE,
+  normalizeIconRegistryState,
+} from './icon-registry-store';
 import { cmsBatchWritesEnabled } from '@/lib/config/runtime-settings';
 import { contactReplyMediaChanged } from './media-reconcile';
 import {
@@ -1957,16 +1961,31 @@ export async function getIconRegistryState() {
   const data = await fetchSiteSettingsRow();
   const raw = data?.icon_registry_json;
   if (!raw || typeof raw !== 'object') {
-    return { overrides: {}, removed: [], labels: {}, sortOrder: [] };
+    return normalizeIconRegistryState(EMPTY_ICON_REGISTRY_STATE);
   }
-  return raw;
+  return normalizeIconRegistryState(raw);
 }
 
 export async function saveIconRegistryState(state) {
-  const { error } = await supabase()
-    .from('site_settings')
-    .upsert({ site_id: SITE_ID, icon_registry_json: state }, { onConflict: 'site_id' });
-  if (error) throw error;
+  const normalized = normalizeIconRegistryState(state);
+  const existing = await fetchSiteSettingsRow();
+  const row: Record<string, unknown> = {
+    site_id: SITE_ID,
+    icon_registry_json: normalized,
+  };
+  if (!existing) {
+    row.site_title = 'My Portfolio';
+  }
+  const { error } = await supabase().from('site_settings').upsert(row, { onConflict: 'site_id' });
+  if (error) {
+    const msg = String(error.message || '');
+    if (msg.includes('icon_registry_json')) {
+      throw new Error(
+        'Database is missing icon_registry_json on site_settings. Run Supabase migration 20261026200000_site_settings_icon_registry.sql.',
+      );
+    }
+    throw error;
+  }
   invalidateCache('cms:site-settings');
   invalidateCmsReadCaches();
 }

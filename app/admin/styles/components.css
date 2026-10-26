@@ -737,6 +737,10 @@ body.light .pa-body-loader__panel {
   height: 72px;
 }
 
+#paIconRegistrySaveBtn.is-unsaved {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--pa-primary) 55%, transparent);
+}
+
 .pa-icon-registry-pick-row {
   display: flex;
   flex-wrap: wrap;

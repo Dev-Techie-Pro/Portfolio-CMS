@@ -91,7 +91,7 @@ export const BODY_HTML = `<div class="pa-toast-wrap" id="paToastWrap" role="stat
             <span class="pa-header-accent" aria-hidden="true"></span>
             <div class="pa-header-left">
               <div class="pa-page-title">Icon Manager</div>
-              <div class="pa-page-subtitle">Search, rename, edit, reorder, and hide portfolio SVG icons.</div>
+              <div class="pa-page-subtitle">Edit icons below; each save writes to site settings and updates the public site (hard refresh may be needed).</div>
             </div>
           </div>
         </div>

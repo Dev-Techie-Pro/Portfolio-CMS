@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { NextResponse } from "next/server";
-import { guardEditor } from "@/lib/auth/guard";
+import { guardAdmin } from "@/lib/auth/guard";
 import {
   buildIconRegistryManifest,
   normalizeIconRegistryState,
@@ -11,12 +11,14 @@ import {
 } from "@/lib/cms/repository";
 
 export async function GET() {
-  const auth = await guardEditor();
+  const auth = await guardAdmin();
   if (!auth.ok) return auth.response;
   try {
     const state = await getIconRegistryState();
     const manifest = buildIconRegistryManifest(state);
-    return NextResponse.json(manifest);
+    return NextResponse.json(manifest, {
+      headers: { "Cache-Control": "private, no-store" },
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Could not load icon registry.";
     return NextResponse.json({ error: message }, { status: 500 });
@@ -24,7 +26,7 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  const auth = await guardEditor();
+  const auth = await guardAdmin();
   if (!auth.ok) return auth.response;
   try {
     const body = await request.json();

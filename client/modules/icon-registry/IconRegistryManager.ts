@@ -49,6 +49,9 @@ export class IconRegistryManager {
     this._editKind = 'svg';
     this._editRemix = 'ri-palette-line';
     this._editImageUrl = '';
+    this._dirty = false;
+    this._persisting = false;
+    this._lastSavedJson = '';
   }
 
   bindPage(module) {
@@ -58,10 +61,19 @@ export class IconRegistryManager {
     this.ensureEditPanel();
     module.on($id('paIconRegistrySort'), 'change', (e) => {
       this.sortMode = e.target.value || 'label';
+      if (this.sortMode === 'custom' && !this.state.sortOrder?.length) {
+        this.state.sortOrder = this.items.map((i) => i.key);
+      }
       module.store.set('page', 1);
       this.renderList();
+      if (this.sortMode === 'custom') {
+        this.markDirty();
+        void this.persistRegistry({ feedback: false });
+      }
     });
-    module.on($id('paIconRegistrySaveBtn'), 'click', () => { void this.save(); });
+    module.on($id('paIconRegistrySaveBtn'), 'click', () => {
+      void this.persistRegistry({ feedback: true, reloadAfter: true });
+    });
     module.on($id('paIconRegistryAddBtn'), 'click', () => this.openEditor(null));
   }
 
@@ -144,7 +156,7 @@ export class IconRegistryManager {
         </div>
         <div class="pa-panel-footer">
           <button class="pa-btn pa-btn-cancel" type="button" id="paIconRegistryEditCancel">Cancel</button>
-          <button class="pa-btn pa-btn-primary" type="button" id="paIconRegistryEditSave">Apply</button>
+          <button class="pa-btn pa-btn-primary" type="button" id="paIconRegistryEditSave">Save icon</button>
         </div>`;
       document.body.appendChild(panel);
     }
@@ -441,6 +453,9 @@ export class IconRegistryManager {
       const data = await res.json();
       this.state = data.state || this.state;
       this.items = data.items || [];
+      this._lastSavedJson = JSON.stringify(this.state);
+      this._dirty = false;
+      this.syncSaveButtonChrome();
       this.syncViewToggle();
       this.renderList();
     } catch {
@@ -597,7 +612,9 @@ export class IconRegistryManager {
     this.sortMode = 'custom';
     const sortEl = $id('paIconRegistrySort');
     if (sortEl) sortEl.value = 'custom';
+    this.markDirty();
     this.renderList();
+    void this.persistRegistry({ feedback: false });
   }
 
   async hideIcon(key) {
@@ -611,7 +628,9 @@ export class IconRegistryManager {
     this.state.removed = [...new Set([...(this.state.removed || []), key])];
     delete this.state.overrides?.[key];
     this.items = this.items.filter((i) => i.key !== key);
+    this.markDirty();
     this.renderList();
+    void this.persistRegistry({ feedback: true });
   }
 
   openEditor(key) {
@@ -660,30 +679,81 @@ export class IconRegistryManager {
         };
         if (existing) Object.assign(existing, row);
         else this.items.push(row);
+        this.markDirty();
         close();
         this.renderList();
+        void this.persistRegistry({ feedback: true, reloadAfter: true });
       };
     }
     openPanel('paIconRegistryEditPanel');
   }
 
-  async save() {
-    showStatusToast('Saving icon registry…', 'info', 60000);
+  markDirty() {
+    const snapshot = JSON.stringify(this.state);
+    this._dirty = snapshot !== this._lastSavedJson;
+    this.syncSaveButtonChrome();
+  }
+
+  syncSaveButtonChrome() {
+    const btn = $id('paIconRegistrySaveBtn');
+    if (!btn) return;
+    btn.classList.toggle('is-unsaved', this._dirty && !this._persisting);
+    const label = btn.querySelector('span');
+    if (label) {
+      label.textContent = this._persisting
+        ? 'Saving…'
+        : this._dirty
+          ? 'Save changes'
+          : 'Saved';
+    }
+  }
+
+  async persistRegistry({ feedback = true, reloadAfter = false } = {}) {
+    if (this._persisting) return false;
+    this._persisting = true;
+    this.syncSaveButtonChrome();
+    if (feedback) showStatusToast('Saving icon registry…', 'info', 60000);
     try {
       const res = await fetch('/api/admin/icon-registry', {
         method: 'PUT',
         credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ state: this.state }),
       });
-      if (!res.ok) throw new Error('Save failed');
-      const data = await res.json();
-      this.state = data.state || this.state;
-      this.items = data.items || this.items;
-      showStatusToast('Icon registry saved.', 'success');
+      const raw = await res.text();
+      let data: { error?: string; state?: unknown; items?: unknown[] } = {};
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        data = {};
+      }
+      if (!res.ok) {
+        throw new Error(data.error || raw || 'Save failed');
+      }
+      if (data.state) this.state = data.state;
+      if (Array.isArray(data.items)) this.items = data.items;
+      this._lastSavedJson = JSON.stringify(this.state);
+      this._dirty = false;
+      if (feedback) showStatusToast('Icon registry saved to database.', 'success');
+      this.syncSaveButtonChrome();
       this.renderList();
-    } catch {
-      showToast('Could not save icon registry.', 'danger');
+      if (reloadAfter) {
+        await this.load();
+      }
+      return true;
+    } catch (err) {
+      const message = err?.message || 'Could not save icon registry.';
+      if (feedback) showToast(message, 'danger');
+      this._dirty = true;
+      this.syncSaveButtonChrome();
+      return false;
+    } finally {
+      this._persisting = false;
+      this.syncSaveButtonChrome();
     }
+  }
+
+  async save() {
+    return this.persistRegistry({ feedback: true, reloadAfter: true });
   }
 }
