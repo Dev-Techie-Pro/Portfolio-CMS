@@ -32,6 +32,7 @@ const BASE_CLASSIC: ScriptEntry[] = [
   { type: "classic", src: "/assets/js/utils/dom.js", defer: true },
   { type: "classic", src: "/assets/js/utils/events.js", defer: true },
   { type: "classic", src: "/assets/js/utils/helpers.js", defer: true },
+  { type: "classic", src: "/assets/js/utils/portfolio-icon-key.js", defer: true },
   { type: "classic", src: "/assets/js/modules/animations.js", defer: true },
   { type: "classic", src: "/assets/js/modules/textures.js", defer: true },
   { type: "classic", src: "/assets/js/modules/interactions.js", defer: true },

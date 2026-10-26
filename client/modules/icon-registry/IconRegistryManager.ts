@@ -9,6 +9,7 @@ import * as svgIconPicker from '../../utils/SvgIconPicker.js';
 import * as mediaPicker from '../../utils/MediaPicker.js';
 import { uploadCmsFile } from '../../utils/media-upload.js';
 import { handleFileValidation } from '../../utils/files.js';
+import { appendToMediaLibrary } from '../../utils/media-library-append.js';
 import {
   decodeIconOverride,
   encodeIconOverride,
@@ -265,6 +266,12 @@ export class IconRegistryManager {
       const label = $id('paIconRegistryImageValue');
       if (label) label.textContent = url;
       this.syncEditPreview();
+      try {
+        await appendToMediaLibrary(uploaded, { name: uploaded.fileName || file.name });
+      } catch {
+        showToast('Image uploaded to storage but could not register in media library.', 'warning');
+        return;
+      }
       showToast('Image uploaded to media library', 'success');
     } catch {
       showToast('Could not upload image', 'danger');

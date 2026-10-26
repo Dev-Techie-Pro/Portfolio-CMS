@@ -19,7 +19,7 @@ var ICON_REGISTRY_LABELS = {
   siDotNetCore: ".NET Core",
   siAspNetCore: "ASP.NET Core",
   siASPNet: "ASP.NET",
-  siGit: "GitHub",
+  siGit: "Git",
   siGithub: "GitHub",
   siAws: "AWS",
   siReactJs: "React",
@@ -478,4 +478,4 @@ export {
   open,
   updateIconTrigger
 };
-//# sourceMappingURL=chunk-DQ32XXF2.js.map
+//# sourceMappingURL=chunk-T6EPQHTV.js.map

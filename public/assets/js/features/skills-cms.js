@@ -111,14 +111,25 @@
     return svg && String(svg).trim().startsWith("<svg") ? svg : null;
   }
 
+  function normalizeIconKey(key) {
+    if (typeof Portfolio.normalizePortfolioIconKey === "function") {
+      return Portfolio.normalizePortfolioIconKey(key);
+    }
+    return String(key || "").trim() || "ri-code-line";
+  }
+
   function resolveSkillIconKey(item) {
-    const fromApi = String(item.portfolioIcon || "").trim();
+    const fromApi = normalizeIconKey(String(item.portfolioIcon || "").trim());
     if (fromApi && fromApi !== "siCode") {
-      if (fromApi === "siMsSqlBrand" && !svgFromIconKey(fromApi)) return "siSql";
+      if (fromApi === "siMsSqlBrand" && !svgFromIconKey(fromApi) && !fromApi.startsWith("ri-")) {
+        return "siSql";
+      }
       return fromApi;
     }
-    const fromName = resolveIconKeyFromName(item.name);
-    if (fromName === "siMsSqlBrand" && !svgFromIconKey(fromName)) return "siSql";
+    const fromName = normalizeIconKey(resolveIconKeyFromName(item.name));
+    if (fromName === "siMsSqlBrand" && !svgFromIconKey(fromName) && !fromName.startsWith("ri-")) {
+      return "siSql";
+    }
     return fromName;
   }
 
@@ -159,6 +170,9 @@
       return `<img src="${url}" alt="" loading="lazy" />`;
     }
     const si = resolveSkillIconKey(item);
+    if (si.startsWith("ri-")) {
+      return `<span class="icon" data-icon="${escapeHtml(si)}"></span>`;
+    }
     const icons = siteIconsRegistry();
     if (icons && icons[si]) {
       return `<span class="icon" data-icon="${escapeHtml(si)}"></span>`;

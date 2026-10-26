@@ -1,6 +1,34 @@
 /** Maps a technology name to portfolio site-icon registry keys (si*). */
 type IconRule = [RegExp, string];
 
+/** Legacy or mistyped registry keys → canonical keys used on the public site. */
+const PORTFOLIO_ICON_KEY_ALIASES: Record<string, string> = {
+  siCSS: "ri-css3-fill",
+  sicss: "ri-css3-fill",
+  "siC#": "siCsharp",
+  siCSharp: "siCsharp",
+  siSQLServer: "siMsSqlBrand",
+  siSqlServer: "siMsSqlBrand",
+  siMssql: "siMsSqlBrand",
+  siADO: "siAdoNet",
+  siAdo: "siAdoNet",
+  siNETFramework: "siNetFramework",
+  siDotnetFramework: "siNetFramework",
+};
+
+export function normalizePortfolioIconKey(key: string): string {
+  const trimmed = String(key || "").trim();
+  if (!trimmed) return "ri-code-line";
+  if (PORTFOLIO_ICON_KEY_ALIASES[trimmed]) {
+    return PORTFOLIO_ICON_KEY_ALIASES[trimmed];
+  }
+  const lower = trimmed.toLowerCase();
+  for (const [alias, canonical] of Object.entries(PORTFOLIO_ICON_KEY_ALIASES)) {
+    if (alias.toLowerCase() === lower) return canonical;
+  }
+  return trimmed;
+}
+
 const ICON_RULES: IconRule[] = [
   [/cursor\s*agent|^cursor\b/, "siCursor"],
   [/\bclaude\b/, "siClaude"],
@@ -18,8 +46,8 @@ const ICON_RULES: IconRule[] = [
   [/\bcloudflare\b/, "siCloudflare"],
   [/\bpostman\b/, "siPostman"],
   [/\bxampp\b/, "siXampp"],
-  [/\bgithub\b/, "siGit"],
-  [/\bgitlab\b/, "siGit"],
+  [/\bgithub\b/, "siGithub"],
+  [/\bgitlab\b/, "ri-gitlab-fill"],
   [/(?<![a-z])git(?![a-z])/, "siGit"],
   [/\bfigma\b/, "siFigma"],
   [/\bphotoshop\b/, "siPhotoshop"],
@@ -114,7 +142,7 @@ export function resolveTechIconName(name: string): string {
   const n = String(name || "").toLowerCase().trim();
   if (!n) return "ri-code-line";
   for (const [pattern, icon] of ICON_RULES) {
-    if (pattern.test(n)) return icon;
+    if (pattern.test(n)) return normalizePortfolioIconKey(icon);
   }
   if (n === "sql") return "siSql";
   return "ri-code-line";

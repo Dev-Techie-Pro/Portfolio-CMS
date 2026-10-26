@@ -1,6 +1,6 @@
 import {
   open as open2
-} from "./chunk-DQ32XXF2.js";
+} from "./chunk-T6EPQHTV.js";
 import {
   open
 } from "./chunk-NGM67PQZ.js";
@@ -8,7 +8,7 @@ import "./chunk-HT4C2QOZ.js";
 import {
   handleFileValidation,
   uploadCmsFile
-} from "./chunk-IIION6EB.js";
+} from "./chunk-RRSKXHAV.js";
 import {
   ICONS,
   decodeIconOverride,
@@ -46,7 +46,8 @@ import {
   setPageViewOverride
 } from "./chunk-GJQ27CYF.js";
 import {
-  Module
+  Module,
+  storage
 } from "./chunk-4NBARMWE.js";
 import {
   closePanels,
@@ -64,6 +65,27 @@ import {
   escapeHtml
 } from "./chunk-HFEWIT3P.js";
 import "./chunk-MTDZJ6X7.js";
+
+// client/utils/media-library-append.ts
+async function appendToMediaLibrary(uploaded, options = {}) {
+  const records = await storage.get("pa_media_library", []);
+  const list = Array.isArray(records) ? records.slice() : [];
+  const nextId = Math.max(0, ...list.map((m) => Number(m.id) || 0)) + 1;
+  const record = {
+    id: nextId,
+    name: options.name || uploaded.fileName || "upload",
+    url: uploaded.url,
+    alt: options.alt || "",
+    folder: uploaded.folder || "icons",
+    size: uploaded.size || 0,
+    type: uploaded.mimeType || "",
+    uploadedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    usageCount: 0
+  };
+  list.push(record);
+  await storage.set("pa_media_library", list);
+  return record;
+}
 
 // client/modules/icon-registry/IconRegistryManager.ts
 var PAGE_SIZE = 12;
@@ -285,6 +307,12 @@ var IconRegistryManager = class {
       const label = $id("paIconRegistryImageValue");
       if (label) label.textContent = url;
       this.syncEditPreview();
+      try {
+        await appendToMediaLibrary(uploaded, { name: uploaded.fileName || file.name });
+      } catch {
+        showToast("Image uploaded to storage but could not register in media library.", "warning");
+        return;
+      }
       showToast("Image uploaded to media library", "success");
     } catch {
       showToast("Could not upload image", "danger");
@@ -722,4 +750,4 @@ var IconRegistryModule = class extends Module {
 export {
   IconRegistryModule
 };
-//# sourceMappingURL=IconRegistryModule-PC7YDYPT.js.map
+//# sourceMappingURL=IconRegistryModule-Q6VIA2T2.js.map

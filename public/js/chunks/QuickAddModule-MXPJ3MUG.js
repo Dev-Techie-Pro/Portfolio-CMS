@@ -1,7 +1,7 @@
 import {
   CATEGORY_META_PROJECTS,
   pickSceneForCategory
-} from "./chunk-RRKQH625.js";
+} from "./chunk-7CXC6PF2.js";
 import {
   bindCommaSeparatedChipInput,
   getRteHtml,
@@ -16,7 +16,7 @@ import {
   handleFileValidation,
   uploadCmsFile,
   uploadCmsFileWithPreview
-} from "./chunk-IIION6EB.js";
+} from "./chunk-RRSKXHAV.js";
 import {
   isValidSlug,
   isValidUrl,
@@ -948,4 +948,4 @@ var QuickAddModule = class extends Module {
 export {
   QuickAddModule
 };
-//# sourceMappingURL=QuickAddModule-JBM75WXH.js.map
+//# sourceMappingURL=QuickAddModule-MXPJ3MUG.js.map

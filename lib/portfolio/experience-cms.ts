@@ -1,6 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SITE_ID } from "@/lib/cms/constants";
-import { resolveTechIconName } from "@/lib/portfolio/resolve-tech-icon";
+import { normalizePortfolioIconKey, resolveTechIconName } from "@/lib/portfolio/resolve-tech-icon";
 
 export type PortfolioExperienceImpact = {
   value: string;
@@ -75,7 +75,10 @@ export async function fetchPortfolioExperience(): Promise<PortfolioExperienceEnt
     const legacyId = Number(t.legacy_id);
     if (!Number.isFinite(legacyId)) continue;
     const name = String(t.name || "").trim();
-    techById.set(legacyId, { name, icon: resolveTechIconName(name) });
+    techById.set(legacyId, {
+      name,
+      icon: normalizePortfolioIconKey(resolveTechIconName(name)),
+    });
   }
 
   return (rows || []).map((row, index) => {
@@ -90,7 +93,11 @@ export async function fetchPortfolioExperience(): Promise<PortfolioExperienceEnt
       const norm = tech.name.trim().toLowerCase();
       if (!norm || seenNames.has(norm)) continue;
       seenNames.add(norm);
-      technologies.push({ id, name: tech.name, icon: tech.icon });
+      technologies.push({
+        id,
+        name: tech.name,
+        icon: normalizePortfolioIconKey(tech.icon),
+      });
     }
 
     return {

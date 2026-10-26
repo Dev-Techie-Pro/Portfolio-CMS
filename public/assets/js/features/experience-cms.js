@@ -78,13 +78,21 @@
     return `<li><span class="exp-role-fact-icon"><span class="icon" data-icon="${icon}"></span></span><span><small>${escapeHtml(label)}</small>${escapeHtml(value)}</span></li>`;
   }
 
+  function normalizeTechIcon(icon) {
+    if (typeof Portfolio.normalizePortfolioIconKey === "function") {
+      return Portfolio.normalizePortfolioIconKey(icon);
+    }
+    return String(icon || "").trim() || "ri-code-line";
+  }
+
   function renderTechChip(tech) {
     const slug = String(tech.name || "")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
     const extraClass = slug.includes("express") ? " express-js" : "";
-    return `<span class="exp-tech-chip${extraClass}" title="${escapeHtml(tech.name)}"><span class="icon" data-icon="${escapeHtml(tech.icon || "ri-code-line")}"></span></span>`;
+    const iconKey = normalizeTechIcon(tech.icon || "ri-code-line");
+    return `<span class="exp-tech-chip${extraClass}" title="${escapeHtml(tech.name)}"><span class="icon" data-icon="${escapeHtml(iconKey)}"></span></span>`;
   }
 
   function renderTimelineCard(entry, index, active) {

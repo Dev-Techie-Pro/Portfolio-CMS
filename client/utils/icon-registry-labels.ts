@@ -12,7 +12,7 @@ export const ICON_REGISTRY_LABELS: Record<string, string> = {
   siDotNetCore: ".NET Core",
   siAspNetCore: "ASP.NET Core",
   siASPNet: "ASP.NET",
-  siGit: "GitHub",
+  siGit: "Git",
   siGithub: "GitHub",
   siAws: "AWS",
   siReactJs: "React",

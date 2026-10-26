@@ -13,7 +13,8 @@ export type UploadPage =
   | 'quick-add'
   | 'contact-messages'
   | 'shell'
-  | 'customization';
+  | 'customization'
+  | 'icon-registry';
 
 export type UploadPurpose =
   | 'library-asset'
@@ -26,7 +27,8 @@ export type UploadPurpose =
   | 'profile-cover'
   | 'user-avatar'
   | 'contact-reply-attachment'
-  | 'custom-font';
+  | 'custom-font'
+  | 'icon-registry-image';
 
 export type BuildUploadFileNameOptions = {
   /** 1-based index when multiple files upload in one action (e.g. gallery). */
@@ -120,7 +122,8 @@ export function isUploadPage(value: string): value is UploadPage {
     value === 'quick-add' ||
     value === 'contact-messages' ||
     value === 'shell' ||
-    value === 'customization'
+    value === 'customization' ||
+    value === 'icon-registry'
   );
 }
 
@@ -137,6 +140,7 @@ export function isUploadPurpose(value: string): value is UploadPurpose {
     'user-avatar',
     'contact-reply-attachment',
     'custom-font',
+    'icon-registry-image',
   ];
   return purposes.includes(value as UploadPurpose);
 }
