@@ -16,7 +16,6 @@ export const LEGACY_ICON_TO_REMIX = {
   siSpark: "ri-flashlight-line",
   siMonitor: "ri-computer-line",
   siSend: "ri-send-plane-line",
-  siGithub: "ri-github-fill",
   siLinkedin: "ri-linkedin-fill",
   siXcom: "ri-twitter-x-fill",
   siInstagram: "ri-instagram-line",

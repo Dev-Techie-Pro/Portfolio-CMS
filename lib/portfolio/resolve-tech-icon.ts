@@ -6,10 +6,12 @@ type IconRule = [RegExp, string];
 /** Exact normalized names → icon keys (after normalizeTechNameForIcon). */
 const EXACT_TECH_ICON: Record<string, string> = {
   csharp: "siCsharp",
-  css: "ri-css3-fill",
-  css3: "ri-css3-fill",
-  sass: "ri-css3-fill",
-  scss: "ri-css3-fill",
+  css: "siCss3",
+  css3: "siCss3",
+  sass: "siCss3",
+  scss: "siCss3",
+  "tailwind css": "siTailwindcss",
+  tailwindcss: "siTailwindcss",
   nextjs: "siNextJs",
   sql: "siMsSqlBrand",
   "sql server": "siMsSqlBrand",
@@ -17,8 +19,8 @@ const EXACT_TECH_ICON: Record<string, string> = {
 
 /** Legacy or mistyped registry keys → canonical keys used on the public site. */
 const PORTFOLIO_ICON_KEY_ALIASES: Record<string, string> = {
-  siCSS: "ri-css3-fill",
-  sicss: "ri-css3-fill",
+  siCSS: "siCss3",
+  sicss: "siCss3",
   "siC#": "siCsharp",
   siCSharp: "siCsharp",
   siSQLServer: "siMsSqlBrand",
@@ -62,7 +64,7 @@ const ICON_RULES: IconRule[] = [
   [/\bxampp\b/, "siXampp"],
   [/\bgithub\b/, "siGithub"],
   [/\bgitlab\b/, "ri-gitlab-fill"],
-  [/(?<![a-z])git(?![a-z])/, "siGit"],
+  [/(?<![a-z])git(?![a-z]|hub)/, "siGitScm"],
   [/\bfigma\b/, "siFigma"],
   [/\bphotoshop\b/, "siPhotoshop"],
   [/\billustrator\b/, "siIllustrator"],
@@ -93,12 +95,14 @@ const ICON_RULES: IconRule[] = [
   [/\bsublime\b/, "siSublimeIDE"],
   [/\bvisual studio\b/, "siVisualStudio"],
   [/entity\s*framework|ef\s*core|ef6\b/, "siEntityFramework"],
-  [/\.net\s*framework|dotnet\s*framework/, "siNetFramework"],
-  [/\.net\s*core|asp\.?net\s*core/, "siAspNetCore"],
-  [/\basp\.?net\b/, "siASPNet"],
+  [/\basp\s+net(\s+mvc)?\b/, "siASPNet"],
+  [/\basp\.?net(\s+mvc)?\b/, "siASPNet"],
   [/\bwinforms\b|windows forms/, "siWindowsForms"],
+  [/\bado\s+net\b/, "siAdoNet"],
   [/\bado\.?net\b/, "siAdoNet"],
-  [/\.net\b|dotnet/, "siDotNet"],
+  [/\.net\s*framework|dotnet\s*framework|net\s*framework/, "siNetFramework"],
+  [/\.net\s*core|net\s*core|asp\.?net\s*core/, "siAspNetCore"],
+  [/^dotnet$|^\.net$/, "siDotNet"],
   [/\bcsharp\b|c\s*sharp|c-sharp/, "siCsharp"],
   [/\bangular\b/, "siAngularJs"],
   [/\breact\b/, "siReactJs"],
@@ -111,7 +115,7 @@ const ICON_RULES: IconRule[] = [
   [/\bms\s*sql\b|\bmssql\b|\bsql\s*server\b/, "siMsSqlBrand"],
   [/\bsqlite\b/, "siSqlite"],
   [/\bazure\b/, "siMicrosoftAzure"],
-  [/\btailwind\b/, "siTailwindcss"],
+  [/\btailwind(\s*css)?\b/, "siTailwindcss"],
   [/\bbootstrap\b/, "siBootstrap"],
   [/\btypescript\b/, "siTypescript"],
   [/\bjavascript\b/, "siJavascript"],
@@ -119,9 +123,9 @@ const ICON_RULES: IconRule[] = [
   [/\bphp\b/, "siPhpFill"],
   [/\bjquery\b/, "siJavascript"],
   [/\bhtml\b/, "siHTML5"],
-  [/\bsass\b|\bscss\b/, "ri-css3-fill"],
-  [/\bcss\s*3\b|\bcss3\b/, "ri-css3-fill"],
-  [/\bcss\b/, "ri-css3-fill"],
+  [/\bsass\b|\bscss\b/, "siCss3"],
+  [/\bcss\s*3\b|\bcss3\b/, "siCss3"],
+  [/\bcss\b/, "siCss3"],
   [/\brxjs\b/, "siJavascript"],
   [/\bjson\b/, "ri-braces-line"],
   [/\bstripe\b/, "siStripe"],
@@ -163,10 +167,13 @@ export function resolveTechIconName(name: string): string {
   }
 
   if (/\bsass\b|\bscss\b/.test(n)) {
-    return normalizePortfolioIconKey("ri-css3-fill");
+    return normalizePortfolioIconKey("siCss3");
   }
   if (/\bcss\s*3?\b/.test(n) && !/\bpostcss\b/.test(n)) {
-    return normalizePortfolioIconKey("ri-css3-fill");
+    return normalizePortfolioIconKey("siCss3");
+  }
+  if (/\btailwind(\s*css)?\b/.test(n)) {
+    return normalizePortfolioIconKey("siTailwindcss");
   }
 
   for (const [pattern, icon] of ICON_RULES) {

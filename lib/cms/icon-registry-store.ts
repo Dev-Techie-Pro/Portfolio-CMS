@@ -5,6 +5,7 @@ import {
   decodeIconOverride,
   overrideTypeLabel,
 } from "@/client/utils/icon-registry-override";
+import { applyPortfolioIconAliases } from "@/lib/portfolio/icon-registry-aliases";
 
 export const EMPTY_ICON_REGISTRY_STATE = {
   overrides: {},
@@ -76,5 +77,5 @@ export function mergeIconsForPublic(state) {
   for (const key of normalized.removed) {
     delete merged[key];
   }
-  return merged;
+  return applyPortfolioIconAliases(merged);
 }

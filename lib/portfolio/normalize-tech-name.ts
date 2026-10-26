@@ -9,9 +9,18 @@ export function normalizeTechNameForIcon(name: string): string {
     return "csharp";
   }
 
-  let s = raw
-    .toLowerCase()
-    .replace(/\.net/g, "dotnet")
+  let s = raw.toLowerCase();
+
+  s = s
+    .replace(/\bado\.net\b/g, "ado net")
+    .replace(/\basp\.net\b/g, "asp net")
+    .replace(/\bentity\s+framework\b/g, "entity framework")
+    .replace(/\bnet\s+framework\b/g, "net framework")
+    .replace(/\bnet\s+core\b/g, "net core");
+
+  if (s === ".net" || s === "net") return "dotnet";
+
+  s = s
     .replace(/c\s*#/g, "csharp")
     .replace(/#/g, " ")
     .replace(/\//g, " ")

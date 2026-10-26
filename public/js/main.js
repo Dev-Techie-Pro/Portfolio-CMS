@@ -7480,7 +7480,7 @@ var getPrefetchKeysForPage = PREFETCH_CONFIG.getKeysForPage || ((p) => PREFETCH_
 async function loadPageModuleClass(page) {
   switch (page) {
     case "dashboard":
-      return (await import("./chunks/DashboardModule-BLH6NSLT.js")).DashboardModule;
+      return (await import("./chunks/DashboardModule-TOIQR233.js")).DashboardModule;
     case "projects":
       return (await import("./chunks/ProjectsModule-LE3XKPO3.js")).ProjectsModule;
     case "categories":
@@ -7493,13 +7493,13 @@ async function loadPageModuleClass(page) {
     case "blog-tags":
       return (await import("./chunks/BlogTagsModule-6HWK6HOS.js")).BlogTagsModule;
     case "technologies":
-      return (await import("./chunks/TechnologiesModule-S4TREXN4.js")).TechnologiesModule;
+      return (await import("./chunks/TechnologiesModule-M43MFC6K.js")).TechnologiesModule;
     case "tool-categories":
-      return (await import("./chunks/ToolCategoriesModule-RLABPKYV.js")).ToolCategoriesModule;
+      return (await import("./chunks/ToolCategoriesModule-LLW47KQP.js")).ToolCategoriesModule;
     case "blog-categories":
       return (await import("./chunks/BlogCategoriesModule-VFEUDTOZ.js")).BlogCategoriesModule;
     case "tools":
-      return (await import("./chunks/ToolsModule-G4YO7I2R.js")).ToolsModule;
+      return (await import("./chunks/ToolsModule-KXBDPHTH.js")).ToolsModule;
     case "media":
       return (await import("./chunks/MediaModule-FYHBR2XP.js")).MediaModule;
     case "testimonials":
@@ -7521,9 +7521,9 @@ async function loadPageModuleClass(page) {
     case "recent-activities":
       return (await import("./chunks/RecentActivitiesModule-LPH2M4OX.js")).RecentActivitiesModule;
     case "settings":
-      return (await import("./chunks/SettingsModule-XDCW555Z.js")).SettingsModule;
+      return (await import("./chunks/SettingsModule-IQUCSFXE.js")).SettingsModule;
     case "icon-registry":
-      return (await import("./chunks/IconRegistryModule-5LKHD4UE.js")).IconRegistryModule;
+      return (await import("./chunks/IconRegistryModule-7LYDBFMO.js")).IconRegistryModule;
     case "login":
       return (await import("./chunks/LoginModule-QCKE3QY7.js")).LoginModule;
     case "forgot-password":

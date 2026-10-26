@@ -1064,7 +1064,7 @@ select.pa-filter-select:not(.pa-select-native):focus {
 .pa-lv-col-actions {
   width: 1%;
   white-space: normal;
-  min-width: 200px;
+  min-width: 230px;
 }
 
 .pa-lv-actions {
@@ -1072,7 +1072,7 @@ select.pa-filter-select:not(.pa-select-native):focus {
   align-items: center;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: var(--pa-card-gap);
+  gap: var(--pa-gap-sm);
   max-width: min(300px, 44vw);
 }
 

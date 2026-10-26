@@ -627,19 +627,21 @@ export class IconRegistryManager {
     void this.persistRegistry({ feedback: false });
   }
 
-  async hideIcon(key) {
+  async hideIcon(key, { skipConfirm = false } = {}) {
     if (!key) return;
-    const ok = await requestConfirm({
-      title: 'Hide icon?',
-      text: `"${key}" will be hidden on the public site. You can show it again by removing it from the hidden list (re-add the same key) or reset via Delete → restore built-in.`,
-      confirmLabel: 'Hide',
-    });
-    if (!ok) return;
+    if (!skipConfirm) {
+      const ok = await requestConfirm({
+        title: 'Hide icon?',
+        text: `"${key}" will be hidden on the public site. Re-add the same registry key later to show it again.`,
+        confirmLabel: 'Hide',
+      });
+      if (!ok) return;
+    }
     this.state.removed = [...new Set([...(this.state.removed || []), key])];
     this.items = this.items.filter((i) => i.key !== key);
     this.markDirty();
     this.renderList();
-    void this.persistRegistry({ feedback: true });
+    await this.persistRegistry({ feedback: true, reloadAfter: true });
   }
 
   async deleteIcon(key) {
@@ -679,11 +681,12 @@ export class IconRegistryManager {
         confirmLabel: 'Hide',
       });
       if (!ok) return;
-      return this.hideIcon(key);
+      await this.hideIcon(key, { skipConfirm: true });
+      return;
     }
 
     this.markDirty();
-    void this.persistRegistry({ feedback: true, reloadAfter: true });
+    await this.persistRegistry({ feedback: true, reloadAfter: true });
   }
 
   openEditor(key) {

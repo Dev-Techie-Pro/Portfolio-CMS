@@ -1,5 +1,8 @@
 import { ICONS } from "../config/constants.js";
 import { resolvePublicIconKey } from "../data/legacy-icon-remix-map.js";
+import { applyPortfolioIconAliases } from "../utils/portfolio-icon-aliases.js";
+
+Object.assign(ICONS, applyPortfolioIconAliases(ICONS));
 
 (() => {
   const Portfolio = (window.Portfolio = window.Portfolio || {});
@@ -208,8 +211,9 @@ import { resolvePublicIconKey } from "../data/legacy-icon-remix-map.js";
           delete ICONS[key];
         });
       }
+      Object.assign(ICONS, applyPortfolioIconAliases(ICONS));
     } catch {
-      /* static registry only */
+      Object.assign(ICONS, applyPortfolioIconAliases(ICONS));
     }
   }
 
