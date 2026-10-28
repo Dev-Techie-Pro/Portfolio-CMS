@@ -81,7 +81,6 @@
 
       const EXITING = "is-exp-exiting";
       const ENTERING = "is-exp-entering";
-      const TL_PULSE = "is-exp-tl-pulse";
 
       function switchMs() {
         return Math.round(680 / animSpeed());
@@ -138,11 +137,13 @@
           "translateX(" + (cardRect.left - trackRect.left + track.scrollLeft) + "px)";
       }
 
-      function pulseCard(card) {
-        if (!card || prefersReduced()) return;
-        card.classList.remove(TL_PULSE);
-        void card.offsetWidth;
-        card.classList.add(TL_PULSE);
+      function animateTimelineCard(card) {
+        if (
+          card &&
+          typeof window.__paExpHscrollAnimateTimelineCard === "function"
+        ) {
+          window.__paExpHscrollAnimateTimelineCard(card);
+        }
       }
 
       function clearScrollLock() {
@@ -181,7 +182,7 @@
           card.classList.toggle(ACTIVE, on);
           card.setAttribute("aria-selected", on ? "true" : "false");
           card.tabIndex = on ? 0 : -1;
-          if (on && !wasOn) pulseCard(card);
+          if (on && !wasOn) animateTimelineCard(card);
         });
 
         if (animate) {
@@ -211,6 +212,16 @@
             panel.setAttribute("aria-hidden", "true");
             panel.inert = true;
           });
+          if (
+            typeof window.__paExpHscrollAnimateRoleTransition === "function"
+          ) {
+            window.__paExpHscrollAnimateRoleTransition(
+              section,
+              prevPanel,
+              nextPanel,
+              dir,
+            );
+          }
           clearTimeout(section._expSwitchTimer);
           section._expSwitchTimer = window.setTimeout(() => {
             prevPanel.classList.remove(EXITING);
@@ -303,14 +314,6 @@
       }
 
       cards.forEach((card, i) => {
-        card.addEventListener("animationend", (e) => {
-          if (
-            e.animationName === "expTlCardPulse" &&
-            card.classList.contains(TL_PULSE)
-          ) {
-            card.classList.remove(TL_PULSE);
-          }
-        });
         card.addEventListener("click", () => scrollToIndex(i));
         card.addEventListener("keydown", (e) => {
           if (e.key === "ArrowRight" || e.key === "ArrowDown") {

@@ -3,6 +3,8 @@
 import { useEffect } from 'react';
 import {
   animateExpTimelineIndicator,
+  animateExpRoleTransition,
+  animateExpTimelineCard,
   mountExpHscrollGsap,
   refreshExpHscrollGsap,
   registerExpHscrollApi,
@@ -26,6 +28,13 @@ declare global {
       track: HTMLElement,
       card: HTMLElement,
     ) => void;
+    __paExpHscrollAnimateRoleTransition?: (
+      section: HTMLElement,
+      previousPanel: HTMLElement | null,
+      nextPanel: HTMLElement,
+      direction: 'next' | 'prev',
+    ) => void;
+    __paExpHscrollAnimateTimelineCard?: (card: HTMLElement) => void;
     __paTeardownExpHscrollGsap?: (section: HTMLElement) => void;
     __paExpHscrollSyncActive?: (section: HTMLElement) => void;
     Portfolio?: { EXP_CARDS?: { init?: () => void } };
@@ -45,6 +54,17 @@ export function useExpHscrollGsapBridge() {
     };
     window.__paExpHscrollAnimateIndicator = (indicator, track, card) => {
       animateExpTimelineIndicator(indicator, track, card);
+    };
+    window.__paExpHscrollAnimateRoleTransition = (
+      section,
+      previousPanel,
+      nextPanel,
+      direction,
+    ) => {
+      animateExpRoleTransition(section, previousPanel, nextPanel, direction);
+    };
+    window.__paExpHscrollAnimateTimelineCard = (card) => {
+      animateExpTimelineCard(card);
     };
     window.__paTeardownExpHscrollGsap = (section) => {
       teardownExpHscrollGsap(section);
@@ -66,11 +86,15 @@ export function useExpHscrollGsapBridge() {
       delete window.__paMountExpHscrollGsap;
       delete window.__paExpHscrollScrollTo;
       delete window.__paExpHscrollAnimateIndicator;
+      delete window.__paExpHscrollAnimateRoleTransition;
+      delete window.__paExpHscrollAnimateTimelineCard;
       delete window.__paExpHscrollSyncActive;
-      document.querySelectorAll<HTMLElement>('.exp-work--hscroll').forEach((section) => {
-        delete section.dataset.expGsapDriver;
-        teardownExpHscrollGsap(section);
-      });
+      document
+        .querySelectorAll<HTMLElement>('.exp-work--hscroll')
+        .forEach((section) => {
+          delete section.dataset.expGsapDriver;
+          teardownExpHscrollGsap(section);
+        });
       window.removeEventListener('pa:public-page-ready', refresh);
     };
   }, []);
