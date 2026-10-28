@@ -17,6 +17,7 @@ const CLIENT_ROOT = path.resolve('client');
 const OUT_DIR = path.resolve('public/js');
 const CHUNKS_DIR = path.join(OUT_DIR, 'chunks');
 const MAIN_ENTRY = path.join(CLIENT_ROOT, 'main.ts');
+const PUBLIC_FAQ_ENTRY = path.join(CLIENT_ROOT, 'features', 'blog-faq.ts');
 const VENDOR_DIR = path.join(OUT_DIR, 'vendor');
 
 const ADMIN_BOOT_STANDALONE = [
@@ -118,10 +119,21 @@ async function buildMainBundle() {
   });
 }
 
+async function buildPublicFaqModule() {
+  if (!fs.existsSync(PUBLIC_FAQ_ENTRY)) return;
+  await esbuild.build({
+    ...SHARED_BUILD,
+    entryPoints: [PUBLIC_FAQ_ENTRY],
+    outfile: path.join(OUT_DIR, 'features', 'blog-faq.js'),
+    bundle: true,
+  });
+}
+
 async function buildAll() {
   copyVendorAssets();
   await buildStandalone();
   await buildMainBundle();
+  await buildPublicFaqModule();
 
   const sourceHash = writeClientSourceHash(CLIENT_ROOT);
   const mode = mirrorStandalone ? 'mirror-standalone' : 'admin';
@@ -155,6 +167,16 @@ if (process.argv.includes('--watch')) {
         splitting: true,
         chunkNames: 'chunks/[name]-[hash]',
         plugins: [cleanSplitChunksPlugin],
+      }),
+    );
+  }
+  if (fs.existsSync(PUBLIC_FAQ_ENTRY)) {
+    contexts.push(
+      await esbuild.context({
+        ...SHARED_BUILD,
+        entryPoints: [PUBLIC_FAQ_ENTRY],
+        outfile: path.join(OUT_DIR, 'features', 'blog-faq.js'),
+        bundle: true,
       }),
     );
   }

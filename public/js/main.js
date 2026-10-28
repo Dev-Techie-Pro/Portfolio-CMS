@@ -7495,11 +7495,11 @@ async function loadPageModuleClass(page) {
     case "technologies":
       return (await import("./chunks/TechnologiesModule-M43MFC6K.js")).TechnologiesModule;
     case "tool-categories":
-      return (await import("./chunks/ToolCategoriesModule-LLW47KQP.js")).ToolCategoriesModule;
+      return (await import("./chunks/ToolCategoriesModule-JTMGXY2B.js")).ToolCategoriesModule;
     case "blog-categories":
       return (await import("./chunks/BlogCategoriesModule-VFEUDTOZ.js")).BlogCategoriesModule;
     case "tools":
-      return (await import("./chunks/ToolsModule-KXBDPHTH.js")).ToolsModule;
+      return (await import("./chunks/ToolsModule-QDQMMZ5O.js")).ToolsModule;
     case "media":
       return (await import("./chunks/MediaModule-FYHBR2XP.js")).MediaModule;
     case "testimonials":
@@ -7521,9 +7521,9 @@ async function loadPageModuleClass(page) {
     case "recent-activities":
       return (await import("./chunks/RecentActivitiesModule-LPH2M4OX.js")).RecentActivitiesModule;
     case "settings":
-      return (await import("./chunks/SettingsModule-IQUCSFXE.js")).SettingsModule;
+      return (await import("./chunks/SettingsModule-DLD2LT7Q.js")).SettingsModule;
     case "icon-registry":
-      return (await import("./chunks/IconRegistryModule-5MQP6BDY.js")).IconRegistryModule;
+      return (await import("./chunks/IconRegistryModule-A5XDHL5O.js")).IconRegistryModule;
     case "login":
       return (await import("./chunks/LoginModule-QCKE3QY7.js")).LoginModule;
     case "forgot-password":

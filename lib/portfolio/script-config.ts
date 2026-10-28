@@ -90,7 +90,7 @@ export const PAGE_EXTRA_SCRIPTS: Record<PortfolioRoute, ScriptEntry[]> = {
     { type: "classic", src: "/assets/js/data/skills-loader.js", defer: true },
     ...SWIPER,
     { type: "classic", src: "/assets/js/features/skills-cms.js", defer: true },
-    { type: "classic", src: "/assets/js/features/blog-faq.js", defer: true },
+    { type: "module", src: "/js/features/blog-faq.js" },
   ],
   about: [],
   skills: [

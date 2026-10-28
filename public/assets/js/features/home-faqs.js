@@ -25,7 +25,7 @@
     const bodyClass = isOpen ? "faq-item-body" : "faq-item-body pf-collapsed";
 
     return `
-      <div class="faq-item reveal${isOpen ? " is-open" : ""}">
+      <div class="faq-item${isOpen ? " is-open" : ""}">
         <button
           class="faq-item-head"
           type="button"
@@ -69,7 +69,7 @@
     if (Portfolio.ANIMATIONS?.initScrollReveal) {
       Portfolio.ANIMATIONS.initScrollReveal();
     }
-    Portfolio.BLOGS_FAQS?.init?.();
+    Portfolio.BLOGS_FAQS?.refresh?.();
   }
 
   function init() {

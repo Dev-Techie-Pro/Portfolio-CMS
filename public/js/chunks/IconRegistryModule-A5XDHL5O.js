@@ -1,6 +1,6 @@
 import {
   open as open2
-} from "./chunk-ZOCW4W47.js";
+} from "./chunk-AZ43J5E6.js";
 import {
   open
 } from "./chunk-NGM67PQZ.js";
@@ -693,10 +693,13 @@ var IconRegistryManager = class {
       if (this.state.labels) delete this.state.labels[key];
       this.state.removed = (this.state.removed || []).filter((k) => k !== key);
     } else {
-      const ok = await requestConfirm({
+      const ok = await confirmIconAction({
         title: "Hide built-in icon?",
-        text: `"${key}" is a built-in icon and cannot be removed from the codebase. Hide it from the public site instead?`,
-        confirmLabel: "Hide"
+        message: `<strong>${escapeHtml(key)}</strong> is built into the app and cannot be deleted. Hide it from the public site instead?`,
+        confirmLabel: "Hide",
+        iconClass: "ri-eye-off-line",
+        danger: false,
+        iconTone: "warning"
       });
       if (!ok) return;
       await this.hideIcon(key, { skipConfirm: true });
@@ -881,4 +884,4 @@ var IconRegistryModule = class extends Module {
 export {
   IconRegistryModule
 };
-//# sourceMappingURL=IconRegistryModule-5MQP6BDY.js.map
+//# sourceMappingURL=IconRegistryModule-A5XDHL5O.js.map

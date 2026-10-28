@@ -10,7 +10,7 @@ import {
 // client/utils/icon-registry-labels.ts
 var ICON_REGISTRY_LABELS = {
   siMsSqlBrand: "MS SQL",
-  siSql: "SQL",
+  siSql: "SQL Server",
   siCloudflare: "Cloudflare",
   siAdoNet: "ADO.NET",
   siNetFramework: ".NET Framework",
@@ -478,4 +478,4 @@ export {
   open,
   updateIconTrigger
 };
-//# sourceMappingURL=chunk-ZOCW4W47.js.map
+//# sourceMappingURL=chunk-AZ43J5E6.js.map

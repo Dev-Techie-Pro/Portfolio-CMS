@@ -1,6 +1,6 @@
 import {
   open
-} from "./chunk-ZOCW4W47.js";
+} from "./chunk-AZ43J5E6.js";
 import {
   applyRoleBasedAccess,
   applyUserDisplay,
@@ -3486,4 +3486,4 @@ var SettingsModule = class extends Module {
 export {
   SettingsModule
 };
-//# sourceMappingURL=SettingsModule-IQUCSFXE.js.map
+//# sourceMappingURL=SettingsModule-DLD2LT7Q.js.map
