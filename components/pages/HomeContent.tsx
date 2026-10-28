@@ -541,10 +541,12 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                     <path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 5l-4 14" />
                   </svg>
                 </div>
+                <div class="pricing-title">
+                  <h2>Starter</h2>
+                  <p class="tag">For focused, small projects.</p>
+                </div>
                 <span class="pricing-pill">Essential</span>
               </div>
-              <h2>Starter</h2>
-              <p class="tag">For focused, small projects.</p>
               <div class="price">
                 <b>$299<em>+</em></b>
                 <small>one-time<span class="pkr"> · ≈ PKR 83,100</span></small>
@@ -576,9 +578,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                   </svg>
                   Most Popular
                 </span>
+                <div class="pricing-title">
+                  <h2>Professional</h2>
+                  <p class="tag">For growing businesses.</p>
+                </div>
               </div>
-              <h2>Professional</h2>
-              <p class="tag">For growing businesses.</p>
               <div class="price">
                 <b>$799<em>+</em></b>
                 <small>one-time<span class="pkr"> · ≈ PKR 222,100</span></small>
@@ -603,9 +607,11 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                   </svg>
                 </div>
                 <span class="pricing-pill">Custom</span>
+                <div class="pricing-title">
+                  <h2>Enterprise</h2>
+                  <p class="tag">For complex, custom solutions.</p>
+                </div>
               </div>
-              <h2>Enterprise</h2>
-              <p class="tag">For complex, custom solutions.</p>
               <div class="price quote"><b>Custom quote</b></div>
               <ul>
                 <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Advanced full-stack solution</li>
@@ -1232,7 +1238,7 @@ export function HomeContent() {
         unit: "one-time",
         cards: [
           {
-            price: "$299",
+            price: "$120",
             plus: true,
             button: "Discuss your project",
             items: [
@@ -1244,7 +1250,7 @@ export function HomeContent() {
             ],
           },
           {
-            price: "$799",
+            price: "$280",
             plus: true,
             button: "Start a project",
             items: [
@@ -1285,7 +1291,7 @@ export function HomeContent() {
             ],
           },
           {
-            price: "$249",
+            price: "$150",
             plus: true,
             button: "Start monthly plan",
             items: [
