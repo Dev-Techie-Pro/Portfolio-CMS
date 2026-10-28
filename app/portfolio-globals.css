@@ -1,7 +1,12 @@
 @import "remixicon/fonts/remixicon.css";
+@import "../public/assets/css/tokens.css";
+@import "../public/assets/css/base.css";
+@import "../public/assets/css/layout.css";
 @import "../public/assets/css/styles.css";
-@import "../public/assets/css/blog-pages.css";
+@import "../public/assets/css/components/blog-pages.css";
+@import "../public/assets/css/components/pricing-section.css";
 @import "../public/assets/css/carousel.css";
+@import "../public/assets/css/responsive.css";
 
 /* Leaflet map styles are loaded per-page via layout head links when needed */
 

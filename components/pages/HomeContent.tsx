@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { PortfolioHtmlContent } from "@/components/portfolio/PortfolioHtmlContent";
 import { SKILLS_GRID_HOME_SHELL } from "@/lib/portfolio/skills-grid-shell-html";
 import { SITE_FOOTER_NEWSLETTER_HTML } from "@/lib/portfolio/site-footer-newsletter-html";
@@ -501,6 +502,130 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
               View All Posts
               <span class="icon" data-icon="ri-arrow-right-line"></span>
             </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="price-tag" aria-label="Pricing and Packages">
+      <div class="container">
+        <div class="section-wrap">
+          <div class="section-header">
+            <div class="section-title-group reveal-left">
+              <p class="section-label">Pricing &amp; Packages</p>
+              <h2 class="about-heading">
+                Choose the right plan<br />
+                <strong>for your next project</strong>
+              </h2>
+              <p class="section-desc reveal">
+                Flexible pricing options designed to fit your goals, whether
+                you’re building a simple website or a complex, scalable platform.
+              </p>
+            </div>
+            <div
+              class="duration-toggle"
+              data-pricing-toggle
+              role="group"
+              aria-label="Billing frequency"
+            >
+              <button class="on" type="button" aria-pressed="true">
+                One-time
+              </button>
+              <button type="button" aria-pressed="false">Monthly</button>
+            </div>
+          </div>
+          <div class="pricing-grid">
+            <article class="pricing-card">
+              <div class="head">
+                <div class="pricing-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 5l-4 14" />
+                  </svg>
+                </div>
+                <span class="pricing-pill">Essential</span>
+              </div>
+              <h2>Starter</h2>
+              <p class="tag">For focused, small projects.</p>
+              <div class="price">
+                <b>$299<em>+</em></b>
+                <small>one-time<span class="pkr"> · ≈ PKR 83,100</span></small>
+              </div>
+              <ul>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Landing page or small website</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Responsive design</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Basic SEO setup</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>1 revision round</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Email support</li>
+              </ul>
+              <a href="/contact" class="btn btn-outline">
+                Discuss your project
+                <span class="icon" data-icon="ri-arrow-right-line"></span>
+              </a>
+            </article>
+            <article class="pricing-card pop">
+              <div class="head">
+                <div class="pricing-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 15c-1.5 1.2-2 4-2 6 2 0 4.8-.5 6-2M12 15l-3-3a22 22 0 0 1 2-4 12 12 0 0 1 10-5c0 3-1 8-5 12a22 22 0 0 1-4 2z" />
+                    <circle cx="15" cy="9" r="1.3" />
+                    <path d="M9 12H5l2-3h3m2 8v4l3-2v-3" />
+                  </svg>
+                </div>
+                <span class="pricing-pill hot">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m12 2 3 6.6 7 .8-5.2 4.8 1.4 7L12 17.7 5.8 21.2l1.4-7L2 9.4l7-.8z" />
+                  </svg>
+                  Most Popular
+                </span>
+              </div>
+              <h2>Professional</h2>
+              <p class="tag">For growing businesses.</p>
+              <div class="price">
+                <b>$799<em>+</em></b>
+                <small>one-time<span class="pkr"> · ≈ PKR 222,100</span></small>
+              </div>
+              <ul>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Custom website or web app</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>API integrations</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Performance optimization</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>3 revision rounds</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Priority communication</li>
+              </ul>
+              <a class="btn si-btn si-btn-primary" href="/contact">
+                Start a project
+                <span class="icon" data-icon="ri-download-line"></span>
+              </a>
+            </article>
+            <article class="pricing-card">
+              <div class="head">
+                <div class="pricing-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 21V6l9-3v18M13 9h7v12M2 21h20M8 8h1m-1 4h1m-1 4h1m6-3h1m-1 4h1" />
+                  </svg>
+                </div>
+                <span class="pricing-pill">Custom</span>
+              </div>
+              <h2>Enterprise</h2>
+              <p class="tag">For complex, custom solutions.</p>
+              <div class="price quote"><b>Custom quote</b></div>
+              <ul>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Advanced full-stack solution</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Custom integrations &amp; architecture</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Security and scalability review</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Ongoing support options</li>
+                <li><svg viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></svg>Tailored delivery plan</li>
+              </ul>
+              <a href="/contact" class="btn btn-outline">
+                Get a Custom Quote
+                <span class="icon" data-icon="ri-arrow-right-line"></span>
+              </a>
+            </article>
+          </div>
+          <div class="foot">
+            <i aria-hidden="true"></i>
+            <span>
+              Every project is scoped around your goals, features, and timeline.
+            </span>
+            <i aria-hidden="true"></i>
           </div>
         </div>
       </div>
@@ -1097,5 +1222,184 @@ ${SITE_FOOTER_NEWSLETTER_HTML}
     </footer>`;
 
 export function HomeContent() {
+  useEffect(() => {
+    const section = document.getElementById("price-tag");
+    const toggle = section?.querySelector("[data-pricing-toggle]");
+    if (!section || !toggle) return;
+
+    const plans = {
+      once: {
+        unit: "one-time",
+        cards: [
+          {
+            price: "$299",
+            plus: true,
+            button: "Discuss your project",
+            items: [
+              "Landing page or small website",
+              "Responsive design",
+              "Basic SEO setup",
+              "1 revision round",
+              "Email support",
+            ],
+          },
+          {
+            price: "$799",
+            plus: true,
+            button: "Start a project",
+            items: [
+              "Custom website or web app",
+              "API integrations",
+              "Performance optimization",
+              "3 revision rounds",
+              "Priority communication",
+            ],
+          },
+          {
+            price: "Custom quote",
+            plus: false,
+            button: "Get a custom quote",
+            items: [
+              "Advanced full-stack solution",
+              "Custom integrations & architecture",
+              "Security and scalability review",
+              "Ongoing support options",
+              "Tailored delivery plan",
+            ],
+          },
+        ],
+      },
+      month: {
+        unit: "per month",
+        cards: [
+          {
+            price: "$99",
+            plus: true,
+            button: "Start monthly plan",
+            items: [
+              "Site maintenance & updates",
+              "Hosting & uptime monitoring",
+              "Basic SEO upkeep",
+              "2 small edits per month",
+              "Email support",
+            ],
+          },
+          {
+            price: "$249",
+            plus: true,
+            button: "Start monthly plan",
+            items: [
+              "Ongoing feature development",
+              "API & integration upkeep",
+              "Performance monitoring",
+              "Up to 10 dev hours per month",
+              "Priority communication",
+            ],
+          },
+          {
+            price: "Custom retainer",
+            plus: false,
+            button: "Get a custom retainer",
+            items: [
+              "Dedicated development retainer",
+              "Architecture & integration roadmap",
+              "Security and scalability reviews",
+              "SLA-backed ongoing support",
+              "Tailored delivery plan",
+            ],
+          },
+        ],
+      },
+    } as const;
+    const cards = Array.from(section.querySelectorAll(".pricing-card"));
+    const buttons = Array.from(toggle.querySelectorAll("button"));
+    const checkIcon = section.querySelector(".pricing-card ul li svg");
+    const pendingUpdates: ReturnType<typeof setTimeout>[] = [];
+
+    const render = (mode: keyof typeof plans) => {
+      const plan = plans[mode];
+      cards.forEach((card, index) => {
+        const cardPlan = plan.cards[index];
+        const price = card.querySelector(".price");
+        const amount = price?.querySelector("b");
+        const list = card.querySelector("ul");
+        const link = card.querySelector(".btn");
+        if (!price || !amount || !list || !link || !cardPlan) return;
+
+        amount.textContent = cardPlan.price;
+        price.classList.toggle("quote", !cardPlan.plus);
+        price.querySelector("small")?.remove();
+
+        if (cardPlan.plus) {
+          const plus = document.createElement("em");
+          plus.textContent = "+";
+          amount.append(plus);
+          const details = document.createElement("small");
+          details.append(document.createTextNode(`${plan.unit} `));
+          const conversion = document.createElement("span");
+          conversion.className = "pkr";
+          const dollars = Number(cardPlan.price.replace(/[^\d.]/g, ""));
+          const roundedPkr = Math.round((dollars * 278) / 100) * 100;
+          conversion.textContent = `· ≈ PKR ${roundedPkr.toLocaleString("en-US")}`;
+          details.append(conversion);
+          price.append(details);
+        }
+
+        list.replaceChildren(
+          ...cardPlan.items.map((itemText) => {
+            const item = document.createElement("li");
+            if (checkIcon) item.append(checkIcon.cloneNode(true));
+            item.append(document.createTextNode(itemText));
+            return item;
+          }),
+        );
+
+        const label = Array.from(link.childNodes).find(
+          (node) => node.nodeType === Node.TEXT_NODE,
+        );
+        if (label) label.nodeValue = `${cardPlan.button} `;
+      });
+    };
+
+    render("once");
+    const handlers = buttons.map((button, index) => {
+      const mode = index === 0 ? "once" : "month";
+      const handler = () => {
+        if (button.classList.contains("on")) return;
+        buttons.forEach((candidate) => {
+          const active = candidate === button;
+          candidate.classList.toggle("on", active);
+          candidate.setAttribute("aria-pressed", String(active));
+        });
+
+        const animatedElements = cards.flatMap((card) =>
+          Array.from(card.querySelectorAll(".price, ul, .btn")),
+        );
+        animatedElements.forEach((element) => {
+          element.classList.add("swap", "out");
+        });
+        pendingUpdates.forEach(clearTimeout);
+        pendingUpdates.length = 0;
+        pendingUpdates.push(
+          setTimeout(() => {
+            render(mode);
+            animatedElements.forEach((element) => {
+              element.classList.remove("out");
+            });
+          }, 180),
+        );
+      };
+      button.addEventListener("click", handler);
+      return { button, handler };
+    });
+
+    return () => {
+      handlers.forEach(({ button, handler }) =>
+        button.removeEventListener("click", handler),
+      );
+      pendingUpdates.forEach(clearTimeout);
+    };
+  }, []);
+
   return <PortfolioHtmlContent page="HomeContent" html={PAGE_HTML} />;
 }
