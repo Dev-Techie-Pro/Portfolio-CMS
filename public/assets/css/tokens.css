@@ -22,7 +22,6 @@
   --sh-accent-xs: 0 0 8px var(--accent-dim);
   --accent-dim-4: rgba(163, 255, 18, 0.04);
   --accent-dim-5: rgba(163, 255, 18, 0.05);
-  --gray-muted: rgba(255, 255, 255, 0.6);
   --max-w: 1260px;
   --nav-h: 70px;
   --sh1: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px var(--accent-dim);
@@ -50,6 +49,7 @@
   --accent-blue-dim: #2464cabb;
   --accent-green: #22c55e;
   --accent-green-dim: #22c55eb0;
+  
   --font-head: "Outfit", sans-serif;
   --font-body: "Poppins", sans-serif;
   --font-mono: "Figtree", sans-serif;
@@ -60,6 +60,7 @@
   --card-gap-sm: 6px;
   --card-gap-md: 12px;
   --card-gap-lg: 16px;
+  
   --gap: 4rem;
   --fs-8: 8px;
   --fs-10: 10px;
@@ -67,7 +68,11 @@
   --fs-14: 14px;
   --fs-16: 16px;
   --fs-22: 22px;
+  --fs-30: 30px;
   --fs-42: 42px;
+
+  --icon-size: 20px;
+
   --fw-3: 300;
   --fw-4: 400;
   --fw-5: 500;
@@ -75,30 +80,34 @@
   --fw-7: 700;
   --fw-8: 800;
   --fw-9: 900;
-  --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
 html.theme-light {
-  --bg: #f5f5f5;
-  --bg-2: #ebebeb;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f0f0f0;
-  --border: #d4d4d4;
+  --bg: #d5dccf;
+  --bg-2: #cbd3c4;
+  --bg-card: #e8eee3;
+  --bg-card-hover: #f2f6ee;
+  --border: #bcc6b4;
   --border-light: rgba(0, 0, 0, 0.08);
-  --white: #0a0a0a;
-  --white-dim: rgba(10, 10, 10, 0.88);
-  --gray: #555555;
-  --gray-light: #333333;
-  --gray-muted: rgba(10, 10, 10, 0.55);
+  --white: #0e140b;
+  --white-dim: rgba(14, 20, 11, 0.85);
+  --gray: #44503c;
+  --gray-light: #2b3626;
+  --gray-muted: rgba(14, 20, 11, 0.62);
   --gray-dim: rgba(0, 0, 0, 0.14);
   --gray-dark: rgba(0, 0, 0, 0.04);
-  --sh1: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px var(--accent-dim);
-  --sh2: 0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px var(--accent-dim);
-  --sh3: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px var(--accent-dim);
-  --sh-dark: 0 20px 60px rgba(0, 0, 0, 0.18);
-  --overlay: rgba(143, 142, 142, 0.521);
+  --accent: #14532d;
+  --accent-dimmer: #14532da8;
+  --accent-dim: #14532d7c;
+  --accent-dim-4: rgba(20, 83, 45, 0.04);
+  --accent-dim-5: rgba(20, 83, 45, 0.05);
+  --sh2: 0 4px 16px rgba(17, 22, 19, 0.08), 0 1px 4px var(--accent-dim);
+  --overlay: rgba(14, 20, 11, 0.45);
   --si-bg: var(--bg);
   --si-bg-card: var(--bg-card);
   --si-border: var(--border);
   color-scheme: light;
 }
+
+html.theme-light .btn-primary { color: #fff; }

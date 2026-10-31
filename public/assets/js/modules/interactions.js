@@ -595,7 +595,15 @@
         const feedback = form.querySelector("#footerNewsletterFeedback");
         const hp = form.querySelector('input[name="website"]');
         const submitBtn = form.querySelector(".footer-newsletter-btn");
+        const submitBtnLabel = submitBtn?.querySelector("[data-newsletter-submit-label]");
         const emailRe = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+        function setSubmitLabel(label) {
+          if (submitBtnLabel) {
+            submitBtnLabel.textContent = label;
+          } else if (submitBtn) {
+            submitBtn.textContent = label;
+          }
+        }
         function setFeedback(message, kind) {
           if (!feedback) return;
           feedback.textContent = message;
@@ -615,8 +623,8 @@
           form.dataset.newsletterSubmitting = "1";
           setFeedback("", "");
           submitBtn && (submitBtn.disabled = true);
-          const prevLabel = submitBtn?.textContent;
-          submitBtn && (submitBtn.textContent = "Subscribing…");
+          const prevLabel = submitBtnLabel?.textContent || submitBtn?.textContent;
+          setSubmitLabel("Subscribing…");
           try {
             const res = await fetch("/api/newsletter", {
               method: "POST",
@@ -645,7 +653,7 @@
           } finally {
             delete form.dataset.newsletterSubmitting;
             submitBtn && (submitBtn.disabled = false);
-            submitBtn && (submitBtn.textContent = prevLabel || "Subscribe");
+            setSubmitLabel(prevLabel || "Subscribe");
           }
         });
       },

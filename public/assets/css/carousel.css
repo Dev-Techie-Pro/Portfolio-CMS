@@ -256,6 +256,7 @@
 .si-ticker-icon {
   width: 28px;
   height: 28px;
+  font-size: var(--fs-16);
   display: flex;
   align-items: center;
   justify-content: center;

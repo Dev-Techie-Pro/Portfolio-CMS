@@ -7,7 +7,7 @@
 }
 html {
   scroll-behavior: smooth;
-  font-size: var(--fs-16);
+  font-size: var(--fs-14);
 }
 body {
   background: var(--bg);
@@ -802,7 +802,6 @@ section {
 .ch-node-dot,
 .ch-node-ring,
 .ch-response-icon,
-.footer-bg-radar,
 .dot,
 .brand-rule,
 .footer-cta-icon,
@@ -946,6 +945,7 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: var(--icon-size);
 }
 
 .nav-logo,
@@ -1042,7 +1042,6 @@ section {
 .pf-quicklinks-panel,
 .trv-metric-body,
 .ci-cards,
-.cf-step-body,
 .cf-consent,
 .exp-hero-stat {
   display: flex;
@@ -1150,6 +1149,8 @@ section {
 }
 .icon {
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .icon img.pa-site-icon-img,
 [data-icon] img.pa-site-icon-img {

@@ -7,8 +7,8 @@
 @import "../public/assets/css/components/pricing-section.css";
 @import "../public/assets/css/carousel.css";
 @import "../public/assets/css/responsive.css";
+@import "../public/assets/css/components/footer.css";
 
-/* Leaflet map styles are loaded per-page via layout head links when needed */
 
 .head__title .word {
   display: inline-block;

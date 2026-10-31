@@ -3,52 +3,11 @@
 import { useEffect } from "react";
 import { PortfolioHtmlContent } from "@/components/portfolio/PortfolioHtmlContent";
 import { SKILLS_GRID_HOME_SHELL } from "@/lib/portfolio/skills-grid-shell-html";
-import { SITE_FOOTER_NEWSLETTER_HTML } from "@/lib/portfolio/site-footer-newsletter-html";
+import { SITE_FOOTER_HTML } from "@/lib/portfolio/site-footer-html";
+import { getSiteHeaderHtml } from "@/lib/portfolio/site-header-html";
 import { EXPERIENCE_TIMELINE_SECTION_HTML } from "@/lib/portfolio/experience-timeline-shell-html";
 
-/* Auto-generated from static HTML — see MIGRATION.md */
-const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
-    <header class="navbar" role="banner">
-      <div class="container">
-        <div class="nav-inner">
-          <a
-            href="/"
-            class="nav-logo"
-            aria-label="M Sohaib Ishaque — Home"
-          >
-            <div class="logo-box u-flex-center" aria-hidden="true">SI</div>
-            <div class="logo-text">
-              <span class="logo-name">M Sohaib Ishaque</span>
-              <span class="logo-role">Full Stack Web Developer</span>
-            </div>
-          </a>
-          <nav class="nav-menu" aria-label="Main navigation">
-            <a href="/" class="nav-link active">Home</a>
-            <a href="/about" class="nav-link">About</a>
-            <a href="/skills" class="nav-link">Skills</a>
-            <a href="/experience" class="nav-link">Experience</a>
-                        <a href="/projects" class="nav-link">Projects</a>
-            <a href="/blogs" class="nav-link">Blogs</a>
-            <a href="/testimonials" class="nav-link">Testimonials</a>
-          </nav>
-          <div class="nav-right-btns">
-            <a href="/contact" class="nav-cta">
-              Hire Me <span class="icon" data-icon="ri-arrow-right-up-line"></span>
-            </a>
-            <a
-              href="#0"
-              class="btn btn-outline"
-              id="customizeBtn"
-              aria-label="Customize"
-              aria-expanded="false"
-              aria-controls="paCustomPanel"
-            >
-              <span class="icon" data-icon="ri-palette-line"></span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </header>
+const PAGE_HTML = `${getSiteHeaderHtml("home")}
     <section id="home" class="hero-v2" aria-label="Hero">
       <div class="container">
         <div class="hero-v2-inner">
@@ -695,30 +654,21 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
     <section id="contact" aria-label="Contact me">
       <div class="container">
         <div class="section-wrap">
-          <div class="section-header">
-            <div class="section-title-group reveal-left">
-              <p class="section-label">Got An Idea?</p>
-              <h2 class="about-heading">
-                Let's Create<br />
-                <strong> Something Amazing</strong>
-              </h2>
-              <p class="section-desc reveal">
-                Got a challenge? Hire Me. Got a vision? Let's build. Great things
-                happen when the right people come together.
-              </p>
-            </div>
-          </div>
-          <div class="contact-grid">
+          <div class="contact-grid mt-0">
             <div class="reveal-left">
-              <h3 class="contact-heading">
-                Have a project? <br />
-                <em>Hire Me.</em>
-              </h3>
-              <p class="contact-sub">
-                I'm always open to discussing new opportunities, interesting
-                projects, or just having a chat about technology. Feel free to
-                reach out.
-              </p>
+              <div class="section-header">
+                <div class="section-title-group reveal-left">
+                  <p class="section-label">Got An Idea?</p>
+                  <h2 class="about-heading">
+                    Let's Create<br />
+                    <strong> Something Amazing</strong>
+                  </h2>
+                  <p class="section-desc reveal">
+                    Got a challenge? Hire Me. Got a vision? Let's build. Great things
+                    happen when the right people come together.
+                  </p>
+                </div>
+              </div>
               <div class="contact-details">
                 <div class="contact-detail">
                   <div class="contact-detail-icon" aria-hidden="true">
@@ -820,55 +770,57 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
                   action="#"
                   method="post"
                 >
-                  <div class="cf-step reveal" data-field="name">
-                    <span class="cf-step-badge" aria-hidden="true">01</span>
-                    <div class="cf-step-body">
-                      <label for="name" class="cf-step-label"
-                        >What is your full name?
-                        <span class="cf-req">*</span></label
-                      >
-                      <input
-                        type="text"
-                        name="name"
-                        id="name"
-                        class="cf-line-input"
-                        placeholder="Your full name..."
-                        required
-                        aria-required="true"
-                        autocomplete="name"
-                      />
-                      <span
-                        class="cf-error"
-                        id="name-error"
-                        role="alert"
-                      ></span>
+                  <div class="pa-modal-grid-2">
+                    <div class="cf-step reveal" data-field="name">
+                      <span class="cf-step-badge" aria-hidden="true">01</span>
+                      <div class="cf-step-body">
+                        <label for="name" class="cf-step-label"
+                          >What is your full name?
+                          <span class="cf-req">*</span></label
+                        >
+                        <input
+                          type="text"
+                          name="name"
+                          id="name"
+                          class="cf-line-input"
+                          placeholder="Your full name..."
+                          required
+                          aria-required="true"
+                          autocomplete="name"
+                        />
+                        <span
+                          class="cf-error"
+                          id="name-error"
+                          role="alert"
+                        ></span>
+                      </div>
+                    </div>
+                    <div class="cf-step reveal" data-field="email">
+                      <span class="cf-step-badge" aria-hidden="true">02</span>
+                      <div class="cf-step-body">
+                        <label for="email" class="cf-step-label"
+                          >What is your email address?
+                          <span class="cf-req">*</span></label
+                        >
+                        <input
+                          type="email"
+                          name="email"
+                          id="email"
+                          class="cf-line-input"
+                          placeholder="Please enter your email address..."
+                          required
+                          aria-required="true"
+                          autocomplete="email"
+                        />
+                        <span
+                          class="cf-error"
+                          id="email-error"
+                          role="alert"
+                        ></span>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="cf-step reveal" data-field="email">
-                    <span class="cf-step-badge" aria-hidden="true">02</span>
-                    <div class="cf-step-body">
-                      <label for="email" class="cf-step-label"
-                        >What is your email address?
-                        <span class="cf-req">*</span></label
-                      >
-                      <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        class="cf-line-input"
-                        placeholder="Please enter your email address..."
-                        required
-                        aria-required="true"
-                        autocomplete="email"
-                      />
-                      <span
-                        class="cf-error"
-                        id="email-error"
-                        role="alert"
-                      ></span>
-                    </div>
-                  </div>
 
                   <div class="cf-step reveal" data-field="subject">
                     <span class="cf-step-badge" aria-hidden="true">03</span>
@@ -1018,214 +970,7 @@ const PAGE_HTML = `<div id="mobile-nav-root" data-mobile-nav-root></div>
         </div>
       </div>
     </section>
-    <footer class="site-footer" id="site-footer">
-      <div class="footer-bg" aria-hidden="true">
-        <span class="icon" data-icon="siGridDots"></span>
-        <div class="footer-bg-glow-blob"></div>
-        <div class="footer-bg-radar"></div>
-        <div class="footer-bg-globe">
-          <span class="icon" data-icon="siFooterGlobe"></span>
-        </div>
-        <div class="footer-bg-noise"></div>
-      </div>
-      <div class="footer-inner container">
-        <div class="footer-grid">
-          <div class="footer-col footer-col--brand">
-            <a href="#" class="nav-logo" aria-label="Home">
-              <div class="logo-box u-flex-center" aria-hidden="true">SI</div>
-              <div class="logo-text">
-                <span class="logo-name">M Sohaib Ishaque</span>
-                <span class="logo-role">Full Stack Web Developer</span>
-              </div>
-            </a>
-            <p class="brand-tagline">
-              Building digital experiences that make an impact. Clean code,
-              modern design, scalable solutions.
-            </p>
-            <div class="brand-rule" aria-hidden="true"></div>
-            <div class="footer-cta-card">
-              <div class="footer-cta-icon" aria-hidden="true">
-                <span class="icon" data-icon="ri-send-plane-line"></span>
-              </div>
-              <h3 class="footer-cta-title">Let's work together</h3>
-              <p class="footer-cta-text">
-                Have a project in mind or just want to say hi? I'd love to hear
-                from you.
-              </p>
-              <a href="/contact" class="footer-cta-button">
-                Get In Touch <span class="icon" data-icon="ri-arrow-right-up-line"></span>
-              </a>
-            </div>
-          </div>
-          <nav
-            class="footer-col footer-col--nav"
-            aria-labelledby="footer-nav-heading"
-          >
-            <h3 class="footer-col-heading" id="footer-nav-heading">
-              <span class="dot" aria-hidden="true"></span>Quick Links
-            </h3>
-            <ul class="footer-link-list">
-              <li>
-                <a href="/" class="footer-link-active">
-                  <span class="dot dot--small" aria-hidden="true"></span>Home
-                </a>
-              </li>
-              <li>
-                <a href="/about">About</a>
-              </li>
-              <li>
-                <a href="/skills">Skills</a>
-              </li>
-              <li>
-                <a href="/projects">Projects</a>
-              </li>
-              <li>
-                <a href="/experience">Experience</a>
-              </li>
-              <li>
-                <a href="/testimonials">Testimonials</a>
-              </li>
-              <li>
-                <a href="/contact">Contact</a>
-              </li>
-            </ul>
-          </nav>
-          <nav
-            class="footer-col footer-col--services"
-            aria-labelledby="footer-services-heading"
-          >
-            <h3 class="footer-col-heading" id="footer-services-heading">
-              <span class="dot" aria-hidden="true"></span>Technologies
-            </h3>
-            <ul class="footer-link-list">
-              <li>
-                <a href="/skills">Angular &amp; React</a>
-              </li>
-              <li>
-                <a href="/skills">Next.js</a>
-              </li>
-              <li>
-                <a href="/skills">Node.js</a>
-              </li>
-              <li>
-                <a href="/skills">TypeScript</a>
-              </li>
-              <li>
-                <a href="/skills">MongoDB</a>
-              </li>
-              <li>
-                <a href="/skills">Tailwind CSS</a>
-              </li>
-            </ul>
-          </nav>
-          <div class="footer-col footer-col--contact" id="FooterContact">
-            <h3 class="footer-col-heading">
-              <span class="dot" aria-hidden="true"></span>Let's Connect
-            </h3>
-            <ul class="footer-contact-list">
-              <li class="footer-contact-item">
-                <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="ri-phone-line"></span>
-                </span>
-                <span class="footer-contact-text">
-                  <a href="tel:+15551234567">+92 3038464315</a>
-                  <span class="footer-contact-sub"
-                    >Mon - Fri, 9AM - 6PM EST</span
-                  >
-                </span>
-              </li>
-              <li class="footer-contact-item">
-                <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="ri-mail-line"></span>
-                </span>
-                <span class="footer-contact-text">
-                  <a href="mailto:engineer.sohaibishaque@gmail.com"
-                    >engineer.sohaibishaque@gmail.com</a
-                  >
-                  <span class="footer-contact-sub"
-                    >I'll get back to you soon</span
-                  >
-                </span>
-              </li>
-              <li class="footer-contact-item">
-                <span class="footer-contact-icon" aria-hidden="true">
-                  <span class="icon" data-icon="ri-map-pin-line"></span>
-                </span>
-                <span class="footer-contact-text">
-                  <span class="contact-static">Rawalpindi, Pakistan</span>
-                  <span class="footer-contact-sub"
-                    >Available for remote work</span
-                  >
-                </span>
-              </li>
-            </ul>
-            <ul class="footer-social-list" aria-label="Social media links">
-              <li>
-                <a
-                  href="https://github.com/Sohaib-Ishaque"
-                  class="social-icon"
-                  aria-label="GitHub"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span class="icon" data-icon="ri-github-fill"></span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.linkedin.com/in/engineer-sohaib-ishaque-765b34171/"
-                  class="social-icon"
-                  aria-label="LinkedIn"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span class="icon" data-icon="ri-linkedin-fill"></span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://sohaibishaque.vercel.app/"
-                  class="social-icon"
-                  aria-label="Website"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span class="icon" data-icon="siGlobe"></span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:engineer.sohaibishaque@gmail.com"
-                  class="social-icon"
-                  aria-label="siEmail"
-                >
-                  <span class="icon" data-icon="ri-mail-line"></span>
-                </a>
-              </li>
-            </ul>
-            <p class="freelance-note">
-              <strong>Available</strong> for freelance work <br />and exciting
-              opportunities.
-            </p>
-${SITE_FOOTER_NEWSLETTER_HTML}
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <div class="bottom-left">
-            <span class="code-icon" aria-hidden="true">&lt;/&gt;</span>
-            <span
-              >Designed &amp; Built by
-              <span class="accent">M Sohaib Ishaque</span>
-            </span>
-            <span class="icon" data-icon="ri-heart-line"></span>
-          </div>
-          <div class="bottom-center">
-            &copy; 2025 <span class="accent">M Sohaib Ishaque</span>. All rights
-            reserved.
-          </div>
-        </div>
-      </div>
-    </footer>`;
+    ${SITE_FOOTER_HTML}`;
 
 export function HomeContent() {
   useEffect(() => {
